@@ -1,1 +1,69 @@
-<p>sign-up works!</p>
+<div class="SignUp">
+  <h1>
+    Création de compte
+  </h1>
+
+  <form [formGroup]="signUpForm" *ngIf="signUpForm">
+    <mat-form-field appearance="outline">
+      <mat-label>Prénom</mat-label>
+      <input matInput
+             placeholder="Saisir..."
+             formControlName="firstName"
+             required>
+      <mat-error *ngIf="controls.firstName.hasError('required')">
+        Vous n'avez pas saisi de prénom.
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Nom</mat-label>
+      <input matInput
+             placeholder="Saisir..."
+             formControlName="lastName"
+             required>
+      <mat-error *ngIf="controls.lastName.hasError('required')">
+        Vous n'avez pas saisi de nom.
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Email</mat-label>
+      <input matInput
+             placeholder="Saisir..."
+             formControlName="email"
+             required>
+      <mat-error *ngIf="controls.email.hasError('required')">
+        Vous n'avez pas saisi d'email.
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Thème du chatbot</mat-label>
+      <textarea matInput
+                placeholder="Saisir..."
+                formControlName="description"
+                required>
+      </textarea>
+      <mat-error *ngIf="controls.description.hasError('required')">
+        Vous n'avez pas saisi de thème pour votre chatbot.
+      </mat-error>
+    </mat-form-field>
+
+    <button mat-raised-button
+            color="primary">
+      C'est parti !
+    </button>
+  </form>
+
+  <mat-divider></mat-divider>
+
+  <h1>
+    Vous avez déjà un compte ?
+  </h1>
+
+  <button mat-raised-button
+          color="primary"
+          [routerLink]="'/auth/sign_in'">
+    Se connecter
+  </button>
+</div>

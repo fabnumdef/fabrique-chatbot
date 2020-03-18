@@ -5,5 +5,9 @@
       Aller sur le gitbook
     </button>
   </a>
-  <button mat-raised-button color="accent">Créer son compte</button>
+  <button mat-raised-button
+          color="accent"
+          [routerLink]="'/auth/sign_up'">
+    Créer son compte
+  </button>
 </div>
