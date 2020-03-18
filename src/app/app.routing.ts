@@ -27,8 +27,8 @@ const routes: Routes = [
     component: NotAuthenticatedLayoutComponent,
     children: [
       {
-        path: 'login',
-        loadChildren: () => import('./modules/login/login.module').then(m => m.LoginModule)
+        path: 'auth',
+        loadChildren: () => import('./modules/auth/auth.module').then(m => m.AuthModule)
       },
     ]
   }
