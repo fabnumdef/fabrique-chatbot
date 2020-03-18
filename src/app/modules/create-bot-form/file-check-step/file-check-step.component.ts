@@ -1,8 +1,10 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { distinctUntilChanged, finalize, takeUntil } from 'rxjs/operators';
+import { distinctUntilChanged, filter, finalize, takeUntil, tap } from 'rxjs/operators';
 import { DestroyObservable } from '../../../core/utils/destroy-observable';
 import { FileService } from '../../../core/services/file.service';
+import { FileInput } from 'ngx-material-file-input';
+import { FileTemplateCheckResume } from '../../../core/models/file-template-check-resume.model';
 
 @Component({
   selector: 'app-file-check-step',
@@ -12,6 +14,8 @@ import { FileService } from '../../../core/services/file.service';
 export class FileCheckStepComponent extends DestroyObservable implements OnInit {
 
   @Input() formGroup: FormGroup;
+  fileTemplateCheckResume: FileTemplateCheckResume;
+  objectKeys = Object.keys;
 
   constructor(public fileService: FileService) {
     super();
@@ -33,13 +37,15 @@ export class FileCheckStepComponent extends DestroyObservable implements OnInit 
     this.fileCtrl.valueChanges
       .pipe(
         takeUntil(this.destroy$),
-        distinctUntilChanged()
+        distinctUntilChanged(),
+        tap(() => {
+          this.fileTemplateCheckResume = null;
+        }),
+        filter((fileInput: FileInput) => fileInput && fileInput.files.length > 0)
       )
-      .subscribe(file => {
+      .subscribe((fileInput: FileInput) => {
         this.fileCtrl.disable();
-        this.checkFile(file);
-        console.log(file);
-        this.fileCtrl.enable();
+        this.checkFile(fileInput.files[0]);
       });
   }
 
@@ -48,7 +54,9 @@ export class FileCheckStepComponent extends DestroyObservable implements OnInit 
       finalize(() => {
         this.fileCtrl.enable();
       })
-    );
+    ).subscribe((response: FileTemplateCheckResume) => {
+      this.fileTemplateCheckResume = response;
+    });
   }
 
 }

@@ -1,22 +1,41 @@
-<form [formGroup]="formGroup" *ngIf="formGroup">
-  <ng-template matStepLabel>Contenu</ng-template>
-  <div class="input-wrapper">
-    <mat-form-field appearance="outline">
-      <mat-label>Base documentaire</mat-label>
-      <ngx-mat-file-input formControlName="fileCtrl"
-                          [accept]="'.xlsx'"
-                          required>
-      </ngx-mat-file-input>
-      <mat-icon matSuffix>folder</mat-icon>
-    </mat-form-field>
-    <mat-spinner *ngIf="fileService.loading$ | async"
-                 aria-label="Chargement et vérification du fichier"
-                 [diameter]="40"></mat-spinner>
-  </div>
-  <div class="feedback-wrapper">
+<div class="file-check">
+  <form [formGroup]="formGroup" *ngIf="formGroup">
+    <ng-template matStepLabel>Contenu</ng-template>
+    <div class="input-wrapper">
+      <mat-form-field appearance="outline">
+        <mat-label>Base documentaire</mat-label>
+        <ngx-mat-file-input formControlName="fileCtrl"
+                            [placeholder]="'Fichier .xlsx'"
+                            [accept]="'.xlsx'"
+                            required>
+        </ngx-mat-file-input>
+        <mat-icon matSuffix>folder</mat-icon>
+      </mat-form-field>
+      <mat-spinner *ngIf="fileService.loading$ | async"
+                   aria-label="Chargement et vérification du fichier"
+                   [diameter]="40"></mat-spinner>
+    </div>
+    <div class="feedback-wrapper" *ngIf="fileTemplateCheckResume">
+      <p>Votre fichier contient:</p>
+      <p>{{ fileTemplateCheckResume.categories.length }} catégories</p>
+      <p>{{ fileTemplateCheckResume.questionsNumber }} questions</p>
 
-  </div>
-  <div>
-    <button mat-button matStepperNext>Next</button>
-  </div>
-</form>
+      <div class="errors" *ngIf="objectKeys(fileTemplateCheckResume.errors).length > 0">
+        <span>Erreurs</span>
+        <div *ngFor="let key of objectKeys(fileTemplateCheckResume.errors)">
+          <span>{{ 'Ligne ' + key + ': ' + fileTemplateCheckResume.errors[key]}}</span>
+        </div>
+      </div>
+
+      <div class="warnings" *ngIf="objectKeys(fileTemplateCheckResume.warnings).length > 0">
+        Avertissements
+        <div *ngFor="let key of objectKeys(fileTemplateCheckResume.warnings)">
+          <span>{{ 'Ligne ' + key + ': ' + fileTemplateCheckResume.warnings[key]}}</span>
+        </div>
+      </div>
+    </div>
+    <div>
+      <button mat-button matStepperNext>Next</button>
+    </div>
+  </form>
+</div>

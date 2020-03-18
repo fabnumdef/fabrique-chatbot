@@ -1,10 +1,18 @@
-.input-wrapper {
-  display: flex;
-  align-items: center;
+.file-check {
+  .input-wrapper {
+    display: flex;
+    align-items: center;
 
-  .mat-spinner {
-    margin-left: 20px;
-    // padding-bottom of mat-form-field
-    margin-bottom: 18.8125px;
+    .mat-spinner {
+      margin-left: 20px;
+      // padding-bottom of mat-form-field
+      margin-bottom: 18.8125px;
+    }
+  }
+
+  .feedback-wrapper {
+    .warnings {
+
+    }
   }
 }
