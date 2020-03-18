@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-sign-up',
@@ -10,7 +11,9 @@ export class SignUpComponent implements OnInit {
 
   signUpForm: FormGroup;
 
-  constructor(private _fb: FormBuilder) { }
+  constructor(private _fb: FormBuilder,
+              private _router: Router,
+              private _route: ActivatedRoute) { }
 
   ngOnInit() {
     this.initSignUpForm();
@@ -18,6 +21,11 @@ export class SignUpComponent implements OnInit {
 
   get controls() {
     return this.signUpForm.controls;
+  }
+
+  signUp() {
+    // CALL TO SERVICE /auth/signup ? with form value
+    this._router.navigate(['./success'], {relativeTo: this._route, state: {email: 'vincent@laine.xyz'}});
   }
 
   /**
