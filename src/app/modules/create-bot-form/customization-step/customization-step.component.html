@@ -6,11 +6,23 @@
       <input matInput
              formControlName="name"
              [placeholder]="'Saisir ...'"
-             required />
+             required/>
       <mat-error *ngIf="controls.name.hasError('required')">
         Vous n'avez pas saisi de nom pour votre chatbot.
       </mat-error>
     </mat-form-field>
+
+    <duv>
+      <input class="colorpicker"
+             [colorPicker]="controls.primaryColor.value"
+             [style.background]="controls.primaryColor.value"
+             (colorPickerChange)="controls.primaryColor.setValue($event)"/>
+
+      <input class="colorpicker"
+             [colorPicker]="controls.secondaryColor.value"
+             [style.background]="controls.secondaryColor.value"
+             (colorPickerChange)="controls.secondaryColor.setValue($event)"/>
+    </duv>
     <div>
       <button mat-button matStepperNext>Next</button>
     </div>

@@ -70,7 +70,7 @@ $chatbot-red: (
 );
 
 $chatbot-primary: mat-palette($chatbot-blue);
-$chatbot-accent:  mat-palette($chatbot-red, A200, A100, A400);
+$chatbot-accent:  mat-palette($chatbot-red);
 $chatbot-warn:    mat-palette($mat-red);
 $chatbot-theme: mat-light-theme($chatbot-primary, $chatbot-accent, $chatbot-warn);
 
