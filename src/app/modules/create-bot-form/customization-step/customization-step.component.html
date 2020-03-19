@@ -11,7 +11,7 @@
       </mat-error>
     </mat-form-field>
 
-    <duv>
+    <div>
       <input class="colorpicker"
              [colorPicker]="controls.primaryColor.value"
              [style.background]="controls.primaryColor.value"
@@ -21,7 +21,7 @@
              [colorPicker]="controls.secondaryColor.value"
              [style.background]="controls.secondaryColor.value"
              (colorPickerChange)="controls.secondaryColor.setValue($event)"/>
-    </duv>
+    </div>
     <div>
       <button mat-button matStepperPrevious>Précédent</button>
       <button mat-button matStepperNext>Suivant</button>
