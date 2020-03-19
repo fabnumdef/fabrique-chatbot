@@ -10,7 +10,8 @@
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "cypress:local": "concurrently \"npm run start:local\" \"cypress open\""
+    "cypress:local": "concurrently \"npm run start:local\" \"cypress open\"",
+    "clean": "rimraf ./dist"
   },
   "private": true,
   "dependencies": {
