@@ -28,7 +28,7 @@
       </div>
 
       <div class="warnings" *ngIf="objectKeys(fileTemplateCheckResume.warnings).length > 0">
-        Avertissements
+        <span>Avertissements</span>
         <div *ngFor="let key of objectKeys(fileTemplateCheckResume.warnings)">
           <span>{{ 'Ligne ' + key + ': ' + fileTemplateCheckResume.warnings[key]}}</span>
         </div>

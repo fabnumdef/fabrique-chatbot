@@ -1,20 +1,9 @@
-<mat-horizontal-stepper linear>
+<!-- TODO: linear true when debug is over -->
+<mat-horizontal-stepper [linear]="false">
   <mat-step [stepControl]="formArray.at(0)">
     <app-file-check-step [formGroup]="formArray.at(0)">></app-file-check-step>
   </mat-step>
   <mat-step [stepControl]="formArray.at(1)">
-    <form [formGroup]="formArray.at(1)">
-      <ng-template matStepLabel>Personnalisation</ng-template>
-      <mat-form-field>
-        <mat-label>Name</mat-label>
-        <input matInput
-               placeholder="Last name, First name"
-               formControlName="firstNameFormCtrl"
-               required>
-      </mat-form-field>
-      <div>
-        <button mat-button matStepperNext>Next</button>
-      </div>
-    </form>
+    <app-customization-step [formGroup]="formArray.at(1)"></app-customization-step>
   </mat-step>
 </mat-horizontal-stepper>

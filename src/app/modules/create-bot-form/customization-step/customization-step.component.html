@@ -1,0 +1,18 @@
+<div class="customization">
+  <form [formGroup]="formGroup" *ngIf="formGroup">
+    <ng-template matStepLabel>Personnalisation</ng-template>
+    <mat-form-field appearance="outline">
+      <mat-label>Quel est le nom de votre chatbot ?</mat-label>
+      <input matInput
+             formControlName="name"
+             [placeholder]="'Saisir ...'"
+             required />
+      <mat-error *ngIf="controls.name.hasError('required')">
+        Vous n'avez pas saisi de nom pour votre chatbot.
+      </mat-error>
+    </mat-form-field>
+    <div>
+      <button mat-button matStepperNext>Next</button>
+    </div>
+  </form>
+</div>

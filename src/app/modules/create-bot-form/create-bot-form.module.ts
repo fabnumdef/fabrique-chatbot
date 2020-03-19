@@ -6,18 +6,22 @@ import { MaterialModule } from '../material/material.module';
 import { ReactiveFormsModule } from '@angular/forms';
 import { FileCheckStepComponent } from './file-check-step/file-check-step.component';
 import { MaterialFileInputModule } from 'ngx-material-file-input';
+import { CustomizationStepComponent } from './customization-step/customization-step.component';
+import { ColorPickerModule } from 'ngx-color-picker';
 
 @NgModule({
   declarations: [
     CreateBotFormComponent,
-    FileCheckStepComponent
+    FileCheckStepComponent,
+    CustomizationStepComponent
   ],
   imports: [
     CommonModule,
     CreateBotFormRoutingModule,
     MaterialModule,
     ReactiveFormsModule,
-    MaterialFileInputModule
+    MaterialFileInputModule,
+    ColorPickerModule
   ]
 })
 export class CreateBotFormModule {

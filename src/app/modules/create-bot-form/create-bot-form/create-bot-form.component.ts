@@ -32,7 +32,10 @@ export class CreateBotFormComponent implements OnInit {
           fileCtrl: ['', Validators.required],
         }),
         this._fb.group({
-          firstNameFormCtrl: ['', Validators.required],
+          name: ['', Validators.required],
+          icon: [null, Validators.required],
+          primaryColor: [null, Validators.required],
+          secondaryColor: [null, Validators.required],
         }),
       ])
     });
