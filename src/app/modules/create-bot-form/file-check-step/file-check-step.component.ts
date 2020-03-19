@@ -26,7 +26,7 @@ export class FileCheckStepComponent extends DestroyObservable implements OnInit 
   }
 
   get fileCtrl(): FormControl {
-    return <FormControl> this.formGroup.get('fileCtrl');
+    return <FormControl> this.formGroup.get('file');
   }
 
   /**

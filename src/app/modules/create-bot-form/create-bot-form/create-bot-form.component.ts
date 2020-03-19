@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { AbstractControl, FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-create-bot-form',
@@ -29,7 +29,7 @@ export class CreateBotFormComponent implements OnInit {
     this.createBotForm = this._fb.group({
       formArray: this._fb.array([
         this._fb.group({
-          fileCtrl: ['', Validators.required],
+          file: ['', Validators.required],
         }),
         this._fb.group({
           name: ['', Validators.required],

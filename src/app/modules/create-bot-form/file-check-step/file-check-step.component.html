@@ -1,10 +1,9 @@
 <div class="file-check">
   <form [formGroup]="formGroup" *ngIf="formGroup">
-    <ng-template matStepLabel>Contenu</ng-template>
     <div class="input-wrapper">
       <mat-form-field appearance="outline">
         <mat-label>Base documentaire</mat-label>
-        <ngx-mat-file-input formControlName="fileCtrl"
+        <ngx-mat-file-input formControlName="file"
                             [placeholder]="'Fichier .xlsx'"
                             [accept]="'.xlsx'"
                             required>
@@ -35,7 +34,7 @@
       </div>
     </div>
     <div>
-      <button mat-button matStepperNext>Next</button>
+      <button mat-button matStepperNext>Suivant</button>
     </div>
   </form>
 </div>

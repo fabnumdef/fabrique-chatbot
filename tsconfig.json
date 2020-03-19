@@ -10,12 +10,20 @@
     "module": "esnext",
     "moduleResolution": "node",
     "importHelpers": true,
-    "target": "es2015",
+    "target": "esnext",
+    "paths": {
+      "@models": [
+        "app/core/models/index"
+      ],
+      "@core/*": [
+        "app/core/*"
+      ]
+    },
     "typeRoots": [
       "node_modules/@types"
     ],
     "lib": [
-      "es2018",
+      "esnext",
       "dom"
     ]
   },

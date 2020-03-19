@@ -8,12 +8,14 @@ import { FileCheckStepComponent } from './file-check-step/file-check-step.compon
 import { MaterialFileInputModule } from 'ngx-material-file-input';
 import { CustomizationStepComponent } from './customization-step/customization-step.component';
 import { ColorPickerModule } from 'ngx-color-picker';
+import { ResumeStepComponent } from './resume-step/resume-step.component';
 
 @NgModule({
   declarations: [
     CreateBotFormComponent,
     FileCheckStepComponent,
-    CustomizationStepComponent
+    CustomizationStepComponent,
+    ResumeStepComponent
   ],
   imports: [
     CommonModule,

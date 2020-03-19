@@ -1,6 +1,5 @@
 <div class="customization">
   <form [formGroup]="formGroup" *ngIf="formGroup">
-    <ng-template matStepLabel>Personnalisation</ng-template>
     <mat-form-field appearance="outline">
       <mat-label>Quel est le nom de votre chatbot ?</mat-label>
       <input matInput
@@ -24,7 +23,8 @@
              (colorPickerChange)="controls.secondaryColor.setValue($event)"/>
     </duv>
     <div>
-      <button mat-button matStepperNext>Next</button>
+      <button mat-button matStepperPrevious>Précédent</button>
+      <button mat-button matStepperNext>Suivant</button>
     </div>
   </form>
 </div>

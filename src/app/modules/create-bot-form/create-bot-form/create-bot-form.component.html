@@ -1,9 +1,15 @@
 <!-- TODO: linear true when debug is over -->
 <mat-horizontal-stepper [linear]="false">
   <mat-step [stepControl]="formArray.at(0)">
+    <ng-template matStepLabel>Paramétrage</ng-template>
     <app-file-check-step [formGroup]="formArray.at(0)">></app-file-check-step>
   </mat-step>
   <mat-step [stepControl]="formArray.at(1)">
+    <ng-template matStepLabel>Personnalisation</ng-template>
     <app-customization-step [formGroup]="formArray.at(1)"></app-customization-step>
+  </mat-step>
+  <mat-step>
+    <ng-template matStepLabel>Résumé</ng-template>
+    <app-resume-step [formArray]="formArray"></app-resume-step>
   </mat-step>
 </mat-horizontal-stepper>
