@@ -7,6 +7,8 @@ import { RouterModule } from '@angular/router';
 import { ToastrModule } from 'ngx-toastr';
 import { JwtInterceptor } from './interceptors/jwt.interceptor';
 import { ErrorInterceptor } from './interceptors/error.interceptor';
+import { HeaderComponent } from './components/header/header.component';
+import { FooterComponent } from './components/footer/footer.component';
 
 @NgModule({
   imports: [
@@ -17,7 +19,9 @@ import { ErrorInterceptor } from './interceptors/error.interceptor';
   ],
   declarations: [
   AuthenticatedLayoutComponent,
-  NotAuthenticatedLayoutComponent],
+  NotAuthenticatedLayoutComponent,
+  HeaderComponent,
+  FooterComponent],
   providers: [
     {provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true},
     {provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true}
