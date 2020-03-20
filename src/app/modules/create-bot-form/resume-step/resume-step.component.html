@@ -1,6 +1,13 @@
 <div class="resume">
   <div>
     <button mat-button matStepperPrevious>Précédent</button>
-    <button mat-button (click)="generateChatbot()">Confirmer</button>
+    <button mat-button
+            (click)="generateChatbot()"
+            [disabled]="chatbotService.loading$ | async">
+      Confirmer
+      <mat-spinner *ngIf="chatbotService.loading$ | async"
+                   aria-label="Création du chatbot en cours"
+                   [diameter]="20"></mat-spinner>
+    </button>
   </div>
 </div>

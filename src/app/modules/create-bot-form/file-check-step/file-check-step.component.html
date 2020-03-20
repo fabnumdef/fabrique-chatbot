@@ -3,14 +3,14 @@
     <div class="input-wrapper">
       <mat-form-field appearance="outline">
         <mat-label>Base documentaire</mat-label>
-        <ngx-mat-file-input formControlName="file"
+        <ngx-mat-file-input formControlName="fileInput"
                             [placeholder]="'Fichier .xlsx'"
                             [accept]="'.xlsx'"
                             required>
         </ngx-mat-file-input>
         <mat-icon matSuffix>folder</mat-icon>
       </mat-form-field>
-      <mat-spinner *ngIf="fileService.loading$ | async"
+      <mat-spinner *ngIf="chatbotService.loading$ | async"
                    aria-label="Chargement et vérification du fichier"
                    [diameter]="40"></mat-spinner>
     </div>

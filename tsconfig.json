@@ -1,4 +1,8 @@
 {
+  "angularCompilerOptions": {
+    "fullTemplateTypeCheck": true,
+    "strictInjectionParameters": true
+  },
   "compileOnSave": false,
   "compilerOptions": {
     "baseUrl": "./",
@@ -12,8 +16,17 @@
     "importHelpers": true,
     "target": "esnext",
     "paths": {
+      "@services": [
+        "app/core/services/index"
+      ],
+      "@services/*": [
+        "app/core/services/*"
+      ],
       "@models": [
         "app/core/models/index"
+      ],
+      "@models/*": [
+        "app/core/models/*"
       ],
       "@core/*": [
         "app/core/*"
@@ -26,9 +39,5 @@
       "esnext",
       "dom"
     ]
-  },
-  "angularCompilerOptions": {
-    "fullTemplateTypeCheck": true,
-    "strictInjectionParameters": true
   }
 }

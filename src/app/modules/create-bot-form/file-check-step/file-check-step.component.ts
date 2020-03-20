@@ -2,9 +2,9 @@ import { Component, Input, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { distinctUntilChanged, filter, finalize, takeUntil, tap } from 'rxjs/operators';
 import { DestroyObservable } from '../../../core/utils/destroy-observable';
-import { FileService } from '../../../core/services/file.service';
 import { FileInput } from 'ngx-material-file-input';
 import { FileTemplateCheckResume } from '../../../core/models/file-template-check-resume.model';
+import { ChatbotService } from '../../../core/services';
 
 @Component({
   selector: 'app-file-check-step',
@@ -17,7 +17,7 @@ export class FileCheckStepComponent extends DestroyObservable implements OnInit 
   fileTemplateCheckResume: FileTemplateCheckResume;
   objectKeys = Object.keys;
 
-  constructor(public fileService: FileService) {
+  constructor(public chatbotService: ChatbotService) {
     super();
   }
 
@@ -26,7 +26,7 @@ export class FileCheckStepComponent extends DestroyObservable implements OnInit 
   }
 
   get fileCtrl(): FormControl {
-    return <FormControl> this.formGroup.get('file');
+    return <FormControl> this.formGroup.get('fileInput');
   }
 
   /**
@@ -50,7 +50,7 @@ export class FileCheckStepComponent extends DestroyObservable implements OnInit 
   }
 
   private checkFile(file: File) {
-    this.fileService.checkFile(file).pipe(
+    this.chatbotService.checkFile(file).pipe(
       finalize(() => {
         this.fileCtrl.enable();
       })

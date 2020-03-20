@@ -9,13 +9,15 @@ import { MaterialFileInputModule } from 'ngx-material-file-input';
 import { CustomizationStepComponent } from './customization-step/customization-step.component';
 import { ColorPickerModule } from 'ngx-color-picker';
 import { ResumeStepComponent } from './resume-step/resume-step.component';
+import { SuccessStepComponent } from './success-step/success-step.component';
 
 @NgModule({
   declarations: [
     CreateBotFormComponent,
     FileCheckStepComponent,
     CustomizationStepComponent,
-    ResumeStepComponent
+    ResumeStepComponent,
+    SuccessStepComponent
   ],
   imports: [
     CommonModule,
