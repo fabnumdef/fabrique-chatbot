@@ -1,13 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { Sheet2JSONOpts, WorkBook, WorkSheet } from "xlsx";
-import { TemplateFileDto } from "./dto/template-file.dto";
-import { TemplateFileCheckResumeDto } from "./dto/template-file-check-resume.dto";
+import { TemplateFileDto } from "../core/dto/template-file.dto";
+import { TemplateFileCheckResumeDto } from "../core/dto/template-file-check-resume.dto";
 import { RasaService } from "../core/services/rasa.service";
-
 const XLSX = require('xlsx');
 
 @Injectable()
-export class TemplateFileService {
+export class ChatbotService {
   checkTemplateFile(file): any {
     const workbook: WorkBook = XLSX.read(file.buffer);
     const worksheet: WorkSheet = workbook.Sheets[workbook.SheetNames[0]];

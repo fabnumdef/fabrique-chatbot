@@ -1,4 +1,4 @@
-import { FileUploadDto } from "../../template-file/dto/file-upload.dto";
+import { FileUploadDto } from "./file-upload.dto";
 import { ApiProperty } from "@nestjs/swagger";
 
 export class BotCreationDto {

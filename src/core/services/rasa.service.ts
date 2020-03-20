@@ -1,4 +1,4 @@
-import { TemplateFileDto, TemplateResponseType } from "../../template-file/dto/template-file.dto";
+import { TemplateFileDto, TemplateResponseType } from "../dto/template-file.dto";
 import { RasaNlu } from "../models/rasa-nlu.model";
 import { RasaButtonModel, RasaDomain, RasaUtterResponse } from "../models/rasa-domain.model";
 
