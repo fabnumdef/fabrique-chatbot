@@ -19,6 +19,11 @@ export class ChatbotController {
     }))
   @ApiConsumes('multipart/form-data')
   create(@UploadedFile() file, @Body() botConfiguration: BotCreationDto) {
+    const errors = this._chatbotService.checkTemplateFile(file).errors;
+    if(errors && Object.keys(errors).length > 0) {
+      throw 'Fichier incorrect';
+    }
+    this._chatbotService.convertToAnsibleScript(file);
     console.log('bot config', botConfiguration);
   }
 
@@ -38,6 +43,7 @@ export class ChatbotController {
     return this._chatbotService.checkTemplateFile(file);
   }
 
+  // TODO: A transférer vers chatbot-back
   @Post()
   @UseInterceptors(FileInterceptor(
     'file',

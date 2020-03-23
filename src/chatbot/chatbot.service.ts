@@ -7,7 +7,7 @@ const XLSX = require('xlsx');
 
 @Injectable()
 export class ChatbotService {
-  checkTemplateFile(file): any {
+  checkTemplateFile(file): TemplateFileCheckResumeDto {
     const workbook: WorkBook = XLSX.read(file.buffer);
     const worksheet: WorkSheet = workbook.Sheets[workbook.SheetNames[0]];
     const templateFile: TemplateFileDto[] = this.convertExcelToJson(worksheet);
@@ -23,6 +23,10 @@ export class ChatbotService {
     const worksheet: WorkSheet = workbook.Sheets[workbook.SheetNames[0]];
     const templateFile: TemplateFileDto[] = this.convertExcelToJson(worksheet);
     RasaService.jsonToRasa(templateFile);
+  }
+
+  convertToAnsibleScript(file): any {
+    
   }
 
   /************************************************************************************ PRIVATE FUNCTIONS ************************************************************************************/
