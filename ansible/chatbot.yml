@@ -1,27 +1,40 @@
 ---
 - name: Init Chatbot server for the Chatbot Factory
-  hosts: localhost
-  gather_facts: false
+
+  hosts: dev
+
+  remote_user: user
+
   tasks:
     - name: Update and upgrade apt packages
       become: true
       apt:
-        upgrade: yes
-        update_cache: yes
+        upgrade: 'yes'
+        update_cache: 'yes'
 
     - name: Install Python dependencies
+      become: true
       apt:
         pkg:
-          - python-pip
+          - python3-pip
           - build-essential
           - libssl-dev
           - libffi-dev
           - python3-dev
           - python-setuptools
 
+    - name: Install last version of pip
+      become: true
+      pip:
+        executable: pip3
+        name: pip
+        extra_args: -U
+
     # TODO: fix versions numbers
     - name: Install RASA
+      become: true
       pip:
+        executable: pip3
         name:
           - rasa
           - psycopg2-binary
