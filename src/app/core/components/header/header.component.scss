@@ -1,0 +1,26 @@
+.header {
+  margin-bottom: 10px;
+  height: 100px;
+  display: flex;
+  justify-content: space-between;
+
+  $space-margin: 15px;
+
+  .image-wrapper {
+    display: flex;
+    align-items: center;
+    height: 100%;
+    cursor: pointer;
+
+    img {
+      margin-left: $space-margin;
+      max-height: 100%;
+    }
+  }
+
+  .action-wrapper {
+    display: flex;
+    align-items: center;
+    margin-right: $space-margin;
+  }
+}

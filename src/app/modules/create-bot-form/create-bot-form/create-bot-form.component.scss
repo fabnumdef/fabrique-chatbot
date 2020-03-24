@@ -1,0 +1,70 @@
+@import "src/styles/variables";
+
+.create-bot-form {
+  ::ng-deep.mat-stepper-label-position-bottom {
+    .mat-stepper-horizontal-line, .mat-horizontal-stepper-header:not(:last-child)::after, .mat-horizontal-stepper-header:not(:first-child)::before {
+      border: none;
+    }
+
+    .mat-horizontal-content-container {
+      padding-left: 0;
+      padding-right: 0;
+    }
+
+    .mat-horizontal-stepper-header {
+      align-items: flex-start;
+
+      .mat-step-label {
+        padding: 0;
+
+        h2 {
+          margin-top: 10px;
+        }
+      }
+
+      .mat-step-icon {
+        height: 36px;
+        width: 36px;
+        color: $accent-color;
+        background-color: transparent;
+        border: 2px solid $accent-color;
+        font-weight: bold;
+
+        &-selected {
+          color: $white;
+          background-color: $accent-color;
+        }
+      }
+    }
+
+    .bot-step {
+      &-header {
+        background-color: $primary-color;
+        padding: 10px;
+        border-radius: 3px 3px 0 0;
+
+        h2 {
+          color: $white;
+          margin: 0;
+        }
+      }
+
+      &-content {
+        border: 1px solid $grey-light;
+        border-radius: 0 0 3px 3px;
+        border-top: none;
+        padding: 10px 30px 30px 30px;
+      }
+
+      &-actions {
+        margin-top: 20px;
+        display: flex;
+        justify-content: flex-end;
+
+        button:first-child {
+          margin-right: 15px;
+        }
+      }
+    }
+  }
+}

@@ -1,16 +1,44 @@
+@import "src/styles/variables";
+
 .file-check {
-  .input-wrapper {
+  .file-input {
     display: flex;
     align-items: center;
 
-    .mat-spinner {
+    button {
       margin-left: 20px;
-      // padding-bottom of mat-form-field
-      margin-bottom: 18.8125px;
+    }
+  }
+
+  .mat-divider {
+    margin-top: 20px;
+  }
+
+  .file-wrapper {
+    background-color: $grey-lighter;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    & > * {
+      display: flex;
+      align-items: center;
+
+      & > *:first-child {
+        margin-right: 15px;
+      }
     }
   }
 
   .feedback-wrapper {
+    .feedback-table {
+      display: flex;
+
+      & > * {
+        min-width: 200px;
+      }
+    }
     .warnings {
 
     }

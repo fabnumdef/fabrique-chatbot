@@ -1,40 +1,74 @@
 <div class="file-check">
   <form [formGroup]="formGroup" *ngIf="formGroup">
-    <div class="input-wrapper">
-      <mat-form-field appearance="outline">
-        <mat-label>Base documentaire</mat-label>
-        <ngx-mat-file-input formControlName="fileInput"
-                            [placeholder]="'Fichier .xlsx'"
-                            [accept]="'.xlsx'"
-                            required>
-        </ngx-mat-file-input>
-        <mat-icon matSuffix>folder</mat-icon>
-      </mat-form-field>
-      <mat-spinner *ngIf="chatbotService.loading$ | async"
-                   aria-label="Chargement et vérification du fichier"
-                   [diameter]="40"></mat-spinner>
+    <h2>Téléchargement de la base documentaire</h2>
+    <div class="file-input">
+      <span>Chargez la base documentaire de votre chatbot, nous allons vérifier la conformité de votre fichier (format de fichier Excel .xlsx).
+        <br/>Si vous n’avez pas le modèle de référence, vous pouvez le télécharger ici.</span>
+      <button mat-flat-button
+              color="accent"
+              [disabled]="(chatbotService.loading$ | async) || !!fileCtrl.value"
+              (click)="uploader.click()">
+        <mat-icon *ngIf="!(chatbotService.loading$ | async)">add</mat-icon>
+        <mat-spinner *ngIf="chatbotService.loading$ | async"
+                     aria-label="Chargement et vérification du fichier"
+                     [diameter]="24"></mat-spinner>
+        Ajouter un fichier
+      </button>
+      <input hidden
+             type="file"
+             #uploader
+             (change)="uploadFile($event)"
+             [accept]="'.xlsx'"/>
     </div>
     <div class="feedback-wrapper" *ngIf="fileTemplateCheckResume">
-      <p>Votre fichier contient:</p>
-      <p>{{ fileTemplateCheckResume.categories.length }} catégories</p>
-      <p>{{ fileTemplateCheckResume.questionsNumber }} questions</p>
+      <h3>Votre fichier contient</h3>
+      <div class="feedback-table">
+        <div>
+          <span><b>{{ fileTemplateCheckResume.categories.length }}</b> catégories</span>
+        </div>
+        <div>
+          <span><b>{{ fileTemplateCheckResume.questionsNumber }}</b> questions</span>
+        </div>
+        <div>
+          <span><b>{{ objectKeys(fileTemplateCheckResume.errors).length }}</b> Erreurs</span>
+          <div class="errors" *ngIf="objectKeys(fileTemplateCheckResume.errors).length > 0">
+            <div *ngFor="let key of objectKeys(fileTemplateCheckResume.errors)">
+              <span>{{ 'Ligne ' + key + ': ' + fileTemplateCheckResume.errors[key]}}</span>
+            </div>
+          </div>
 
-      <div class="errors" *ngIf="objectKeys(fileTemplateCheckResume.errors).length > 0">
-        <span>Erreurs</span>
-        <div *ngFor="let key of objectKeys(fileTemplateCheckResume.errors)">
-          <span>{{ 'Ligne ' + key + ': ' + fileTemplateCheckResume.errors[key]}}</span>
+          <span><b>{{ objectKeys(fileTemplateCheckResume.warnings).length }}</b> Avertissements</span>
+          <div class="warnings" *ngIf="objectKeys(fileTemplateCheckResume.warnings).length > 0">
+            <div *ngFor="let key of objectKeys(fileTemplateCheckResume.warnings)">
+              <span>{{ 'Ligne ' + key + ': ' + fileTemplateCheckResume.warnings[key]}}</span>
+            </div>
+          </div>
         </div>
       </div>
 
-      <div class="warnings" *ngIf="objectKeys(fileTemplateCheckResume.warnings).length > 0">
-        <span>Avertissements</span>
-        <div *ngFor="let key of objectKeys(fileTemplateCheckResume.warnings)">
-          <span>{{ 'Ligne ' + key + ': ' + fileTemplateCheckResume.warnings[key]}}</span>
+      <div class="file-wrapper" *ngIf="fileCtrl.value">
+        <div>
+          <mat-icon color="primary" fontSet="material-icons-outlined">insert_drive_file</mat-icon>
+          <span> {{ fileCtrl.value.name }} </span>
+        </div>
+        <div>
+          <button mat-flat-button
+                  color="accent"
+                  [disabled]="chatbotService.loading$ | async"
+                  (click)="uploader.click()">
+            Mettre à jour
+          </button>
+          <button mat-icon-button
+                  color="accent"
+                  aria-label="Suppression fichier"
+                  (click)="resetFile()">
+            <mat-icon>delete</mat-icon>
+          </button>
         </div>
       </div>
     </div>
-    <div>
-      <button mat-button matStepperNext>Suivant</button>
-    </div>
+    <mat-divider></mat-divider>
+    <h2>Utilisateurs de la plateforme ou contacts</h2>
+    <p>Vous pouvez sautez cette étape et les ajouter plus tard.</p>
   </form>
 </div>

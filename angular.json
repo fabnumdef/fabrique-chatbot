@@ -28,7 +28,13 @@
               "src/assets"
             ],
             "styles": [
-              "src/styles.scss"
+              "src/styles.scss",
+              "src/styles/button.scss",
+              "src/styles/colorpicker.scss",
+              "src/styles/theme.scss",
+              "src/styles/typography.scss",
+              "src/styles/variables.scss",
+              "src/styles/input.scss"
             ],
             "scripts": []
           },
@@ -93,7 +99,13 @@
               "src/assets"
             ],
             "styles": [
-              "src/styles.scss"
+              "src/styles.scss",
+              "src/styles/button.scss",
+              "src/styles/colorpicker.scss",
+              "src/styles/theme.scss",
+              "src/styles/typography.scss",
+              "src/styles/variables.scss",
+              "src/styles/input.scss"
             ],
             "scripts": []
           }

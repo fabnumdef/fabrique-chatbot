@@ -20,6 +20,10 @@ const routes: Routes = [
         path: 'create',
         loadChildren: () => import('./modules/create-bot-form/create-bot-form.module').then(m => m.CreateBotFormModule)
       },
+      {
+        path: 'ui',
+        loadChildren: () => import('./modules/ui/ui.module').then(m => m.UiModule)
+      },
     ]
   },
   {

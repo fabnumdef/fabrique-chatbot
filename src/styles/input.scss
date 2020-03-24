@@ -1,0 +1,7 @@
+@import 'variables';
+
+.mat-form-field {
+  &.mat-form-field-appearance-outline .mat-select-arrow {
+    color: $accent-color;
+  }
+}

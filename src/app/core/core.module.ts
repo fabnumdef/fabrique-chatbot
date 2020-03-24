@@ -9,13 +9,15 @@ import { JwtInterceptor } from './interceptors/jwt.interceptor';
 import { ErrorInterceptor } from './interceptors/error.interceptor';
 import { HeaderComponent } from './components/header/header.component';
 import { FooterComponent } from './components/footer/footer.component';
+import { MaterialModule } from '../modules/material/material.module';
 
 @NgModule({
   imports: [
     CommonModule,
     HttpClientModule,
     RouterModule,
-    ToastrModule.forRoot()
+    ToastrModule.forRoot(),
+    MaterialModule
   ],
   declarations: [
   AuthenticatedLayoutComponent,

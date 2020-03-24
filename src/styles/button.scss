@@ -1,0 +1,20 @@
+button {
+  &.mat-flat-button, &.mat-stroked-button {
+    border-radius: 50px;
+    min-width: 180px;
+
+    &:not([disabled]) {
+      border-color: currentColor!important;
+    }
+  }
+
+  &.mat-button-base .mat-button-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    .mat-icon {
+      margin-right: 5px;
+    }
+  }
+}

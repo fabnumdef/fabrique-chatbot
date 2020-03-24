@@ -24,13 +24,6 @@ export class ResumeStepComponent implements OnInit {
   generateChatbot() {
     const chatbotConfiguration: ChatbotConfiguration = this.formArray
       .getRawValue()
-      .map(c => {
-        if (c.fileInput && c.fileInput.files) {
-          c.file = c.fileInput.files[0];
-          delete c.fileInput;
-        }
-        return c;
-      })
       .reduce((obj1, obj2) => Object.assign(obj1, obj2));
     this.chatbotService.createChatbot(chatbotConfiguration).subscribe(() => {
       this._router.navigate(['./success'], {relativeTo: this._route});

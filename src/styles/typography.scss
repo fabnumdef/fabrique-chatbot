@@ -1,0 +1,22 @@
+@import 'variables';
+
+body.mat-typography {
+  h1, h2 {
+    color: $primary-color;
+    font-family: $title-font;
+  }
+
+  h3 {
+    font-family: $title-font;
+  }
+
+  h1 {
+    font-size: 40px;
+    margin-bottom: 25px;
+  }
+
+  h2 {
+    margin-top: 20px;
+    font-size: 22px;
+  }
+}

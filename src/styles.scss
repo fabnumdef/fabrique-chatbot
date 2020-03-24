@@ -1,6 +1,12 @@
-@import 'styles/theme';
-@import 'styles/colorpicker';
 @import '~ngx-toastr/toastr';
+
+@font-face {
+  font-family: 'Gilroy';
+  src: url('assets/fonts/Gilroy-ExtraBold/Gilroy-ExtraBold.woff2') format('woff2'),
+  url('assets/fonts/Gilroy-ExtraBold/Gilroy-ExtraBold.woff') format('woff');
+  font-weight: 800;
+  font-style: normal;
+}
 
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
