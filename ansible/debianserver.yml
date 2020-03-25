@@ -43,6 +43,13 @@
         name: OpenSSH
         state: enabled
 
+    - name: Open port 5005
+      become: yes
+      ufw:
+        rule: allow
+        port: '5005'
+        proto: tcp
+
 
   handlers:
 

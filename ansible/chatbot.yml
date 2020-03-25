@@ -5,6 +5,10 @@
 
   remote_user: user
 
+  vars:
+    - appsDir: '/var/www/'
+    - rasaDir: 'rasa-chatbot'
+
   tasks:
     - name: Update and upgrade apt packages
       become: true
@@ -12,7 +16,7 @@
         upgrade: 'yes'
         update_cache: 'yes'
 
-    - name: Install required dependencies (python, ssl, postgresql)
+    - name: Install required dependencies (python, ssl, postgresql, node ...)
       become: true
       apt:
         pkg:
@@ -30,6 +34,13 @@
           - libpq-dev
           - python-psycopg2
           - acl
+          - npm
+          - nodejs
+          - git
+          - nginx
+          - curl
+          - psmisc
+          - screen
 
     - name: Install last version of pip
       become: true
@@ -37,6 +48,10 @@
         executable: pip3
         name: pip
         extra_args: -U
+
+    - name: Install last version of npm
+      become: true
+      command: npm install -g npm
 
     # TODO: fix versions numbers
     - name: Install RASA
@@ -82,3 +97,33 @@
         name: 'rasa_user'
         role_attr_flags: 'NOSUPERUSER,NOCREATEDB'
         state: 'present'
+
+    - name: Install pm2
+      become: true
+      npm:
+        name: 'pm2'
+        global: 'yes'
+        production: 'yes'
+
+    - name: Copy Chatbot template
+      become: true
+      copy:
+        src: '/mnt/c/Users/laine/Documents/beta.gouv/chatbot-template/'
+        dest: '{{ appsDir }}/{{ rasaDir }}/'
+
+    - name: Train rasa
+      become: true
+      command:
+        chdir: '{{ appsDir }}/{{ rasaDir }}/'
+        cmd: 'rasa train'
+
+    - name: Stop rasa chatbot
+      become: true
+      command: 'screen -wipe'
+      ignore_errors: true
+
+    - name: Start rasa chatbot
+      become: true
+      command:
+        chdir: '{{ appsDir }}/{{ rasaDir }}/'
+        cmd: 'screen -S rasa -dmS rasa run -m models --enable-api --log-file out.log --cors "*" --debug'
