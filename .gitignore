@@ -36,4 +36,4 @@ lerna-debug.log*
 /files/*
 
 # Ansible
-/ansible/hosts
+/ansible/chatbot/hosts

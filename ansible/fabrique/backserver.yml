@@ -1,0 +1,75 @@
+---
+- name: Init server for Angular App
+
+  hosts: localhost
+
+  remote_user: fab_user
+
+  vars:
+    - userDir: '/home/fab_user'
+    - appsDir: '/var/www'
+    - nestDir: 'fabrique-chatbot-back'
+    - ansible_become_pass: "{{ user_password }}"
+
+  tasks:
+    - name: Update and upgrade apt packages
+      become: yes
+      apt:
+        upgrade: 'yes'
+        update_cache: 'yes'
+
+    - name: Install required dependencies (nginx, node, npm ...)
+      become: yes
+      apt:
+        pkg:
+          - nginx
+          - npm
+          - nodejs
+
+    - name: Install last version of npm
+      become: yes
+      command: npm install -g npm
+
+    - name: NODE | Install pm2
+      become: yes
+      npm:
+        name: pm2
+        global: yes
+        production: yes
+        state: present
+
+    - name: remove old nestjs app
+      file:
+        path: '{{ appsDir }}/{{ nestDir }}/'
+        state: absent
+      become: yes
+
+    - name: copy nestjs app
+      copy:
+        src: '{{ userDir }}/{{ nestDir }}/'
+        dest: '{{ appsDir }}/{{ nestDir }}'
+      become: yes
+
+    - name: npm install nestjs app
+      become: yes
+      npm:
+        path: '{{ appsDir }}/{{ nestDir }}'
+
+    - name: npm build nestjs app
+      become: yes
+      command:
+        cmd: 'npm run build'
+        chdir: '{{ appsDir }}/{{ nestDir }}'
+
+    - name: NODE | Stop APP
+      shell: pm2 stop FabriqueBack
+      args:
+        chdir: '{{ appsDir }}/{{ nestDir }}'
+      ignore_errors: yes
+      become: yes
+
+    - name: NODE | Start APP
+      shell: pm2 start main.js --name FabriqueBack
+      args:
+        chdir: '{{ appsDir }}/{{ nestDir }}/dist'
+      become: yes
