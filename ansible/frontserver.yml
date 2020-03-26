@@ -10,6 +10,7 @@
     - appsDir: '/var/www'
     - angularDir: 'fabrique-chatbot-front'
     - ansible_become_pass: "{{ user_password }}"
+    - devDomain: 'chatbot.d.fabnum.fr'
 
   tasks:
     - name: Update and upgrade apt packages
@@ -24,13 +25,13 @@
         pkg:
           - nginx
           - certbot
-          - python-certbot-nginx
+          - python3-certbot-nginx
           - npm
           - nodejs
           - openssl
 
     - name: Install last version of npm
-      become: true
+      become: yes
       command: npm install -g npm
 
     - name: start nginx
@@ -70,3 +71,13 @@
         name: nginx
         state: restarted
       become: yes
+
+    - name: Install SSL certificate
+      become: yes
+      command:
+        cmd: 'certbot --nginx -d {{ devDomain }} -n --redirect --agree-tos -m vincent.laine@beta.gouv.fr'
+
+    - name: Check auto renew SSL certificate
+      become: yes
+      command:
+        cmd: 'certbot renew --dry-run'
