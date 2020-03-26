@@ -5,6 +5,7 @@
     "ng": "ng",
     "start": "ng serve",
     "start:local": "ng serve --proxy-config proxy.local.conf.json",
+    "start:dev": "ng serve --proxy-config proxy.dev.conf.json",
     "build": "ng build",
     "build:prod": "ng build --prod",
     "test": "ng test",
