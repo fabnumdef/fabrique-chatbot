@@ -1,0 +1,72 @@
+---
+- name: Init server for Angular App
+
+  hosts: localhost
+
+  remote_user: fab_user
+
+  vars:
+    - userDir: '/home/fab_user'
+    - appsDir: '/var/www'
+    - angularDir: 'fabrique-chatbot-front'
+    - ansible_become_pass: "{{ user_password }}"
+
+  tasks:
+    - name: Update and upgrade apt packages
+      become: true
+      apt:
+        upgrade: 'yes'
+        update_cache: 'yes'
+
+    - name: Install required dependencies (nginx, node, npm, certbot ...)
+      become: true
+      apt:
+        pkg:
+          - nginx
+          - certbot
+          - python-certbot-nginx
+          - npm
+          - nodejs
+          - openssl
+
+    - name: Install last version of npm
+      become: true
+      command: npm install -g npm
+
+    - name: start nginx
+      service:
+        name: nginx
+        state: started
+      become: yes
+
+    - name: copy the nginx config file and restart nginx
+      copy:
+        src: '{{ userDir }}/{{ angularDir }}/ansible/static_site.cfg'
+        dest: '/etc/nginx/sites-available/{{ angularDir }}.cfg'
+        remote_src: yes
+      become: yes
+
+    - name: create symlink
+      file:
+        src: '/etc/nginx/sites-available/{{ angularDir }}.cfg'
+        dest: '/etc/nginx/sites-enabled/default'
+        state: link
+      become: yes
+
+    - name: remove old angular app
+      file:
+        path: '{{ appsDir }}/{{ angularDir }}/'
+        state: absent
+      become: yes
+
+    - name: copy angular app
+      copy:
+        src: '{{ userDir }}/{{ angularDir }}/'
+        dest: '{{ appsDir }}/{{ angularDir }}'
+      become: yes
+
+    - name: restart nginx
+      service:
+        name: nginx
+        state: restarted
+      become: yes
