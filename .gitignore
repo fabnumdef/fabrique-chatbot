@@ -37,3 +37,6 @@ lerna-debug.log*
 
 # Ansible
 /ansible/chatbot/hosts
+
+# ENV variables
+.env

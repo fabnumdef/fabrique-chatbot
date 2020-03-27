@@ -9,7 +9,27 @@
     "sourceMap": true,
     "outDir": "./dist",
     "baseUrl": "./",
-    "incremental": true
+    "incremental": true,
+    "paths": {
+      "@core/*": [
+        "src/core/*"
+      ],
+      "@dto/*": [
+        "src/core/dto/*"
+      ],
+      "@entity/*": [
+        "src/core/entities/*"
+      ],
+      "@model/*": [
+        "src/core/models/*"
+      ],
+      "@enum/*": [
+        "src/core/enums/*"
+      ],
+      "@service/*": [
+        "src/core/services/*"
+      ]
+    }
   },
   "exclude": ["node_modules", "dist"]
 }

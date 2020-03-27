@@ -52,9 +52,10 @@ jobs:
           USERNAME: fab_user
           PORT: 22
           KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-          USER_PASSWORD: ${{ secrets.USER_PASSWORD }}
         with:
-          envs: USER_PASSWORD
           script: |
-            ansible-playbook ~/fabrique-chatbot-back/ansible/fabrique/backserver.yml -e "user_password=$USER_PASSWORD"
+            cat >> ~/fabrique-chatbot-back/ansible/fabrique/password_file << 'END'
+            ${{ secrets.VAULT_PASSWORD }}
+            END
+            ansible-playbook ~/fabrique-chatbot-back/ansible/fabrique/backserver.yml --vault-id dev@~/fabrique-chatbot-back/ansible/fabrique/password_file
             rm -rf ~/fabrique-chatbot-back

@@ -5,11 +5,14 @@
 
   remote_user: fab_user
 
+  vars_files:
+    - ./vault.yml
+
   vars:
     - userDir: '/home/fab_user'
     - appsDir: '/var/www'
     - nestDir: 'fabrique-chatbot-back'
-    - ansible_become_pass: "{{ user_password }}"
+    - ansible_become_pass: "{{ USER_PASSWORD }}"
 
   tasks:
     - name: Update and upgrade apt packages
@@ -22,9 +25,23 @@
       become: yes
       apt:
         pkg:
+          - python-setuptools
+          - build-essential
           - nginx
           - npm
           - nodejs
+          - postgresql
+          - postgresql-contrib
+          - acl
+          - libpq-dev
+          - python3-psycopg2
+
+    - name: Install last version of pip
+      become: true
+      pip:
+        executable: pip3
+        name: pip
+        extra_args: -U
 
     - name: Install last version of npm
       become: yes
@@ -37,6 +54,53 @@
         global: yes
         production: yes
         state: present
+
+    - name: Ensure the PostgreSQL service is running
+      service:
+        name: 'postgresql'
+        state: 'started'
+        enabled: 'yes'
+
+    - name: Ensure database is created
+      become: yes
+      become_user: postgres
+      postgresql_db:
+        name: 'fabrique_chatbot'
+        encoding: 'UTF-8'
+        lc_collate: 'fr_FR.UTF-8'
+        lc_ctype: 'fr_FR.UTF-8'
+#        conn_limit: '100' # Only available in ansible 2.8
+        state: 'present'
+        template: 'template0'
+
+    - name: Ensure user has access to the database
+      become: true
+      become_user: postgres
+      postgresql_user:
+        db: 'fabrique_chatbot'
+        name: 'fabrique_chatbot_user'
+        password: '{{ DB_PASSWORD }}'
+        priv: 'ALL'
+        state: 'present'
+
+    - name: Ensure user does not have unnecessary privileges
+      become: true
+      become_user: postgres
+      postgresql_user:
+        name: 'fabrique_chatbot_user'
+        role_attr_flags: 'NOSUPERUSER,NOCREATEDB'
+        state: 'present'
+
+    - name: Copy env file
+      copy:
+        src: '{{ userDir }}/{{ nestDir }}/env.example'
+        dest: '{{ userDir }}/{{ nestDir }}/.env'
+
+    - name: Edit .env file
+      lineinfile:
+        path: '{{ userDir }}/{{ nestDir }}/.env'
+        regexp: '^DATABASE_PASSWORD='
+        line: 'DATABASE_PASSWORD={{ DB_PASSWORD }}'
 
     - name: remove old nestjs app
       file:
@@ -59,6 +123,12 @@
       become: yes
       command:
         cmd: 'npm run build'
+        chdir: '{{ appsDir }}/{{ nestDir }}'
+
+    - name: npm copy env file
+      become: yes
+      command:
+        cmd: 'npm run copy'
         chdir: '{{ appsDir }}/{{ nestDir }}'
 
     - name: NODE | Stop APP
