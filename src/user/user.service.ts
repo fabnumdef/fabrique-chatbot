@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { User } from "@entity/user.entity";
@@ -22,8 +22,12 @@ export class UserService {
     return this._usersRepository.findOne({where: {email: email}});
   }
 
-  create(user: UserModel): Promise<UserModel> {
-    return this._usersRepository.save(user);
+  async create(user: UserModel): Promise<UserModel> {
+    const userExists = await this.findOne(user.email);
+    if(!userExists) {
+      return this._usersRepository.save(user);
+    }
+    throw new HttpException('Un utilisateur avec cet email existe déjà.', HttpStatus.FORBIDDEN);
   }
 
   async delete(email: string): Promise<void> {

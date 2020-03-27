@@ -7,6 +7,7 @@ import camelcaseKeys = require("camelcase-keys");
 import { plainToClass } from "class-transformer";
 import snakecaseKeys = require("snakecase-keys");
 import { UserModel } from "@model/user.model";
+import { CreateUserDto } from "@dto/create-user.dto";
 
 @ApiTags('user')
 @Controller('user')
@@ -25,9 +26,9 @@ export class UserController {
   @ApiOperation({ summary: 'Create user' })
   @ApiBody({
     description: 'User',
-    type: UserDto,
+    type: CreateUserDto,
   })
-  async create(@Body() user: UserDto): Promise<UserDto> {
+  async create(@Body() user: CreateUserDto): Promise<UserDto> {
     const userModel = await this._userService.create(plainToClass(UserModel, snakecaseKeys(user)));
     return plainToClass(UserDto, camelcaseKeys(userModel, {deep: true}));
   }

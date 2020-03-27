@@ -1,12 +1,31 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { Sheet2JSONOpts, WorkBook, WorkSheet } from "xlsx";
-import { TemplateFileDto } from "../core/dto/template-file.dto";
-import { TemplateFileCheckResumeDto } from "../core/dto/template-file-check-resume.dto";
-import { RasaService } from "../core/services/rasa.service";
+import { TemplateFileDto } from "@dto/template-file.dto";
+import { TemplateFileCheckResumeDto } from "@dto/template-file-check-resume.dto";
+import { RasaService } from "@service/rasa.service";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Repository } from "typeorm";
+import { Chatbot } from "@entity/chatbot.entity";
+import { ChatbotModel } from "@model/chatbot.model";
+
 const XLSX = require('xlsx');
 
 @Injectable()
 export class ChatbotService {
+  constructor(
+    @InjectRepository(Chatbot)
+    private _chatbotsRepository: Repository<Chatbot>,
+  ) {
+  }
+
+  findAll(): Promise<Chatbot[]> {
+    return this._chatbotsRepository.find();
+  }
+
+  create(chatbot: ChatbotModel): Promise<ChatbotModel> {
+    return this._chatbotsRepository.save(chatbot);
+  }
+
   checkTemplateFile(file): TemplateFileCheckResumeDto {
     const workbook: WorkBook = XLSX.read(file.buffer);
     const worksheet: WorkSheet = workbook.Sheets[workbook.SheetNames[0]];
@@ -26,7 +45,7 @@ export class ChatbotService {
   }
 
   convertToAnsibleScript(file): any {
-    
+
   }
 
   /************************************************************************************ PRIVATE FUNCTIONS ************************************************************************************/
@@ -116,6 +135,13 @@ export class ChatbotService {
   static excelFileFilter = (req, file, callback) => {
     if (!file.originalname.match(/\.(xls|xlsx)$/)) {
       return callback(new Error('Seul les fichiers en .xls et .xlsx sont acceptés.'), false);
+    }
+    callback(null, true);
+  };
+
+  static imageFileFilter = (req, file, callback) => {
+    if (!file.originalname.match(/\.(jpg|png)$/)) {
+      return callback(new Error('Seul les fichiers en .jpg et .png sont acceptés.'), false);
     }
     callback(null, true);
   };

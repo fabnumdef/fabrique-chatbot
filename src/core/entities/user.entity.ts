@@ -1,5 +1,6 @@
-import { Entity, Column, PrimaryColumn } from 'typeorm';
+import { Entity, Column, PrimaryColumn, CreateDateColumn, OneToMany } from 'typeorm';
 import { UserRole } from "@enum/user-role.enum";
+import { Chatbot } from "@entity/chatbot.entity";
 
 @Entity('user')
 export class User {
@@ -20,4 +21,10 @@ export class User {
 
   @Column('enum', { name: 'role', enum: UserRole, default: UserRole.user, nullable: false})
   role: UserRole;
+
+  @OneToMany(type => Chatbot, chatbot => chatbot.user)
+  chatbots: Chatbot[];
+
+  @CreateDateColumn({type: "timestamp"})
+  created_at: number;
 }

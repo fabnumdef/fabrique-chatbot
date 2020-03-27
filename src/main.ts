@@ -5,13 +5,14 @@ import { ValidationPipe } from "@nestjs/common";
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  app.useGlobalPipes(new ValidationPipe());
+  app.useGlobalPipes(new ValidationPipe({
+    whitelist: true,
+  }));
 
   const options = new DocumentBuilder()
     .setTitle('Fabrique à chatbots')
     .setDescription('The chatbot factory API description')
     .setVersion('0.1')
-    .addTag('init')
     .build();
 
   const document = SwaggerModule.createDocument(app, options);
