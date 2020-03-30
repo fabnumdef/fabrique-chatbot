@@ -12,14 +12,14 @@ import { JwtAuthGuard } from "@guard/jwt.guard";
 
 @ApiTags('user')
 @Controller('user')
-@ApiBearerAuth()
-@UseGuards(JwtAuthGuard)
 export class UserController {
   constructor(private readonly _userService: UserService) {
   }
 
   @Get('')
   @ApiOperation({ summary: 'Return all the users' })
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
   async getUsers(): Promise<UserDto[]> {
     const users: User[] = await this._userService.findAll();
     return plainToClass(UserDto, camelcaseKeys(users, {deep: true}));
@@ -38,6 +38,8 @@ export class UserController {
 
   @Delete(':email')
   @ApiOperation({ summary: 'Delete user' })
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
   async delete(@Param('email') email: string): Promise<void> {
     return this._userService.delete(email);
   }
