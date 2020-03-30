@@ -13,7 +13,9 @@ import * as path from "path";
 
 @Module({
   imports: [
-    ConfigModule.forRoot(),
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
     TerminusModule.forRootAsync({
       useClass: TerminusOptionsService,
     }),

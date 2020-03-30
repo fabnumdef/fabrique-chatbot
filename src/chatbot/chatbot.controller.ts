@@ -1,5 +1,5 @@
-import { Body, Controller, Get, Post, UploadedFile, UseInterceptors } from '@nestjs/common';
-import { ApiBody, ApiConsumes, ApiOperation, ApiTags } from "@nestjs/swagger";
+import { Body, Controller, Get, Post, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
+import { ApiBearerAuth, ApiBody, ApiConsumes, ApiOperation, ApiTags } from "@nestjs/swagger";
 import { FileInterceptor } from "@nestjs/platform-express";
 import { FileUploadDto } from "@dto/file-upload.dto";
 import { ChatbotService } from "./chatbot.service";
@@ -10,9 +10,12 @@ import camelcaseKeys = require("camelcase-keys");
 import { CreateChatbotDto } from "@dto/create-chatbot.dto";
 import snakecaseKeys = require("snakecase-keys");
 import { ChatbotModel } from "@model/chatbot.model";
+import { JwtAuthGuard } from "@guard/jwt.guard";
 
 @ApiTags('chatbot')
 @Controller('chatbot')
+@ApiBearerAuth()
+@UseGuards(JwtAuthGuard)
 export class ChatbotController {
   constructor(private readonly _chatbotService: ChatbotService) {
   }

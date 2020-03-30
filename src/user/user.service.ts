@@ -15,11 +15,14 @@ export class UserService {
     return this._usersRepository.find();
   }
 
-  findOne(email: string, password?: string): Promise<User> {
-    if (!!password) {
-      return this._usersRepository.findOne({where: {email: email, password: password}});
+  findOne(email: string, password: boolean = false): Promise<User> {
+    if (!password) {
+      return this._usersRepository.findOne({where: {email: email}});
     }
-    return this._usersRepository.findOne({where: {email: email}});
+    return this._usersRepository.findOne({
+        select: ['email', 'password', 'first_name', 'last_name', 'chatbot_theme', 'role'],
+        where: {email: email}
+    });
   }
 
   findOneWithParam(param: any): Promise<User> {

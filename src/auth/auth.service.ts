@@ -3,6 +3,9 @@ import { UserService } from "../user/user.service";
 import { MailerService } from "@nestjs-modules/mailer";
 import { ResetPasswordDto } from "@dto/reset-password.dto";
 import { MoreThan } from "typeorm";
+import { LoginUserDto } from "@dto/login-user.dto";
+import { AuthResponseDto } from "@dto/auth-response.dto";
+import { JwtService } from "@nestjs/jwt";
 
 const crypto = require('crypto');
 const bcrypt = require('bcrypt');
@@ -12,7 +15,19 @@ export class AuthService {
   private saltRounds = 10;
 
   constructor(private readonly _userService: UserService,
-              private readonly _mailerService: MailerService) {
+              private readonly _mailerService: MailerService,
+              private readonly _jwtService: JwtService) {
+  }
+
+  async login(user: LoginUserDto): Promise<AuthResponseDto> {
+    const userToReturn = await this.validateUser(user);
+    if (userToReturn) {
+      return {
+        chatbotFactoryToken: this._jwtService.sign(JSON.parse(JSON.stringify(userToReturn))),
+        user: userToReturn
+      };
+    }
+    return null;
   }
 
   async sendEmailPasswordToken(email: string, newUser: boolean = false) {
@@ -60,7 +75,8 @@ export class AuthService {
     if (!userWithoutPassword) {
       throw new HttpException('Cet utilisateur n\'existe pas.', HttpStatus.INTERNAL_SERVER_ERROR);
     }
-    const hashPassword = bcrypt.hashSync(resetPassword.password, this.saltRounds);const valuesToUpdate = {
+    const hashPassword = bcrypt.hashSync(resetPassword.password, this.saltRounds);
+    const valuesToUpdate = {
       password: hashPassword,
       reset_password_token: undefined,
       reset_password_expires: undefined
@@ -82,5 +98,19 @@ export class AuthService {
       .catch(() => {
         throw new HttpException('Une erreur est survenue dans l\'envoi du mail.', HttpStatus.INTERNAL_SERVER_ERROR);
       });
+  }
+
+  /**
+   * PRIVATE FUNCTIONS
+   */
+
+  private async validateUser(user: LoginUserDto): Promise<any> {
+    const userToReturn = await this._userService.findOne(user.email, true);
+    if (userToReturn && bcrypt.compareSync(user.password, userToReturn.password)) {
+      const {password, ...result} = userToReturn;
+      return result;
+    }
+    throw new HttpException('Mauvais identifiant ou mot de passe.',
+      HttpStatus.UNAUTHORIZED);
   }
 }

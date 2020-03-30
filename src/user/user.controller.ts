@@ -1,5 +1,5 @@
-import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
-import { ApiBody, ApiOperation, ApiTags } from "@nestjs/swagger";
+import { Body, Controller, Delete, Get, Param, Post, UseGuards } from '@nestjs/common';
+import { ApiBearerAuth, ApiBody, ApiOperation, ApiTags } from "@nestjs/swagger";
 import { UserService } from "./user.service";
 import { UserDto } from "@dto/user.dto";
 import { User } from "@entity/user.entity";
@@ -8,9 +8,12 @@ import { plainToClass } from "class-transformer";
 import snakecaseKeys = require("snakecase-keys");
 import { UserModel } from "@model/user.model";
 import { CreateUserDto } from "@dto/create-user.dto";
+import { JwtAuthGuard } from "@guard/jwt.guard";
 
 @ApiTags('user')
 @Controller('user')
+@ApiBearerAuth()
+@UseGuards(JwtAuthGuard)
 export class UserController {
   constructor(private readonly _userService: UserService) {
   }

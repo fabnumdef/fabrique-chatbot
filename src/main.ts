@@ -10,6 +10,7 @@ async function bootstrap() {
   }));
 
   const options = new DocumentBuilder()
+    .addBearerAuth()
     .setTitle('Fabrique à chatbots')
     .setDescription('The chatbot factory API description')
     .setVersion('0.1')

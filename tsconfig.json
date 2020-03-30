@@ -28,6 +28,9 @@
       ],
       "@service/*": [
         "src/core/services/*"
+      ],
+      "@guard/*": [
+        "src/core/guards/*"
       ]
     }
   },
