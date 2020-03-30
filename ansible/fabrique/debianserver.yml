@@ -54,11 +54,25 @@
         name: OpenSSH
         state: enabled
 
-    - name: Open port 80 & 443
+    - name: Open port 80
       become: yes
       ufw:
         rule: allow
-        port: '80,443'
+        port: '80'
+        proto: tcp
+
+    - name: Open port 443
+      become: yes
+      ufw:
+        rule: allow
+        port: '443'
+        proto: tcp
+
+    - name: Open port 587
+      become: yes
+      ufw:
+        rule: allow
+        port: '587'
         proto: tcp
 
 

@@ -2,7 +2,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { Sheet2JSONOpts, WorkBook, WorkSheet } from "xlsx";
 import { TemplateFileDto } from "@dto/template-file.dto";
 import { TemplateFileCheckResumeDto } from "@dto/template-file-check-resume.dto";
-import { RasaService } from "@service/rasa.service";
+import { RasaService } from "../shared/services/rasa.service";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { Chatbot } from "@entity/chatbot.entity";

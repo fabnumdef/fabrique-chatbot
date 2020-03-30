@@ -6,6 +6,7 @@ import { PassportModule } from "@nestjs/passport";
 import { JwtModule } from "@nestjs/jwt";
 import { JwtStrategy } from "./jwt.strategy";
 import { ConfigModule } from "@nestjs/config";
+import { SharedModule } from "../shared/shared.module";
 
 @Module({
   imports: [
@@ -15,7 +16,8 @@ import { ConfigModule } from "@nestjs/config";
       secret: process.env.JWT_SECRET,
       signOptions: { expiresIn: '1d' },
     }),
-    UserModule
+    UserModule,
+    SharedModule
   ],
   controllers: [AuthController],
   providers: [AuthService, JwtStrategy]

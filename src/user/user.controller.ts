@@ -9,6 +9,7 @@ import snakecaseKeys = require("snakecase-keys");
 import { UserModel } from "@model/user.model";
 import { CreateUserDto } from "@dto/create-user.dto";
 import { JwtAuthGuard } from "@guard/jwt.guard";
+import { AuthService } from "../auth/auth.service";
 
 @ApiTags('user')
 @Controller('user')

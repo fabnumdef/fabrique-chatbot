@@ -1,6 +1,6 @@
-import { TemplateFileDto, TemplateResponseType } from "../dto/template-file.dto";
-import { RasaNlu } from "../models/rasa-nlu.model";
-import { RasaButtonModel, RasaDomain, RasaUtterResponse } from "../models/rasa-domain.model";
+import { TemplateFileDto, TemplateResponseType } from "@dto/template-file.dto";
+import { RasaNlu } from "@model/rasa-nlu.model";
+import { RasaButtonModel, RasaDomain, RasaUtterResponse } from "@model/rasa-domain.model";
 
 const fs = require('fs');
 const yaml = require('js-yaml');
