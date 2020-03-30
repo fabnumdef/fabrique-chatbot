@@ -2,7 +2,7 @@ import { Entity, Column, PrimaryColumn, CreateDateColumn, OneToMany } from 'type
 import { UserRole } from "@enum/user-role.enum";
 import { Chatbot } from "@entity/chatbot.entity";
 
-@Entity('user')
+@Entity('fabrique_user')
 export class User {
   @PrimaryColumn()
   email: string;
