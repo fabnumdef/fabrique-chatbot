@@ -6,7 +6,7 @@
   remote_user: fab_user
 
   vars_files:
-    - ./vault.yml
+    - ./vars.yml
 
   vars:
     - userDir: '/home/fab_user'
@@ -84,7 +84,7 @@
         state: 'present'
 
     - name: Ensure user does not have unnecessary privileges
-      become: true
+      become: yes
       become_user: postgres
       postgresql_user:
         name: 'fabrique_chatbot_user'
@@ -93,20 +93,23 @@
 
     - name: Copy env file
       copy:
-        src: '{{ userDir }}/{{ nestDir }}/env.example'
+        src: '{{ userDir }}/{{ nestDir }}/ansible/fabrique/.env'
         dest: '{{ userDir }}/{{ nestDir }}/.env'
 
-    - name: Edit .env file
-      lineinfile:
-        path: '{{ userDir }}/{{ nestDir }}/.env'
-        regexp: '^DATABASE_PASSWORD='
-        line: 'DATABASE_PASSWORD={{ DB_PASSWORD }}'
+    - name: Get list of files to delete
+      become: yes
+      find:
+        path: '{{ appsDir }}/{{ nestDir }}/'
+        file_type: any
+        excludes: 'node_modules'
+      register: files_to_delete
 
     - name: remove old nestjs app
-      file:
-        path: '{{ appsDir }}/{{ nestDir }}/'
-        state: absent
       become: yes
+      file:
+        path: '{{ item.path }}'
+        state: absent
+      with_items: "{{ files_to_delete.files }}"
 
     - name: copy nestjs app
       copy:

@@ -27,4 +27,10 @@ export class User {
 
   @CreateDateColumn({type: "timestamp"})
   created_at: number;
+
+  @Column({ nullable: true })
+  reset_password_token: string;
+
+  @Column({type: "timestamp", nullable: true})
+  reset_password_expires: number;
 }

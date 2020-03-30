@@ -8,6 +8,15 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+      - name: Set env to dev
+        if: endsWith(github.ref, '/develop')
+        run: |
+          echo "::set-env name=ENVIRONMENT::dev"
+      - name: Set env to preprod
+        if: endsWith(github.ref, '/master')
+        run: |
+          echo "::set-env name=ENVIRONMENT::preprod"
+
       - uses: actions/checkout@v1
       - uses: actions/setup-node@v1 #this installs node and npm for us
         with:
@@ -57,5 +66,6 @@ jobs:
             cat >> ~/fabrique-chatbot-back/ansible/fabrique/password_file << 'END'
             ${{ secrets.VAULT_PASSWORD }}
             END
+            ansible-vault decrypt --vault-id dev@~/fabrique-chatbot-back/ansible/fabrique/password_file ~/fabrique-chatbot-back/ansible/fabrique/.env
             ansible-playbook ~/fabrique-chatbot-back/ansible/fabrique/backserver.yml --vault-id dev@~/fabrique-chatbot-back/ansible/fabrique/password_file
             rm -rf ~/fabrique-chatbot-back

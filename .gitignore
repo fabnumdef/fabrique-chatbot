@@ -39,4 +39,4 @@ lerna-debug.log*
 /ansible/chatbot/hosts
 
 # ENV variables
-.env
+/.env

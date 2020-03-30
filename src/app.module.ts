@@ -7,6 +7,9 @@ import { User } from "@entity/user.entity";
 import { ConfigModule } from "@nestjs/config";
 import { UserModule } from './user/user.module';
 import { Chatbot } from "@entity/chatbot.entity";
+import { AuthModule } from './auth/auth.module';
+import { HandlebarsAdapter, MailerModule } from "@nestjs-modules/mailer";
+import * as path from "path";
 
 @Module({
   imports: [
@@ -24,8 +27,34 @@ import { Chatbot } from "@entity/chatbot.entity";
       "entities": [User, Chatbot],
       "synchronize": true
     }),
+    MailerModule.forRoot({
+      transport: {
+        host: `${process.env.MAIL_HOST}`,
+        port: `${process.env.MAIL_PORT}`,
+        secure: false, // true for 465, false for other ports
+        auth: {
+          user: `${process.env.MAIL_USER}`,
+          pass: `${process.env.MAIL_PASSWORD}`
+        },
+        tls: {
+          // do not fail on invalid certs
+          rejectUnauthorized: false
+        }
+      },
+      defaults: {
+        from:`"nest-modules" <${process.env.MAIL_USER}>`,
+      },
+      template: {
+        dir: path.resolve(__dirname, '..', 'templates'),
+        adapter: new HandlebarsAdapter(),
+        options: {
+          strict: true,
+        },
+      },
+    }),
     ChatbotModule,
-    UserModule
+    UserModule,
+    AuthModule
   ],
 })
 export class AppModule {
