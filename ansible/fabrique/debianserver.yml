@@ -54,6 +54,13 @@
         name: OpenSSH
         state: enabled
 
+    - name: Configure firewall
+      become: yes
+      ufw:
+        rule: allow
+        name: smtp
+        state: enabled
+
     - name: Open port 80
       become: yes
       ufw:
@@ -68,13 +75,12 @@
         port: '443'
         proto: tcp
 
-    - name: Open port 587
+    - name: Open port 465
       become: yes
       ufw:
         rule: allow
-        port: '587'
+        port: '465'
         proto: tcp
-
 
   handlers:
 
