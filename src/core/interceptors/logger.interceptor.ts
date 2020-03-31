@@ -13,7 +13,7 @@ export class LoggerInterceptor implements NestInterceptor {
     return next
       .handle()
       .pipe(
-        tap((data) => {
+        tap(() => {
           console.log(`RESPONSE - ${id} - ${new Date().toISOString()}`);
         }),
       );
