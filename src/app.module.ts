@@ -10,6 +10,8 @@ import { Chatbot } from "@entity/chatbot.entity";
 import { AuthModule } from './auth/auth.module';
 import { HandlebarsAdapter, MailerModule } from "@nestjs-modules/mailer";
 import * as path from "path";
+import { APP_INTERCEPTOR } from "@nestjs/core";
+import { LoggerInterceptor } from "@core/interceptors/logger.interceptor";
 
 @Module({
   imports: [
@@ -56,8 +58,14 @@ import * as path from "path";
     }),
     ChatbotModule,
     UserModule,
-    AuthModule
+    AuthModule,
   ],
+  providers: [
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: LoggerInterceptor,
+    },
+  ]
 })
 export class AppModule {
 }

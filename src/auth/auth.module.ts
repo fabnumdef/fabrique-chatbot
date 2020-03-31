@@ -20,6 +20,7 @@ import { SharedModule } from "../shared/shared.module";
     SharedModule
   ],
   controllers: [AuthController],
-  providers: [AuthService, JwtStrategy]
+  providers: [AuthService, JwtStrategy],
+  exports: [JwtModule]
 })
 export class AuthModule {}
