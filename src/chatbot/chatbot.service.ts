@@ -12,6 +12,8 @@ const XLSX = require('xlsx');
 
 @Injectable()
 export class ChatbotService {
+  private _xlsx = XLSX;
+
   constructor(
     @InjectRepository(Chatbot)
     private _chatbotsRepository: Repository<Chatbot>,
@@ -27,9 +29,16 @@ export class ChatbotService {
   }
 
   checkTemplateFile(file): TemplateFileCheckResumeDto {
-    const workbook: WorkBook = XLSX.read(file.buffer);
-    const worksheet: WorkSheet = workbook.Sheets[workbook.SheetNames[0]];
-    const templateFile: TemplateFileDto[] = this.convertExcelToJson(worksheet);
+    let workbook: WorkBook;
+    let worksheet: WorkSheet;
+    let templateFile: TemplateFileDto[];
+    try {
+      workbook = this._xlsx.read(file.buffer);
+      worksheet = workbook.Sheets[workbook.SheetNames[0]];
+      templateFile = this.convertExcelToJson(worksheet);
+    } catch(error) {
+      throw new HttpException('Le fichier fournit ne peut pas être lu.', HttpStatus.INTERNAL_SERVER_ERROR);
+    }
     const templateFileCheckResume = new TemplateFileCheckResumeDto();
     this.computeTemplateFile(templateFile, templateFileCheckResume);
     this.checkFile(templateFile, templateFileCheckResume);
@@ -37,16 +46,16 @@ export class ChatbotService {
     return templateFileCheckResume;
   }
 
-  convertToRasaFiles(file): any {
-    const workbook: WorkBook = XLSX.read(file.buffer);
-    const worksheet: WorkSheet = workbook.Sheets[workbook.SheetNames[0]];
-    const templateFile: TemplateFileDto[] = this.convertExcelToJson(worksheet);
-    RasaService.jsonToRasa(templateFile);
-  }
+  // convertToRasaFiles(file): any {
+  //   const workbook: WorkBook = XLSX.read(file.buffer);
+  //   const worksheet: WorkSheet = workbook.Sheets[workbook.SheetNames[0]];
+  //   const templateFile: TemplateFileDto[] = this.convertExcelToJson(worksheet);
+  //   RasaService.jsonToRasa(templateFile);
+  // }
 
-  convertToAnsibleScript(file): any {
-
-  }
+  // convertToAnsibleScript(file): any {
+  //
+  // }
 
   /************************************************************************************ PRIVATE FUNCTIONS ************************************************************************************/
 
@@ -59,7 +68,7 @@ export class ChatbotService {
       header: ['id', 'category', 'main_question', 'response_type', 'response', '', 'questions'],
       range: 1
     };
-    const templateFile: TemplateFileDto[] = XLSX.utils.sheet_to_json(worksheet, options).map((t: TemplateFileDto) => {
+    const templateFile: TemplateFileDto[] = this._xlsx.utils.sheet_to_json(worksheet, options).map((t: TemplateFileDto) => {
       t.questions = t.questions ? (<any>t.questions).split(';').map(q => q.trim()) : [];
       return t;
     });
@@ -91,8 +100,11 @@ export class ChatbotService {
       if (excelRow.response && !excelRow.response_type) {
         this.addMessage(templateFileCheckResume.errors, excelIndex, `Le type de réponse n'est pas renseigné.`);
       }
-      if (!excelRow.response && !excelRow.response_type) {
+      if (!excelRow.response && excelRow.response_type) {
         this.addMessage(templateFileCheckResume.errors, excelIndex, `La réponse n'est pas renseignée.`);
+      }
+      if (!excelRow.response && !excelRow.response_type) {
+        this.addMessage(templateFileCheckResume.errors, excelIndex, `La réponse et le type de réponse n'est pas renseigné.`);
       }
       // Si il y a une question principale il est censé y avoir une réponse, une catégorie etc ...
       if (!!excelRow.main_question) {
@@ -106,7 +118,7 @@ export class ChatbotService {
         // Si il n'y a pas de question principale, c'est censé être une suite de réponse (et donc avoir une question principale relié ou un lien vers cet id)
       } else {
         const mainQuestion = templateFile.find(t =>
-          (t.id === excelRow.id && !!t.main_question) || t.response.includes(`<${excelRow.id}>`)
+          (t.id === excelRow.id && !!t.main_question) || (t.response && t.response.includes(`<${excelRow.id}>`))
         );
         if (!mainQuestion) {
           this.addMessage(templateFileCheckResume.errors, excelIndex, `Aucune question n'est renseignée pour cet identifiant.`);
@@ -136,13 +148,13 @@ export class ChatbotService {
     if (!file.originalname.match(/\.(xls|xlsx)$/)) {
       return callback(new Error('Seul les fichiers en .xls et .xlsx sont acceptés.'), false);
     }
-    callback(null, true);
+    return callback(null, true);
   };
 
   static imageFileFilter = (req, file, callback) => {
     if (!file.originalname.match(/\.(jpg|png)$/)) {
       return callback(new Error('Seul les fichiers en .jpg et .png sont acceptés.'), false);
     }
-    callback(null, true);
+    return callback(null, true);
   };
 }

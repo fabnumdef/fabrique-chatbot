@@ -31,6 +31,12 @@
       ],
       "@guard/*": [
         "src/core/guards/*"
+      ],
+      "@interceptor/*": [
+        "src/core/interceptors/*"
+      ],
+      "@mock/*": [
+        "test/data/*"
       ]
     }
   },

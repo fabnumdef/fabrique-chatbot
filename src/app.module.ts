@@ -11,7 +11,7 @@ import { AuthModule } from './auth/auth.module';
 import { HandlebarsAdapter, MailerModule } from "@nestjs-modules/mailer";
 import * as path from "path";
 import { APP_INTERCEPTOR } from "@nestjs/core";
-import { LoggerInterceptor } from "@core/interceptors/logger.interceptor";
+import { LoggerInterceptor } from "@interceptor/logger.interceptor";
 
 @Module({
   imports: [

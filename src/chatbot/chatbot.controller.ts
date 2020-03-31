@@ -1,4 +1,14 @@
-import { Body, Controller, Get, Post, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpException,
+  HttpStatus,
+  Post,
+  UploadedFile,
+  UseGuards,
+  UseInterceptors
+} from '@nestjs/common';
 import { ApiBearerAuth, ApiBody, ApiConsumes, ApiOperation, ApiTags } from "@nestjs/swagger";
 import { FileInterceptor } from "@nestjs/platform-express";
 import { FileUploadDto } from "@dto/file-upload.dto";
@@ -47,7 +57,7 @@ export class ChatbotController {
          @Body() botConfiguration: CreateChatbotDto) {
     const errors = this._chatbotService.checkTemplateFile(file).errors;
     if (errors && Object.keys(errors).length > 0) {
-      throw 'Fichier incorrect';
+      throw new HttpException('Le fichier contient des erreurs bloquantes.', HttpStatus.INTERNAL_SERVER_ERROR);
     }
     // this._chatbotService.convertToAnsibleScript(file);
     console.log('bot config', botConfiguration);
@@ -75,21 +85,21 @@ export class ChatbotController {
   }
 
   // TODO: A transférer vers chatbot-back
-  @Post()
-  @UseInterceptors(
-    FileInterceptor(
-      'file',
-      {
-        fileFilter: ChatbotService.excelFileFilter,
-      }
-    )
-  )
-  @ApiConsumes('multipart/form-data')
-  @ApiBody({
-    description: 'Template file (excel)',
-    type: FileUploadDto,
-  })
-  convertToRasaFiles(@UploadedFile() file) {
-    return this._chatbotService.convertToRasaFiles(file);
-  }
+  // @Post()
+  // @UseInterceptors(
+  //   FileInterceptor(
+  //     'file',
+  //     {
+  //       fileFilter: ChatbotService.excelFileFilter,
+  //     }
+  //   )
+  // )
+  // @ApiConsumes('multipart/form-data')
+  // @ApiBody({
+  //   description: 'Template file (excel)',
+  //   type: FileUploadDto,
+  // })
+  // convertToRasaFiles(@UploadedFile() file) {
+  //   return this._chatbotService.convertToRasaFiles(file);
+  // }
 }

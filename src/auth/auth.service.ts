@@ -20,16 +20,13 @@ export class AuthService {
 
   async login(user: LoginUserDto): Promise<AuthResponseDto> {
     const userToReturn = await this.validateUser(user);
-    if (userToReturn) {
-      return {
-        chatbotFactoryToken: this._jwtService.sign(JSON.parse(JSON.stringify(userToReturn))),
-        user: userToReturn
-      };
-    }
-    return null;
+    return {
+      chatbotFactoryToken: this._jwtService.sign(JSON.parse(JSON.stringify(userToReturn))),
+      user: userToReturn
+    };
   }
 
-  async sendEmailPasswordToken(email: string, newUser: boolean = false) {
+  async sendEmailPasswordToken(email: string) {
     const userWithoutPassword = await this._userService.findOne(email);
     if (!userWithoutPassword) {
       return;
