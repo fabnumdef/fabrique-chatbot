@@ -30,13 +30,6 @@ export class ChatbotController {
   constructor(private readonly _chatbotService: ChatbotService) {
   }
 
-  @Get('')
-  @ApiOperation({summary: 'Return all the chatbots'})
-  async getChatbots(): Promise<ChatbotDto[]> {
-    const chatbots: Chatbot[] = await this._chatbotService.findAll();
-    return plainToClass(ChatbotDto, camelcaseKeys(chatbots, {deep: true}));
-  }
-
   @Post('create')
   @UseInterceptors(
     FileInterceptor(

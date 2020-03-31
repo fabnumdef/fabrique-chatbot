@@ -14,7 +14,6 @@ describe('User Controller', () => {
 
   let userController: UserController;
   let userServiceStub = {
-    findAll: () => users,
     create: (user) => users[0],
     delete: (email) => true
   };
@@ -32,11 +31,6 @@ describe('User Controller', () => {
 
   it('should be defined', () => {
     expect(userController).toBeDefined();
-  });
-
-  it('should get all users', async () => {
-    const allUsers = await userController.getUsers();
-    expect(allUsers.length).toEqual(1);
   });
 
   it('should create user', async () => {

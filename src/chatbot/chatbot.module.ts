@@ -7,6 +7,7 @@ import { Chatbot } from "@entity/chatbot.entity";
 @Module({
   imports: [TypeOrmModule.forFeature([Chatbot])],
   controllers: [ChatbotController],
-  providers: [ChatbotService]
+  providers: [ChatbotService],
+  exports: [ChatbotService]
 })
 export class ChatbotModule {}

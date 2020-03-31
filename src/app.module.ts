@@ -12,6 +12,7 @@ import { HandlebarsAdapter, MailerModule } from "@nestjs-modules/mailer";
 import * as path from "path";
 import { APP_INTERCEPTOR } from "@nestjs/core";
 import { LoggerInterceptor } from "@interceptor/logger.interceptor";
+import { AdminModule } from './admin/admin.module';
 
 @Module({
   imports: [
@@ -59,6 +60,7 @@ import { LoggerInterceptor } from "@interceptor/logger.interceptor";
     ChatbotModule,
     UserModule,
     AuthModule,
+    AdminModule,
   ],
   providers: [
     {

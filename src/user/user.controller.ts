@@ -9,21 +9,11 @@ import snakecaseKeys = require("snakecase-keys");
 import { UserModel } from "@model/user.model";
 import { CreateUserDto } from "@dto/create-user.dto";
 import { JwtAuthGuard } from "@guard/jwt.guard";
-import { AuthService } from "../auth/auth.service";
 
 @ApiTags('user')
 @Controller('user')
 export class UserController {
   constructor(private readonly _userService: UserService) {
-  }
-
-  @Get('')
-  @ApiOperation({ summary: 'Return all the users' })
-  @ApiBearerAuth()
-  @UseGuards(JwtAuthGuard)
-  async getUsers(): Promise<UserDto[]> {
-    const users: User[] = await this._userService.findAll();
-    return plainToClass(UserDto, camelcaseKeys(users, {deep: true}));
   }
 
   @Post('')

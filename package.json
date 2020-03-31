@@ -100,7 +100,8 @@
       "^@service/(.*)$": "<rootDir>/core/services/$1",
       "^@guard/(.*)$": "<rootDir>/core/guards/$1",
       "^@interceptor/(.*)$": "<rootDir>/core/interceptors/$1",
-      "^@mock/(.*)$": "<rootDir>/../test/data/$1"
+      "^@mock/(.*)$": "<rootDir>/../test/data/$1",
+      "^@decorator/(.*)$": "<rootDir>/core/decorators/$1"
     }
   }
 }

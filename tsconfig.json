@@ -37,6 +37,9 @@
       ],
       "@mock/*": [
         "test/data/*"
+      ],
+      "@decorator/*": [
+        "src/core/decorators/*"
       ]
     }
   },

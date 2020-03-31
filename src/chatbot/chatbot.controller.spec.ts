@@ -14,7 +14,6 @@ describe('Chatbot Controller', () => {
   let chatbotService: ChatbotService;
 
   let chatbotServiceStub = {
-    findAll: () => chatbots,
     checkTemplateFile: () => { return {questionsNumber: 8, errors: {}} },
     create: () => chatbots[0]
   };
@@ -33,11 +32,6 @@ describe('Chatbot Controller', () => {
 
   it('should be defined', () => {
     expect(chatbotController).toBeDefined();
-  });
-
-  it('should get all chatbots', async () => {
-    const allChatbots = await chatbotController.getChatbots();
-    expect(allChatbots.length).toEqual(1);
   });
 
   it('should get check template with uploaded file', async () => {
