@@ -10,10 +10,10 @@ export class Chatbot {
   @Column({ nullable: false })
   name: string;
 
-  @Column({ nullable: false })
+  @Column({ nullable: true })
   icon: string;
 
-  @Column({ nullable: false })
+  @Column({ nullable: true })
   file: string;
 
   @Column({ nullable: false })
@@ -31,7 +31,7 @@ export class Chatbot {
   @Column({ nullable: false })
   solution: string;
 
-  @Column( { select: false })
+  @Column( { select: false, nullable: true })
   ip_adress: string;
 
   @Column( { default: false })

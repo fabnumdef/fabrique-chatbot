@@ -6,11 +6,18 @@ import { getRepositoryToken } from "@nestjs/typeorm";
 const XLSX = require('xlsx');
 import cloneDeep = require('lodash/cloneDeep');
 import { chatbotsMock } from "@mock/chatbots.mock";
+import { OvhStorageService } from "../shared/services/ovh-storage.service";
+import { FileModel } from "@model/file.model";
 
 describe('ChatbotService', () => {
   let chatbotService: ChatbotService;
+  let ovhStorageService: OvhStorageService;
   let chatbotRepository: Repository<Chatbot>;
   let workbook: any;
+  let ovhStorageServiceStub = {
+    set: (file: any, path: string) => new Promise<any>(() => {
+    })
+  };
 
   const chatbots: Chatbot[] = cloneDeep(chatbotsMock);
 
@@ -18,12 +25,14 @@ describe('ChatbotService', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         ChatbotService,
-        {provide: getRepositoryToken(Chatbot), useClass: Repository}
+        {provide: getRepositoryToken(Chatbot), useClass: Repository},
+        {provide: OvhStorageService, useValue: ovhStorageServiceStub},
       ],
     }).compile();
 
     chatbotService = module.get<ChatbotService>(ChatbotService);
     chatbotRepository = module.get<Repository<Chatbot>>(getRepositoryToken(Chatbot));
+    ovhStorageService = module.get<OvhStorageService>(OvhStorageService);
   });
 
   it('should be defined', () => {
@@ -41,6 +50,25 @@ describe('ChatbotService', () => {
       await chatbotService.create(chatbots[0]);
       expect(chatbotRepository.save).toHaveBeenCalledWith(chatbots[0]);
     });
+
+    it('should not call save when no file or no icon', async () => {
+      jest.spyOn(chatbotRepository, 'save').mockResolvedValue(chatbots[0]);
+      await chatbotService.create(chatbots[0], <FileModel> {});
+      expect(chatbotRepository.save).toHaveBeenCalledTimes(1);
+
+      await chatbotService.create(chatbots[0], null, <FileModel> {});
+      expect(chatbotRepository.save).toHaveBeenCalledTimes(2);
+    });
+
+
+    it('should call save two time and ovh storage service when file & icon', async () => {
+      jest.spyOn(chatbotRepository, 'save').mockResolvedValue(chatbots[0]);
+      jest.spyOn(ovhStorageService, 'set').mockResolvedValue(true);
+
+      await chatbotService.create(chatbots[0], <FileModel> {originalname: 'file.xlsx'}, <FileModel> {originalname: 'icon.png'});
+      expect(chatbotRepository.save).toHaveBeenCalledTimes(2);
+      expect(ovhStorageService.set).toHaveBeenCalledTimes(2);
+    });
   });
 
   describe('Check template file', () => {
@@ -56,9 +84,9 @@ describe('ChatbotService', () => {
       // @ts-ignore
       jest.spyOn(chatbotService._xlsx, 'read').mockReturnValue(workbook);
       // @ts-ignore
-      jest.spyOn(chatbotService, 'computeTemplateFile').mockReturnValue(null);
+      jest.spyOn(chatbotService, '_computeTemplateFile').mockReturnValue(null);
       // @ts-ignore
-      jest.spyOn(chatbotService, 'checkFile').mockReturnValue(null);
+      jest.spyOn(chatbotService, '_checkFile').mockReturnValue(null);
 
       const result = chatbotService.checkTemplateFile({});
       expect(result).toBeDefined();
@@ -68,7 +96,7 @@ describe('ChatbotService', () => {
       // @ts-ignore
       jest.spyOn(chatbotService._xlsx, 'read').mockReturnValue(workbook);
       // @ts-ignore
-      jest.spyOn(chatbotService, 'checkFile').mockReturnValue(null);
+      jest.spyOn(chatbotService, '_checkFile').mockReturnValue(null);
 
       const result = chatbotService.checkTemplateFile({});
       expect(result.categories.length).toEqual(2);
@@ -90,6 +118,8 @@ describe('ChatbotService', () => {
       expect(ChatbotService.excelFileFilter(null, {originalname: 'test.doc'}, (error, success) => error)).toBeDefined();
       expect(ChatbotService.excelFileFilter(null, {originalname: 'xls.doc'}, (error, success) => error)).toBeDefined();
       expect(ChatbotService.excelFileFilter(null, {originalname: 'xlsx.doc'}, (error, success) => error)).toBeDefined();
+
+      expect(ChatbotService.multipleFileFilters(null, {originalname: 'xlsx.doc', fieldname: 'file'}, (error, success) => error)).toBeDefined();
     });
 
     it('should return true if it is an excel', async () => {
@@ -98,6 +128,8 @@ describe('ChatbotService', () => {
 
       expect(ChatbotService.excelFileFilter(null, {originalname: 'doc.xlsx'}, (error, success) => success)).toEqual(true);
       expect(ChatbotService.excelFileFilter(null, {originalname: 'doc.xls'}, (error, success) => success)).toEqual(true);
+
+      expect(ChatbotService.multipleFileFilters(null, {originalname: 'doc.xls', fieldname: 'file'}, (error, success) => success)).toEqual(true);
     });
   });
 
@@ -107,6 +139,8 @@ describe('ChatbotService', () => {
       expect(await ChatbotService.imageFileFilter(null, {originalname: 'image.gif'}, (error, success) => error)).toBeDefined();
       expect(await ChatbotService.imageFileFilter(null, {originalname: 'jpg.doc'}, (error, success) => error)).toBeDefined();
       expect(await ChatbotService.imageFileFilter(null, {originalname: 'png.doc'}, (error, success) => error)).toBeDefined();
+
+      expect(ChatbotService.multipleFileFilters(null, {originalname: 'png.doc', fieldname: 'icon'}, (error, success) => error)).toBeDefined();
     });
 
     it('should return true if it is an image', async () => {
@@ -115,6 +149,8 @@ describe('ChatbotService', () => {
 
       expect(await ChatbotService.imageFileFilter(null, {originalname: 'doc.jpg'}, (error, success) => success)).toEqual(true);
       expect(await ChatbotService.imageFileFilter(null, {originalname: 'doc.png'}, (error, success) => success)).toEqual(true);
+
+      expect(ChatbotService.multipleFileFilters(null, {originalname: 'doc.png', fieldname: 'icon'}, (error, success) => success)).toEqual(true);
     });
   });
 });

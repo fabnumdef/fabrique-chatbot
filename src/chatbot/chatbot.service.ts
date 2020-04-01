@@ -2,11 +2,13 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { Sheet2JSONOpts, WorkBook, WorkSheet } from "xlsx";
 import { TemplateFileDto } from "@dto/template-file.dto";
 import { TemplateFileCheckResumeDto } from "@dto/template-file-check-resume.dto";
-import { RasaService } from "../shared/services/rasa.service";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { Chatbot } from "@entity/chatbot.entity";
 import { ChatbotModel } from "@model/chatbot.model";
+import { FileModel } from "@model/file.model";
+import { OvhStorageService } from "../shared/services/ovh-storage.service";
+import { forkJoin } from "rxjs";
 
 const XLSX = require('xlsx');
 
@@ -14,18 +16,27 @@ const XLSX = require('xlsx');
 export class ChatbotService {
   private _xlsx = XLSX;
 
-  constructor(
-    @InjectRepository(Chatbot)
-    private _chatbotsRepository: Repository<Chatbot>,
-  ) {
+  constructor(@InjectRepository(Chatbot) private _chatbotsRepository: Repository<Chatbot>,
+              private _ovhStorageService: OvhStorageService) {
   }
 
   findAll(): Promise<Chatbot[]> {
     return this._chatbotsRepository.find();
   }
 
-  create(chatbot: ChatbotModel): Promise<ChatbotModel> {
-    return this._chatbotsRepository.save(chatbot);
+  async create(chatbot: ChatbotModel, file?: FileModel, icon?: FileModel): Promise<ChatbotModel> {
+    let chatbotSaved: Chatbot = await this._chatbotsRepository.save(chatbot);
+    if(!file || !icon) {
+      return chatbotSaved;
+    }
+    chatbotSaved.file = `${chatbotSaved.id.toString(10)}/${file.originalname}`;
+    chatbotSaved.icon = `${chatbotSaved.id.toString(10)}/${icon.originalname}`;
+    await forkJoin({
+      file: this._ovhStorageService.set(file, chatbotSaved.file),
+      icon: this._ovhStorageService.set(icon, chatbotSaved.icon)
+    }).toPromise().then();
+
+    return this._chatbotsRepository.save(chatbotSaved);
   }
 
   checkTemplateFile(file): TemplateFileCheckResumeDto {
@@ -35,13 +46,13 @@ export class ChatbotService {
     try {
       workbook = this._xlsx.read(file.buffer);
       worksheet = workbook.Sheets[workbook.SheetNames[0]];
-      templateFile = this.convertExcelToJson(worksheet);
-    } catch(error) {
+      templateFile = this._convertExcelToJson(worksheet);
+    } catch (error) {
       throw new HttpException('Le fichier fournit ne peut pas être lu.', HttpStatus.INTERNAL_SERVER_ERROR);
     }
     const templateFileCheckResume = new TemplateFileCheckResumeDto();
-    this.computeTemplateFile(templateFile, templateFileCheckResume);
-    this.checkFile(templateFile, templateFileCheckResume);
+    this._computeTemplateFile(templateFile, templateFileCheckResume);
+    this._checkFile(templateFile, templateFileCheckResume);
 
     return templateFileCheckResume;
   }
@@ -63,7 +74,7 @@ export class ChatbotService {
    * Converti une feuille excel en entrée vers un tableau d'objets TemplateFileDto
    * @param worksheet
    */
-  private convertExcelToJson(worksheet: WorkSheet): TemplateFileDto[] {
+  private _convertExcelToJson(worksheet: WorkSheet): TemplateFileDto[] {
     const options: Sheet2JSONOpts = {
       header: ['id', 'category', 'main_question', 'response_type', 'response', '', 'questions'],
       range: 1
@@ -80,7 +91,7 @@ export class ChatbotService {
    * @param templateFile
    * @param templateFileCheckResume
    */
-  private computeTemplateFile(templateFile: TemplateFileDto[], templateFileCheckResume: TemplateFileCheckResumeDto): void {
+  private _computeTemplateFile(templateFile: TemplateFileDto[], templateFileCheckResume: TemplateFileCheckResumeDto): void {
     templateFileCheckResume.categories = Array.from(new Set(templateFile.map(t => t.category))).filter(v => !!v);
     templateFileCheckResume.questionsNumber = templateFile.filter(t => !!t.main_question).length;
   }
@@ -90,30 +101,30 @@ export class ChatbotService {
    * @param templateFile
    * @param templateFileCheckResume
    */
-  private checkFile(templateFile: TemplateFileDto[], templateFileCheckResume?: TemplateFileCheckResumeDto): void | boolean {
+  private _checkFile(templateFile: TemplateFileDto[], templateFileCheckResume?: TemplateFileCheckResumeDto): void | boolean {
     templateFile.forEach((excelRow: TemplateFileDto, index: number) => {
       const excelIndex = index + 2;
       // ERRORS
       if (!excelRow.id) {
-        this.addMessage(templateFileCheckResume.errors, excelIndex, `L'ID n'est pas renseigné.`);
+        this._addMessage(templateFileCheckResume.errors, excelIndex, `L'ID n'est pas renseigné.`);
       }
       if (excelRow.response && !excelRow.response_type) {
-        this.addMessage(templateFileCheckResume.errors, excelIndex, `Le type de réponse n'est pas renseigné.`);
+        this._addMessage(templateFileCheckResume.errors, excelIndex, `Le type de réponse n'est pas renseigné.`);
       }
       if (!excelRow.response && excelRow.response_type) {
-        this.addMessage(templateFileCheckResume.errors, excelIndex, `La réponse n'est pas renseignée.`);
+        this._addMessage(templateFileCheckResume.errors, excelIndex, `La réponse n'est pas renseignée.`);
       }
       if (!excelRow.response && !excelRow.response_type) {
-        this.addMessage(templateFileCheckResume.errors, excelIndex, `La réponse et le type de réponse n'est pas renseigné.`);
+        this._addMessage(templateFileCheckResume.errors, excelIndex, `La réponse et le type de réponse n'est pas renseigné.`);
       }
       // Si il y a une question principale il est censé y avoir une réponse, une catégorie etc ...
       if (!!excelRow.main_question) {
         // WARNINGS
         if (!excelRow.category) {
-          this.addMessage(templateFileCheckResume.warnings, excelIndex, `La catégorie n'est pas renseignée.`);
+          this._addMessage(templateFileCheckResume.warnings, excelIndex, `La catégorie n'est pas renseignée.`);
         }
         if (excelRow.questions.length < 1) {
-          this.addMessage(templateFileCheckResume.warnings, excelIndex, `Aucune question synonyme n'a été renseignée, le chatbot aura du mal à reconnaitre cette demande.`);
+          this._addMessage(templateFileCheckResume.warnings, excelIndex, `Aucune question synonyme n'a été renseignée, le chatbot aura du mal à reconnaitre cette demande.`);
         }
         // Si il n'y a pas de question principale, c'est censé être une suite de réponse (et donc avoir une question principale relié ou un lien vers cet id)
       } else {
@@ -121,7 +132,7 @@ export class ChatbotService {
           (t.id === excelRow.id && !!t.main_question) || (t.response && t.response.includes(`<${excelRow.id}>`))
         );
         if (!mainQuestion) {
-          this.addMessage(templateFileCheckResume.errors, excelIndex, `Aucune question n'est renseignée pour cet identifiant.`);
+          this._addMessage(templateFileCheckResume.errors, excelIndex, `Aucune question n'est renseignée pour cet identifiant.`);
         }
       }
     });
@@ -134,7 +145,7 @@ export class ChatbotService {
    * @param index
    * @param message
    */
-  private addMessage(keyValueObject: { [key: string]: string }, index: number, message: string) {
+  private _addMessage(keyValueObject: { [key: string]: string }, index: number, message: string) {
     if (!keyValueObject[index]) {
       keyValueObject[index] = '';
     }
@@ -156,5 +167,13 @@ export class ChatbotService {
       return callback(new Error('Seul les fichiers en .jpg et .png sont acceptés.'), false);
     }
     return callback(null, true);
+  };
+
+  static multipleFileFilters = (req, file, callback) => {
+    if (file.fieldname === 'icon') {
+      return ChatbotService.imageFileFilter(req, file, callback);
+    } else {
+      return ChatbotService.excelFileFilter(req, file, callback);
+    }
   };
 }

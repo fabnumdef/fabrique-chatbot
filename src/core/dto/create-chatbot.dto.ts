@@ -7,11 +7,9 @@ export class CreateChatbotDto {
   @IsNotEmpty()
   name: string;
 
-  @IsNotEmpty()
   @ApiProperty({type: 'string', format: 'binary'})
   file: FileUploadDto;
 
-  @IsNotEmpty()
   @ApiProperty({type: 'string', format: 'binary'})
   icon: FileUploadDto;
 
@@ -37,5 +35,5 @@ export class CreateChatbotDto {
 
   @IsString()
   @IsNotEmpty()
-  intraDef: boolean = true;
+  intraDef: boolean = false;
 }
