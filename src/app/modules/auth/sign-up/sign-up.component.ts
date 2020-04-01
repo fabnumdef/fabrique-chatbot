@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { AuthService } from '../../../core/services';
+import { UserService } from '../../../core/services/user.service';
+import { User } from '../../../core/models';
 
 @Component({
   selector: 'app-sign-up',
@@ -13,7 +16,9 @@ export class SignUpComponent implements OnInit {
 
   constructor(private _fb: FormBuilder,
               private _router: Router,
-              private _route: ActivatedRoute) { }
+              private _route: ActivatedRoute,
+              private _userService: UserService) {
+  }
 
   ngOnInit() {
     this.initSignUpForm();
@@ -24,8 +29,9 @@ export class SignUpComponent implements OnInit {
   }
 
   signUp() {
-    // CALL TO SERVICE /auth/signup ? with form value
-    this._router.navigate(['./success'], {relativeTo: this._route, state: {email: 'vincent@laine.xyz'}});
+    this._userService.create(this.signUpForm.getRawValue()).subscribe((user: User) => {
+      this._router.navigate(['./success'], {relativeTo: this._route, state: {email: user.email}});
+    });
   }
 
   /**
@@ -37,7 +43,7 @@ export class SignUpComponent implements OnInit {
       firstName: ['', Validators.required],
       lastName: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
-      description: ['', Validators.required],
+      chatbotTheme: ['', Validators.required],
     });
   }
 

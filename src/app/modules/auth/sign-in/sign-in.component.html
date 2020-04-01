@@ -1,1 +1,58 @@
-<p>sign-in works!</p>
+<div class="SignIn">
+  <h2>
+    Connectez-vous à votre compte
+  </h2>
+  <form [formGroup]="signInForm" *ngIf="signInForm">
+    <mat-form-field appearance="outline">
+      <mat-label>Email</mat-label>
+      <input matInput
+             placeholder="Saisir..."
+             formControlName="email"
+             required>
+      <mat-error *ngIf="controls.email.hasError('required')">
+        Vous n'avez pas saisi d'email.
+      </mat-error>
+      <mat-error *ngIf="controls.email.hasError('email')">
+        L'email saisi n'est pas valide (exemple@exemple.com).
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Mot de passe</mat-label>
+      <input matInput
+             [type]="hidePassword ? 'password' : 'text'"
+             placeholder="Saisir..."
+             formControlName="password"
+             required>
+      <button mat-button
+              matSuffix
+              mat-icon-button
+              aria-label="Montrer mot de passe"
+              (click)="hidePassword = !hidePassword">
+        <mat-icon>visibility</mat-icon>
+      </button>
+      <mat-error *ngIf="controls.password.hasError('required')">
+        Vous n'avez pas saisi de mot de passe.
+      </mat-error>
+    </mat-form-field>
+    <a [routerLink]="'/auth/forgot-password'">Mot de passe oublié ?</a>
+  </form>
+
+  <button mat-flat-button
+          color="accent"
+          [disabled]="!signInForm.valid"
+          (click)="login()">
+    Valider
+  </button>
+
+  <mat-divider></mat-divider>
+  <h2>
+    Vous n'avez pas encore de compte ?
+  </h2>
+
+  <button mat-flat-button
+          color="accent"
+          [routerLink]="'/auth/sign_up'">
+    Créer son compte
+  </button>
+</div>

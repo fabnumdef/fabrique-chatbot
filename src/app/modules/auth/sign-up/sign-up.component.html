@@ -1,7 +1,7 @@
 <div class="SignUp">
-  <h1>
+  <h2>
     Création de compte
-  </h1>
+  </h2>
 
   <form [formGroup]="signUpForm" *ngIf="signUpForm">
     <mat-form-field appearance="outline">
@@ -35,36 +35,40 @@
       <mat-error *ngIf="controls.email.hasError('required')">
         Vous n'avez pas saisi d'email.
       </mat-error>
+      <mat-error *ngIf="controls.email.hasError('email')">
+        L'email saisi n'est pas valide (exemple@exemple.com).
+      </mat-error>
     </mat-form-field>
 
     <mat-form-field appearance="outline">
       <mat-label>Thème du chatbot</mat-label>
       <textarea matInput
                 placeholder="Saisir..."
-                formControlName="description"
+                formControlName="chatbotTheme"
                 required>
       </textarea>
-      <mat-error *ngIf="controls.description.hasError('required')">
+      <mat-error *ngIf="controls.chatbotTheme.hasError('required')">
         Vous n'avez pas saisi de thème pour votre chatbot.
       </mat-error>
     </mat-form-field>
   </form>
 
-  <button mat-raised-button
-          color="primary"
+  <button mat-flat-button
+          color="accent"
+          [disabled]="!signUpForm.valid"
           (click)="signUp()">
     C'est parti !
   </button>
 
   <mat-divider></mat-divider>
 
-  <h1>
+  <h2>
     Vous avez déjà un compte ?
-  </h1>
+  </h2>
 
-  <button mat-raised-button
-          color="primary"
-          [routerLink]="'/auth/sign_in'">
+  <button mat-flat-button
+          color="accent"
+          [routerLink]="'/auth/login'">
     Se connecter
   </button>
 </div>

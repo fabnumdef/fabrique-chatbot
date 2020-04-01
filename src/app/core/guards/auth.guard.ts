@@ -10,7 +10,8 @@ export class AuthGuard implements CanActivate, CanActivateChild {
   constructor(private router: Router, private authService: AuthService) { }
 
   canActivate(route?: ActivatedRouteSnapshot, state?: RouterStateSnapshot) {
-    if (!this.authService.isAuthenticated()) {
+    const isAuthPage = state.url.includes('/auth');
+    if ((!this.authService.isAuthenticated() && !isAuthPage) || (this.authService.isAuthenticated() && isAuthPage)) {
       this.router.navigate(['']);
       return false;
     }
@@ -18,7 +19,8 @@ export class AuthGuard implements CanActivate, CanActivateChild {
   }
 
   canActivateChild(route?: ActivatedRouteSnapshot, state?: RouterStateSnapshot) {
-    if (!this.authService.isAuthenticated()) {
+    const isAuthPage = state.url.includes('/auth');
+    if ((!this.authService.isAuthenticated() && !isAuthPage) || (this.authService.isAuthenticated() && isAuthPage)) {
       this.router.navigate(['']);
       return false;
     }
