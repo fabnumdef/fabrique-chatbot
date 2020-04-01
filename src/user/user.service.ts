@@ -12,8 +12,8 @@ export class UserService {
               private _mailService: MailService) {
   }
 
-  findAll(): Promise<User[]> {
-    return this._usersRepository.find();
+  findAll(params?: any): Promise<User[]> {
+    return this._usersRepository.find(params);
   }
 
   findOne(email: string, password: boolean = false): Promise<User> {

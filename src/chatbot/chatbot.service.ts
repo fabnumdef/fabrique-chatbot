@@ -16,12 +16,12 @@ const XLSX = require('xlsx');
 export class ChatbotService {
   private _xlsx = XLSX;
 
-  constructor(@InjectRepository(Chatbot) private _chatbotsRepository: Repository<Chatbot>,
-              private _ovhStorageService: OvhStorageService) {
+  constructor(@InjectRepository(Chatbot) private readonly _chatbotsRepository: Repository<Chatbot>,
+              private readonly _ovhStorageService: OvhStorageService) {
   }
 
-  findAll(): Promise<Chatbot[]> {
-    return this._chatbotsRepository.find();
+  findAll(params?: any): Promise<Chatbot[]> {
+    return this._chatbotsRepository.find(params);
   }
 
   async create(chatbot: ChatbotModel, file?: FileModel, icon?: FileModel): Promise<ChatbotModel> {

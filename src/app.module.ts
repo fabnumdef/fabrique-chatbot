@@ -13,6 +13,7 @@ import * as path from "path";
 import { APP_INTERCEPTOR } from "@nestjs/core";
 import { LoggerInterceptor } from "@interceptor/logger.interceptor";
 import { AdminModule } from './admin/admin.module';
+import { ScheduleModule } from "@nestjs/schedule";
 
 @Module({
   imports: [
@@ -57,6 +58,7 @@ import { AdminModule } from './admin/admin.module';
         },
       },
     }),
+    ScheduleModule.forRoot(),
     ChatbotModule,
     UserModule,
     AuthModule,

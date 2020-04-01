@@ -24,17 +24,19 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe({
     whitelist: true,
   }));
+  app.setGlobalPrefix('api');
 
   const options = new DocumentBuilder()
     .addBearerAuth()
     .setTitle('Fabrique à chatbots')
     .setDescription('The chatbot factory API description')
     .setVersion('0.1')
-    .setBasePath(process.env.NODE_ENV === 'local' ? '' : '/api')
     .build();
 
   const document = SwaggerModule.createDocument(app, options);
-  SwaggerModule.setup('', app, document);
+  SwaggerModule.setup('api', app, document, {
+    customSiteTitle: 'API - Fabrique à Chatbots'
+  });
 
   await app.listen(3000);
 }
