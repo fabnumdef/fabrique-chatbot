@@ -30,6 +30,7 @@ async function bootstrap() {
     .setTitle('Fabrique à chatbots')
     .setDescription('The chatbot factory API description')
     .setVersion('0.1')
+    .setBasePath(process.env.NODE_ENV === 'local' ? '' : '/api')
     .build();
 
   const document = SwaggerModule.createDocument(app, options);
