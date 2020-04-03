@@ -1,0 +1,47 @@
+<div class="description">
+  <form [formGroup]="formGroup" *ngIf="formGroup">
+    <h2>À quelle problématique répond votre chatbot ?</h2>
+    <mat-form-field appearance="outline">
+      <mat-label>200 caractères maximum</mat-label>
+      <textarea matInput
+             class="problem-field"
+             formControlName="problematic"
+             [placeholder]="'Saisir ...'"
+             maxlength="200"
+             required></textarea>
+      <mat-error *ngIf="controls.problematic.invalid">
+        {{getErrorMessage('problematic')}}
+      </mat-error>
+    </mat-form-field>
+
+    <h2>À qui s'adresse votre chatbot ?</h2>
+    <mat-form-field appearance="outline">
+      <mat-label>100 caractères maximum</mat-label>
+      <textarea matInput
+      type = "text"
+             class="audience-field"
+             formControlName="audience"
+             [placeholder]="'Saisir ...'"
+             maxlength="100"
+             required>
+             </textarea>
+      <mat-error *ngIf="controls.audience.invalid">
+        {{getErrorMessage('audience')}}
+      </mat-error>
+    </mat-form-field>
+
+    <h2>Quelle solution propose votre chatbot ?</h2>
+    <mat-form-field appearance="outline">
+      <mat-label>300 caractères maximum</mat-label>
+      <textarea matInput
+             class="solution-field"
+             formControlName="solution"
+             [placeholder]="'Saisir ...'"
+             maxlength="300"
+             required></textarea>
+      <mat-error *ngIf="controls.solution.invalid">
+        {{getErrorMessage('solution')}}
+      </mat-error>
+    </mat-form-field>
+  </form>
+</div>

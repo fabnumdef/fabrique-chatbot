@@ -23,6 +23,23 @@
     </mat-step>
     <mat-step [stepControl]="formArray.at(1)">
       <ng-template matStepLabel>
+        <h2>Description</h2>
+      </ng-template>
+      <div class="bot-step">
+        <div class="bot-step-header">
+          <h2>Description</h2>
+        </div>
+        <div class="bot-step-content">
+          <app-description-step [formGroup]="formArray.at(1)"></app-description-step>
+        </div>
+        <div class="bot-step-actions">
+          <button mat-stroked-button color="accent" matStepperPrevious>Précédent</button>
+          <button mat-flat-button color="accent" matStepperNext>Suivant</button>
+        </div>
+      </div>
+    </mat-step>
+    <mat-step [stepControl]="formArray.at(2)">
+      <ng-template matStepLabel>
         <h2>Personnalisation</h2>
       </ng-template>
       <div class="bot-step">
@@ -30,7 +47,7 @@
           <h2>Personnalisation</h2>
         </div>
         <div class="bot-step-content">
-          <app-customization-step [formGroup]="formArray.at(1)"></app-customization-step>
+          <app-customization-step [formGroup]="formArray.at(2)"></app-customization-step>
         </div>
         <div class="bot-step-actions">
           <button mat-stroked-button color="accent" matStepperPrevious>Précédent</button>

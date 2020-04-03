@@ -3,5 +3,46 @@
     display: flex;
     flex-direction: column;
     align-items: flex-start;
+
+    .full-width-input {
+      width: 100%;
+    }
+  
+    .half-width-input {
+      width: 50%;
+    }
+  
+    .color-pickers-div {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      margin: 0 0;
+    }
+  
+    .color-picker-div {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+      width: 45%;
+      height: 50px;
+      border: 1px solid lightgrey;
+      border-radius: 5px;
+      padding: 0 20px;
+    }
+  
+    .color-picker-icon {
+      display: flex;
+      right: 10px;
+      height: 30px;
+      width: 32px;
+      flex-wrap: wrap;
+      direction: flex-end;
+    }
+  
+    mat-divider {
+      width: 100%;
+      margin-top: 20px;
+    }
   }
 }

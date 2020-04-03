@@ -1,8 +1,10 @@
 <div class="customization">
   <form [formGroup]="formGroup" *ngIf="formGroup">
-    <mat-form-field appearance="outline">
+    <h2>Quel est le nom de votre chatbot ?</h2>
+    <mat-form-field class="half-width-input" appearance="outline">
       <mat-label>Quel est le nom de votre chatbot ?</mat-label>
       <input matInput
+             id="name-field"
              formControlName="name"
              [placeholder]="'Saisir ...'"
              required/>
@@ -11,16 +13,55 @@
       </mat-error>
     </mat-form-field>
 
-    <div>
-      <input class="colorpicker"
-             [colorPicker]="controls.primaryColor.value"
-             [style.background]="controls.primaryColor.value"
-             (colorPickerChange)="controls.primaryColor.setValue($event)"/>
+    <mat-divider></mat-divider>
 
-      <input class="colorpicker"
-             [colorPicker]="controls.secondaryColor.value"
-             [style.background]="controls.secondaryColor.value"
-             (colorPickerChange)="controls.secondaryColor.setValue($event)"/>
+    <h2>Quel est l'icône de votre chatbot ?</h2>
+    <div>
+      <span>
+        Choisir l'icône qui vous convient dans la bibliothèque ci-dessous.
+      </span>
+    </div>
+    <mat-form-field class="half-width-input" appearance="outline">
+      <mat-label>Icône ?</mat-label>
+      <input matInput
+             id="name-field"
+             formControlName="icon"
+             [placeholder]="'Saisir ...'"
+             required/>
+      <mat-error *ngIf="controls.icon.hasError('required')">
+        Vous n'avez pas saisi d'icône.
+      </mat-error>
+    </mat-form-field>
+    
+    <mat-divider></mat-divider>
+    
+    <h2>Quelles sont vos couleurs ?</h2>
+    <div class="full-width-input color-pickers-div">
+      <div class="color-picker-div" (click)="inputTagPrimary.click()">
+        <span>
+          Choisir la couleur primaire (en-tête)
+        </span>
+        <div>
+          <input #inputTagPrimary
+                class="colorpicker color-picker-icon"
+                [colorPicker]="controls.primaryColor.value"
+                [style.background]="controls.primaryColor.value"
+                (colorPickerChange)="controls.primaryColor.setValue($event)"/>
+        </div>
+      
+      </div>
+      <div class="color-picker-div" (click)="inputTagSecondary.click()">
+        <span>
+          Choisir la couleur secondaire (bas de page)
+        </span>
+        <div>
+          <input #inputTagSecondary
+                class="colorpicker color-picker-icon"
+                [colorPicker]="controls.secondaryColor.value"
+                [style.background]="controls.secondaryColor.value"
+                (colorPickerChange)="controls.secondaryColor.setValue($event)"/>
+        </div>
+      </div>
     </div>
   </form>
 </div>

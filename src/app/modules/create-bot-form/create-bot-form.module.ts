@@ -9,11 +9,13 @@ import { CustomizationStepComponent } from './customization-step/customization-s
 import { ColorPickerModule } from 'ngx-color-picker';
 import { ResumeStepComponent } from './resume-step/resume-step.component';
 import { SuccessStepComponent } from './success-step/success-step.component';
+import { DescriptionStepComponent } from './description-step/description-step.component';
 
 @NgModule({
   declarations: [
     CreateBotFormComponent,
     FileCheckStepComponent,
+    DescriptionStepComponent,
     CustomizationStepComponent,
     ResumeStepComponent,
     SuccessStepComponent

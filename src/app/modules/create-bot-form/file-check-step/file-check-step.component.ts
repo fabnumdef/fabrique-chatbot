@@ -5,6 +5,11 @@ import { DestroyObservable } from '../../../core/utils/destroy-observable';
 import { FileTemplateCheckResume } from '../../../core/models';
 import { ChatbotService } from '../../../core/services';
 
+interface Role {
+  value: string;
+  viewValue: string;
+}
+
 @Component({
   selector: 'app-file-check-step',
   templateUrl: './file-check-step.component.html',
@@ -15,6 +20,12 @@ export class FileCheckStepComponent extends DestroyObservable implements OnInit 
   @Input() formGroup: FormGroup;
   fileTemplateCheckResume: FileTemplateCheckResume;
   objectKeys = Object.keys;
+
+  roles: Role[] = [
+    {value: 'role-0', viewValue: 'Rôle A'},
+    {value: 'role-1', viewValue: 'Rôle B'},
+    {value: 'role-2', viewValue: 'Rôle C'}
+  ];
 
   constructor(public chatbotService: ChatbotService) {
     super();
@@ -58,6 +69,10 @@ export class FileCheckStepComponent extends DestroyObservable implements OnInit 
     }, error => {
       this.resetFile();
     });
+  }
+
+  get controls() {
+    return this.formGroup.controls;
   }
 
 }

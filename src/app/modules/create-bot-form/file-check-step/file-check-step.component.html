@@ -10,15 +10,15 @@
               (click)="uploader.click()">
         <mat-icon *ngIf="!(chatbotService.loading$ | async)">add</mat-icon>
         <mat-spinner *ngIf="chatbotService.loading$ | async"
-                     aria-label="Chargement et vérification du fichier"
-                     [diameter]="24"></mat-spinner>
+                    aria-label="Chargement et vérification du fichier"
+                    [diameter]="24"></mat-spinner>
         Ajouter un fichier
       </button>
       <input hidden
-             type="file"
-             #uploader
-             (change)="uploadFile($event)"
-             [accept]="'.xlsx'"/>
+            type="file"
+            #uploader
+            (change)="uploadFile($event)"
+            [accept]="'.xlsx'"/>
     </div>
     <div class="feedback-wrapper" *ngIf="fileTemplateCheckResume">
       <h3>Votre fichier contient</h3>
@@ -69,6 +69,49 @@
     </div>
     <mat-divider></mat-divider>
     <h2>Utilisateurs de la plateforme ou contacts</h2>
-    <p>Vous pouvez sautez cette étape et les ajouter plus tard.</p>
+    <div class="author-description">
+      <span>
+        Vous pouvez sautez cette étape et les ajouter plus tard.
+      </span>
+    </div>
+    <div class="author-content">
+      <div class="author-content-element">
+        <mat-form-field class="full-width-input" appearance="outline">
+            <mat-label>Nom, Prénom</mat-label>
+            <input matInput
+                  id="author-field"
+                  formControlName="author"
+                  [placeholder]="'Saisir ...'"
+                  required/>
+            <mat-error *ngIf="controls.author.hasError('required')">
+              Vous n'avez pas saisi le nom du contact.
+            </mat-error>
+        </mat-form-field>
+      </div>
+      <div class="author-content-element">
+        <mat-form-field class="full-width-input" appearance="outline">
+          <mat-label>Rôle</mat-label>
+          <mat-select formControlName="role" required>
+            <mat-option *ngFor="let role of roles" [value]="role.value">
+              {{role.viewValue}}
+            </mat-option>
+          </mat-select>
+          <mat-error *ngIf="controls.role.hasError('required')">Vous n'avez pas renseigné le rôle du contact</mat-error>
+      </mat-form-field>
+      </div>
+      <div class="author-content-element">
+        <mat-form-field class="full-width-input" appearance="outline">
+          <mat-label>Email</mat-label>
+          <input matInput
+                id="author-field"
+                formControlName="email"
+                [placeholder]="'Saisir ...'"
+                required/>
+          <mat-error *ngIf="controls.email.hasError('required')">
+            Vous n'avez pas saisi le mail du contact.
+          </mat-error>
+      </mat-form-field>
+      </div>
+    </div>
   </form>
 </div>
