@@ -1,10 +1,21 @@
 @import "src/styles/variables";
 
 .file-check {
+
   form {
 
-    mat-form-field { 
-      width: 100%; 
+    .file-input {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      button {
+        margin-left: 20px;
+      }
+    }
+
+    mat-form-field {
+      width: 100%;
     }
 
     .author-description {
@@ -25,16 +36,6 @@
 
     .half-width-input {
       width: 50%;
-    }
-
-    .file-input {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-
-      button {
-        margin-left: 20px;
-      }
     }
 
     .mat-divider {
@@ -66,6 +67,7 @@
           min-width: 200px;
         }
       }
+
       .warnings {
 
       }

@@ -1,0 +1,37 @@
+@import 'variables';
+
+.mat-radio-group {
+  .mat-radio-button {
+    width: 250px;
+    height: $input-height;
+    border: 2px solid transparent;
+    border-radius: 5px;
+    transition: border-color 0.2s;
+
+    &:not(:first-child) {
+      margin-left: 20px;
+    }
+
+    &:hover {
+      border-color: $input-border-color-hover;
+    }
+
+    &.mat-radio-checked.mat-primary {
+      border-color: $primary-color;
+    }
+
+    &.mat-radio-checked.mat-accent {
+      border-color: $accent-color;
+    }
+
+    .mat-radio-label {
+      width: 90%;
+      height: 100%;
+      padding: 0 5% 0 5%;
+      justify-content: space-between;
+      display: flex;
+      border: 1px solid $input-border-color;
+      border-radius: 5px;
+    }
+  }
+}

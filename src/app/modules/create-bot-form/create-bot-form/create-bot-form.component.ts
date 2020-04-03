@@ -30,6 +30,7 @@ export class CreateBotFormComponent implements OnInit {
       formArray: this._fb.array([
         this._fb.group({
           file: ['', Validators.required],
+          intraDef: [false, Validators.required],
           author: ['', Validators.required],
           role: ['', Validators.required],
           email: ['', Validators.required],

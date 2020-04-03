@@ -3,7 +3,12 @@
     <h2>Téléchargement de la base documentaire</h2>
     <div class="file-input">
       <span>Chargez la base documentaire de votre chatbot, nous allons vérifier la conformité de votre fichier (format de fichier Excel .xlsx).
-        <br/>Si vous n’avez pas le modèle de référence, vous pouvez le télécharger ici.</span>
+        <br/>Si vous n’avez pas le modèle de référence, vous pouvez le télécharger
+        <a target="_blank"
+           href="https://firebasestorage.googleapis.com/v0/b/gitbook-28427.appspot.com/o/assets%2F-M0MbNyvjB7hr1guybEn%2F-M1jG3_OcdCVFT8JT7J0%2F-M1jHaBUlqkF8rNMKV06%2FTEMPLATE_CHATBOT.xlsx?alt=media&token=f926397d-7b9c-40f5-ad1a-2f7b21283f90">
+          ici.
+        </a>
+      </span>
       <button mat-flat-button
               color="accent"
               [disabled]="(chatbotService.loading$ | async) || !!fileCtrl.value"
@@ -67,6 +72,16 @@
         </div>
       </div>
     </div>
+    <mat-divider></mat-divider>
+    <h2>Cadre d'utilisation de votre chatbot</h2>
+    <p>Vous souhaitez que votre chatbot soit consultable sur :</p>
+    <mat-radio-group aria-label="Visibilité du chatbot : internet / intradef"
+                     labelPosition="before"
+                     formControlName="intraDef"
+                     color="primary">
+      <mat-radio-button [value]="false">Internet</mat-radio-button>
+      <mat-radio-button [value]="true">Intradef</mat-radio-button>
+    </mat-radio-group>
     <mat-divider></mat-divider>
     <h2>Utilisateurs de la plateforme ou contacts</h2>
     <div class="author-description">
