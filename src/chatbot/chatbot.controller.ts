@@ -16,7 +16,6 @@ import { FileUploadDto } from "@dto/file-upload.dto";
 import { ChatbotService } from "./chatbot.service";
 import { plainToClass } from "class-transformer";
 import { ChatbotDto } from "@dto/chatbot.dto";
-import { Chatbot } from "@entity/chatbot.entity";
 import camelcaseKeys = require("camelcase-keys");
 import { CreateChatbotDto } from "@dto/create-chatbot.dto";
 import snakecaseKeys = require("snakecase-keys");

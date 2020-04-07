@@ -1,4 +1,4 @@
-import { Controller, Get, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpException, HttpStatus, Param, Post, Put, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiTags } from "@nestjs/swagger";
 import { JwtAuthGuard } from "@guard/jwt.guard";
 import { UserDto } from "@dto/user.dto";
@@ -12,6 +12,10 @@ import { Chatbot } from "@entity/chatbot.entity";
 import { Roles } from "@decorator/roles.decorator";
 import { RolesGuard } from "@guard/roles.guard";
 import { UserRole } from "@enum/user-role.enum";
+import { LaunchUpdateChatbotDto } from "@dto/launch-update-chatbot.dto";
+import { ChatbotStatus } from "@enum/chatbot-status.enum";
+import { ChatbotGenerationService } from "../chatbot/chatbot-generation.service";
+import { UpdateChatbotDto } from "@dto/update-chatbot.dto";
 
 @ApiTags('admin')
 @Controller('admin')
@@ -19,11 +23,12 @@ import { UserRole } from "@enum/user-role.enum";
 @UseGuards(JwtAuthGuard)
 export class AdminController {
   constructor(private readonly _userService: UserService,
-              private readonly _chatbotService: ChatbotService) {
+              private readonly _chatbotService: ChatbotService,
+              private readonly _chatbotGenerationService: ChatbotGenerationService) {
   }
 
-  @Get('users')
-  @ApiOperation({ summary: 'Return all the users' })
+  @Get('user')
+  @ApiOperation({summary: 'Return all the users'})
   @UseGuards(RolesGuard)
   @Roles(UserRole.admin)
   async getUsers(): Promise<UserDto[]> {
@@ -31,12 +36,45 @@ export class AdminController {
     return plainToClass(UserDto, camelcaseKeys(users, {deep: true}));
   }
 
-  @Get('chatbots')
+  @Get('chatbot')
   @ApiOperation({summary: 'Return all the chatbots'})
   @UseGuards(RolesGuard)
   @Roles(UserRole.admin)
   async getChatbots(): Promise<ChatbotDto[]> {
     const chatbots: Chatbot[] = await this._chatbotService.findAll();
     return plainToClass(ChatbotDto, camelcaseKeys(chatbots, {deep: true}));
+  }
+
+  @Delete('chatbot/:id')
+  @ApiOperation({summary: 'Delete chatbot'})
+  @UseGuards(RolesGuard)
+  @Roles(UserRole.admin)
+  async delete(@Param('id') chatbotId: number): Promise<Chatbot> {
+    return this._chatbotService.delete(chatbotId);
+  }
+
+  @Put('chatbot/:id')
+  @ApiOperation({summary: 'Update chatbot & status'})
+  @UseGuards(RolesGuard)
+  @Roles(UserRole.admin)
+  async update(@Param('id') chatbotId: number,
+               @Body() updateChatbot: UpdateChatbotDto): Promise<Chatbot> {
+    return this._chatbotService.update(chatbotId, updateChatbot);
+  }
+
+  @Post('chatbot/update/:id')
+  @ApiOperation({summary: 'Launch chatbot update'})
+  @UseGuards(RolesGuard)
+  @Roles(UserRole.admin)
+  async updateChatbot(@Param('id') chatbotId: number,
+                      @Body() updateChatbot: LaunchUpdateChatbotDto): Promise<any> {
+    const chatbot: Chatbot = await this._chatbotService.findOneWithParam({
+      id: chatbotId,
+      status: ChatbotStatus.running
+    });
+    if (!chatbot) {
+      throw new HttpException(`Ce chatbot n'existe pas ou n'est pas en fonctionnement.`, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+    return this._chatbotGenerationService.updateChatbot(chatbot, updateChatbot);
   }
 }

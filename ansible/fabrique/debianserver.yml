@@ -30,6 +30,11 @@
       notify: restart ssh
       when: renew_ssh is defined and renew_ssh == "yes"
 
+    - name: Generate ssh key
+      become: yes
+      openssh_keypair:
+        path: ~/.ssh/id_rsa
+
     - name: Update and upgrade apt packages
       become: true
       apt:

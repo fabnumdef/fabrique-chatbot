@@ -9,7 +9,14 @@ import { ChatbotModel } from "@model/chatbot.model";
 import { FileModel } from "@model/file.model";
 import { OvhStorageService } from "../shared/services/ovh-storage.service";
 import { forkJoin } from "rxjs";
+import { ChatbotStatus } from "@enum/chatbot-status.enum";
+import { UpdateChatbotDto } from "@dto/update-chatbot.dto";
+import * as fs from "fs";
+import { AnsiblePlaybook, Options } from "ansible-playbook-cli-js";
+import { execShellCommand, jsonToDotenv } from "@core/utils";
 
+const yaml = require('js-yaml');
+const crypto = require('crypto');
 const XLSX = require('xlsx');
 
 @Injectable()
@@ -24,9 +31,17 @@ export class ChatbotService {
     return this._chatbotsRepository.find(params);
   }
 
+  findOne(id: number): Promise<Chatbot> {
+    return this._chatbotsRepository.findOne(id);
+  }
+
+  findOneWithParam(param: any): Promise<Chatbot> {
+    return this._chatbotsRepository.findOne(param);
+  }
+
   async create(chatbot: ChatbotModel, file?: FileModel, icon?: FileModel): Promise<ChatbotModel> {
     let chatbotSaved: Chatbot = await this._chatbotsRepository.save(chatbot);
-    if(!file || !icon) {
+    if (!file || !icon) {
       return chatbotSaved;
     }
     chatbotSaved.file = `${chatbotSaved.id.toString(10)}/${file.originalname}`;
@@ -37,6 +52,17 @@ export class ChatbotService {
     }).toPromise().then();
 
     return this._chatbotsRepository.save(chatbotSaved);
+  }
+
+  async findAndUpdate(id: number, data: any): Promise<Chatbot> {
+    const chatbotExists = await this.findOne(id);
+    if (!chatbotExists) {
+      throw new HttpException('Ce chatbot n\'existe pas.', HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+    return this._chatbotsRepository.save({
+      ...chatbotExists,
+      ...data
+    });
   }
 
   checkTemplateFile(file): TemplateFileCheckResumeDto {
@@ -55,6 +81,66 @@ export class ChatbotService {
     this._checkFile(templateFile, templateFileCheckResume);
 
     return templateFileCheckResume;
+  }
+
+  async delete(id: number): Promise<Chatbot> {
+    return await this.findAndUpdate(id, {
+      ip_adress: null,
+      status: ChatbotStatus.deleted
+    });
+  }
+
+  async update(id: number, updateChatbot: UpdateChatbotDto): Promise<Chatbot> {
+    let chatbot = await this.findOne(id);
+    if (!chatbot) {
+      throw new HttpException('Ce chatbot n\'existe pas.', HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    // TODO DELETE, JUST FOR TESTS
+    if (updateChatbot.status) {
+      chatbot = await this.findAndUpdate(chatbot.id, {
+        status: updateChatbot.status
+      });
+    }
+
+    switch (chatbot.status) {
+      case ChatbotStatus.pending:
+        return this.findAndUpdate(chatbot.id, {
+          status: ChatbotStatus.creation
+        });
+      case ChatbotStatus.creation:
+        if (!chatbot.intra_def && (!updateChatbot.ipAdress || !updateChatbot.rootPassword)) {
+          throw new HttpException(`L'adresse IP du VPS et le password root sont obligatoires pour changer de statut.`, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        await this._generateChatbot(chatbot, updateChatbot);
+        return this.findAndUpdate(chatbot.id, {
+          status: ChatbotStatus.pending_configuration,
+          ip_adress: updateChatbot.ipAdress
+        });
+      case ChatbotStatus.error_configuration:
+        if (!chatbot.intra_def && !updateChatbot.ipAdress) {
+          throw new HttpException(`L'adresse IP du VPS est obligatoire pour changer de statut.`, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return this.findAndUpdate(chatbot.id, {
+          status: ChatbotStatus.pending_configuration,
+          ip_adress: updateChatbot.ipAdress
+        });
+      case ChatbotStatus.pending_configuration:
+        if (!chatbot.intra_def) {
+          throw new HttpException(`Le chatbot va être configuré, merci de patienter.`, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        // TODO: generate intraDef package
+        return this.findAndUpdate(chatbot.id, {status: ChatbotStatus.configuration});
+      case ChatbotStatus.configuration:
+        if (!chatbot.intra_def) {
+          throw new HttpException(`Le chatbot est en train d'être configuré, merci de patienter.`, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return this.findAndUpdate(chatbot.id, {status: ChatbotStatus.running});
+      case ChatbotStatus.running:
+        return this.findAndUpdate(chatbot.id, updateChatbot);
+      case ChatbotStatus.deleted:
+        throw new HttpException(`Le chatbot est archivé, impossible de le modifier.`, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
   }
 
   // convertToRasaFiles(file): any {
@@ -128,10 +214,11 @@ export class ChatbotService {
         }
         // Si il n'y a pas de question principale, c'est censé être une suite de réponse (et donc avoir une question principale relié ou un lien vers cet id)
       } else {
+        const excludedIds = ['get_started', 'out_of_scope'];
         const mainQuestion = templateFile.find(t =>
           (t.id === excelRow.id && !!t.main_question) || (t.response && t.response.includes(`<${excelRow.id}>`))
         );
-        if (!mainQuestion) {
+        if (!mainQuestion && !excludedIds.includes(excelRow.id)) {
           this._addMessage(templateFileCheckResume.errors, excelIndex, `Aucune question n'est renseignée pour cet identifiant.`);
         }
       }
@@ -151,6 +238,66 @@ export class ChatbotService {
     }
     keyValueObject[index] += !!keyValueObject[index] ? `\n` : '';
     keyValueObject[index] += message;
+  }
+
+  private async _generateChatbot(chatbot: Chatbot, updateChatbot: UpdateChatbotDto) {
+    // generate user password & db password
+    const passwordLength = 32;
+    const userPassword = crypto
+      .randomBytes(Math.ceil((passwordLength * 3) / 4))
+      .toString('base64') // convert to base64 format
+      .slice(0, passwordLength) // return required number of characters
+      .replace(/\+/g, '0') // replace '+' with '0'
+      .replace(/\//g, '0'); // replace '/' with '0'
+    const dbPassword = crypto
+      .randomBytes(Math.ceil((passwordLength * 3) / 4))
+      .toString('base64') // convert to base64 format
+      .slice(0, passwordLength) // return required number of characters
+      .replace(/\+/g, '0') // replace '+' with '0'
+      .replace(/\//g, '0'); // replace '/' with '0'
+    const jwtSecret = crypto
+      .randomBytes(Math.ceil((passwordLength * 3) / 4))
+      .toString('base64') // convert to base64 format
+      .slice(0, passwordLength) // return required number of characters
+      .replace(/\+/g, '0') // replace '+' with '0'
+      .replace(/\//g, '0'); // replace '/' with '0'
+
+    const credentials = {
+      USER_PASSWORD: userPassword,
+      DB_PASSWORD: dbPassword,
+      ROOT_PASSWORD: updateChatbot.rootPassword
+    };
+
+    const env = {
+      NODE_ENV: 'prod',
+      DATABASE_HOST: 'localhost',
+      DATABASE_PORT: '5432',
+      DATABASE_USER: 'rasa_user',
+      DATABASE_PASSWORD: dbPassword,
+      DATABASE_NAME: 'rasa',
+      JWT_SECRET: jwtSecret
+    };
+
+    const yamlStr = yaml.safeDump(credentials);
+    const appDir = '/var/www/fabrique-chatbot-back';
+    fs.writeFileSync(`${appDir}/ansible/chatbot/credentials.yml`, yamlStr, 'utf8');
+    fs.writeFileSync(`${appDir}/ansible/chatbot/.env`, jsonToDotenv(env), 'utf8');
+
+    await execShellCommand(`ansible-vault encrypt --vault-password-file fabrique/password_file chatbot/credentials.yml`, `${appDir}/ansible`).then();
+    await execShellCommand(`ansible-vault encrypt --vault-password-file fabrique/password_file chatbot/.env`, `${appDir}/ansible`).then();
+    const credentialsEncrypted = fs.readFileSync(`${appDir}/ansible/chatbot/credentials.yml`, 'utf8');
+    const envEncrypted = fs.readFileSync(`${appDir}/ansible/chatbot/.env`, 'utf8');
+    this._ovhStorageService.set(credentialsEncrypted, `${chatbot.id.toString(10)}/credentials.yml`);
+    this._ovhStorageService.set(envEncrypted, `${chatbot.id.toString(10)}/.env`);
+
+    const playbookOptions = new Options(`${appDir}/ansible/chatbot`);
+    const ansiblePlaybook = new AnsiblePlaybook(playbookOptions);
+    await ansiblePlaybook.command(`prebook.yml --vault-password-file ../fabrique/password_file -i ${updateChatbot.ipAdress},`).then(result => console.log(result));
+    await ansiblePlaybook.command(`debianserver.yml --vault-password-file ../fabrique/password_file -i ${updateChatbot.ipAdress},`).then(result => console.log(result));
+    await ansiblePlaybook.command(`chatbot.yml --vault-password-file ../fabrique/password_file -i ${updateChatbot.ipAdress},`).then(result => console.log(result));
+
+    fs.unlinkSync(`${appDir}/ansible/chatbot/credentials.yml`);
+    fs.unlinkSync(`${appDir}/ansible/chatbot/.env`);
   }
 
   /************************************************************************************ STATIC ************************************************************************************/

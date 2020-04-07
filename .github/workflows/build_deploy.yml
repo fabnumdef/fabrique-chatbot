@@ -18,16 +18,6 @@ jobs:
           echo "::set-env name=ENVIRONMENT::preprod"
 
       - uses: actions/checkout@v1
-      - uses: actions/setup-node@v1 #this installs node and npm for us
-        with:
-          node-version: '10.x'
-
-      - uses: actions/cache@v1 # this allows for re-using node_modules caching, making builds a bit faster.
-        with:
-          path: ~/.npm
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-
 
       - name: copy app via ssh key
         uses: appleboy/scp-action@master
@@ -54,7 +44,7 @@ jobs:
           target: "~/fabrique-chatbot-back/"
           timeout: 120s
 
-      - name: launch ansible script
+      - name: launch deploy ansible script
         uses: appleboy/ssh-action@master
         env:
           HOST: 51.254.201.98
@@ -68,4 +58,24 @@ jobs:
             END
             ansible-vault decrypt --vault-id dev@~/fabrique-chatbot-back/ansible/fabrique/password_file ~/fabrique-chatbot-back/ansible/fabrique/.env
             ansible-playbook ~/fabrique-chatbot-back/ansible/fabrique/backserver.yml --vault-id dev@~/fabrique-chatbot-back/ansible/fabrique/password_file
+
+      - name: launch update chatbot repo ansible script
+        uses: appleboy/ssh-action@master
+        env:
+          HOST: 51.254.201.98
+          USERNAME: fab_user
+          PORT: 22
+          KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+        with:
+          script: ansible-playbook ~/fabrique-chatbot-back/ansible/fabrique/update-chatbot-repo.yml --vault-id dev@~/fabrique-chatbot-back/ansible/fabrique/password_file
+
+      - name: delete tmp dir
+        uses: appleboy/ssh-action@master
+        env:
+          HOST: 51.254.201.98
+          USERNAME: fab_user
+          PORT: 22
+          KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+        with:
+          script:
             rm -rf ~/fabrique-chatbot-back

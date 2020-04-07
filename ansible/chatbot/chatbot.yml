@@ -1,13 +1,17 @@
 ---
 - name: Init Chatbot server for the Chatbot Factory
 
-  hosts: dev
+  hosts: all
 
-  remote_user: user
+  remote_user: chatbot_user
+
+  vars_files:
+    - ./credentials.yml
 
   vars:
     - appsDir: '/var/www/'
     - rasaDir: 'rasa-chatbot'
+    - ansible_become_pass: "{{ USER_PASSWORD }}"
 
   tasks:
     - name: Update and upgrade apt packages
@@ -41,6 +45,7 @@
           - curl
           - psmisc
           - screen
+          - rsync
 
     - name: Install last version of pip
       become: true
@@ -62,6 +67,14 @@
           - rasa
           - psycopg2-binary
 
+    - name: NODE | Install pm2
+      become: yes
+      npm:
+        name: pm2
+        global: yes
+        production: yes
+        state: present
+
     - name: Ensure the PostgreSQL service is running
       service:
         name: 'postgresql'
@@ -76,7 +89,7 @@
         encoding: 'UTF-8'
         lc_collate: 'fr_FR.UTF-8'
         lc_ctype: 'fr_FR.UTF-8'
-        conn_limit: '100'
+#        conn_limit: '100'
         state: 'present'
         template: 'template0'
 
@@ -86,7 +99,7 @@
       postgresql_user:
         db: 'rasa'
         name: 'rasa_user'
-        password: '{{ db_password }}'
+        password: '{{ DB_PASSWORD }}'
         priv: 'ALL'
         state: 'present'
 
@@ -97,33 +110,3 @@
         name: 'rasa_user'
         role_attr_flags: 'NOSUPERUSER,NOCREATEDB'
         state: 'present'
-
-    - name: Install pm2
-      become: true
-      npm:
-        name: 'pm2'
-        global: 'yes'
-        production: 'yes'
-
-    - name: Copy Chatbot template
-      become: true
-      copy:
-        src: '/mnt/c/Users/laine/Documents/beta.gouv/chatbot-template/'
-        dest: '{{ appsDir }}/{{ rasaDir }}/'
-
-    - name: Train rasa
-      become: true
-      command:
-        chdir: '{{ appsDir }}/{{ rasaDir }}/'
-        cmd: 'rasa train'
-
-    - name: Stop rasa chatbot
-      become: true
-      command: 'screen -wipe'
-      ignore_errors: true
-
-    - name: Start rasa chatbot
-      become: true
-      command:
-        chdir: '{{ appsDir }}/{{ rasaDir }}/'
-        cmd: 'screen -S rasa -dmS rasa run -m models --enable-api --log-file out.log --cors "*" --debug'

@@ -1,6 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { FileUploadDto } from "@dto/file-upload.dto";
-import { IsNotEmpty, IsString } from "class-validator";
+import { IsBoolean, IsNotEmpty, IsString } from "class-validator";
 
 export class CreateChatbotDto {
   @IsString()

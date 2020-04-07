@@ -35,6 +35,9 @@
           - acl
           - libpq-dev
           - python3-psycopg2
+          - git
+          - rsync
+          - sshpass
 
     - name: Install last version of pip
       become: true
@@ -101,7 +104,7 @@
       find:
         path: '{{ appsDir }}/{{ nestDir }}/'
         file_type: any
-        excludes: 'node_modules'
+        excludes: 'node_modules,chatbot'
       register: files_to_delete
 
     - name: remove old nestjs app
@@ -142,7 +145,7 @@
       become: yes
 
     - name: NODE | Start APP
-      shell: pm2 start main.js --name FabriqueBack
+      become: yes
+      shell: sudo pm2 start main.js --name FabriqueBack
       args:
         chdir: '{{ appsDir }}/{{ nestDir }}/dist'
-      become: yes

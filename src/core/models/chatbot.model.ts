@@ -1,5 +1,5 @@
 import { IsNotEmpty, IsOptional, IsString } from "class-validator";
-import { BotStatus } from "@enum/bot-status.enum";
+import { ChatbotStatus } from "@enum/chatbot-status.enum";
 
 export class ChatbotModel {
   @IsString()
@@ -40,5 +40,5 @@ export class ChatbotModel {
 
   @IsString()
   @IsOptional()
-  status: BotStatus;
+  status: ChatbotStatus;
 }

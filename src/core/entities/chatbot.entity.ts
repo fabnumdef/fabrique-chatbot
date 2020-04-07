@@ -1,5 +1,5 @@
 import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
-import { BotStatus } from "@enum/bot-status.enum";
+import { ChatbotStatus } from "@enum/chatbot-status.enum";
 import { User } from "@entity/user.entity";
 
 @Entity('chatbot')
@@ -31,14 +31,14 @@ export class Chatbot {
   @Column({ nullable: false })
   solution: string;
 
-  @Column( { select: false, nullable: true })
+  @Column( { nullable: true })
   ip_adress: string;
 
   @Column( { default: false })
   intra_def: boolean;
 
-  @Column('enum', { name: 'status', enum: BotStatus, default: BotStatus.pending, nullable: false})
-  status: BotStatus;
+  @Column('enum', { name: 'status', enum: ChatbotStatus, default: ChatbotStatus.pending, nullable: false})
+  status: ChatbotStatus;
 
   @ManyToOne(type => User, user => user.chatbots)
   user: User;

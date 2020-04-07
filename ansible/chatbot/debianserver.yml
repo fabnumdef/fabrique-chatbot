@@ -2,9 +2,15 @@
 
 # Prerequisits: SSH access for user with password
 
-- hosts: dev
+- hosts: all
 
-  remote_user: user
+  remote_user: chatbot_user
+
+  vars_files:
+    - ./credentials.yml
+
+  vars:
+    - ansible_become_pass: "{{ USER_PASSWORD }}"
 
   tasks:
 
@@ -48,6 +54,13 @@
       ufw:
         rule: allow
         port: '5005'
+        proto: tcp
+
+    - name: Open port 80
+      become: yes
+      ufw:
+        rule: allow
+        port: '80'
         proto: tcp
 
 

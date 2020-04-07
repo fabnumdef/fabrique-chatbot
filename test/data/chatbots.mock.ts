@@ -1,5 +1,5 @@
 import { Chatbot } from "@entity/chatbot.entity";
-import { BotStatus } from "@enum/bot-status.enum";
+import { ChatbotStatus } from "@enum/chatbot-status.enum";
 
 export const chatbotsMock: Chatbot[] = [
   {
@@ -14,7 +14,7 @@ export const chatbotsMock: Chatbot[] = [
     solution: null,
     ip_adress: null,
     intra_def: false,
-    status: BotStatus.creation,
+    status: ChatbotStatus.creation,
     user: null,
     created_at: null
   }

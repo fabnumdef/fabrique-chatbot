@@ -77,7 +77,7 @@ export class AuthService {
 
   private async validateUser(user: LoginUserDto): Promise<any> {
     const userToReturn = await this._userService.findOne(user.email, true);
-    if (userToReturn && bcrypt.compareSync(user.password, userToReturn.password)) {
+    if (!!userToReturn && bcrypt.compareSync(user.password, userToReturn.password)) {
       const {password, ...result} = userToReturn;
       return result;
     }

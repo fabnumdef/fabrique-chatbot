@@ -13,6 +13,6 @@ import { ChatbotGenerationService } from './chatbot-generation.service';
   ],
   controllers: [ChatbotController],
   providers: [ChatbotService, ChatbotGenerationService],
-  exports: [ChatbotService]
+  exports: [ChatbotService, ChatbotGenerationService]
 })
 export class ChatbotModule {}
