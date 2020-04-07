@@ -30,16 +30,9 @@ export class ChatbotGenerationService {
     }
     console.log('Chatbots waiting for creation', botsToBeCreated.length);
 
-  const playbookOptions = new Options(`${this._appDir}/fabrique`);
-    const ansiblePlaybook = new AnsiblePlaybook(playbookOptions);
-    ansiblePlaybook.command(`update-chatbot-repo.yml --vault-id dev@password_file`).then((result) => {
-      console.log('UPDATING CHATBOTS REPOSITORIES');
-      console.log(result);
-      this._generateChatbots();
-    }).catch(error => {
-      console.error('ERRROR UPDATING CHATBOTS REPOSITORIES');
-    });
+    this.updateChatbotRepos();
 
+    this._generateChatbots();
 
     /**
      * TO DO: prebook.yml & debianserver.yml ne changent pas
@@ -88,6 +81,17 @@ export class ChatbotGenerationService {
 
     fs.unlinkSync(`${this._appDir}/chatbot/credentials.yml`);
     fs.unlinkSync(`${this._appDir}/chatbot/.env`);
+  }
+
+  async updateChatbotRepos() {
+    const playbookOptions = new Options(`${this._appDir}/fabrique`);
+    const ansiblePlaybook = new AnsiblePlaybook(playbookOptions);
+    await ansiblePlaybook.command(`update-chatbot-repo.yml --vault-id dev@password_file`).then((result) => {
+      console.log('UPDATING CHATBOTS REPOSITORIES');
+      console.log(result);
+    }).catch(error => {
+      console.error('ERRROR UPDATING CHATBOTS REPOSITORIES');
+    });
   }
 
   /************************************************************************************ PRIVATE FUNCTIONS ************************************************************************************/
