@@ -4,16 +4,19 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
 import { ChatbotConfiguration, FileTemplateCheckResume } from '../models';
 import { finalize } from 'rxjs/operators';
+import { Chatbot } from '../models/chatbot.model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ChatbotService {
   private _url: string;
+  private _adminUrl: string;
   protected _loading$ = new BehaviorSubject<boolean>(false);
 
   constructor(private _http: HttpClient) {
     this._url = `${environment.api_endpoint}/chatbot`;
+    this._adminUrl = `${environment.api_endpoint}/admin/chatbot`;
   }
 
   createChatbot(botConfig: ChatbotConfiguration): Observable<any> {
@@ -31,6 +34,15 @@ export class ChatbotService {
 
     this._loading$.next(true);
     return this._http.post<FileTemplateCheckResume>(`${this._url}`, formData, options).pipe(
+      finalize(() => {
+        this._loading$.next(false);
+      })
+    );
+  }
+
+  getChatbots(): Observable<Chatbot[]> {
+    this._loading$.next(true);
+    return this._http.get<any>(`${this._adminUrl}`).pipe(
       finalize(() => {
         this._loading$.next(false);
       })

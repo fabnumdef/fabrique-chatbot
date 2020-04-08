@@ -28,6 +28,9 @@
       "@models/*": [
         "app/core/models/*"
       ],
+      "@enums/*": [
+        "app/core/enums/*"
+      ],
       "@core/*": [
         "app/core/*"
       ]

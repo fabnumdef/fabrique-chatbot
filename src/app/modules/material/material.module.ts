@@ -8,16 +8,19 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatSelectModule } from '@angular/material/select';
 import { MatRadioModule } from '@angular/material/radio';
+import { MatTableModule } from '@angular/material/table';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @NgModule({
   declarations: [],
   imports: [
     MatStepperModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatIconModule, MatProgressSpinnerModule, MatDividerModule,
-    MatSelectModule, MatRadioModule
+    MatSelectModule, MatRadioModule, MatTableModule, MatProgressBarModule, MatTooltipModule
   ],
   exports: [
     MatStepperModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatIconModule, MatProgressSpinnerModule, MatDividerModule,
-    MatSelectModule, MatRadioModule
+    MatSelectModule, MatRadioModule, MatTableModule, MatProgressBarModule, MatTooltipModule
   ]
 })
 export class MaterialModule { }

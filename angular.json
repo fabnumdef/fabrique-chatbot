@@ -35,7 +35,8 @@
               "src/styles/typography.scss",
               "src/styles/variables.scss",
               "src/styles/input.scss",
-              "src/styles/radio.scss"
+              "src/styles/radio.scss",
+              "src/styles/table.scss"
             ],
             "scripts": []
           },
@@ -107,7 +108,8 @@
               "src/styles/typography.scss",
               "src/styles/variables.scss",
               "src/styles/input.scss",
-              "src/styles/radio.scss"
+              "src/styles/radio.scss",
+              "src/styles/table.scss"
             ],
             "scripts": []
           }

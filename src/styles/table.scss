@@ -1,0 +1,17 @@
+@import 'variables';
+
+table.mat-table {
+  .mat-header-cell {
+    background-color: $primary-color;
+    color: $white;
+    font-size: 14px;
+
+    &:first-child {
+      border-top-left-radius: 5px;
+    }
+
+    &:last-child {
+      border-top-right-radius: 5px;
+    }
+  }
+}

@@ -1,0 +1,15 @@
+.chatbot-list {
+  .table-wrapper {
+    margin-top: 20px;
+
+    .mat-table {
+      width: 100%;
+
+      .mat-column-actions {
+        .mat-icon {
+          cursor: pointer;
+        }
+      }
+    }
+  }
+}

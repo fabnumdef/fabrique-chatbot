@@ -4,6 +4,17 @@
     <img src="assets/img/logo_fabrique_chatbot.png" alt="logo fabrique à chatbots">
   </div>
   <div class="action-wrapper">
-    <button mat-stroked-button color="accent">Informations générales</button>
+    <button mat-stroked-button
+            color="accent"
+            [routerLink]="'/admin'"
+            *ngIf="isUserAdmin">
+      Administrateur
+    </button>
+    <button mat-stroked-button
+            color="accent"
+            *ngIf="user"
+            (click)="logout()">
+      Déconnexion
+    </button>
   </div>
 </div>
