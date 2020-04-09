@@ -23,7 +23,8 @@ export class OvhStorageService {
    * Get file from object storage
    * @param filePath
    */
-  public get(filePath: string): Promise<any> {
+  public async get(filePath: string): Promise<any> {
+    await this._retryConnection();
     const targetURL = `${this._endpoint}/${filePath}`;
     return this._http.get(targetURL, this._setHeaders()).pipe(
       tap(() => {
@@ -44,7 +45,8 @@ export class OvhStorageService {
    * @param file
    * @param filePath
    */
-  public set(file: any, filePath: string): Promise<any> {
+  public async set(file: any, filePath: string): Promise<any> {
+    await this._retryConnection();
     const targetURL = `${this._endpoint}/${filePath}`;
     return this._http.put(targetURL, file, this._setHeaders()).pipe(
       tap(() => {
@@ -64,7 +66,8 @@ export class OvhStorageService {
    * List objects in a container
    * @param dirPath
    */
-  public list(dirPath?: string): Promise<any> {
+  public async list(dirPath?: string): Promise<any> {
+    await this._retryConnection();
     const targetURL = `${this._endpoint}${dirPath ? `?prefix=${dirPath}` : ''}`;
     return this._http.get(targetURL, this._setHeaders()).pipe(
       map(r => r.data),
@@ -80,7 +83,7 @@ export class OvhStorageService {
 
   /************************************************************************************ PRIVATE FUNCTIONS ************************************************************************************/
 
-  private _connection() {
+  private async _connection() {
     const body = {
       auth: {
         passwordCredentials: {
@@ -90,7 +93,7 @@ export class OvhStorageService {
         tenantId: this._config.tenantId
       }
     };
-    this._http.post(`${this._config.authURL}/tokens`, body).subscribe(res => {
+    await this._http.post(`${this._config.authURL}/tokens`, body).toPromise().then(res => {
       this._token = res.data.access.token;
       const serviceCatalog = res.data.access.serviceCatalog.find(s => s.type === 'object-store');
       this._endpoint = `${serviceCatalog.endpoints.find(e => e.region === this._config.region).publicURL}/${this._config.container}`;
@@ -106,6 +109,15 @@ export class OvhStorageService {
         'X-Auth-Token': this._token.id
       }
     }
+  }
+
+  // If token is expired
+  private async _retryConnection() {
+    const tokenExpires = new Date(this._token?.expires).getTime() < new Date().getTime();
+    if(!tokenExpires) {
+      return;
+    }
+    await this._connection();
   }
 
 }

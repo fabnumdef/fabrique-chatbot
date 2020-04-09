@@ -150,10 +150,6 @@ export class ChatbotService {
   //   RasaService.jsonToRasa(templateFile);
   // }
 
-  // convertToAnsibleScript(file): any {
-  //
-  // }
-
   /************************************************************************************ PRIVATE FUNCTIONS ************************************************************************************/
 
   /**

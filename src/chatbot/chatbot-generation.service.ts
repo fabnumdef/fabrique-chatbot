@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Cron } from "@nestjs/schedule";
+import { Cron, CronExpression } from "@nestjs/schedule";
 import { ChatbotService } from "./chatbot.service";
 import { ChatbotStatus } from "@enum/chatbot-status.enum";
 import { IsNull, Not } from "typeorm";
@@ -18,8 +18,7 @@ export class ChatbotGenerationService {
               private readonly _ovhStorageService: OvhStorageService) {
   }
 
-  // @Cron(CronExpression.EVERY_5_MINUTES)
-  @Cron('*/30 * * * * *')
+  @Cron(CronExpression.EVERY_5_MINUTES)
   async checkChatbots() {
     const botsToBeCreated: Chatbot[] = await this._chatbotService.findAll({
       status: ChatbotStatus.pending_configuration,
@@ -35,29 +34,15 @@ export class ChatbotGenerationService {
     this._generateChatbots();
 
     /**
-     * TO DO: prebook.yml & debianserver.yml ne changent pas
      * Récupérer et stocker en variable d'environnement la clef SSH
      * Récupérer et stocker dans un fichier le vault-password
      *
      * Générer les variables d'environnements et les encrypter avec le vault-password
      * Stocker le fichier .env crypté dans dans l'object storage au cas ou
      *
-     * Copier chatbot-back
-     * Copier chatbot-front
-     * Copier chatbot-template
-     * Copier la base documentaire
-     *
-     * Lancer les npm install / npm build
-     * Lancer chatbot-back
-     * Lancer chatbot-front
-     *
      * Appel au back pour créer le premier utilisateur
      * Appel au back pour importer la base documentaire (remplissage de la bdd) - A voir comment faire niveau sécu
      * Appel au back pour générer les fichiers Rasa + Train Rasa
-     *
-     * Lancer chatbot-template
-     *
-     * pending -> générer le script ansible
      */
   }
 

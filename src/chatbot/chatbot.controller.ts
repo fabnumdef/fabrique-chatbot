@@ -73,23 +73,4 @@ export class ChatbotController {
   checkTemplateFile(@UploadedFile() file) {
     return this._chatbotService.checkTemplateFile(file);
   }
-
-  // TODO: A transférer vers chatbot-back
-  // @Post()
-  // @UseInterceptors(
-  //   FileInterceptor(
-  //     'file',
-  //     {
-  //       fileFilter: ChatbotService.excelFileFilter,
-  //     }
-  //   )
-  // )
-  // @ApiConsumes('multipart/form-data')
-  // @ApiBody({
-  //   description: 'Template file (excel)',
-  //   type: FileUploadDto,
-  // })
-  // convertToRasaFiles(@UploadedFile() file) {
-  //   return this._chatbotService.convertToRasaFiles(file);
-  // }
 }
