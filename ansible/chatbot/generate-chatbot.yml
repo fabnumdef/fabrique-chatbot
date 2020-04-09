@@ -50,7 +50,7 @@
         dest: '{{ appsDir }}/{{ frontDir }}'
       when: updateFront
 
-    - name: copy the nginx config file and restart nginx
+    - name: copy the nginx config file
       copy:
         src: '{{ appsDir }}/{{ nestDir }}/ansible/chatbot/nginx_conf.cfg'
         dest: '/etc/nginx/sites-available/{{ frontDir }}.cfg'
