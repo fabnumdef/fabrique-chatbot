@@ -10,6 +10,7 @@ import { ColorPickerModule } from 'ngx-color-picker';
 import { ResumeStepComponent } from './resume-step/resume-step.component';
 import { SuccessStepComponent } from './success-step/success-step.component';
 import { DescriptionStepComponent } from './description-step/description-step.component';
+import { WarningsDialogComponent } from './warnings-dialog/warnings-dialog.component';
 
 @NgModule({
   declarations: [
@@ -18,7 +19,8 @@ import { DescriptionStepComponent } from './description-step/description-step.co
     DescriptionStepComponent,
     CustomizationStepComponent,
     ResumeStepComponent,
-    SuccessStepComponent
+    SuccessStepComponent,
+    WarningsDialogComponent
   ],
   imports: [
     CommonModule,

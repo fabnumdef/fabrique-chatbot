@@ -1,0 +1,29 @@
+<div class="warnings">
+    <div class="close">
+        <button mat-icon-button aria-label="Fermer la fenêtre" (click)="onNoClick()">
+            <mat-icon>clear</mat-icon>
+        </button>
+    </div>
+    
+    <div class="title">
+        <h1>Liste des {{data.type}}</h1>
+    </div>
+    
+    <div class="details">
+        <div class="detail-content" *ngFor="let item of details | keyvalue : returnZero">
+            <mat-icon 
+                class="line-icon"
+                color="accent" >
+            list
+            </mat-icon>
+
+            <div class="line-number">
+                <b>Ligne {{item.key}}</b>
+            </div>
+            <div class="line-text">
+                {{item.value}}
+            </div>
+        </div>
+    </div>
+</div>
+

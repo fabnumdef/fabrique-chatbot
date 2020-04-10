@@ -25,52 +25,85 @@
             (change)="uploadFile($event)"
             [accept]="'.xlsx'"/>
     </div>
+
     <div class="feedback-wrapper" *ngIf="fileTemplateCheckResume">
-      <h3>Votre fichier contient</h3>
-      <div class="feedback-table">
-        <div>
-          <span><b>{{ fileTemplateCheckResume.categories.length }}</b> catégories</span>
-        </div>
-        <div>
-          <span><b>{{ fileTemplateCheckResume.questionsNumber }}</b> questions</span>
-        </div>
-        <div>
-          <span><b>{{ objectKeys(fileTemplateCheckResume.errors).length }}</b> Erreurs</span>
-          <div class="errors" *ngIf="objectKeys(fileTemplateCheckResume.errors).length > 0">
-            <div *ngFor="let key of objectKeys(fileTemplateCheckResume.errors)">
-              <span>{{ 'Ligne ' + key + ': ' + fileTemplateCheckResume.errors[key]}}</span>
+      <h3>Base documentaire</h3>
+      <div class="feedback-wrapper-content">
+        <div class="file-wrapper" *ngIf="fileCtrl.value">
+          <div class="file-wrapper-fileInfo">
+            <div class="fileInfo">
+              <mat-icon color="primary" 
+                        *ngIf="objectKeys(fileTemplateCheckResume.errors).length == 0">
+                        check_circle
+              </mat-icon>
+              <mat-icon color="accent" 
+                        *ngIf="objectKeys(fileTemplateCheckResume.errors).length > 0">
+                        cancel
+              </mat-icon>
+              <span class="fileName"> {{ fileCtrl.value.name }} </span>
+            </div>
+            <div class="file-wrapper-buttons">
+              <button mat-stroked-button
+                      class="delete-button"
+                      color="accent"
+                      (click)="resetFile()">
+                Supprimer
+              </button>
+              <button mat-flat-button
+                      color="accent"
+                      [disabled]="chatbotService.loading$ | async"
+                      (click)="uploader.click()">
+                Mettre à jour
+              </button>
             </div>
           </div>
+          <div class="file-wrapper-fileStatus">
+            <span class="file-wrapper-fileValid" *ngIf="!hasFileErrors()">
+              Votre fichier est valide.
+            </span>
+            <span class="file-wrapper-fileError" *ngIf="hasFileErrors()">
+              Votre fichier contient des erreurs. Veuillez le corriger et le mettre à jour.
+            </span>
+          </div>
 
-          <span><b>{{ objectKeys(fileTemplateCheckResume.warnings).length }}</b> Avertissements</span>
-          <div class="warnings" *ngIf="objectKeys(fileTemplateCheckResume.warnings).length > 0">
-            <div *ngFor="let key of objectKeys(fileTemplateCheckResume.warnings)">
-              <span>{{ 'Ligne ' + key + ': ' + fileTemplateCheckResume.warnings[key]}}</span>
+          
+          <div class="feedback-table" *ngIf="hasFileErrors() || hasFileWarnings()">
+            <div class="feedback-table-content" *ngIf="hasFileErrors()">
+              <div class="feedback-element">
+                <div class="number">
+                  {{ objectKeys(fileTemplateCheckResume.errors).length }}
+                </div>
+                <span>
+                    <b>Erreurs</b><span class="red">*</span>
+                </span>
+              </div>
+              <div class="message">
+                Votre fichier contient des erreurs qui l'empêche de fonctionner.
+                <a (click)="openDialog('erreurs',fileTemplateCheckResume.errors)">
+                  <b>Visualiser les erreurs</b>
+                </a>
+              </div>
+            </div>
+            <div class="feedback-table-content" *ngIf="hasFileWarnings()">
+              <div class="feedback-element">
+                <div class="number">
+                  {{ objectKeys(fileTemplateCheckResume.warnings).length }}
+                </div>
+                <span>
+                    <b>Avertissements</b>
+                </span>
+              </div>
+              <div class="message">
+                Votre fichier contient des erreurs qui l'empêche de fonctionner.
+                <a (click)="openDialog('avertissements', fileTemplateCheckResume.warnings)">
+                  <b>Visualiser les avertissements</b>
+                </a>
+              </div>
             </div>
           </div>
         </div>
       </div>
 
-      <div class="file-wrapper" *ngIf="fileCtrl.value">
-        <div>
-          <mat-icon color="primary" fontSet="material-icons-outlined">insert_drive_file</mat-icon>
-          <span> {{ fileCtrl.value.name }} </span>
-        </div>
-        <div>
-          <button mat-flat-button
-                  color="accent"
-                  [disabled]="chatbotService.loading$ | async"
-                  (click)="uploader.click()">
-            Mettre à jour
-          </button>
-          <button mat-icon-button
-                  color="accent"
-                  aria-label="Suppression fichier"
-                  (click)="resetFile()">
-            <mat-icon>delete</mat-icon>
-          </button>
-        </div>
-      </div>
     </div>
     <mat-divider></mat-divider>
     <h2>Cadre d'utilisation de votre chatbot</h2>

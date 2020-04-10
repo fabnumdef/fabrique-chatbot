@@ -4,6 +4,8 @@ import { finalize } from 'rxjs/operators';
 import { DestroyObservable } from '../../../core/utils/destroy-observable';
 import { FileTemplateCheckResume } from '../../../core/models';
 import { ChatbotService } from '../../../core/services';
+import { MatDialog } from '@angular/material/dialog';
+import { WarningsDialogComponent } from '../warnings-dialog/warnings-dialog.component';
 
 interface Role {
   value: string;
@@ -27,7 +29,8 @@ export class FileCheckStepComponent extends DestroyObservable implements OnInit 
     {value: 'role-2', viewValue: 'Rôle C'}
   ];
 
-  constructor(public chatbotService: ChatbotService) {
+  constructor(public chatbotService: ChatbotService,
+              private dialog: MatDialog) {
     super();
   }
 
@@ -73,6 +76,22 @@ export class FileCheckStepComponent extends DestroyObservable implements OnInit 
 
   get controls() {
     return this.formGroup.controls;
+  }
+
+  hasFileErrors() {
+    return (Object.keys(this.fileTemplateCheckResume.errors).length > 0);
+  }
+
+  hasFileWarnings() {
+    return (Object.keys(this.fileTemplateCheckResume.warnings).length > 0);
+  }
+
+  openDialog(type: string, detailsArray: Array<string>): void {
+    const dialogRef = this.dialog.open(WarningsDialogComponent, {
+      width: '100%',
+      height: '90%',
+      data: {type: type, details: detailsArray}
+    });
   }
 
 }
