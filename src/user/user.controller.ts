@@ -27,12 +27,4 @@ export class UserController {
     return plainToClass(UserDto, camelcaseKeys(userModel, {deep: true}));
   }
 
-  @Delete(':email')
-  @ApiOperation({ summary: 'Delete user' })
-  @ApiBearerAuth()
-  @UseGuards(JwtAuthGuard)
-  async delete(@Param('email') email: string): Promise<void> {
-    return this._userService.delete(email);
-  }
-
 }

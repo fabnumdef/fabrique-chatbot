@@ -16,6 +16,7 @@ import { LaunchUpdateChatbotDto } from "@dto/launch-update-chatbot.dto";
 import { ChatbotStatus } from "@enum/chatbot-status.enum";
 import { ChatbotGenerationService } from "../chatbot/chatbot-generation.service";
 import { UpdateChatbotDto } from "@dto/update-chatbot.dto";
+import { DeleteResult } from "typeorm";
 
 @ApiTags('admin')
 @Controller('admin')
@@ -36,6 +37,14 @@ export class AdminController {
     return plainToClass(UserDto, camelcaseKeys(users, {deep: true}));
   }
 
+  @Delete('user/:email')
+  @ApiOperation({ summary: 'Delete user' })
+  @UseGuards(RolesGuard)
+  @Roles(UserRole.admin)
+  async deleteUser(@Param('email') email: string): Promise<DeleteResult> {
+    return this._userService.deleteUser(email);
+  }
+
   @Get('chatbot')
   @ApiOperation({summary: 'Return all the chatbots'})
   @UseGuards(RolesGuard)
@@ -49,7 +58,7 @@ export class AdminController {
   @ApiOperation({summary: 'Delete chatbot'})
   @UseGuards(RolesGuard)
   @Roles(UserRole.admin)
-  async delete(@Param('id') chatbotId: number): Promise<Chatbot> {
+  async deleteChatbot(@Param('id') chatbotId: number): Promise<Chatbot> {
     return this._chatbotService.delete(chatbotId);
   }
 

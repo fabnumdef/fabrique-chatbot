@@ -1,9 +1,10 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from "@nestjs/typeorm";
-import { Repository } from "typeorm";
+import { DeleteResult, Repository } from "typeorm";
 import { User } from "@entity/user.entity";
 import { UserModel } from "@model/user.model";
 import { MailService } from "../shared/services/mail.service";
+import { UserRole } from "@enum/user-role.enum";
 const crypto = require('crypto');
 
 @Injectable()
@@ -51,8 +52,19 @@ export class UserService {
     });
   }
 
-  async delete(email: string): Promise<void> {
-    await this._usersRepository.delete(email);
+  async delete(email: string): Promise<DeleteResult> {
+    return await this._usersRepository.delete(email);
+  }
+
+  async deleteUser(email: string): Promise<DeleteResult> {
+    const userExists = await this.findOne(email);
+    if (!userExists) {
+      throw new HttpException('Cet utilisateur n\'existe pas.', HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+    if (userExists.role === UserRole.admin) {
+      throw new HttpException('Impossible de supprimer un utilisateur administrateur.', HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+    return await this._usersRepository.delete(email);
   }
 
   async sendEmailPasswordToken(user: User) {
