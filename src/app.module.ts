@@ -47,9 +47,6 @@ import { ScheduleModule } from "@nestjs/schedule";
           rejectUnauthorized: false
         }
       },
-      defaults: {
-        from:`"nest-modules" <${process.env.MAIL_USER}>`,
-      },
       template: {
         dir: path.resolve(__dirname, '..', 'templates'),
         adapter: new HandlebarsAdapter(),

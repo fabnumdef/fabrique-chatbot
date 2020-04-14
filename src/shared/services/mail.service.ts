@@ -21,7 +21,7 @@ export class MailService {
         subject: subject,
         template: template,
         context: context,
-      }).then(() => {
+      }).then((info) => {
         console.log(`MAIL SEND TO: ${email} WITH SUBJECT: ${subject} WITH TEMPLATE: ${template} AND CONTEXT: ${JSON.stringify(context)}`);
       }).catch(() => {
         console.error(`FAIL - MAIL SEND TO: ${email} WITH SUBJECT: ${subject} WITH TEMPLATE: ${template} AND CONTEXT: ${JSON.stringify(context)}`);
