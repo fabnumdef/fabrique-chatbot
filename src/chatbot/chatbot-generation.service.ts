@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpService, Injectable } from '@nestjs/common';
 import { Cron, CronExpression } from "@nestjs/schedule";
 import { ChatbotService } from "./chatbot.service";
 import { ChatbotStatus } from "@enum/chatbot-status.enum";
@@ -8,6 +8,9 @@ import { Chatbot } from "@entity/chatbot.entity";
 import { LaunchUpdateChatbotDto } from "@dto/launch-update-chatbot.dto";
 import { OvhStorageService } from "../shared/services/ovh-storage.service";
 import * as fs from "fs";
+import { MailService } from "../shared/services/mail.service";
+const crypto = require('crypto');
+const FormData = require('form-data');
 
 @Injectable()
 export class ChatbotGenerationService {
@@ -15,10 +18,13 @@ export class ChatbotGenerationService {
   private _appDir = '/var/www/fabrique-chatbot-back/ansible';
 
   constructor(private readonly _chatbotService: ChatbotService,
-              private readonly _ovhStorageService: OvhStorageService) {
+              private readonly _ovhStorageService: OvhStorageService,
+              private readonly _http: HttpService,
+              private readonly _mailService: MailService) {
   }
 
   @Cron(CronExpression.EVERY_5_MINUTES)
+  // @Cron(CronExpression.EVERY_30_SECONDS)
   async checkChatbots() {
     const botsToBeCreated: Chatbot[] = await this._chatbotService.findAll({
       status: ChatbotStatus.pending_configuration,
@@ -85,13 +91,61 @@ export class ChatbotGenerationService {
     // On les récupère ici pour être sûr (si la commande ansible précédente prend trop de temps)
     const botsToBeCreated: Chatbot[] = await this._chatbotService.findAll({
       status: ChatbotStatus.pending_configuration,
-      ip_adress: Not(IsNull())
+      ip_adress: Not(IsNull()),
+      relations: ['user']
     });
     for (const chatbot of botsToBeCreated) {
       await this._chatbotService.findAndUpdate(chatbot.id, {status: ChatbotStatus.configuration});
       console.log(`GENERATING CHATBOT - ${chatbot.id} - ${chatbot.name}`);
       const extraVars: LaunchUpdateChatbotDto = new LaunchUpdateChatbotDto(true, true, true);
       await this.updateChatbot(chatbot, extraVars);
+      this._initChatbot(chatbot);
     }
+  }
+
+  private async _initChatbot(chatbot: Chatbot) {
+    const password = crypto.randomBytes(12).toString('hex');
+    const user = chatbot.user;
+    const file = await this._ovhStorageService.get(chatbot.file).then();
+
+    const userToCreate = {
+      email: user.email,
+      firstName: user.first_name,
+      lastName: user.last_name,
+      password: password
+    };
+
+    // Create first admin user
+    await this._http.post(`http://${chatbot.ip_adress}/api/user/admin`, userToCreate).toPromise().then();
+    this._mailService.sendEmail(user.email, 'Création de compte', 'create-chatbot', {
+      firstName: user.first_name,
+      ipAdress: chatbot.ip_adress,
+      password: password
+    });
+
+    // Log user & import file
+    let token;
+    await this._http.post(`http://${chatbot.ip_adress}/api/auth/login`, {
+      email: user.email,
+      password: password
+    }).toPromise().then(response => {
+      token = response.data.chatbotToken;
+    });
+
+    // Import file
+    const form = new FormData();
+    form.append('file', Buffer.from(file.buffer), chatbot.file);
+    form.append('deleteIntents', true.toString());
+    let headers: any = {
+      ...form.getHeaders(),
+      ...{Authorization: `Bearer ${token}`},
+    };
+    await this._http.post(`http://${chatbot.ip_adress}/api/file/import`, form, {headers: headers}).toPromise().then();
+
+    // Train Rasa
+    headers = {
+      Authorization: `Bearer ${token}`
+    };
+    await this._http.post(`http://${chatbot.ip_adress}/api/rasa/train`, {}, {headers: headers}).toPromise().then();
   }
 }

@@ -1,4 +1,15 @@
-import { Body, Controller, Delete, Get, HttpException, HttpStatus, Param, Post, Put, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpException,
+  HttpStatus,
+  Param,
+  Post,
+  Put, Req,
+  UseGuards
+} from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiTags } from "@nestjs/swagger";
 import { JwtAuthGuard } from "@guard/jwt.guard";
 import { UserDto } from "@dto/user.dto";
@@ -50,7 +61,9 @@ export class AdminController {
   @UseGuards(RolesGuard)
   @Roles(UserRole.admin)
   async getChatbots(): Promise<ChatbotDto[]> {
-    const chatbots: Chatbot[] = await this._chatbotService.findAll();
+    const chatbots: Chatbot[] = await this._chatbotService.findAll({
+      relations: ['user']
+    });
     return plainToClass(ChatbotDto, camelcaseKeys(chatbots, {deep: true}));
   }
 

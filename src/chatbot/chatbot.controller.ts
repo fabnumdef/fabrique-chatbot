@@ -4,7 +4,7 @@ import {
   Get,
   HttpException,
   HttpStatus,
-  Post,
+  Post, Req,
   UploadedFile,
   UploadedFiles,
   UseGuards,
@@ -44,14 +44,15 @@ export class ChatbotController {
   @ApiConsumes('multipart/form-data')
   @ApiOperation({summary: 'Create chatbot'})
   async create(@UploadedFiles() files,
-               @Body() botConfiguration: CreateChatbotDto) {
+               @Body() botConfiguration: CreateChatbotDto,
+               @Req() req) {
     const file: FileModel = files.file[0];
     const icon: FileModel = files.icon[0];
     const errors = this._chatbotService.checkTemplateFile(file).errors;
     if (errors && Object.keys(errors).length > 0) {
       throw new HttpException('Le fichier contient des erreurs bloquantes.', HttpStatus.INTERNAL_SERVER_ERROR);
     }
-    const botModel = await this._chatbotService.create(plainToClass(ChatbotModel, snakecaseKeys(botConfiguration)), file, icon);
+    const botModel = await this._chatbotService.create(plainToClass(ChatbotModel, snakecaseKeys({...botConfiguration, ...{user: req.user}})), file, icon);
     return plainToClass(ChatbotDto, camelcaseKeys(botModel, {deep: true}));
   }
 

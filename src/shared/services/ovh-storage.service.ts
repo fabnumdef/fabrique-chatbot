@@ -15,7 +15,7 @@ export class OvhStorageService {
   private _token;
   private _endpoint: string;
 
-  constructor(private _http: HttpService) {
+  constructor(private readonly _http: HttpService) {
     this._connection();
   }
 

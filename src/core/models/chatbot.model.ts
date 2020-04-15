@@ -1,5 +1,6 @@
-import { IsNotEmpty, IsOptional, IsString } from "class-validator";
+import { IsNotEmpty, IsObject, IsOptional, IsString } from "class-validator";
 import { ChatbotStatus } from "@enum/chatbot-status.enum";
+import { UserModel } from "@model/user.model";
 
 export class ChatbotModel {
   @IsString()
@@ -41,4 +42,8 @@ export class ChatbotModel {
   @IsString()
   @IsOptional()
   status: ChatbotStatus;
+
+  @IsObject()
+  @IsOptional()
+  user: UserModel;
 }
