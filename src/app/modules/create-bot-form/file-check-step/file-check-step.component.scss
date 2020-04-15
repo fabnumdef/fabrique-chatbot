@@ -51,10 +51,15 @@
         margin-top: 20px;
         color: $primary-color;
       }
-      .feedback-wrapper-content{
+
+      .feedback-file {
         display: flex;
-        flex-direction: column;
+
+        & > * {
+          flex: 1;
+        }
       }
+
       .file-wrapper {
         width: 100%;
         display: flex;
@@ -62,102 +67,47 @@
         align-items: flex-start;
         justify-content: space-between;
         border: 1px solid $input-border-color;
-  
-        .file-wrapper-fileInfo{
-          width: 100%;
+
+        .file-name {
           display: flex;
           background-color: $grey-lighter;
-          justify-content: space-between;
+          padding: 20px;
+          width: 100%;
+          box-sizing: border-box;
 
-          .fileInfo {
-            display: flex;
-            align-items: center;
-            padding-left: 20px;
-          }
-
-          .fileName {
-            padding-left: 10px;
-          }
-
-          .file-wrapper-buttons {
-            display: flex;
-            align-items: center;
-            justify-content: space-around;
-            padding: 10px 20px;
-  
-            .delete-button{
-              margin-right: 20px;
-            }
+          .mat-icon {
+            margin-right: 10px;
           }
         }
 
-        .file-wrapper-fileStatus {
-          padding: 10px 25px;
+        .file-buttons {
+          display: flex;
+          align-items: center;
+          padding: 20px;
 
-          .file-wrapper-fileValid {
+          & > *:not(:last-child) {
+            margin-right: 20px;
+          }
+        }
+
+        .file-status {
+          padding: 10px 20px;
+          font-size: 12px;
+
+          .valid {
             color: $primary-color;
           }
-  
-          .file-wrapper-fileError {
+
+          .error {
             color: $accent-color;
           }
         }
-        
-        .feedback-table {
-          width: 97%;
-          display: flex;
-          flex-direction: column;
-          align-items: flex-start;
-          margin-bottom: 15px;
-          padding: 0px 20px;
 
-          .feedback-table-content {
-            display: flex;
-            flex-direction: column;
-            width: 100%;
-            border-top: 1px solid $input-border-color;
-            margin-top: 15px;
 
-            .feedback-element {
-              display: flex;
-              flex-direction: row;
-              margin-top: 15px;
-
-              .red{
-                color: $accent-color;
-              }
-
-              .number {
-                width: 40px;
-                background-color: $accent-color;
-                color: $white;
-                border-radius: 13px;
-                text-align: center;
-                margin-right: 5px;
-              }
-            }
-
-            .message {
-              padding-left: 45px;
-
-              a {
-                text-decoration: underline;
-                color: $accent-color;
-                cursor: pointer;
-              }
-            }
-          }
-  
-          & > * {
-            min-width: 200px;
-          }
-        }
-
-        
         & > * {
           display: flex;
           align-items: center;
-  
+
           & > *:first-child {
             margin-right: 15px;
           }
@@ -165,8 +115,44 @@
         }
       }
 
-      .warnings {
+      .feedback-wrapper {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 0 20px;
 
+        .content {
+          display: flex;
+          width: 100%;
+          align-items: flex-start;
+
+          .number {
+            width: 40px;
+            background-color: $primary-color;
+            color: $white;
+            border-radius: 13px;
+            text-align: center;
+            margin-right: 15px;
+
+            &.error {
+              background-color: $accent-color;
+            }
+          }
+
+          .message {
+            a {
+              text-decoration: underline;
+              color: $accent-color;
+              cursor: pointer;
+            }
+          }
+        }
+
+        .mat-divider {
+          width: 100%;
+          margin-bottom: 20px;
+        }
       }
     }
   }

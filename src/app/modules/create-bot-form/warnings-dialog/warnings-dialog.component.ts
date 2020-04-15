@@ -1,5 +1,6 @@
-import { Component, OnInit, Inject} from '@angular/core';
-import {MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
+import { Component, OnInit, Inject } from '@angular/core';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { KeyValue } from '@angular/common';
 
 @Component({
   selector: 'app-warnings-dialog',
@@ -8,23 +9,30 @@ import {MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
 })
 export class WarningsDialogComponent implements OnInit {
 
-  type: string;
+  isError: boolean;
   details: { [key: string]: string };
 
   constructor(public dialogRef: MatDialogRef<WarningsDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any) {
-      this.type = data.type;
-      this.details = data.details;
+              @Inject(MAT_DIALOG_DATA) public data: any) {
+    this.isError = data.isError;
+    this.details = data.details;
   }
 
   ngOnInit(): void {
   }
 
-  onNoClick(): void {
-    this.dialogRef.close();
+  getTitle(): string {
+    if (this.isError) {
+      return 'Liste des erreurs présentes dans le fichier téléchargé';
+    }
+    return 'Liste des avertissements présents dans le fichier téléchargé';
   }
 
-  returnZero() {
-    return 0;
-    }
+  returnKeyNumber(object: KeyValue<string, string>): number {
+    return parseInt(object.key, 10);
+  }
+
+  get detailsLength() {
+    return Object.keys(this.details).length;
+  }
 }

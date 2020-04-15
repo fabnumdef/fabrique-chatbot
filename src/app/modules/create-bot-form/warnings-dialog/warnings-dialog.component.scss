@@ -1,61 +1,74 @@
 @import "src/styles/variables";
 
 .warnings {
+  display: flex;
+  flex-direction: column;
+  width: 90%;
+  margin: auto;
+  height: 100%;
+  overflow: hidden;
+
+  .close {
     display: flex;
-    flex-direction: column;
     width: 100%;
-    height: 100%;
+    justify-content: flex-end;
 
-    .close {
+    .mat-icon {
+      margin-right: inherit;
+    }
+  }
+
+  $border-radius: 5px;
+
+  .details {
+    border-radius: $border-radius;
+    border: 1px solid $input-border-color;
+    // 100% - close height - h3 height
+    max-height: calc(100% - 108px);
+
+    .header {
+      background-color: $grey-lighter;
+      padding: 20px 20px 20px 40px;
+      display: flex;
+      align-items: center;
+      border-top-right-radius: $border-radius;
+      border-top-left-radius: $border-radius;
+
+      .number {
+        width: 40px;
+        background-color: $accent-color;
+        color: $white;
+        border-radius: 13px;
+        text-align: center;
+        margin-right: 15px;
+      }
+
+      h3 {
+        margin: 0;
+      }
+    }
+
+    .content {
+      // 100% - header height
+      max-height: calc(100% - 68px);
+      overflow-y: auto;
+      padding: 0 20px;
+
+      .line {
         display: flex;
-        width: 100%;
-        justify-content: flex-end;
+        justify-content: flex-start;
+        align-items: center;
+        border-radius: $border-radius;
+        padding: 20px;
 
-        .mat-icon {
-            margin-right: inherit;
+        &.striped {
+          background-color: $grey-lighter;
         }
-    }
 
-    .title {
-        display: flex;
-        width: 90%;
-        justify-content: center;
-        margin: 10px auto;
-        margin-bottom: 30px;
-    }
-
-    .details {
-        width: 90%;
-        max-height: 80%;
-        overflow-y: auto;
-        font-size: 16px;
-        margin: auto;
-        margin-top: 0px;
-        border-top: 1px solid rgba(0, 0, 0, 0.12);
-
-        .detail-content{
-            display: flex;
-            justify-content: flex-start;
-            align-items: center;
-            height: 60px;
-            border-bottom: 1px solid rgba(0, 0, 0, 0.12);
-            margin-top: 0px;
-
-            .line-icon {
-                padding-left: 10px;
-                padding-right: 40px;
-                height: 40px;
-                font-size: 40px;
-            }
-
-            .line-number {
-                width: 100px;
-                color: $accent-color;
-            }
-
-            .line-text {
-                width: 100%;
-            }
+        .line-number {
+          color: $accent-color;
         }
+      }
     }
+  }
 }

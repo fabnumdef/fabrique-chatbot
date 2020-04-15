@@ -86,11 +86,11 @@ export class FileCheckStepComponent extends DestroyObservable implements OnInit 
     return (Object.keys(this.fileTemplateCheckResume.warnings).length > 0);
   }
 
-  openDialog(type: string, detailsArray: { [key: string]: string }): void {
+  openDialog(isError: boolean, detailsArray: { [key: string]: string }): void {
     const dialogRef = this.dialog.open(WarningsDialogComponent, {
       width: '100%',
       height: '90%',
-      data: {type: type, details: detailsArray}
+      data: {isError: isError, details: detailsArray}
     });
   }
 

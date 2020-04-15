@@ -15,95 +15,93 @@
               (click)="uploader.click()">
         <mat-icon *ngIf="!(chatbotService.loading$ | async)">add</mat-icon>
         <mat-spinner *ngIf="chatbotService.loading$ | async"
-                    aria-label="Chargement et vérification du fichier"
-                    [diameter]="24"></mat-spinner>
+                     aria-label="Chargement et vérification du fichier"
+                     [diameter]="24"></mat-spinner>
         Ajouter un fichier
       </button>
       <input hidden
-            type="file"
-            #uploader
-            (change)="uploadFile($event)"
-            [accept]="'.xlsx'"/>
+             type="file"
+             #uploader
+             (change)="uploadFile($event)"
+             [accept]="'.xlsx'"/>
     </div>
 
     <div class="feedback-wrapper" *ngIf="fileTemplateCheckResume">
       <h3>Base documentaire</h3>
-      <div class="feedback-wrapper-content">
+      <div class="feedback-file">
         <div class="file-wrapper" *ngIf="fileCtrl.value">
-          <div class="file-wrapper-fileInfo">
-            <div class="fileInfo">
-              <mat-icon color="primary" 
-                        *ngIf="objectKeys(fileTemplateCheckResume.errors).length == 0">
-                        check_circle
-              </mat-icon>
-              <mat-icon color="accent" 
-                        *ngIf="objectKeys(fileTemplateCheckResume.errors).length > 0">
-                        cancel
-              </mat-icon>
-              <span class="fileName"> {{ fileCtrl.value.name }} </span>
-            </div>
-            <div class="file-wrapper-buttons">
-              <button mat-stroked-button
-                      class="delete-button"
-                      color="accent"
-                      (click)="resetFile()">
-                Supprimer
-              </button>
-              <button mat-flat-button
-                      color="accent"
-                      [disabled]="chatbotService.loading$ | async"
-                      (click)="uploader.click()">
-                Mettre à jour
-              </button>
-            </div>
+          <div class="file-name">
+            <mat-icon color="primary"
+                      *ngIf="!hasFileErrors()">
+              check_circle
+            </mat-icon>
+            <mat-icon color="accent"
+                      *ngIf="hasFileErrors()">
+              cancel
+            </mat-icon>
+            {{ fileCtrl.value.name }}
           </div>
-          <div class="file-wrapper-fileStatus">
-            <span class="file-wrapper-fileValid" *ngIf="!hasFileErrors()">
+          <div class="file-status">
+            <span class="valid" *ngIf="!hasFileErrors()">
               Votre fichier est valide.
             </span>
-            <span class="file-wrapper-fileError" *ngIf="hasFileErrors()">
+            <span class="error" *ngIf="hasFileErrors()">
               Votre fichier contient des erreurs. Veuillez le corriger et le mettre à jour.
             </span>
           </div>
-
-          
-          <div class="feedback-table" *ngIf="hasFileErrors() || hasFileWarnings()">
-            <div class="feedback-table-content" *ngIf="hasFileErrors()">
-              <div class="feedback-element">
-                <div class="number">
-                  {{ objectKeys(fileTemplateCheckResume.errors).length }}
-                </div>
-                <span>
-                    <b>Erreurs</b><span class="red">*</span>
-                </span>
-              </div>
-              <div class="message">
-                Votre fichier contient des erreurs qui l'empêche de fonctionner.
-                <a (click)="openDialog('erreurs',fileTemplateCheckResume.errors)">
+          <div class="file-buttons">
+            <button mat-stroked-button
+                    color="accent"
+                    (click)="resetFile()">
+              Supprimer
+            </button>
+            <button mat-flat-button
+                    color="accent"
+                    [disabled]="chatbotService.loading$ | async"
+                    (click)="uploader.click()">
+              Mettre à jour
+            </button>
+          </div>
+        </div>
+        <div class="feedback-wrapper">
+          <div class="content">
+            <div class="number" [ngClass]="{'error': hasFileErrors()}">
+              {{ objectKeys(fileTemplateCheckResume.errors).length }}
+            </div>
+            <div class="message">
+              <b>Erreur(s)</b><span class="red">*</span><br/>
+              <span *ngIf="!hasFileErrors(); else messageError">
+                Votre fichier est conforme aux normes.
+              </span>
+              <ng-template #messageError>
+                Votre fichier contient des erreurs qui l'empêche de fonctionner.<br/>
+                <a (click)="openDialog(true, fileTemplateCheckResume.errors)">
                   <b>Visualiser les erreurs</b>
                 </a>
-              </div>
+              </ng-template>
             </div>
-            <div class="feedback-table-content" *ngIf="hasFileWarnings()">
-              <div class="feedback-element">
-                <div class="number">
-                  {{ objectKeys(fileTemplateCheckResume.warnings).length }}
-                </div>
-                <span>
-                    <b>Avertissements</b>
-                </span>
-              </div>
-              <div class="message">
-                Votre fichier contient des erreurs qui l'empêche de fonctionner.
-                <a (click)="openDialog('avertissements', fileTemplateCheckResume.warnings)">
+          </div>
+          <mat-divider></mat-divider>
+          <div class="content">
+            <div class="number" [ngClass]="{'error': hasFileWarnings()}">
+              {{ objectKeys(fileTemplateCheckResume.warnings).length }}
+            </div>
+            <div class="message">
+              <b>Avertissement(s)</b><br/>
+              <span *ngIf="!hasFileWarnings(); else messageWarning">
+                Votre fichier ne contient pas d'avertissements.
+              </span>
+              <ng-template #messageWarning>
+                Votre fichier contient des avertissements qui ne sont pas bloquants pour la création de votre
+                chatbot.<br/>
+                <a (click)="openDialog(false, fileTemplateCheckResume.warnings)">
                   <b>Visualiser les avertissements</b>
                 </a>
-              </div>
+              </ng-template>
             </div>
           </div>
         </div>
       </div>
-
     </div>
     <mat-divider></mat-divider>
     <h2>Cadre d'utilisation de votre chatbot</h2>
@@ -125,15 +123,15 @@
     <div class="author-content">
       <div class="author-content-element">
         <mat-form-field class="full-width-input" appearance="outline">
-            <mat-label>Nom, Prénom</mat-label>
-            <input matInput
-                  id="author-field"
-                  formControlName="author"
-                  [placeholder]="'Saisir ...'"
-                  required/>
-            <mat-error *ngIf="controls.author.hasError('required')">
-              Vous n'avez pas saisi le nom du contact.
-            </mat-error>
+          <mat-label>Nom, Prénom</mat-label>
+          <input matInput
+                 id="author-field"
+                 formControlName="author"
+                 [placeholder]="'Saisir ...'"
+                 required/>
+          <mat-error *ngIf="controls.author.hasError('required')">
+            Vous n'avez pas saisi le nom du contact.
+          </mat-error>
         </mat-form-field>
       </div>
       <div class="author-content-element">
@@ -145,20 +143,20 @@
             </mat-option>
           </mat-select>
           <mat-error *ngIf="controls.role.hasError('required')">Vous n'avez pas renseigné le rôle du contact</mat-error>
-      </mat-form-field>
+        </mat-form-field>
       </div>
       <div class="author-content-element">
         <mat-form-field class="full-width-input" appearance="outline">
           <mat-label>Email</mat-label>
           <input matInput
-                id="author-field"
-                formControlName="email"
-                [placeholder]="'Saisir ...'"
-                required/>
+                 id="author-field"
+                 formControlName="email"
+                 [placeholder]="'Saisir ...'"
+                 required/>
           <mat-error *ngIf="controls.email.hasError('required')">
             Vous n'avez pas saisi le mail du contact.
           </mat-error>
-      </mat-form-field>
+        </mat-form-field>
       </div>
     </div>
   </form>
