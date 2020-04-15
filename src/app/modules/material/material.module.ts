@@ -12,16 +12,17 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatTableModule } from '@angular/material/table';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatMenuModule } from '@angular/material/menu';
 
 @NgModule({
   declarations: [],
   imports: [
     MatStepperModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatIconModule, MatProgressSpinnerModule, MatDividerModule,
-    MatSelectModule, MatRadioModule, MatDialogModule, MatTableModule, MatProgressBarModule, MatTooltipModule
+    MatSelectModule, MatRadioModule, MatDialogModule, MatTableModule, MatProgressBarModule, MatTooltipModule, MatMenuModule
   ],
   exports: [
     MatStepperModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatIconModule, MatProgressSpinnerModule, MatDividerModule,
-    MatSelectModule, MatRadioModule, MatDialogModule, MatTableModule, MatProgressBarModule, MatTooltipModule
+    MatSelectModule, MatRadioModule, MatDialogModule, MatTableModule, MatProgressBarModule, MatTooltipModule, MatMenuModule
   ]
 })
 export class MaterialModule { }

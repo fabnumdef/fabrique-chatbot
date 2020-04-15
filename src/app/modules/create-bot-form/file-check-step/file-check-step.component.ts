@@ -1,11 +1,11 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { finalize } from 'rxjs/operators';
-import { DestroyObservable } from '../../../core/utils/destroy-observable';
-import { FileTemplateCheckResume } from '../../../core/models';
-import { ChatbotService } from '../../../core/services';
 import { MatDialog } from '@angular/material/dialog';
 import { WarningsDialogComponent } from '../warnings-dialog/warnings-dialog.component';
+import { DestroyObservable } from '@utils/destroy-observable';
+import { FileTemplateCheckResume } from '@model/file-template-check-resume.model';
+import { ChatbotService } from '@service/chatbot.service';
 
 interface Role {
   value: string;

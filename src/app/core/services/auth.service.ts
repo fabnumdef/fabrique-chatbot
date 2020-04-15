@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
-import { User } from '../models';
-import { Login } from '../models';
 import { environment } from '../../../environments/environment';
 import { finalize, tap } from 'rxjs/operators';
-import { ResetPassword } from '../models/reset-password.model';
+import { ResetPassword } from '@model/reset-password.model';
 import { Router } from '@angular/router';
+import { User } from '@model/user.model';
+import { Login } from '@model/login.model';
 
 @Injectable({
   providedIn: 'root'
@@ -30,26 +30,6 @@ export class AuthService {
 
   isAuthenticated(): boolean {
     return !!this.token;
-  }
-
-  public get authenticating$(): Observable<boolean> {
-    return this._authenticating$;
-  }
-
-  public get token$() {
-    return this._token$;
-  }
-
-  public get token() {
-    return this._token$.value;
-  }
-
-  public get user$() {
-    return this._user$;
-  }
-
-  public get user() {
-    return this._user$.value;
   }
 
   public authenticate(login: Login): Observable<any> {
@@ -93,5 +73,29 @@ export class AuthService {
     if (user) {
       this.user$.next(JSON.parse(user));
     }
+  }
+
+  /**
+   * GETTERS
+   */
+
+  public get authenticating$(): Observable<boolean> {
+    return this._authenticating$;
+  }
+
+  public get token$(): BehaviorSubject<string> {
+    return this._token$;
+  }
+
+  public get token(): string {
+    return this._token$.value;
+  }
+
+  public get user$(): BehaviorSubject<User> {
+    return this._user$;
+  }
+
+  public get user(): User {
+    return this._user$.value;
   }
 }

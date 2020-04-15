@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { ChatbotService } from '../../../core/services';
-import { Chatbot } from '../../../core/models/chatbot.model';
+import { Chatbot } from '@model/chatbot.model';
 import { Observable } from 'rxjs';
+import { ChatbotService } from '@service/chatbot.service';
 
 @Component({
   selector: 'app-chatbot-list',

@@ -6,10 +6,20 @@
   <div class="action-wrapper">
     <button mat-stroked-button
             color="accent"
-            [routerLink]="'/admin'"
+            [matMenuTriggerFor]="adminMenu"
             *ngIf="isUserAdmin">
       Administrateur
     </button>
+    <mat-menu #adminMenu="matMenu">
+      <button mat-menu-item
+              [routerLink]="'/admin/chatbot'">
+        Chatbots 🤖
+      </button>
+      <button mat-menu-item
+              [routerLink]="'/admin/user'">
+        Utilisateurs 👨‍👩‍👧‍👦
+      </button>
+    </mat-menu>
     <button mat-stroked-button
             color="accent"
             *ngIf="user"

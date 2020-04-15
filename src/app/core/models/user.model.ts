@@ -1,4 +1,4 @@
-import { UserRole } from '../enums/user-role.enum';
+import { UserRole } from '@enum/user-role.enum';
 
 export class User {
   email: string;
@@ -7,4 +7,5 @@ export class User {
   chatbotTheme: string;
 
   role: UserRole;
+  createdAt: string;
 }

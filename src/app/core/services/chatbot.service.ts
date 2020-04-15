@@ -2,9 +2,10 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
-import { ChatbotConfiguration, FileTemplateCheckResume } from '../models';
 import { finalize } from 'rxjs/operators';
-import { Chatbot } from '../models/chatbot.model';
+import { Chatbot } from '@model/chatbot.model';
+import { ChatbotConfiguration } from '@model/chatbot-configuration.model';
+import { FileTemplateCheckResume } from '@model/file-template-check-resume.model';
 
 @Injectable({
   providedIn: 'root'

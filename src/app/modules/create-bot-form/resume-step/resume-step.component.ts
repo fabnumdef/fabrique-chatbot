@@ -1,8 +1,8 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormArray } from '@angular/forms';
-import { ChatbotConfiguration } from '../../../core/models';
-import { ChatbotService } from '../../../core/services';
 import { ActivatedRoute, Router } from '@angular/router';
+import { ChatbotService } from '@service/chatbot.service';
+import { ChatbotConfiguration } from '@model/chatbot-configuration.model';
 
 @Component({
   selector: 'app-resume-step',

@@ -1,0 +1,19 @@
+<div class="confirm-dialog">
+  <h1>Confirmation</h1>
+
+  <div class="message" [innerHTML]="message">
+  </div>
+
+  <div class="actions">
+    <button mat-flat-button
+            color="accent"
+            [mat-dialog-close]="false">
+      Annuler
+    </button>
+    <button mat-stroked-button
+            color="accent"
+            [mat-dialog-close]="true">
+      Confirmer
+    </button>
+  </div>
+</div>
