@@ -11,6 +11,7 @@ import { ResumeStepComponent } from './resume-step/resume-step.component';
 import { SuccessStepComponent } from './success-step/success-step.component';
 import { DescriptionStepComponent } from './description-step/description-step.component';
 import { WarningsDialogComponent } from './warnings-dialog/warnings-dialog.component';
+import { ChatbotPreviewComponent } from './customization-step/chatbot-preview/chatbot-preview.component';
 
 @NgModule({
   declarations: [
@@ -20,7 +21,8 @@ import { WarningsDialogComponent } from './warnings-dialog/warnings-dialog.compo
     CustomizationStepComponent,
     ResumeStepComponent,
     SuccessStepComponent,
-    WarningsDialogComponent
+    WarningsDialogComponent,
+    ChatbotPreviewComponent
   ],
   imports: [
     CommonModule,

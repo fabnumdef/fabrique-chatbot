@@ -6,8 +6,11 @@ COLORS
 $primary-color: map-get($chatbot-primary, 500);
 $accent-color: map-get($chatbot-accent, 500);
 $white: #ffffff;
+$grey: #8E8E8E;
 $grey-lighter: #f7f7f7;
 $grey-light: #d4d4d4;
+
+$shadow-uniform: 0 0 10px 0 rgba(0, 0, 0, 0.15);
 
 $title-font: 'Gilroy';
 

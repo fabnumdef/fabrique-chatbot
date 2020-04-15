@@ -1,0 +1,55 @@
+<div class="chatbot-preview">
+  <div class="header" [style]="'background-color: ' + chatbot.primaryColor">
+    <div class="icon">
+      <img [src]="iconSrc" *ngIf="iconSrc">
+    </div>
+    <div class="name">
+      {{ chatbot.name ? chatbot.name : 'Nom du chatbot' }}
+    </div>
+  </div>
+  <div class="body">
+    <div class="message">
+      <img [src]="iconSrc" *ngIf="iconSrc">
+      <div class="bot-message" [style]="'background-color: ' + chatbot.primaryColor">
+        Bonjour que puis-je pour vous ?
+      </div>
+    </div>
+    <div class="message">
+      <div class="user-message" [style]="'background-color: ' + chatbot.secondaryColor">
+        Lorem Ipsum
+      </div>
+    </div>
+    <div class="message">
+      <img [src]="iconSrc" *ngIf="iconSrc">
+      <div class="bot-message" [style]="'background-color: ' + chatbot.primaryColor">
+        Désolé aucune question ne correspond à votre requête.
+      </div>
+    </div>
+    <div class="message">
+      <img [src]="iconSrc" *ngIf="iconSrc">
+      <div class="bot-message" [style]="'background-color: ' + chatbot.primaryColor">
+        Pouvez-vous reformuler ?
+      </div>
+    </div>
+    <div class="message">
+      <div class="user-message" [style]="'background-color: ' + chatbot.secondaryColor">
+        Lorem Ipsum
+      </div>
+    </div>
+    <div class="message">
+      <img [src]="iconSrc" *ngIf="iconSrc">
+      <div class="bot-message" [style]="'background-color: ' + chatbot.primaryColor">
+        Désolé aucune question ne correspond à votre requête.
+      </div>
+    </div>
+    <div class="message">
+      <img [src]="iconSrc" *ngIf="iconSrc">
+      <div class="bot-message" [style]="'background-color: ' + chatbot.primaryColor">
+        Pouvez-vous reformuler ?
+      </div>
+    </div>
+  </div>
+  <div class="footer" [style]="'background-color: ' + chatbot.secondaryColor">
+    Tapez votre message ...
+  </div>
+</div>

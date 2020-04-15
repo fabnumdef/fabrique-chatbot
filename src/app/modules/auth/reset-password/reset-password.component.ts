@@ -34,6 +34,9 @@ export class ResetPasswordComponent implements OnInit {
   }
 
   resetPassword() {
+    if (!this.resetPasswordForm.valid) {
+      return;
+    }
     const resetPassword: ResetPassword = {
       password: this.controls.password.value,
       token: this.token

@@ -1,12 +1,10 @@
 <div class="customization">
   <form [formGroup]="formGroup" *ngIf="formGroup">
     <h2>Quel est le nom de votre chatbot ?</h2>
-    <mat-form-field class="half-width-input" appearance="outline">
-      <mat-label>Quel est le nom de votre chatbot ?</mat-label>
+    <mat-form-field appearance="outline">
       <input matInput
-             id="name-field"
              formControlName="name"
-             [placeholder]="'Saisir ...'"
+             [placeholder]="'Roger, Bernadette, Hugo ...'"
              required/>
       <mat-error *ngIf="controls.name.hasError('required')">
         Vous n'avez pas saisi de nom pour votre chatbot.
@@ -17,51 +15,86 @@
 
     <h2>Quel est l'icône de votre chatbot ?</h2>
     <div>
-      <span>
-        Choisir l'icône qui vous convient dans la bibliothèque ci-dessous.
-      </span>
+      Choisir l'icône qui vous convient dans la bibliothèque ci-dessous.
     </div>
-    <mat-form-field class="half-width-input" appearance="outline">
-      <mat-label>Icône ?</mat-label>
-      <input matInput
-             id="name-field"
-             formControlName="icon"
-             [placeholder]="'Saisir ...'"
-             required/>
-      <mat-error *ngIf="controls.icon.hasError('required')">
-        Vous n'avez pas saisi d'icône.
-      </mat-error>
-    </mat-form-field>
-    
+    <div class="icons-wrapper">
+      <div class="icon"
+           *ngFor="let icon of icons"
+           (click)="selectIcon(icon)">
+        <img [src]="'assets/img/icons/' + icon" [alt]="'Proposition de logo: ' + icon">
+      </div>
+    </div>
+    <div>
+      Ou importer votre propre icône <span class="hint">(*format jpg ou png)</span>
+    </div>
+    <button mat-flat-button
+            color="accent"
+            *ngIf="!controls.icon.value; else iconFileWrapper"
+            class="import-btn"
+            (click)="iconUploader.click()">
+      Importer une icône
+    </button>
+    <input hidden
+           type="file"
+           #iconUploader
+           (change)="uploadIcon($event)"
+           [accept]="'.jpg, .png'"/>
+
+    <ng-template #iconFileWrapper>
+      <div class="icon-file-wrapper">
+        <div>
+          <div class="icon">
+            <img [src]="imgPreview" *ngIf="imgPreview">
+          </div>
+          <div class="file-name">
+            {{ controls.icon?.value?.name }}
+          </div>
+        </div>
+        <div>
+          <button mat-stroked-button
+                  color="accent"
+                  (click)="resetIconFile()">
+            Supprimer
+          </button>
+          <button mat-flat-button
+                  color="accent"
+                  (click)="iconUploader.click()">
+            Mettre à jour
+          </button>
+        </div>
+      </div>
+    </ng-template>
+
     <mat-divider></mat-divider>
-    
+
     <h2>Quelles sont vos couleurs ?</h2>
-    <div class="full-width-input color-pickers-div">
-      <div class="color-picker-div" (click)="inputTagPrimary.click()">
-        <span>
-          Choisir la couleur primaire (en-tête)
-        </span>
+    <div class="color-picker-div" (click)="colorPickerPrimary.click()">
+      <label>
+        Choisir la couleur primaire (en-tête)
         <div>
-          <input #inputTagPrimary
-                class="colorpicker color-picker-icon"
-                [colorPicker]="controls.primaryColor.value"
-                [style.background]="controls.primaryColor.value"
-                (colorPickerChange)="controls.primaryColor.setValue($event)"/>
+          <input #colorPickerPrimary
+                 class="colorpicker color-picker-icon"
+                 [colorPicker]="controls.primaryColor.value"
+                 [style.background]="controls.primaryColor.value"
+                 (colorPickerChange)="controls.primaryColor.setValue($event)"/>
         </div>
-      
-      </div>
-      <div class="color-picker-div" (click)="inputTagSecondary.click()">
-        <span>
-          Choisir la couleur secondaire (bas de page)
-        </span>
+      </label>
+    </div>
+    <div class="color-picker-div" (click)="colorPickerSecondary.click()">
+      <label>
+        Choisir la couleur secondaire (bas de page)
         <div>
-          <input #inputTagSecondary
-                class="colorpicker color-picker-icon"
-                [colorPicker]="controls.secondaryColor.value"
-                [style.background]="controls.secondaryColor.value"
-                (colorPickerChange)="controls.secondaryColor.setValue($event)"/>
+          <input #colorPickerSecondary
+                 class="colorpicker color-picker-icon"
+                 [colorPicker]="controls.secondaryColor.value"
+                 [style.background]="controls.secondaryColor.value"
+                 (colorPickerChange)="controls.secondaryColor.setValue($event)"/>
         </div>
-      </div>
+      </label>
     </div>
   </form>
+</div>
+<div class="preview">
+  <app-chatbot-preview [chatbot]="formGroup.getRawValue()" [iconSrc]="imgPreview">
+  </app-chatbot-preview>
 </div>

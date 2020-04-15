@@ -3,7 +3,9 @@
     Création de compte
   </h2>
 
-  <form [formGroup]="signUpForm" *ngIf="signUpForm">
+  <form [formGroup]="signUpForm"
+        *ngIf="signUpForm"
+        (keyup.enter)="signUp()">
     <mat-form-field appearance="outline">
       <mat-label>Prénom</mat-label>
       <input matInput

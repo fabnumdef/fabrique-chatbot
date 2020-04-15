@@ -29,6 +29,9 @@ export class SignUpComponent implements OnInit {
   }
 
   signUp() {
+    if (!this.signUpForm.valid) {
+      return;
+    }
     this._userService.create(this.signUpForm.getRawValue()).subscribe((user: User) => {
       this._router.navigate(['./success'], {relativeTo: this._route, state: {email: user.email}});
     });

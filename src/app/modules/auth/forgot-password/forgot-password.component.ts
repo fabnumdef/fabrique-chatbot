@@ -27,6 +27,9 @@ export class ForgotPasswordComponent implements OnInit {
   }
 
   forgotPassword() {
+    if (!this.forgotPasswordForm.valid) {
+      return;
+    }
     this._auth.forgotPassword(this.controls.email.value).subscribe(() => {
       this._router.navigate(['./success'], {relativeTo: this._route, state: {email: this.controls.email.value}});
     });
