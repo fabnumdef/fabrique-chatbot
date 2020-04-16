@@ -38,7 +38,7 @@ export class AuthService {
       'forgot-password',
       {  // Data to be sent to template engine.
         firstName: userUpdated.first_name,
-        url: `${process.env.HOST_URL}/auth/reset-password?token=${userUpdated.reset_password_token}`
+        url: `${process.env.HOST_URL}/auth/reset_password?token=${userUpdated.reset_password_token}`
       })
       .then(() => {
       });
