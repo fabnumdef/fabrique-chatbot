@@ -12,6 +12,7 @@ import { ChatbotConfiguration } from '@model/chatbot-configuration.model';
 export class ResumeStepComponent implements OnInit {
 
   @Input() formArray: FormArray;
+  success: number;
 
   constructor(public chatbotService: ChatbotService,
               private _router: Router,
@@ -22,15 +23,23 @@ export class ResumeStepComponent implements OnInit {
   }
 
   generateChatbot() {
+
     const chatbotConfiguration: ChatbotConfiguration = this.formArray
       .getRawValue()
       .reduce((obj1, obj2) => Object.assign(obj1, obj2));
+    console.log(chatbotConfiguration);
     this.chatbotService.createChatbot(chatbotConfiguration).subscribe(() => {
-      this._router.navigate(['./success'], {relativeTo: this._route});
+      //this._router.navigate(['./success'], {relativeTo: this._route});
+      this.success = 1;
     }, err => {
       // TODO Delete when BACK is OK
-      this._router.navigate(['./success'], {relativeTo: this._route});
+      console.log('Erreur lors de l\'appel à l\'api pour la génération du bot.');
+      //this._router.navigate(['./success'], {relativeTo: this._route});
     });
+  }
+
+  test() {
+    console.log(this.formArray);
   }
 
 }

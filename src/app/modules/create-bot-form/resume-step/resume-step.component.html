@@ -1,6 +1,105 @@
 <div class="resume">
-  <div>
+  <div class="info-tab" *ngIf="!success">
+    <h2>Paramétrage</h2>
+    <div class="element">
+      <div>
+        Fichier base documentaire :
+      </div>
+      <div class="answer" *ngIf="formArray.at(0).value.file?.name">
+        {{formArray.at(0).value.file.name}}
+      </div>
+    </div>
+    <div class="element">
+      <div>
+        Domaine :
+      </div>
+      <div class="answer" *ngIf="formArray.at(0).value.intraDef == false">
+        Internet
+      </div>
+      <div class="answer" *ngIf="formArray.at(0).value.intraDef == true">
+        Intradef
+      </div>
+    </div>
+    <div class="element">
+      <div>
+        Contact :
+      </div>
+      <div class="answer" *ngIf="formArray.at(0).value.author">
+        {{formArray.at(0).value.author}}
+      </div>
+    </div>
+    <div class="element">
+      <div>
+        Email du contact :
+      </div>
+      <div class="answer" *ngIf="formArray.at(0).value.email">
+        {{formArray.at(0).value.email}}
+      </div>
+    </div>
+
+    <h2>Description</h2>
+    <div class="element">
+      <div>
+        Problématique :
+      </div>
+      <div class="answer" *ngIf="formArray.at(1).value.problematic">
+        {{formArray.at(1).value.problematic}}
+      </div>
+    </div>
+    <div class="element">
+      <div>
+        Audience :
+      </div>
+      <div class="answer" *ngIf="formArray.at(1).value.audience">
+        {{formArray.at(1).value.audience}}
+      </div>
+    </div>
+    <div class="element">
+      <div>
+        Solution :
+      </div>
+      <div class="answer" *ngIf="formArray.at(1).value.solution">
+        {{formArray.at(1).value.solution}}
+      </div>
+    </div>
+
+    <h2>Customisation</h2>
+    <div class="element">
+      <div>
+        Nom du chatbot :
+      </div>
+      <div class="answer" *ngIf="formArray.at(2).value.name">
+        {{formArray.at(2).value.name}}
+      </div>
+    </div>
+    <div class="element">
+      <div>
+        Icone :
+      </div>
+      <div *ngIf="formArray.at(2).value.icon">
+        <img [src]="'assets/img/icons/' + formArray.at(2).value.icon.name" [alt]="'Proposition de logo: ' + formArray.at(2).value.icon.name">
+      </div>
+    </div>
+    <div class="element">
+      <div>
+        Couleur primaire :
+      </div>
+      <div class="answer color-div" [ngStyle]="{'background-color': formArray.at(2).value.primaryColor}">
+      </div>
+    </div>
+    <div class="element">
+      <div>
+        Couleur secondaire :
+      </div>
+      <div class="answer color-div" [ngStyle]="{'background-color': formArray.at(2).value.secondaryColor}">
+      </div>
+    </div>
+    
+  </div>
+
+  <!--<div>
     <button mat-button matStepperPrevious>Précédent</button>
+    <button mat-button (click)="test()">info</button>
     <button mat-button
             (click)="generateChatbot()"
             [disabled]="chatbotService.loading$ | async">
@@ -9,5 +108,27 @@
                    aria-label="Création du chatbot en cours"
                    [diameter]="20"></mat-spinner>
     </button>
+  </div>-->
+
+  <div class="generate" *ngIf="!success">
+    <button mat-flat-button
+            color="accent"
+            (click)="generateChatbot()"
+            [disabled]="!formArray.valid || (chatbotService.loading$ | async)">
+      Générer le chatbot
+      <mat-spinner *ngIf="chatbotService.loading$ | async"
+                   aria-label="Création du chatbot en cours"
+                   [diameter]="20"></mat-spinner>
+    </button>
+  </div>
+
+  <div class="success-tab" *ngIf="success">
+    <h2>Votre chatbot est en cours de création !</h2>
+    <div class="text">
+      Surveillez votre boîte mail.
+    </div>
+    <div>
+      Vous recevrez sous 24h un mail vous donnant accès à votre chatbot dès qu'il sera prêt.
+    </div>
   </div>
 </div>

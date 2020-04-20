@@ -23,7 +23,14 @@ export class ChatbotService {
   createChatbot(botConfig: ChatbotConfiguration): Observable<any> {
     const formData: FormData = new FormData();
     formData.append('file', botConfig.file, botConfig.file.name);
-    console.log(botConfig);
+    formData.append('icon', botConfig.icon, botConfig.icon.name);
+    formData.append('name', botConfig.name);
+    formData.append('primaryColor', botConfig.primaryColor);
+    formData.append('secondaryColor', botConfig.secondaryColor);
+    formData.append('problematic', botConfig.problematic);
+    formData.append('audience', botConfig.audience);
+    formData.append('solution', botConfig.solution);
+    formData.append('intraDef', botConfig.intraDef);
 
     const headers = new HttpHeaders();
     headers.append('Content-Type', 'multipart/form-data');
@@ -34,7 +41,7 @@ export class ChatbotService {
     };
 
     this._loading$.next(true);
-    return this._http.post<FileTemplateCheckResume>(`${this._url}`, formData, options).pipe(
+    return this._http.post<FileTemplateCheckResume>(`${this._url}/create`, formData, options).pipe(
       finalize(() => {
         this._loading$.next(false);
       })
