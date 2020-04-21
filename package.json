@@ -12,6 +12,7 @@
     "lint": "ng lint",
     "e2e": "ng e2e",
     "cypress:local": "concurrently \"npm run start:local\" \"cypress open\"",
+    "cypress:dev": "concurrently \"npm run start:dev\" \"cypress open\"",
     "clean": "rimraf ./dist"
   },
   "private": true,
@@ -43,7 +44,8 @@
     "@types/node": "~13.11.1",
     "codelyzer": "^5.2.2",
     "concurrently": "^5.1.0",
-    "cypress": "^4.3.0",
+    "cypress": "^4.4.0",
+    "cypress-intellij-reporter": "0.0.4",
     "jasmine-core": "~3.5.0",
     "jasmine-spec-reporter": "~5.0.1",
     "karma": "^5.0.1",

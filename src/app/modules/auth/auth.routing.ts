@@ -17,10 +17,10 @@ const routes: Routes = [
       {path: 'login', component: SignInComponent},
       {path: 'sign_up', component: SignUpComponent},
       {path: 'sign_up/success', component: SignUpSuccessComponent},
-      {path: 'reset-password', component: ResetPasswordComponent},
-      {path: 'reset-password/success', component: ResetPasswordSuccessComponent},
-      {path: 'forgot-password', component: ForgotPasswordComponent},
-      {path: 'forgot-password/success', component: ForgotPasswordSuccessComponent}
+      {path: 'reset_password', component: ResetPasswordComponent},
+      {path: 'reset_password/success', component: ResetPasswordSuccessComponent},
+      {path: 'forgot_password', component: ForgotPasswordComponent},
+      {path: 'forgot_password/success', component: ForgotPasswordSuccessComponent}
     ]
   }
 ];

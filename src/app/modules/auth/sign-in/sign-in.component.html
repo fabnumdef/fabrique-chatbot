@@ -9,6 +9,7 @@
       <mat-label>Email</mat-label>
       <input matInput
              placeholder="Saisir..."
+             data-cy="EmailInput"
              formControlName="email"
              required>
       <mat-error *ngIf="controls.email.hasError('required')">
@@ -25,6 +26,7 @@
              [type]="hidePassword ? 'password' : 'text'"
              placeholder="Saisir..."
              formControlName="password"
+             data-cy="PasswordInput"
              required>
       <button mat-button
               matSuffix
@@ -38,11 +40,15 @@
         Vous n'avez pas saisi de mot de passe.
       </mat-error>
     </mat-form-field>
-    <a [routerLink]="'/auth/forgot-password'">Mot de passe oublié ?</a>
+    <a [routerLink]="'/auth/forgot_password'"
+       data-cy="ForgotPasswordBtn">
+      Mot de passe oublié ?
+    </a>
   </form>
 
   <button mat-flat-button
           color="accent"
+          data-cy="LoginBtn"
           [disabled]="!signInForm.valid"
           (click)="login()">
     Valider
@@ -54,6 +60,7 @@
   </h2>
 
   <button mat-flat-button
+          data-cy="CreateAccount"
           color="accent"
           [routerLink]="'/auth/sign_up'">
     Créer son compte
