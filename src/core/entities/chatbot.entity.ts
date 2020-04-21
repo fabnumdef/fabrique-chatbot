@@ -7,7 +7,7 @@ export class Chatbot {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ nullable: false })
+  @Column({ nullable: false, length: 50 })
   name: string;
 
   @Column({ nullable: true })
@@ -16,22 +16,22 @@ export class Chatbot {
   @Column({ nullable: true })
   file: string;
 
-  @Column({ nullable: false })
+  @Column({ nullable: false, length: 20 })
   primary_color: string;
 
-  @Column({ nullable: false })
+  @Column({ nullable: false, length: 20 })
   secondary_color: string;
 
-  @Column({ nullable: false })
+  @Column({ nullable: false, length: 200 })
   problematic: string;
 
-  @Column({ nullable: false })
+  @Column({ nullable: false, length: 200 })
   audience: string;
 
-  @Column({ nullable: false })
+  @Column({ nullable: false, length: 200 })
   solution: string;
 
-  @Column( { nullable: true })
+  @Column( { nullable: true, length: 50 })
   ip_adress: string;
 
   @Column( { default: false })
