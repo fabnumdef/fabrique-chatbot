@@ -20,3 +20,6 @@ jobs:
         env:
           CYPRESS_USER_EMAIL: ${{ secrets.CYPRESS_USER_EMAIL }}
           CYPRESS_USER_PASSWORD: ${{ secrets.CYPRESS_USER_PASSWORD }}
+          CYPRESS_ADMIN_EMAIL: ${{ secrets.CYPRESS_ADMIN_EMAIL }}
+          CYPRESS_ADMIN_PASSWORD: ${{ secrets.CYPRESS_ADMIN_PASSWORD }}
+

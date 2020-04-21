@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { UserService } from '@service/user.service';
 import { User } from '@model/user.model';
 import { AuthService } from '@service/auth.service';
@@ -16,7 +16,7 @@ import { UserRole } from '@enum/user-role.enum';
 export class UserListComponent implements OnInit {
 
   displayedColumns = ['id', 'email', 'firstname', 'lastname', 'role', 'createdAt', 'actions'];
-  users: User[];
+  users$: BehaviorSubject<User[]>;
   loading$: Observable<boolean>;
 
   constructor(private _userService: UserService,
@@ -26,11 +26,32 @@ export class UserListComponent implements OnInit {
 
   ngOnInit(): void {
     this.loading$ = this._userService.loading$;
+    this.users$ = this._userService.entities$;
     this._loadChatbots();
   }
 
   isUserAdmin(user: User) {
     return user.role === UserRole.admin;
+  }
+
+  isCurrentUser(user: User) {
+    return this._authService.user.email === user.email;
+  }
+
+  changeUserRole(user: User) {
+    const futureRole = user.role === UserRole.admin ? UserRole.user : UserRole.admin;
+    const dialogRef = this._dialog.open(ConfirmDialogComponent, {
+      data: {
+        message: `Êtes-vous sûr de vouloir changer le rôle de l'utilsateur <b>${user.firstName} ${user.lastName}</b> ?
+<br/>Celui-ci aura comme rôle ${futureRole}.`
+      }
+    });
+
+    dialogRef.afterClosed()
+      .pipe(filter(r => !!r))
+      .subscribe(() => {
+        this._userService.update(user.email, {role: futureRole}).subscribe();
+      });
   }
 
   deleteUser(user: User) {
@@ -53,9 +74,7 @@ export class UserListComponent implements OnInit {
    */
 
   private _loadChatbots() {
-    this._userService.getUsers().subscribe(users => {
-      this.users = users;
-    });
+    this._userService.getUsers().subscribe();
   }
 
 }

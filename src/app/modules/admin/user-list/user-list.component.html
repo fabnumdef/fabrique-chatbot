@@ -3,7 +3,7 @@
   <mat-divider></mat-divider>
 
   <div class="table-wrapper">
-    <table mat-table [dataSource]="users">
+    <table mat-table [dataSource]="users$">
       <ng-container matColumnDef="id">
         <th mat-header-cell *matHeaderCellDef>
           #
@@ -52,7 +52,17 @@
         <td mat-cell *matCellDef="let row">
           <button mat-icon-button
                   color="accent"
+                  matTooltip="Changer de rôle"
+                  data-cy="ChangeRoleBtn"
+                  [disabled]="isCurrentUser(row)"
+                  (click)="changeUserRole(row)"
+                  aria-label="Bouton pour changer le rôle de l'utilisateur">
+            <mat-icon fontSet="material-icons-outlined">refresh</mat-icon>
+          </button>
+          <button mat-icon-button
+                  color="accent"
                   matTooltip="Supprimer"
+                  data-cy="DeleteBtn"
                   [disabled]="isUserAdmin(row)"
                   (click)="deleteUser(row)"
                   aria-label="Bouton pour supprimer le chatbot">
