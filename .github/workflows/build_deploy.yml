@@ -53,6 +53,7 @@ jobs:
           KEY: ${{ secrets.SSH_PRIVATE_KEY }}
         with:
           script: |
+            rm -rf ~/fabrique-chatbot-back/ansible/fabrique/password_file
             cat >> ~/fabrique-chatbot-back/ansible/fabrique/password_file << 'END'
             ${{ secrets.VAULT_PASSWORD }}
             END
