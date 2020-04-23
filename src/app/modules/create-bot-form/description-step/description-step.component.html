@@ -4,11 +4,10 @@
     <mat-form-field appearance="outline">
       <mat-label>200 caractères maximum</mat-label>
       <textarea matInput
-             class="problem-field"
-             formControlName="problematic"
-             [placeholder]="'Saisir ...'"
-             maxlength="200"
-             required></textarea>
+                formControlName="problematic"
+                [placeholder]="'Saisir ...'"
+                maxlength="200"
+                required></textarea>
       <mat-error *ngIf="controls.problematic.invalid">
         {{getErrorMessage('problematic')}}
       </mat-error>
@@ -16,14 +15,12 @@
 
     <h2>À qui s'adresse votre chatbot ?</h2>
     <mat-form-field appearance="outline">
-      <mat-label>100 caractères maximum</mat-label>
+      <mat-label>200 caractères maximum</mat-label>
       <textarea matInput
-      type = "text"
-             class="audience-field"
-             formControlName="audience"
-             [placeholder]="'Saisir ...'"
-             maxlength="100"
-             required>
+                formControlName="audience"
+                [placeholder]="'Saisir ...'"
+                maxlength="200"
+                required>
              </textarea>
       <mat-error *ngIf="controls.audience.invalid">
         {{getErrorMessage('audience')}}
@@ -32,13 +29,12 @@
 
     <h2>Quelle solution propose votre chatbot ?</h2>
     <mat-form-field appearance="outline">
-      <mat-label>300 caractères maximum</mat-label>
+      <mat-label>200 caractères maximum</mat-label>
       <textarea matInput
-             class="solution-field"
-             formControlName="solution"
-             [placeholder]="'Saisir ...'"
-             maxlength="300"
-             required></textarea>
+                formControlName="solution"
+                [placeholder]="'Saisir ...'"
+                maxlength="200"
+                required></textarea>
       <mat-error *ngIf="controls.solution.invalid">
         {{getErrorMessage('solution')}}
       </mat-error>

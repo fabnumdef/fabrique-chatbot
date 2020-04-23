@@ -42,10 +42,10 @@ export class SignUpComponent implements OnInit {
 
   private initSignUpForm() {
     this.signUpForm = this._fb.group({
-      firstName: ['', Validators.required],
-      lastName: ['', Validators.required],
-      email: ['', [Validators.required, Validators.email]],
-      chatbotTheme: ['', Validators.required],
+      firstName: ['', [Validators.required, Validators.maxLength(50)]],
+      lastName: ['', [Validators.required, Validators.maxLength(50)]],
+      email: ['', [Validators.required, Validators.email, Validators.maxLength(200)]],
+      chatbotTheme: ['', [Validators.required, Validators.maxLength(50)]],
     });
   }
 

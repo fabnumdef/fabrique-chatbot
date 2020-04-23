@@ -11,6 +11,7 @@
              placeholder="Saisir..."
              data-cy="EmailInput"
              formControlName="email"
+             maxlength="200"
              required>
       <mat-error *ngIf="controls.email.hasError('required')">
         Vous n'avez pas saisi d'email.
@@ -27,6 +28,7 @@
              placeholder="Saisir..."
              formControlName="password"
              data-cy="PasswordInput"
+             maxlength="200"
              required>
       <button mat-button
               matSuffix

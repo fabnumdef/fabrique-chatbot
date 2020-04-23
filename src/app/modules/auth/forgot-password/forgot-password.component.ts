@@ -41,7 +41,7 @@ export class ForgotPasswordComponent implements OnInit {
 
   private initForgotPasswordForm() {
     this.forgotPasswordForm = this._fb.group({
-      email: ['', [Validators.required, Validators.email]]
+      email: ['', [Validators.required, Validators.email, Validators.maxLength(200)]]
     });
   }
 

@@ -16,9 +16,11 @@
 
       .mat-step-label {
         padding: 0;
+        text-align: left;
+        white-space: normal;
 
         h2 {
-          margin-top: 10px;
+          margin: 10px 0;
         }
       }
 

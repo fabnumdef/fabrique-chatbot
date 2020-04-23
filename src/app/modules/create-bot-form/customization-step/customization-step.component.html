@@ -5,9 +5,13 @@
       <input matInput
              formControlName="name"
              [placeholder]="'Roger, Bernadette, Hugo ...'"
+             maxlength="50"
              required/>
       <mat-error *ngIf="controls.name.hasError('required')">
         Vous n'avez pas saisi de nom pour votre chatbot.
+      </mat-error>
+      <mat-error *ngIf="controls.name.hasError('maxlength')">
+        Le nom de votre chatbot ne doit pas dépasser 50 caractères.
       </mat-error>
     </mat-form-field>
 
@@ -74,6 +78,7 @@
         <div>
           <input #colorPickerPrimary
                  class="colorpicker color-picker-icon"
+                 maxlength="20"
                  [colorPicker]="controls.primaryColor.value"
                  [style.background]="controls.primaryColor.value"
                  (colorPickerChange)="controls.primaryColor.setValue($event)"/>
@@ -86,6 +91,7 @@
         <div>
           <input #colorPickerSecondary
                  class="colorpicker color-picker-icon"
+                 maxlength="20"
                  [colorPicker]="controls.secondaryColor.value"
                  [style.background]="controls.secondaryColor.value"
                  (colorPickerChange)="controls.secondaryColor.setValue($event)"/>

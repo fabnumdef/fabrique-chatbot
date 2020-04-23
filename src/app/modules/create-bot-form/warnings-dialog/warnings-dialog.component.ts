@@ -23,9 +23,9 @@ export class WarningsDialogComponent implements OnInit {
 
   getTitle(): string {
     if (this.isError) {
-      return 'Liste des erreurs présentes dans le fichier téléchargé';
+      return 'Liste des erreurs';
     }
-    return 'Liste des avertissements présents dans le fichier téléchargé';
+    return 'Liste des avertissements';
   }
 
   returnKeyNumber(object: KeyValue<string, string>): number {

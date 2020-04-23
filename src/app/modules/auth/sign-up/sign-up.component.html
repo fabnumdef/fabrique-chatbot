@@ -12,6 +12,7 @@
              placeholder="Saisir..."
              formControlName="firstName"
              data-cy="FirstNameInput"
+             maxlength="50"
              required>
       <mat-error *ngIf="controls.firstName.hasError('required')">
         Vous n'avez pas saisi de prénom.
@@ -24,6 +25,7 @@
              placeholder="Saisir..."
              formControlName="lastName"
              data-cy="LastNameInput"
+             maxlength="50"
              required>
       <mat-error *ngIf="controls.lastName.hasError('required')">
         Vous n'avez pas saisi de nom.
@@ -36,6 +38,7 @@
              placeholder="Saisir..."
              formControlName="email"
              data-cy="EmailInput"
+             maxlength="200"
              required>
       <mat-error *ngIf="controls.email.hasError('required')">
         Vous n'avez pas saisi d'email.
@@ -51,10 +54,14 @@
                 placeholder="Saisir..."
                 formControlName="chatbotTheme"
                 data-cy="ThemeInput"
+                maxlength="50"
                 required>
       </textarea>
       <mat-error *ngIf="controls.chatbotTheme.hasError('required')">
         Vous n'avez pas saisi de thème pour votre chatbot.
+      </mat-error>
+      <mat-error *ngIf="controls.chatbotTheme.hasError('maxlength')">
+        Le thème de votre chatbot ne doit pas dépasser 50 caractères.
       </mat-error>
     </mat-form-field>
   </form>

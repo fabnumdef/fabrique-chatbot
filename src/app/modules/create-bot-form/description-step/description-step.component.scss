@@ -3,21 +3,9 @@
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    
-    mat-form-field { 
-      width: 100%; 
-    }
 
-    .problem-field {
-      height: 150px;
-    }
-  
-    .audience-field {
-      height: 50px;
-    }
-  
-    .solution-field {
-      height: 100px;
+    mat-form-field {
+      width: 100%;
     }
   }
 }

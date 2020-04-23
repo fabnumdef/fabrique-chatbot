@@ -31,20 +31,20 @@ export class CreateBotFormComponent implements OnInit {
         this._fb.group({
           file: ['', Validators.required],
           intraDef: [false, Validators.required],
-          author: ['', Validators.required],
-          role: ['', Validators.required],
-          email: ['', Validators.required],
+          author: [''],
+          role: [''],
+          email: [''],
         }),
         this._fb.group({
           problematic: ['', [Validators.required, Validators.maxLength(200)]],
-          audience: ['', [Validators.required, Validators.maxLength(100)]],
-          solution: ['', [Validators.required, Validators.maxLength(300)]],
+          audience: ['', [Validators.required, Validators.maxLength(200)]],
+          solution: ['', [Validators.required, Validators.maxLength(200)]],
         }),
         this._fb.group({
-          name: ['', Validators.required],
+          name: ['', [Validators.required, Validators.maxLength(50)]],
           icon: [null, Validators.required],
-          primaryColor: ['#207fef', Validators.required],
-          secondaryColor: ['#e20613', Validators.required],
+          primaryColor: ['#207fef', [Validators.required, Validators.maxLength(20)]],
+          secondaryColor: ['#e20613', [Validators.required, Validators.maxLength(20)]],
         }),
       ])
     });

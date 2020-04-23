@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ResetPassword } from '@model/reset-password.model';
 import { AuthService } from '@service/auth.service';
@@ -52,16 +52,16 @@ export class ResetPasswordComponent implements OnInit {
 
   private initResetPasswordForm() {
     this.resetPasswordForm = this._fb.group({
-      password: ['', [Validators.required]],
-      checkPassword: ['', Validators.required],
-    }, {validator: this.checkPasswords});
+      password: ['', [Validators.required, Validators.maxLength(200)]],
+      checkPassword: ['', [Validators.required, Validators.maxLength(200)]],
+    }, {validators: this.checkPasswords});
   }
 
-  private checkPasswords(group: FormGroup) { // here we have the 'passwords' group
+  private checkPasswords(group: FormGroup): ValidationErrors | null  {
     const pass = group.get('password').value;
     const confirmPass = group.get('checkPassword').value;
     if (!confirmPass) {
-      return;
+      return null;
     }
 
     const error = {notSame: true};

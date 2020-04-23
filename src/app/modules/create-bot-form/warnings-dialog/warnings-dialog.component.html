@@ -1,28 +1,29 @@
 <div class="warnings">
   <div class="close">
-    <button mat-icon-button aria-label="Fermer la fenêtre" [mat-dialog-close]="false">
+    <button mat-icon-button aria-label="Fermer la fenêtre"
+            color="primary"
+            [mat-dialog-close]="false">
       <mat-icon>clear</mat-icon>
     </button>
   </div>
 
-  <h2> {{ getTitle() }}</h2>
+  <div class="title">
+    <h2> {{ getTitle() }}</h2>
+  </div>
 
   <div class="details">
-    <div class="header">
-      <div class="number">
-        {{ detailsLength }}
-      </div>
-      <h3>{{ isError ? 'Erreurs' : 'Avertissements' }}</h3>
-    </div>
-    <div class="content">
-      <div *ngFor="let item of details | keyvalue : returnKeyNumber; let i = index"
-           class="line"
-           [ngClass]="{'striped': i%2 === 1}">
+    <ng-container *ngFor="let item of details | keyvalue : returnKeyNumber">
+      <div class="line">
+        <div class="line-number">
+          <mat-icon color="accent">list</mat-icon>
+          <b>Ligne {{item.key}}</b>
+        </div>
         <div>
-          <b class="line-number">Ligne {{item.key}}</b> : {{item.value}}
+          {{item.value}}
         </div>
       </div>
-    </div>
+      <mat-divider></mat-divider>
+    </ng-container>
   </div>
 </div>
 
