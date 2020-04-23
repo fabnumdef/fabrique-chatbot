@@ -33,9 +33,10 @@
       align-items: center;
       justify-content: center;
       margin-right: 10px;
+      overflow: hidden;
 
       img {
-        max-width: 35px;
+        max-width: 50px;
         height: auto;
       }
     }
@@ -58,10 +59,21 @@
       display: flex;
       align-items: flex-start;
 
-      img {
+      .icon {
+        background-color: $white;
         width: 20px;
-        height: auto;
+        height: 20px;
+        border-radius: 100px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
         margin: 10px 10px 0 0;
+
+        img {
+          max-width: 20px;
+          height: auto;
+        }
       }
 
       &:not(:last-child) {

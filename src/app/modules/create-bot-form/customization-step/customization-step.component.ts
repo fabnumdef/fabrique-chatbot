@@ -10,7 +10,7 @@ import { HttpClient } from '@angular/common/http';
 export class CustomizationStepComponent implements OnInit {
 
   @Input() formGroup: FormGroup;
-  icons = ['AIR.png', 'MARINE.png', 'TERRE.png', 'TERRE_BIS.png', 'AIR_BIS.png', 'FACE_1.png', 'FACE_2.png'];
+  icons = ['avion.svg', 'bateau.svg', 'camion.svg', 'tank.svg', 'parachute.svg', 'femme.svg', 'homme.svg'];
   imgPreview = null;
 
   constructor(private _http: HttpClient) {

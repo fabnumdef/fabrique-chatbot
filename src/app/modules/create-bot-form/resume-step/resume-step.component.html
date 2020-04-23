@@ -24,16 +24,16 @@
       <div>
         Contact :
       </div>
-      <div class="answer" *ngIf="formArray.at(0).value.author">
-        {{formArray.at(0).value.author}}
+      <div class="answer">
+        {{ auth.user?.firstName }} {{ auth.user?.lastName }}
       </div>
     </div>
     <div class="element">
       <div>
         Email du contact :
       </div>
-      <div class="answer" *ngIf="formArray.at(0).value.email">
-        {{formArray.at(0).value.email}}
+      <div class="answer">
+        {{ auth.user?.email}}
       </div>
     </div>
 
@@ -94,7 +94,7 @@
       <div class="answer color-div" [ngStyle]="{'background-color': formArray.at(2).value.secondaryColor}">
       </div>
     </div>
-    
+
   </div>
 
   <!--<div>

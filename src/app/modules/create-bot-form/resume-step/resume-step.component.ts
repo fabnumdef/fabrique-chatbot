@@ -3,6 +3,7 @@ import { FormArray } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ChatbotService } from '@service/chatbot.service';
 import { ChatbotConfiguration } from '@model/chatbot-configuration.model';
+import { AuthService } from '@service/auth.service';
 
 @Component({
   selector: 'app-resume-step',
@@ -16,7 +17,8 @@ export class ResumeStepComponent implements OnInit {
 
   constructor(public chatbotService: ChatbotService,
               private _router: Router,
-              private _route: ActivatedRoute) {
+              private _route: ActivatedRoute,
+              public auth: AuthService) {
   }
 
   ngOnInit(): void {
@@ -29,17 +31,9 @@ export class ResumeStepComponent implements OnInit {
       .reduce((obj1, obj2) => Object.assign(obj1, obj2));
     console.log(chatbotConfiguration);
     this.chatbotService.createChatbot(chatbotConfiguration).subscribe(() => {
-      //this._router.navigate(['./success'], {relativeTo: this._route});
       this.success = 1;
     }, err => {
-      // TODO Delete when BACK is OK
       console.log('Erreur lors de l\'appel à l\'api pour la génération du bot.');
-      //this._router.navigate(['./success'], {relativeTo: this._route});
     });
   }
-
-  test() {
-    console.log(this.formArray);
-  }
-
 }
