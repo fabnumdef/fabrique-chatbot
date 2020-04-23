@@ -28,6 +28,6 @@ export class AuthController {
   @ApiOperation({ summary: 'Return jwt token' })
   async login(@Body() user: LoginUserDto): Promise<AuthResponseDto> {
     const login = await this._authService.login(user);
-    return plainToClass(AuthResponseDto, camelcaseKeys(login, {deep: true}));
+    return plainToClass(AuthResponseDto, camelcaseKeys(login, {deep: true}), {strategy: 'excludeAll'});
   }
 }

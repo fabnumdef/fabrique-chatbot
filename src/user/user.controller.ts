@@ -26,7 +26,7 @@ export class UserController {
   })
   async create(@Body() user: CreateUserDto): Promise<UserDto> {
     const userModel = await this._userService.create(plainToClass(UserModel, snakecaseKeys(user)));
-    return plainToClass(UserDto, camelcaseKeys(userModel, {deep: true}));
+    return plainToClass(UserDto, camelcaseKeys(userModel, {deep: true}), {strategy: 'excludeAll'});
   }
 
   @Put(':email')
@@ -48,7 +48,7 @@ export class UserController {
       delete user.role;
     }
     const userModel = await this._userService.findAndUpdate(userEmail, plainToClass(UserModel, snakecaseKeys(user)));
-    return plainToClass(UserDto, camelcaseKeys(userModel, {deep: true}));
+    return plainToClass(UserDto, camelcaseKeys(userModel, {deep: true}), {strategy: 'excludeAll'});
   }
 
 }

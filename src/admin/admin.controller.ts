@@ -45,7 +45,7 @@ export class AdminController {
   @Roles(UserRole.admin)
   async getUsers(): Promise<UserDto[]> {
     const users: User[] = await this._userService.findAll();
-    return plainToClass(UserDto, camelcaseKeys(users, {deep: true}));
+    return plainToClass(UserDto, camelcaseKeys(users, {deep: true}), {strategy: 'excludeAll'});
   }
 
   @Delete('user/:email')
@@ -64,7 +64,7 @@ export class AdminController {
     const chatbots: Chatbot[] = await this._chatbotService.findAll({
       relations: ['user']
     });
-    return plainToClass(ChatbotDto, camelcaseKeys(chatbots, {deep: true}));
+    return plainToClass(ChatbotDto, camelcaseKeys(chatbots, {deep: true}), {strategy: 'excludeAll'});
   }
 
   @Delete('chatbot/:id')
