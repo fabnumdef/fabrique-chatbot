@@ -300,14 +300,14 @@ export class ChatbotService {
 
   static excelFileFilter = (req, file, callback) => {
     if (!file.originalname.match(/\.(xls|xlsx)$/)) {
-      return callback(new Error('Seul les fichiers en .xls et .xlsx sont acceptés.'), false);
+      return callback(new HttpException('Seul les fichiers en .xls et .xlsx sont acceptés.', HttpStatus.BAD_REQUEST), false);
     }
     return callback(null, true);
   };
 
   static imageFileFilter = (req, file, callback) => {
     if (!file.originalname.match(/\.(jpg|png)$/)) {
-      return callback(new Error('Seul les fichiers en .jpg et .png sont acceptés.'), false);
+      return callback(new HttpException('Seul les fichiers en .jpg et .png sont acceptés.', HttpStatus.BAD_REQUEST), false);
     }
     return callback(null, true);
   };

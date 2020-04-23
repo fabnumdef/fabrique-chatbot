@@ -1,5 +1,6 @@
 import { IsEmail, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 import { UserRole } from "@enum/user-role.enum";
+import { Exclude } from "class-transformer";
 
 export class UserDto {
   @IsEmail()
@@ -21,4 +22,10 @@ export class UserDto {
   @IsString()
   @IsOptional()
   role: UserRole;
+
+  @Exclude()
+  resetPasswordToken: string;
+
+  @Exclude()
+  resetPasswordExpires: number;
 }
