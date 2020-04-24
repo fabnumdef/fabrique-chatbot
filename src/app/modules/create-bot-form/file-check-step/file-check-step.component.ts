@@ -6,6 +6,7 @@ import { WarningsDialogComponent } from '../warnings-dialog/warnings-dialog.comp
 import { DestroyObservable } from '@utils/destroy-observable';
 import { FileTemplateCheckResume } from '@model/file-template-check-resume.model';
 import { ChatbotService } from '@service/chatbot.service';
+import { ToastrService } from 'ngx-toastr';
 
 interface Role {
   value: string;
@@ -30,7 +31,8 @@ export class FileCheckStepComponent extends DestroyObservable implements OnInit 
   ];
 
   constructor(public chatbotService: ChatbotService,
-              private dialog: MatDialog) {
+              private dialog: MatDialog,
+              private _toast: ToastrService) {
     super();
   }
 
@@ -44,6 +46,11 @@ export class FileCheckStepComponent extends DestroyObservable implements OnInit 
   uploadFile($event) {
     const file = $event.target.files[0];
     if (!file) {
+      return;
+    }
+    const filesize = (file.size / 1024 / 1024);
+    if (filesize > 10) {
+      this._toast.error('Le poids du fichier doit être inférieur à 10Mb.', 'Fichier volumineux');
       return;
     }
     this.fileTemplateCheckResume = null;

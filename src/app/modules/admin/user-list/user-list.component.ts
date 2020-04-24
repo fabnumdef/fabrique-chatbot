@@ -44,7 +44,8 @@ export class UserListComponent implements OnInit {
       data: {
         message: `Êtes-vous sûr de vouloir changer le rôle de l'utilsateur <b>${user.firstName} ${user.lastName}</b> ?
 <br/>Celui-ci aura comme rôle ${futureRole}.`
-      }
+      },
+      autoFocus: false
     });
 
     dialogRef.afterClosed()
@@ -59,7 +60,8 @@ export class UserListComponent implements OnInit {
       data: {
         message: `Êtes-vous sûr de vouloir supprimer l'utilsateur <b>${user.firstName} ${user.lastName}</b> ?
 <br/>Cette action est irréversible.`
-      }
+      },
+      autoFocus: false
     });
 
     dialogRef.afterClosed()

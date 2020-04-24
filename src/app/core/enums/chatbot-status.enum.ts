@@ -10,11 +10,11 @@ export enum ChatbotStatus {
 
 export enum ChatbotStatus_Fr {
   pending = 'En attente',
-  creation = 'En création, VPS demandé',
+  creation = 'En création, VPS en attente',
   pending_configuration = ' VPS reçu, en attente de configuration',
   configuration = 'Configuration en cours',
   error_configuration = 'Erreur configuration',
-  running = 'En route',
+  running = 'En cours d\'éxecution',
   deleted = 'Supprimé',
 }
 

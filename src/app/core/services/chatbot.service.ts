@@ -6,6 +6,8 @@ import { finalize } from 'rxjs/operators';
 import { Chatbot } from '@model/chatbot.model';
 import { ChatbotConfiguration } from '@model/chatbot-configuration.model';
 import { FileTemplateCheckResume } from '@model/file-template-check-resume.model';
+import { ChatbotLaunchUpdate } from '@model/chatbot-launch-update.model';
+import { ChatbotUpdate } from '@model/chatbot-update.model';
 
 @Injectable({
   providedIn: 'root'
@@ -42,6 +44,25 @@ export class ChatbotService {
 
     this._loading$.next(true);
     return this._http.post<FileTemplateCheckResume>(`${this._url}/create`, formData, options).pipe(
+      finalize(() => {
+        this._loading$.next(false);
+      })
+    );
+  }
+
+  updateChatbot(chatbotId: number, body: ChatbotUpdate) {
+    this._loading$.next(true);
+    console.log(body);
+    return this._http.put<any>(`${this._adminUrl}/${chatbotId}`, body).pipe(
+      finalize(() => {
+        this._loading$.next(false);
+      })
+    );
+  }
+
+  launchUpdateChatbot(chatbotId: number, body: ChatbotLaunchUpdate): Observable<any> {
+    this._loading$.next(true);
+    return this._http.post<any>(`${this._adminUrl}/update/${chatbotId}`, body).pipe(
       finalize(() => {
         this._loading$.next(false);
       })

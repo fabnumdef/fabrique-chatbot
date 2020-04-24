@@ -1,0 +1,29 @@
+<div class="update-chatbot">
+  <h1>Mise à jour du chatbot</h1>
+
+  <form [formGroup]="launchChatbotUpdateFormGroup">
+    <mat-checkbox formControlName="updateFront">
+      Mettre à jour le FRONT
+    </mat-checkbox>
+    <mat-checkbox formControlName="updateBack">
+      Mettre à jour le BACK
+    </mat-checkbox>
+    <mat-checkbox formControlName="updateRasa">
+      Mettre à jour RASA
+    </mat-checkbox>
+  </form>
+
+  <div class="actions">
+    <button mat-flat-button
+            color="accent"
+            [mat-dialog-close]="false">
+      Annuler
+    </button>
+    <button mat-stroked-button
+            color="accent"
+            data-cy="ConfirmBtn"
+            [mat-dialog-close]="launchChatbotUpdateFormGroup.getRawValue()">
+      Confirmer
+    </button>
+  </div>
+</div>

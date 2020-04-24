@@ -6,8 +6,9 @@
       width: 100%;
 
       .mat-column-actions {
-        .mat-icon {
-          cursor: pointer;
+
+        & > * :not(:last-child) {
+          margin-right: 10px;
         }
       }
     }

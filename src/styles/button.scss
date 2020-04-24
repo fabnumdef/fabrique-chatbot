@@ -8,7 +8,7 @@ button {
     }
   }
 
-  &.mat-button-base .mat-button-wrapper {
+  &.mat-button-base:not(.mat-icon-button) .mat-button-wrapper {
     display: flex;
     align-items: center;
     justify-content: center;
