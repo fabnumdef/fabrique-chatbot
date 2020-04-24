@@ -5,12 +5,14 @@
       <span>Chargez la base documentaire de votre chatbot, nous allons vérifier la conformité de votre fichier (format de fichier Excel .xlsx).
         <br/>Si vous n’avez pas le modèle de référence, vous pouvez le télécharger
         <a target="_blank"
+           data-cy="TemplateDownloadButton"
            href="https://firebasestorage.googleapis.com/v0/b/gitbook-28427.appspot.com/o/assets%2F-M0MbNyvjB7hr1guybEn%2F-M1jG3_OcdCVFT8JT7J0%2F-M1jHaBUlqkF8rNMKV06%2FTEMPLATE_CHATBOT.xlsx?alt=media&token=f926397d-7b9c-40f5-ad1a-2f7b21283f90">
           ici.
         </a>
       </span>
       <button mat-flat-button
               color="accent"
+              data-cy="UploadFileButton"
               [disabled]="(chatbotService.loading$ | async) || !!fileCtrl.value"
               (click)="uploader.click()">
         <mat-icon *ngIf="!(chatbotService.loading$ | async)">add</mat-icon>
@@ -21,12 +23,13 @@
       </button>
       <input hidden
              type="file"
+             data-cy="UploadFileInput"
              #uploader
              (change)="uploadFile($event)"
              [accept]="'.xlsx'"/>
     </div>
 
-    <div class="feedback-wrapper" *ngIf="fileTemplateCheckResume">
+    <div class="feedback-wrapper" data-cy="FileWrapper" *ngIf="fileTemplateCheckResume">
       <h3>Base documentaire</h3>
       <div class="file-wrapper" *ngIf="fileCtrl.value">
         <div class="file-header">
@@ -44,11 +47,13 @@
           <div class="file-buttons">
             <button mat-stroked-button
                     color="accent"
+                    data-cy="DeleteFileBtn"
                     (click)="resetFile()">
               Supprimer
             </button>
             <button mat-flat-button
                     color="accent"
+                    data-cy="UpdateFileBtn"
                     [disabled]="chatbotService.loading$ | async"
                     (click)="uploader.click()">
               Mettre à jour
@@ -56,18 +61,18 @@
           </div>
         </div>
         <div class="file-status">
-            <span class="valid" *ngIf="!hasFileErrors()">
+            <span class="valid" data-cy="FileValidSpan" *ngIf="!hasFileErrors()">
               Votre fichier est valide.
             </span>
-          <span class="error" *ngIf="hasFileErrors()">
+          <span class="error" data-cy="FileErrorSpan" *ngIf="hasFileErrors()">
               Votre fichier contient des erreurs. Veuillez le corriger et le mettre à jour.
             </span>
         </div>
         <div class="feedback-wrapper">
           <mat-divider></mat-divider>
           <div class="content">
-            <div class="number" [ngClass]="{'error': hasFileErrors()}">
-              {{ objectKeys(fileTemplateCheckResume.errors).length }}
+            <div class="number" data-cy="FileErrorNumber" [ngClass]="{'error': hasFileErrors()}">
+              {{objectKeys(fileTemplateCheckResume.errors).length}}
             </div>
             <div class="message">
               <b>Erreur(s)</b><span class="red">*</span><br/>
@@ -76,7 +81,7 @@
               </span>
               <ng-template #messageError>
                 Votre fichier contient des erreurs qui l'empêche de fonctionner.
-                <a (click)="openDialog(true, fileTemplateCheckResume.errors)">
+                <a data-cy="ErrorDialog" (click)="openDialog(true, fileTemplateCheckResume.errors)">
                   <b>Visualiser les erreurs</b>
                 </a>
               </ng-template>
@@ -95,7 +100,7 @@
           </div>
           <mat-divider></mat-divider>
           <div class="content">
-            <div class="number" [ngClass]="{'error': hasFileWarnings()}">
+            <div class="number" data-cy="FileWarningNumber" [ngClass]="{'error': hasFileWarnings()}">
               {{ objectKeys(fileTemplateCheckResume.warnings).length }}
             </div>
             <div class="message">
@@ -106,7 +111,7 @@
               <ng-template #messageWarning>
                 Votre fichier contient des avertissements qui ne sont pas bloquants pour la création de votre
                 chatbot.
-                <a (click)="openDialog(false, fileTemplateCheckResume.warnings)">
+                <a data-cy="WarningDialog" (click)="openDialog(false, fileTemplateCheckResume.warnings)">
                   <b>Visualiser les avertissements</b>
                 </a>
               </ng-template>
@@ -133,8 +138,8 @@
                      labelPosition="before"
                      formControlName="intraDef"
                      color="primary">
-      <mat-radio-button [value]="false">Internet</mat-radio-button>
-      <mat-radio-button [value]="true">Intradef</mat-radio-button>
+      <mat-radio-button data-cy="InternetRadioBtn" [value]="false">Internet</mat-radio-button>
+      <mat-radio-button data-cy="IntradefRadioBtn" [value]="true">Intradef</mat-radio-button>
     </mat-radio-group>
     <mat-divider></mat-divider>
     <h2>Utilisateurs de la plateforme ou contacts</h2>
@@ -148,7 +153,7 @@
         <mat-form-field class="full-width-input" appearance="outline">
           <mat-label>Nom, Prénom</mat-label>
           <input matInput
-                 id="author-field"
+                 data-cy="NameInput"
                  formControlName="author"
                  [placeholder]="'Saisir ...'"/>
           <mat-error *ngIf="controls.author.hasError('required')">
@@ -159,7 +164,7 @@
       <div class="author-content-element">
         <mat-form-field class="full-width-input" appearance="outline">
           <mat-label>Rôle</mat-label>
-          <mat-select formControlName="role">
+          <mat-select formControlName="role" data-cy="RoleSelector">
             <mat-option *ngFor="let role of roles" [value]="role.value">
               {{role.viewValue}}
             </mat-option>
@@ -171,7 +176,7 @@
         <mat-form-field class="full-width-input" appearance="outline">
           <mat-label>Email</mat-label>
           <input matInput
-                 id="author-field"
+                 data-cy="EmailInput"
                  formControlName="email"
                  [placeholder]="'Saisir ...'"/>
           <mat-error *ngIf="controls.email.hasError('required')">
