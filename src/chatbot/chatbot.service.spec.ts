@@ -8,16 +8,13 @@ import cloneDeep = require('lodash/cloneDeep');
 import { chatbotsMock } from "@mock/chatbots.mock";
 import { OvhStorageService } from "../shared/services/ovh-storage.service";
 import { FileModel } from "@model/file.model";
+import { ovhStorageServiceStub } from "../../test/stubs/ovh-storage.service.stub";
 
 describe('ChatbotService', () => {
   let chatbotService: ChatbotService;
   let ovhStorageService: OvhStorageService;
   let chatbotRepository: Repository<Chatbot>;
   let workbook: any;
-  let ovhStorageServiceStub = {
-    set: (file: any, path: string) => new Promise<any>(() => {
-    })
-  };
 
   const chatbots: Chatbot[] = cloneDeep(chatbotsMock);
 
@@ -45,6 +42,16 @@ describe('ChatbotService', () => {
       expect(await chatbotService.findAll()).toEqual(chatbots);
     });
 
+    it('should call findOne when findOne', async () => {
+      jest.spyOn(chatbotRepository, 'findOne').mockResolvedValueOnce(chatbots[0]);
+      expect(await chatbotService.findOne(chatbots[0].id)).toEqual(chatbots[0]);
+    });
+
+    it('should call findOne when findOneWithParam', async () => {
+      jest.spyOn(chatbotRepository, 'findOne').mockResolvedValueOnce(chatbots[0]);
+      expect(await chatbotService.findOneWithParam(chatbots[0].id)).toEqual(chatbots[0]);
+    });
+
     it('should call create', async () => {
       jest.spyOn(chatbotRepository, 'save').mockResolvedValueOnce(chatbots[0]);
       await chatbotService.create(chatbots[0]);
@@ -68,6 +75,25 @@ describe('ChatbotService', () => {
       await chatbotService.create(chatbots[0], <FileModel> {originalname: 'file.xlsx'}, <FileModel> {originalname: 'icon.png'});
       expect(chatbotRepository.save).toHaveBeenCalledTimes(2);
       expect(ovhStorageService.set).toHaveBeenCalledTimes(2);
+    });
+
+    it('should call save and update if the chatbot exists', async () => {
+      jest.spyOn(chatbotRepository, 'findOne').mockResolvedValueOnce(chatbots[0]);
+      jest.spyOn(chatbotRepository, 'save').mockResolvedValueOnce(chatbots[0]);
+
+      await chatbotService.findAndUpdate(chatbots[0].id, {primary_color: '#000'});
+      expect(chatbotRepository.findOne).toHaveBeenCalled();
+      const chatbotUptaded = cloneDeep(chatbots[0]);
+      chatbotUptaded.primary_color = '#000';
+      expect(chatbotRepository.save).toHaveBeenCalledWith(chatbotUptaded);
+    });
+
+    it('should throw an error on save and update if the chatbot doest not exists', async () => {
+      jest.spyOn(chatbotRepository, 'findOne').mockResolvedValueOnce(null);
+      jest.spyOn(chatbotRepository, 'save').mockResolvedValueOnce(chatbots[0]);
+
+      await expect(chatbotService.findAndUpdate(chatbots[0].id, {primary_color: '#000'})).rejects.toBeTruthy();
+      expect(chatbotRepository.save).not.toHaveBeenCalled();
     });
   });
 

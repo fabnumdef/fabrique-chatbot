@@ -87,6 +87,19 @@ describe('OvhStorageService', () => {
 
       expect(console.error).toHaveBeenCalled();
     });
+
+
+    it('should retry connection if token is expired', async () => {
+      // @ts-ignore
+      ovhStorageService._token = {expires: 0};
+      // @ts-ignore
+      jest.spyOn(ovhStorageService, '_connection').mockReturnValue(null);
+
+      // @ts-ignore
+      ovhStorageService._retryConnection();
+      // @ts-ignore
+      expect(ovhStorageService._connection).toHaveBeenCalled();
+    });
   });
 
   describe('List', () => {

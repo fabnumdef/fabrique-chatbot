@@ -162,6 +162,7 @@ export class ChatbotService {
       range: 1
     };
     const templateFile: TemplateFileDto[] = this._xlsx.utils.sheet_to_json(worksheet, options).map((t: TemplateFileDto) => {
+      t.id = t.id?.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/\W/g, '_');
       t.questions = t.questions ? (<any>t.questions).split(';').map(q => q.trim()) : [];
       return t;
     });
@@ -210,7 +211,7 @@ export class ChatbotService {
         }
         // Si il n'y a pas de question principale, c'est censé être une suite de réponse (et donc avoir une question principale relié ou un lien vers cet id)
       } else {
-        const excludedIds = ['get_started', 'out_of_scope'];
+        const excludedIds = ['phrase_presentation', 'phrase_hors_sujet'];
         const mainQuestion = templateFile.find(t =>
           (t.id === excelRow.id && !!t.main_question) || (t.response && t.response.includes(`<${excelRow.id}>`))
         );

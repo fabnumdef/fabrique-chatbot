@@ -42,13 +42,13 @@ describe('Chatbot Controller', () => {
   it('should create chatbot if there is no error in template file', async () => {
     jest.spyOn(chatbotService, 'create');
 
-    await chatbotController.create({file: [], icon: []}, <CreateChatbotDto> {});
+    await chatbotController.create({file: [], icon: []}, <CreateChatbotDto> {}, <Request> {});
     expect(chatbotService.create).toHaveBeenCalled();
   });
 
   it('should not create chatbot if there is errors in template file', async () => {
     jest.spyOn(chatbotService, 'checkTemplateFile').mockReturnValue({questionsNumber: 8, errors: {'1': 'fail'}, categories: [], warnings: {}});
 
-    await expect(chatbotController.create({file: [], icon: []},  <CreateChatbotDto> {})).rejects.toBeTruthy();
+    await expect(chatbotController.create({file: [], icon: []},  <CreateChatbotDto> {}, <Request> {})).rejects.toBeTruthy();
   });
 });

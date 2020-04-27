@@ -14,5 +14,17 @@ export const usersMock: User[] = [
     reset_password_token: null,
     reset_password_expires: null,
     created_at: null
+  },
+  {
+    email: 'gordon@gotham.fr',
+    password: bcrypt.hashSync('WayneCorp', 10),
+    first_name: 'James',
+    last_name: 'Gordon',
+    chatbot_theme: 'Batman finder',
+    role: UserRole.admin,
+    chatbots: [],
+    reset_password_token: null,
+    reset_password_expires: null,
+    created_at: null
   }
 ];

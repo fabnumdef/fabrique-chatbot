@@ -6,15 +6,12 @@ import { Repository } from "typeorm";
 import { User } from "@entity/user.entity";
 import cloneDeep = require('lodash/cloneDeep');
 import { usersMock } from "@mock/users.mock";
+import { mailServiceStub } from "../../test/stubs/mail.service.stub";
 
 describe('UserService', () => {
   let userService: UserService;
   let userRepository: Repository<User>;
   let mailService: MailService;
-  let mailServiceStub = {
-    sendEmail: (options: any) => new Promise<any>(() => {
-    })
-  };
 
   const users: User[] = cloneDeep(usersMock);
 
@@ -123,4 +120,30 @@ describe('UserService', () => {
       expect(mailService.sendEmail).toHaveBeenCalled();
     });
   });
+
+  describe('delete user', () => {
+    it('should throw an error on delete if the user doest not exists', async () => {
+      jest.spyOn(userRepository, 'findOne').mockResolvedValueOnce(null);
+      jest.spyOn(userRepository, 'delete').mockResolvedValueOnce(null);
+
+      await expect(userService.deleteUser(users[0].email)).rejects.toBeTruthy();
+      expect(userRepository.delete).not.toHaveBeenCalled();
+    });
+
+    it('should throw an error if the user to delete is admin', async () => {
+      jest.spyOn(userRepository, 'findOne').mockResolvedValueOnce(users[1]);
+      jest.spyOn(userRepository, 'delete').mockResolvedValueOnce(null);
+
+      await expect(userService.deleteUser(users[1].email)).rejects.toBeTruthy();
+      expect(userRepository.delete).not.toHaveBeenCalled();
+    });
+
+    it('should call delete if the user is not admin', async () => {
+      jest.spyOn(userRepository, 'findOne').mockResolvedValueOnce(users[0]);
+      jest.spyOn(userRepository, 'delete').mockResolvedValueOnce(null);
+
+      await userService.deleteUser(users[0].email);
+      expect(userRepository.delete).toHaveBeenCalled();
+    });
+  })
 });

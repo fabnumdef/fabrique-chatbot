@@ -5,15 +5,12 @@ import cloneDeep = require('lodash/cloneDeep');
 import { User } from "@entity/user.entity";
 import { usersMock } from "@mock/users.mock";
 import { MailService } from "../shared/services/mail.service";
+import { mailServiceStub } from "../../test/stubs/mail.service.stub";
 
 describe('AuthService', () => {
   let authService: AuthService;
   let userService: UserService;
   let mailService: MailService;
-  let mailServiceStub = {
-    sendEmail: (options: any) => new Promise<any>(() => {
-    })
-  };
   let jwtServiceStub = {
     sign: (data) => data
   };
