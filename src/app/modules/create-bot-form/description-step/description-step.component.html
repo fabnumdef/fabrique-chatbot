@@ -6,6 +6,7 @@
       <textarea matInput
                 formControlName="problematic"
                 [placeholder]="'Saisir ...'"
+                data-cy="ProblemInput"
                 maxlength="200"
                 required></textarea>
       <mat-error *ngIf="controls.problematic.invalid">
@@ -19,6 +20,7 @@
       <textarea matInput
                 formControlName="audience"
                 [placeholder]="'Saisir ...'"
+                data-cy="AudienceInput"
                 maxlength="200"
                 required>
              </textarea>
@@ -33,6 +35,7 @@
       <textarea matInput
                 formControlName="solution"
                 [placeholder]="'Saisir ...'"
+                data-cy="SolutionInput"
                 maxlength="200"
                 required></textarea>
       <mat-error *ngIf="controls.solution.invalid">

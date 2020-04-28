@@ -14,7 +14,7 @@ describe('Testing first step of creating bot page', function() {
     })
 
     it('should be on the Paramètres tab', function () {
-      cy.get('h2').should('contain', 'Paramétrage');
+      cy.get('[data-cy=ParamTitle]').should('contain', 'Paramétrage');
     });
 
     it('should have download link for chatbot template file', function () {
