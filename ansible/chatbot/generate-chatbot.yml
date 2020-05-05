@@ -31,8 +31,8 @@
         src: '{{ appsDir }}/{{ nestDir }}/chatbot/{{ backDir }}/'
         dest: '{{ appsDir }}/{{ backDir }}'
         rsync_opts:
-          - '--exclude=/mediatheque'
-          - '--exclude=/historic'
+          - '--exclude=mediatheque/'
+          - '--exclude=historic/'
       when: updateBack
 
     - name: Copy password-file
