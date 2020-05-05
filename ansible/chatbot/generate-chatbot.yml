@@ -22,7 +22,7 @@
       become: true
       file:
         path: '{{appsDir}}'
-        group: sudo
+        group: www-data
         mode: '774'
         recurse: yes
 

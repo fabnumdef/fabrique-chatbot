@@ -25,7 +25,7 @@
       user:
         name: chatbot_user
         append: yes
-        groups: sudo, root
+        groups: sudo, root, www-data
         password: "{{ USER_PASSWORD | password_hash('sha512') }}"
 
     - name: ensure user is accessable with ssh key
