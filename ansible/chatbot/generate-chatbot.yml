@@ -102,14 +102,6 @@
         chdir: '{{ appsDir }}/{{ backDir }}'
       when: updateBack
 
-    - name: Set right rights on mediatheque & historic directory
-      become: true
-      file:
-        path: '{{appsDir}}'
-        group: sudo
-        mode: '774'
-        recurse: yes
-
     - name: NODE | Stop APP
       shell: pm2 stop ChatbotBack
       args:
