@@ -10,9 +10,14 @@ $grey: #8E8E8E;
 $grey-lighter: #f7f7f7;
 $grey-light: #d4d4d4;
 
-$shadow-uniform: 0 0 10px 0 rgba(0, 0, 0, 0.15);
+$primary-color-50: map-get($chatbot-primary, 50);
+$primary-color-100: map-get($chatbot-primary, 100);
+$primary-color-200: map-get($chatbot-primary, 200);
+$error-color: map-get($chatbot-warn, 500);
 
-$title-font: 'Gilroy';
+$shadow-uniform: 0 0 10px -3px rgba(110,145,240,0.3);
+
+$title-font: 'Gilroy', sans-serif;
 
 /**
 INPUTS
@@ -21,3 +26,5 @@ INPUTS
 $input-height: 52px;
 $input-border-color: rgba(0, 0, 0, 0.12);
 $input-border-color-hover: rgba(0, 0, 0, 0.87);
+
+$border-radius: 4px;

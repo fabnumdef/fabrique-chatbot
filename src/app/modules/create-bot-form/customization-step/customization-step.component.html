@@ -1,10 +1,12 @@
 <div class="customization">
   <form [formGroup]="formGroup" *ngIf="formGroup">
-    <h2>Quel est le nom de votre chatbot ?</h2>
+    <div class="chatbot-subtitle">
+      <h4>Quelle est l'identité de votre chatbot ?</h4>
+    </div>
     <mat-form-field appearance="outline">
       <input matInput
              formControlName="name"
-             [placeholder]="'Roger, Bernadette, Hugo ...'"
+             [placeholder]="'Nom'"
              data-cy="ChatbotNameInput"
              maxlength="50"
              required/>
@@ -16,9 +18,23 @@
       </mat-error>
     </mat-form-field>
 
-    <mat-divider></mat-divider>
+    <mat-form-field appearance="outline">
+      <input matInput
+             formControlName="function"
+             [placeholder]="'Fonction'"
+             maxlength="50"
+             required/>
+      <mat-error *ngIf="controls.function.hasError('required')">
+        Vous n'avez pas saisi de fonction pour votre chatbot.
+      </mat-error>
+      <mat-error *ngIf="controls.function.hasError('maxlength')">
+        La fonction de votre chatbot ne doit pas dépasser 50 caractères.
+      </mat-error>
+    </mat-form-field>
 
-    <h2>Quel est l'icône de votre chatbot ?</h2>
+    <div class="chatbot-subtitle">
+      <h4>Quel est l'icône de votre chatbot ?</h4>
+    </div>
     <div>
       Choisir l'icône qui vous convient dans la bibliothèque ci-dessous.
     </div>
@@ -33,14 +49,16 @@
     <div>
       Ou importer votre propre icône <span class="hint">(*format jpg ou png)</span>
     </div>
-    <button mat-flat-button
-            color="accent"
-            *ngIf="!controls.icon.value; else iconFileWrapper"
-            class="import-btn"
-            data-cy="ImportIconBtn"
-            (click)="iconUploader.click()">
-      Importer une icône
-    </button>
+    <div>
+      <button mat-flat-button
+              color="accent"
+              *ngIf="!controls.icon.value; else iconFileWrapper"
+              class="import-btn"
+              data-cy="ImportIconBtn"
+              (click)="iconUploader.click()">
+        Importer une icône
+      </button>
+    </div>
     <input hidden
            type="file"
            #iconUploader
@@ -75,12 +93,12 @@
       </div>
     </ng-template>
 
-    <mat-divider></mat-divider>
-
-    <h2>Quelles sont vos couleurs ?</h2>
+    <div class="chatbot-subtitle">
+      <h4>Quelles sont vos couleurs ?</h4>
+    </div>
     <div class="color-picker-div" (click)="colorPickerPrimary.click()" data-cy="PrimaryPicker">
       <label>
-        Choisir la couleur primaire (en-tête)
+        Choisir la couleur du chatbot
         <div>
           <input #colorPickerPrimary
                  class="colorpicker color-picker-icon"
@@ -93,7 +111,7 @@
     </div>
     <div class="color-picker-div" (click)="colorPickerSecondary.click()" data-cy="SecondaryPicker">
       <label>
-        Choisir la couleur secondaire (bas de page)
+        Choisir la couleur de l'utilisateur
         <div>
           <input #colorPickerSecondary
                  class="colorpicker color-picker-icon"

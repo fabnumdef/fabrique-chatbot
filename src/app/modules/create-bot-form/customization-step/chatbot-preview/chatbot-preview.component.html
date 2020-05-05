@@ -3,8 +3,13 @@
     <div class="icon">
       <img [src]="iconSrc" *ngIf="iconSrc">
     </div>
-    <div class="name" data-cy="ChatbotNamePreview">
-      {{ chatbot.name ? chatbot.name : 'Nom du chatbot' }}
+    <div class="name">
+      <div data-cy="ChatbotNamePreview">
+        <b>{{ chatbot.name ? chatbot.name : 'Nom du chatbot' }}</b>
+      </div>
+      <div>
+        {{ chatbot.function ? chatbot.function : 'Fonction du chatbot' }}
+      </div>
     </div>
   </div>
   <div class="body">
@@ -62,4 +67,7 @@
   <div class="footer" [style]="'background-color: ' + chatbot.secondaryColor">
     Tapez votre message ...
   </div>
+</div>
+<div class="close-chatbot-btn" [style]="'background-color: ' + chatbot.primaryColor">
+  <mat-icon>close</mat-icon>
 </div>

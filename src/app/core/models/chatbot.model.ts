@@ -1,8 +1,9 @@
-import { ChatbotStatus } from '../enums/chatbot-status.enum';
+import { ChatbotStatus } from '@enum/chatbot-status.enum';
 
 export class Chatbot {
   id: number;
   name: string;
+  function: string;
   icon: string;
   file: string;
   primaryColor: string;

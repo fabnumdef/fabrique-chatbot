@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
+import { DomSanitizer } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-customization-step',
@@ -13,7 +14,8 @@ export class CustomizationStepComponent implements OnInit {
   icons = ['avion.svg', 'bateau.svg', 'camion.svg', 'tank.svg', 'parachute.svg', 'femme.svg', 'homme.svg'];
   imgPreview = null;
 
-  constructor(private _http: HttpClient) {
+  constructor(private _http: HttpClient,
+              private _sanitizer: DomSanitizer) {
   }
 
   ngOnInit(): void {
@@ -55,7 +57,7 @@ export class CustomizationStepComponent implements OnInit {
     const reader = new FileReader();
     reader.readAsDataURL(file);
     reader.onload = (_event) => {
-      this.imgPreview = reader.result;
+      this.imgPreview = this._sanitizer.bypassSecurityTrustResourceUrl(<string> reader.result);
     };
   }
 

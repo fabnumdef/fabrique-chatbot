@@ -1,8 +1,12 @@
+@import 'src/styles/variables';
+
 .header {
   margin-bottom: 10px;
   height: 100px;
   display: flex;
   justify-content: space-between;
+  background-color: $white;
+  box-shadow: $shadow-uniform;
 
   $space-margin: 15px;
 

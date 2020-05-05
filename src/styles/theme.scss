@@ -1,62 +1,63 @@
 @import '~@angular/material/theming';
+
 @include mat-core();
 
 // Chatbot palettes
 
 $chatbot-blue: (
-  50 : #e2e1f3,
-  100 : #b6b3e2,
-  200 : #8580cf,
-  300 : #544dbc,
-  400 : #3027ad,
-  500 : #0b019f,
-  600 : #0a0197,
-  700 : #08018d,
-  800 : #060183,
-  900 : #030072,
-  A100 : #a1a1ff,
-  A200 : #6e6eff,
-  A400 : #3b3bff,
-  A700 : #2121ff,
-  contrast: (
-    50 : #000000,
-    100 : #000000,
-    200 : #000000,
-    300 : #ffffff,
-    400 : #ffffff,
-    500 : #ffffff,
-    600 : #ffffff,
-    700 : #ffffff,
-    800 : #ffffff,
-    900 : #ffffff,
-    A100 : #000000,
-    A200 : #ffffff,
-    A400 : #ffffff,
-    A700 : #ffffff,
-  )
-);
-
-$chatbot-red: (
-  50 : #ffe0e0,
-  100 : #ffb3b3,
-  200 : #ff8080,
-  300 : #ff4d4d,
-  400 : #ff2626,
-  500 : #ff0000,
-  600 : #ff0000,
-  700 : #ff0000,
-  800 : #ff0000,
-  900 : #ff0000,
+  50 : #eef2fd,
+  100 : #d4defb,
+  200 : #b7c8f8,
+  300 : #9ab2f5,
+  400 : #84a2f2,
+  500 : #6e91f0,
+  600 : #6689ee,
+  700 : #5b7eec,
+  800 : #5174e9,
+  900 : #3f62e5,
   A100 : #ffffff,
-  A200 : #fff2f2,
-  A400 : #ffbfbf,
-  A700 : #ffa6a6,
+  A200 : #ffffff,
+  A400 : #ced7ff,
+  A700 : #b4c3ff,
   contrast: (
     50 : #000000,
     100 : #000000,
     200 : #000000,
     300 : #000000,
-    400 : #ffffff,
+    400 : #000000,
+    500 : #000000,
+    600 : #000000,
+    700 : #000000,
+    800 : #ffffff,
+    900 : #ffffff,
+    A100 : #000000,
+    A200 : #000000,
+    A400 : #000000,
+    A700 : #000000,
+  )
+);
+
+$chatbot-red: (
+  50 : #fdeeed,
+  100 : #f9d5d3,
+  200 : #f5b9b6,
+  300 : #f19d99,
+  400 : #ee8883,
+  500 : #eb736d,
+  600 : #e96b65,
+  700 : #e5605a,
+  800 : #e25650,
+  900 : #dd433e,
+  A100 : #ffffff,
+  A200 : #fff8f8,
+  A400 : #ffc7c5,
+  A700 : #ffaeac,
+  contrast: (
+    50 : #000000,
+    100 : #000000,
+    200 : #000000,
+    300 : #000000,
+    400 : #000000,
     500 : #ffffff,
     600 : #ffffff,
     700 : #ffffff,
@@ -70,8 +71,8 @@ $chatbot-red: (
 );
 
 $chatbot-primary: mat-palette($chatbot-blue);
-$chatbot-accent:  mat-palette($chatbot-red);
-$chatbot-warn:    mat-palette($mat-red);
+$chatbot-accent: mat-palette($chatbot-red);
+$chatbot-warn: mat-palette($mat-red);
 $chatbot-theme: mat-light-theme($chatbot-primary, $chatbot-accent, $chatbot-warn);
 
 @include angular-material-theme($chatbot-theme);

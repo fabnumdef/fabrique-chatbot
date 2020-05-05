@@ -1,3 +1,10 @@
+@import 'src/styles/variables';
+
+:host {
+  background-color: $grey-lighter;
+  display: block;
+}
+
 .body {
   max-width: 90%;
   margin: auto;

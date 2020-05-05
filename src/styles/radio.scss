@@ -7,6 +7,9 @@
     border: 2px solid transparent;
     border-radius: 5px;
     transition: border-color 0.2s;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
 
     &:not(:first-child) {
       margin-left: 20px;
@@ -16,22 +19,29 @@
       border-color: $input-border-color-hover;
     }
 
-    &.mat-radio-checked.mat-primary {
+    &.mat-radio-checked.mat-primary, &.mat-radio-checked.mat-primary .mat-radio-label {
       border-color: $primary-color;
     }
 
-    &.mat-radio-checked.mat-accent {
+    &.mat-radio-checked.mat-accent, &.mat-radio-checked.mat-accent .mat-radio-label {
       border-color: $accent-color;
     }
 
     .mat-radio-label {
-      width: 90%;
-      height: 100%;
+      min-width: calc(100% + 2px);
+      min-height: calc(100% + 2px);
+      box-sizing: border-box;
       padding: 0 5% 0 5%;
       justify-content: space-between;
       display: flex;
       border: 1px solid $input-border-color;
       border-radius: 5px;
+      background-color: $white;
+      transition: border-color 0.2s;
+
+      &:hover {
+        border-color: $input-border-color-hover;
+      }
     }
   }
 }

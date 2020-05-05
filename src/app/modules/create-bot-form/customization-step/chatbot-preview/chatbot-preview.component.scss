@@ -22,7 +22,6 @@
     height: 71px;
     border-top-left-radius: 10px;
     border-top-right-radius: 10px;
-    font-weight: bold;
 
     .icon {
       background-color: $white;
@@ -96,4 +95,17 @@
       margin-left: auto;
     }
   }
+}
+
+.close-chatbot-btn {
+  margin-top: 10px;
+  margin-left: auto;
+  border-radius: 100px;
+  box-shadow: $shadow-uniform;
+  width: 50px;
+  height: 50px;
+  color: $white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }

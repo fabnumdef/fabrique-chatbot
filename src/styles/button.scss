@@ -1,10 +1,13 @@
 button {
   &.mat-flat-button, &.mat-stroked-button {
     border-radius: 50px;
-    min-width: 180px;
 
     &:not([disabled]) {
       border-color: currentColor!important;
+    }
+
+    &:not(.small) {
+      min-width: 180px;
     }
   }
 

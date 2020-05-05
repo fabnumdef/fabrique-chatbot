@@ -1,4 +1,7 @@
 @import 'variables';
 
 .mat-form-field {
+  &-appearance-outline:not(.chatbot-datepicker) .mat-form-field-outline {
+    background-color: $white;
+  }
 }

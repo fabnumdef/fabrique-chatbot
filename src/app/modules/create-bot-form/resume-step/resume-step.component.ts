@@ -1,9 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { FormArray } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
-import { ChatbotService } from '@service/chatbot.service';
-import { ChatbotConfiguration } from '@model/chatbot-configuration.model';
-import { AuthService } from '@service/auth.service';
+import { FormArray, FormControl, FormGroup } from '@angular/forms';
+import { DomSanitizer } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-resume-step',
@@ -13,27 +10,34 @@ import { AuthService } from '@service/auth.service';
 export class ResumeStepComponent implements OnInit {
 
   @Input() formArray: FormArray;
-  success: number;
+  @Input() chatbotGenerated: boolean;
+  iconPreview;
 
-  constructor(public chatbotService: ChatbotService,
-              private _router: Router,
-              private _route: ActivatedRoute,
-              public auth: AuthService) {
+  constructor(private _sanitizer: DomSanitizer) {
+  }
+
+  get iconControl(): FormControl {
+    return <FormControl> (<FormGroup> this.formArray.at(2)).controls.icon;
   }
 
   ngOnInit(): void {
+    this.iconControl.valueChanges.subscribe(() => {
+      this._generateIconPreview();
+    });
   }
 
-  generateChatbot() {
+  private _generateIconPreview() {
+    this.iconPreview = null;
+    const file = this.iconControl.value;
 
-    const chatbotConfiguration: ChatbotConfiguration = this.formArray
-      .getRawValue()
-      .reduce((obj1, obj2) => Object.assign(obj1, obj2));
-    console.log(chatbotConfiguration);
-    this.chatbotService.createChatbot(chatbotConfiguration).subscribe(() => {
-      this.success = 1;
-    }, err => {
-      console.log('Erreur lors de l\'appel à l\'api pour la génération du bot.');
-    });
+    if (!file) {
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = (_event) => {
+      this.iconPreview = this._sanitizer.bypassSecurityTrustResourceUrl(<string> reader.result);
+    };
   }
 }

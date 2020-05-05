@@ -1,6 +1,8 @@
 <div class="file-check">
   <form [formGroup]="formGroup" *ngIf="formGroup">
-    <h2>Téléchargement de la base documentaire</h2>
+    <div class="chatbot-subtitle">
+      <h4>Téléchargement de la base documentaire</h4>
+    </div>
     <div class="file-input">
       <span>Chargez la base documentaire de votre chatbot, nous allons vérifier la conformité de votre fichier (format de fichier Excel .xlsx).
         <br/>Si vous n’avez pas le modèle de référence, vous pouvez le télécharger
@@ -100,7 +102,7 @@
           </div>
           <mat-divider></mat-divider>
           <div class="content">
-            <div class="number" data-cy="FileWarningNumber" [ngClass]="{'error': hasFileWarnings()}">
+            <div class="number" data-cy="FileWarningNumber">
               {{ objectKeys(fileTemplateCheckResume.warnings).length }}
             </div>
             <div class="message">
@@ -118,21 +120,22 @@
             </div>
             <a target="_blank"
                *ngIf="hasFileWarnings()"
-               href="https://fabrique-a-chatbots.gitbook.io/fabrique-a-chatbots/base-documentaire/description"
-               class="help-btn">
-              <button mat-stroked-button
-                      type="button"
-                      color="primary">
+               class="help-btn"
+               href="https://fabrique-a-chatbots.gitbook.io/fabrique-a-chatbots/base-documentaire/description">
+              <button mat-flat-button
+                      color="accent"
+                      class="small">
                 <mat-icon>help_outline</mat-icon>
-                Aide gitbook
+                Aide
               </button>
             </a>
           </div>
         </div>
       </div>
     </div>
-    <mat-divider></mat-divider>
-    <h2>Cadre d'utilisation de votre chatbot</h2>
+    <div class="chatbot-subtitle">
+      <h4>Cadre d'utilisation de votre chatbot</h4>
+    </div>
     <p>Vous souhaitez que votre chatbot soit consultable sur :</p>
     <mat-radio-group aria-label="Visibilité du chatbot : internet / intradef"
                      labelPosition="before"
@@ -141,8 +144,9 @@
       <mat-radio-button data-cy="InternetRadioBtn" [value]="false">Internet</mat-radio-button>
       <mat-radio-button data-cy="IntradefRadioBtn" [value]="true">Intradef</mat-radio-button>
     </mat-radio-group>
-    <mat-divider></mat-divider>
-    <h2>Utilisateurs de la plateforme ou contacts</h2>
+    <div class="chatbot-subtitle">
+      <h4>Utilisateurs de la plateforme ou contacts</h4>
+    </div>
     <div class="author-description">
       <span>
         Vous pouvez sautez cette étape et les ajouter plus tard.
