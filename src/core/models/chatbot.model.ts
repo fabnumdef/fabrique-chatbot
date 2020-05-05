@@ -9,6 +9,10 @@ export class ChatbotModel {
 
   @IsString()
   @IsNotEmpty()
+  function: string;
+
+  @IsString()
+  @IsNotEmpty()
   file: string;
 
   @IsString()

@@ -8,6 +8,11 @@ export class CreateChatbotDto {
   @MaxLength(50)
   name: string;
 
+  @IsString()
+  @IsNotEmpty()
+  @MaxLength(50)
+  function: string;
+
   @ApiProperty({type: 'string', format: 'binary'})
   file: FileUploadDto;
 

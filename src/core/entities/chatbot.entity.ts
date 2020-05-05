@@ -10,6 +10,9 @@ export class Chatbot {
   @Column({ nullable: false, length: 50 })
   name: string;
 
+  @Column({ nullable: true, length: 50 })
+  function: string;
+
   @Column({ nullable: true })
   icon: string;
 
