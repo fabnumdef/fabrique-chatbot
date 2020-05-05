@@ -23,7 +23,7 @@
       file:
         path: '{{appsDir}}'
         group: sudo
-        mode: '771'
+        mode: '774'
         recurse: yes
 
     - name: Copy chatbot-back
@@ -107,7 +107,7 @@
       file:
         path: '{{appsDir}}'
         group: sudo
-        mode: '771'
+        mode: '774'
         recurse: yes
 
     - name: NODE | Stop APP
