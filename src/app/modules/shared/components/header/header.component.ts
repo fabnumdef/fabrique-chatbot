@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { UserRole } from '@enum/user-role.enum';
 import { User } from '@model/user.model';
 import { AuthService } from '@service/auth.service';
@@ -9,6 +9,8 @@ import { AuthService } from '@service/auth.service';
   styleUrls: ['./header.component.scss']
 })
 export class HeaderComponent implements OnInit {
+
+  @Input() showActions = true;
 
   user: User;
   isUserAdmin = false;

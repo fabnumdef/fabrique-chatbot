@@ -41,11 +41,7 @@ export class SignInComponent implements OnInit {
 
   private initSignInForm() {
     this.signInForm = this._fb.group({
-      email: ['', [
-        Validators.required,
-        Validators.pattern('^[A-Za-z0-9._%+-]+@([A-Za-z0-9._%+-]*\\.)?gouv\\.fr$'),
-        Validators.maxLength(200)
-      ]],
+      email: ['', [Validators.required, Validators.email, Validators.maxLength(200)]],
       password: ['', [Validators.required, Validators.maxLength(200)]],
     });
   }
