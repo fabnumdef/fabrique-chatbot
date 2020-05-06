@@ -1,6 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { FileUploadDto } from "@dto/file-upload.dto";
-import { IsNotEmpty, IsString, MaxLength } from "class-validator";
+import { IsNotEmpty, IsOptional, IsString, MaxLength } from "class-validator";
 
 export class CreateChatbotDto {
   @IsString()
@@ -9,7 +9,7 @@ export class CreateChatbotDto {
   name: string;
 
   @IsString()
-  @IsNotEmpty()
+  @IsOptional()
   @MaxLength(50)
   function: string;
 

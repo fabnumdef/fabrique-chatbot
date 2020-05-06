@@ -8,7 +8,7 @@ export class ChatbotModel {
   name: string;
 
   @IsString()
-  @IsNotEmpty()
+  @IsOptional()
   function: string;
 
   @IsString()
