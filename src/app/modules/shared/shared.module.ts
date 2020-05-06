@@ -19,7 +19,8 @@ import { RouterModule } from '@angular/router';
   ],
   exports: [
     ConfirmDialogComponent,
-    HeaderComponent
+    HeaderComponent,
+    FooterComponent
   ],
   entryComponents: [
     ConfirmDialogComponent
