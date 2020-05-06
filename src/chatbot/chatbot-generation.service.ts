@@ -107,6 +107,7 @@ export class ChatbotGenerationService {
     const password = crypto.randomBytes(12).toString('hex');
     const user = chatbot.user;
     const file = await this._ovhStorageService.get(chatbot.file).then();
+    const icon = await this._ovhStorageService.get(chatbot.icon).then();
 
     const userToCreate = {
       email: user.email,
@@ -141,6 +142,18 @@ export class ChatbotGenerationService {
       ...{Authorization: `Bearer ${token}`},
     };
     await this._http.post(`http://${chatbot.ip_adress}/api/file/import`, form, {headers: headers}).toPromise().then();
+
+    // Import config
+    const configForm = new FormData();
+    configForm.append('icon', Buffer.from(icon.buffer), chatbot.icon);
+    configForm.append('name', chatbot.name);
+    configForm.append('function', chatbot.function);
+    configForm.append('primaryColor', chatbot.primary_color);
+    configForm.append('secondaryColor', chatbot.secondary_color);
+    configForm.append('problematic', chatbot.problematic);
+    configForm.append('audience', chatbot.audience);
+    configForm.append('solution', chatbot.solution);
+    await this._http.post(`http://${chatbot.ip_adress}/api/config`, configForm, {headers: headers}).toPromise().then();
 
     // Train Rasa
     headers = {
