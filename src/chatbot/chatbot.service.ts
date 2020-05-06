@@ -307,8 +307,8 @@ export class ChatbotService {
   };
 
   static imageFileFilter = (req, file, callback) => {
-    if (!file.originalname.match(/\.(jpg|png)$/)) {
-      return callback(new HttpException('Seul les fichiers en .jpg et .png sont acceptés.', HttpStatus.BAD_REQUEST), false);
+    if (!file.originalname.match(/\.(jpg|png|svg)$/)) {
+      return callback(new HttpException('Seul les fichiers en .jpg, .png et .svg sont acceptés.', HttpStatus.BAD_REQUEST), false);
     }
     return callback(null, true);
   };
