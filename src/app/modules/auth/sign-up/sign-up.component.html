@@ -43,8 +43,8 @@
       <mat-error *ngIf="controls.email.hasError('required')">
         Vous n'avez pas saisi d'email.
       </mat-error>
-      <mat-error *ngIf="controls.email.hasError('email')">
-        L'email saisi n'est pas valide (exemple@exemple.com).
+      <mat-error *ngIf="controls.email.hasError('pattern')">
+        L'email saisi n'est pas valide (exemple@gouv.fr).
       </mat-error>
     </mat-form-field>
 

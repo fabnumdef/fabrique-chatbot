@@ -22,11 +22,7 @@
       <input matInput
              formControlName="function"
              [placeholder]="'Fonction'"
-             maxlength="50"
-             required/>
-      <mat-error *ngIf="controls.function.hasError('required')">
-        Vous n'avez pas saisi de fonction pour votre chatbot.
-      </mat-error>
+             maxlength="50"/>
       <mat-error *ngIf="controls.function.hasError('maxlength')">
         La fonction de votre chatbot ne doit pas dépasser 50 caractères.
       </mat-error>

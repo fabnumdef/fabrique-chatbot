@@ -58,7 +58,7 @@ export class CreateBotFormComponent implements OnInit {
         }),
         this._fb.group({
           name: ['', [Validators.required, Validators.maxLength(50)]],
-          function: ['', [Validators.required, Validators.maxLength(50)]],
+          function: ['', [Validators.maxLength(50)]],
           icon: [null, Validators.required],
           primaryColor: ['#207fef', [Validators.required, Validators.maxLength(20)]],
           secondaryColor: ['#e20613', [Validators.required, Validators.maxLength(20)]],
