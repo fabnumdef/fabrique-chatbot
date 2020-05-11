@@ -73,6 +73,9 @@ export class FileCheckStepComponent extends DestroyObservable implements OnInit 
     this.chatbotService.checkFile(file).pipe(
       finalize(() => {
         this.fileCtrl.enable();
+        if (this.hasFileErrors()) {
+          this.fileCtrl.setErrors({'file_error': true});
+        }
       })
     ).subscribe((response: FileTemplateCheckResume) => {
       this.fileTemplateCheckResume = response;
