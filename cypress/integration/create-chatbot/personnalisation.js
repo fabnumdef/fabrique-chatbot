@@ -43,14 +43,14 @@ describe('Testing third step of creating bot page', function() {
         const fixturePath = 'logo_fabrique_chatbot.png';
 
         it('Should have clickable icons', function() {
-            
+
             cy.get('[data-cy=PresetIcon]').click({multiple:true});
             cy.get('[data-cy=SelectedIconWrapper').should('be.visible');
         })
 
-        
+
         it('Should have update icon button', function() {
-            
+
             cy.get('[data-cy=UpdateIconBtn').should('be.visible');
             cy.get('[data-cy=ImportIconInput]').attachFile(fixturePath, { force: true });
             cy.get('[data-cy=SelectedIconWrapper').should('be.visible');
@@ -58,7 +58,7 @@ describe('Testing third step of creating bot page', function() {
         })
 
         it('Should have delete icon button', function() {
-            
+
             cy.get('[data-cy=SelectedIconWrapper').should('be.visible');
             cy.get('[data-cy=DeleteIconBtn]').should('be.visible');
             cy.get('[data-cy=DeleteIconBtn').click();
@@ -66,7 +66,7 @@ describe('Testing third step of creating bot page', function() {
         })
 
         it('Should have upload icon button', function() {
-            
+
             cy.get('[data-cy=SelectedIconWrapper').should('not.exist');
             cy.get('[data-cy=ImportIconBtn]').should('be.visible');
             cy.get('[data-cy=ImportIconInput]').attachFile(fixturePath, { force: true });
@@ -87,6 +87,5 @@ describe('Testing third step of creating bot page', function() {
             cy.get('[data-cy=SecondaryPicker]').should('be.visible');
         })
     })
-    
+
 });
-  

@@ -66,9 +66,10 @@ export class AuthService {
 
   private readToken() {
     const token = sessionStorage.getItem(this._tokenName);
-    if (token) {
-      this.token$.next(token);
+    if (!token) {
+      return;
     }
+    this.token$.next(token);
     const user = sessionStorage.getItem(this._userSession);
     if (user) {
       this.user$.next(JSON.parse(user));

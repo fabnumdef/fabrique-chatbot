@@ -22,7 +22,7 @@ describe('Testing first step of creating bot page', function() {
       cy.get('[data-cy=TemplateDownloadButton]').should('have.attr', 'href', templateLink)
     });
 
-    
+
     it('should have btn upload', function() {
       cy.get('[data-cy=UploadFileButton]').should('be.visible');
     })
@@ -33,7 +33,7 @@ describe('Testing first step of creating bot page', function() {
       const fixturePathUpdated = 'TEMPLATE_CHATBOT-WARNING.xlsx'
 
       it('should upload .xlsx file', function() {
-        
+
         cy.get('[data-cy=UploadFileInput]').attachFile(fixturePath, { force: true });
 
         cy.get('[data-cy=FileWrapper]').should('be.visible');
@@ -54,8 +54,9 @@ describe('Testing first step of creating bot page', function() {
             .should('be.equal', ' 10 ');
       })
 
-      it('should open error dialog', function() {
-        cy.get('[data-cy=ErrorDialog]').click();
+      it('should open error dialog', async function() {
+        const errorDialogBtn = await cy.get('[data-cy=ErrorDialog]');
+        errorDialogBtn.click();
         cy.get('h2').should('contain', 'Liste des erreurs');
         cy.get('.line').its('length').as('NbErrors');
         cy.get('@NbErrors').should('be.equal', 2);
@@ -101,7 +102,7 @@ describe('Testing first step of creating bot page', function() {
         cy.get('[type="radio"]').first().check({force: true});
         cy.get('[data-cy=InternetRadioBtn]').should('have.class', 'mat-radio-checked');
         cy.get('[data-cy=InternetRadioBtn]').should('have.attr', 'ng-reflect-value', 'false')
-    
+
         cy.get('[type="radio"]').eq(1).check({force: true});
         cy.get('[data-cy=IntradefRadioBtn]').should('have.class', 'mat-radio-checked');
         cy.get('[data-cy=IntradefRadioBtn]').should('have.attr', 'ng-reflect-value', 'true')
@@ -130,4 +131,3 @@ describe('Testing first step of creating bot page', function() {
       })
     })
 });
-  

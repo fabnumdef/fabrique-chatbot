@@ -1,24 +1,100 @@
-<app-header [showActions]="false"></app-header>
 <div class="home">
-  <a href="https://fabrique-a-chatbots.gitbook.io/fabrique-a-chatbots/" target="_blank">
-    <button mat-stroked-button
-            color="primary">
-      Aller sur le gitbook 📒
-    </button>
-  </a>
-  <button mat-stroked-button
-          color="accent"
-          [routerLink]="'/auth/login'">
-    Login 🥳
-  </button>
-  <button mat-stroked-button
-          color="accent"
-          [routerLink]="'/create'">
-    Créer chatbot 🤖
-  </button>
-  <button mat-stroked-button
-          color="accent"
-          [routerLink]="'/ui'">
-    UI 🎨
-  </button>
+  <div class="section section-header">
+    <div>
+      <div class="logos">
+        <img src="assets/img/logo_ministere_armees.jpg" alt="logo ministère des armées">
+        <mat-divider [vertical]="true"></mat-divider>
+        <img src="assets/img/logo_fabrique_chatbot.svg" alt="logo fabrique à chatbots">
+      </div>
+      <div class="image" *ngIf="isSmallScreen">
+        <img src="assets/img/smartphone.png" alt="Image d'un smartphone avec un chatbot">
+      </div>
+      <h1>Créer facilement votre chatbot</h1>
+      <p>Mettez à disposition l'information et laissez le chatbot répondre aux questions de vos agents.</p>
+      <div class="actions">
+        <a href="https://fabrique-a-chatbots.gitbook.io/fabrique-a-chatbots/" target="_blank">
+          <button mat-stroked-button
+                  color="accent">
+            Voir la documentation
+          </button>
+        </a>
+        <button mat-flat-button
+                color="accent"
+                [routerLink]="'/auth/sign_up'">
+          Créer votre chatbot
+        </button>
+      </div>
+    </div>
+    <div class="image" *ngIf="!isSmallScreen">
+      <img src="assets/img/smartphone.png" alt="Image d'un smartphone avec un chatbot">
+    </div>
+  </div>
+  <div class="section section-grey section-why">
+    <h2>Pourquoi un chatbot ?</h2>
+    <div>
+      <div>
+        <img src="assets/img/discussion_1.svg" alt="Bulles de discussion"/>
+      </div>
+      <div>
+        <h3>Toute l’information, un seul endroit</h3>
+        <p>
+          L’information existe déjà et les sources de diffusion sont nombreuses. Regroupez toutes ces connaissances dans
+          votre chatbot.
+        </p>
+      </div>
+    </div>
+
+    <div>
+      <div>
+        <img src="assets/img/discussion_2.svg" alt="Bulles de discussion"/>
+      </div>
+      <div>
+        <h3>Libérez-vous des questions récurrentes</h3>
+        <p>
+          80% des questions posées sont toujours les mêmes. Consacrez plus de temps aux 20% nécessitant un traitement au
+          cas par cas.
+        </p>
+      </div>
+    </div>
+  </div>
+  <div class="section section-how">
+    <h2>Générez votre bot en 3 étapes</h2>
+    <div>
+      <div>
+        <img src="assets/img/desktop.png" alt="Aperçu Backoffice Chatbot"/>
+      </div>
+      <div>
+        <h3>L'apparence de votre bot</h3>
+        <p>Personnifiez votre bot, définissez son périmètre et ses couleurs en visualisant directement le rendu
+          final.</p>
+        <h3>La base de connaissance</h3>
+        <p>Constituez et testez la conformité de votre fichier en vous aidant de toute la documentation et du modèle
+          fourni.</p>
+        <h3>L'interface de gestion</h3>
+        <p>Accédez à l’administration de votre bot, entrainez-le, enrichissez-le et donnez des réponses plus pertinentes
+          aux agents.</p>
+      </div>
+    </div>
+  </div>
+  <div class="section section-grey section-who">
+    <h2>Qui sommes-nous ?</h2>
+    <div class="description">
+      <div *ngIf="isSmallScreen">
+        <img src="assets/img/logo_fabrique_numerique_2.png" alt="logo fabrique numérique">
+      </div>
+      <div>
+        <span>La Fabrique numérique est l’incubateur de services numériques du ministère des Armées. Nous permettons à des
+          agents ayant identifié un problème dans leur activité, de créer un nouveau service répondant au besoin des
+          usagers. Pour en savoir plus :
+          <a target="_blank" href="https://beta.gouv.fr/incubateurs/fabnumdef.html">https://beta.gouv.fr/incubateurs/fabnumdef.html</a>
+        </span>
+      </div>
+      <div *ngIf="!isSmallScreen">
+        <img src="assets/img/logo_fabrique_numerique_2.png" alt="logo fabrique numérique">
+      </div>
+    </div>
+  </div>
+  <div class="footer">
+    <a [routerLink]="'/mentions-legales'">Mentions légales</a>
+  </div>
 </div>

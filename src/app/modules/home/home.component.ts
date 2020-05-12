@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { BreakpointObserver } from '@angular/cdk/layout';
 
 @Component({
   selector: 'app-home',
@@ -7,9 +8,15 @@ import { Component, OnInit } from '@angular/core';
 })
 export class HomeComponent implements OnInit {
 
-  constructor() { }
+  isSmallScreen = false;
+
+  constructor(private _breakpointObserver: BreakpointObserver) {
+  }
 
   ngOnInit(): void {
+    this._breakpointObserver.observe('(max-width: 860px)').subscribe((result) => {
+      this.isSmallScreen = result.matches;
+    });
   }
 
 }

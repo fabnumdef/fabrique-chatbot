@@ -1,0 +1,272 @@
+@import 'src/styles/variables';
+
+.home {
+  .section {
+    padding: 60px 10%;
+
+    h2 {
+      margin-top: 0;
+      font-size: 30px;
+      margin-bottom: 40px;
+    }
+
+    h1 {
+      font-size: 60px;
+      line-height: 60px;
+    }
+
+    h3 {
+      font-size: 20px;
+    }
+
+    &-grey {
+      background-color: $grey-lighter;
+    }
+
+    &-header {
+      display: flex;
+
+      p {
+        color: $primary-color;
+        font-size: 26px;
+        line-height: 35px;
+      }
+
+      & > * {
+        flex: 1;
+      }
+
+      .logos {
+        height: 100px;
+        display: flex;
+        align-items: center;
+        margin-bottom: 40px;
+
+        img {
+          max-height: 100%;
+        }
+
+        mat-divider {
+          height: 50%;
+          margin: 0 40px 0 20px;
+        }
+      }
+
+      .image {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        img {
+          width: 100%;
+          max-width: 450px;
+        }
+      }
+
+      .actions {
+        margin-top: 20px;
+
+        & > *:not(:first-child) {
+          margin-left: 20px;
+        }
+      }
+
+    }
+
+    &-why, &-how {
+      & > div {
+        width: 50%;
+        display: inline-flex;
+        box-sizing: border-box;
+
+        &:nth-child(2) {
+          padding-right: 10px;
+        }
+
+        &:nth-child(3) {
+          padding-left: 10px;
+        }
+
+        img {
+          max-height: 100px;
+          margin-right: 15px;
+        }
+      }
+    }
+
+    &-how {
+      & > div {
+        display: flex;
+        width: 100%;
+
+        & > * {
+          flex: 1;
+
+          &:nth-child(1) {
+            padding-right: 20px;
+          }
+
+          &:nth-child(2) {
+            padding-left: 20px;
+          }
+        }
+
+        img {
+          width: 100%;
+          max-height: 100%;
+        }
+      }
+    }
+
+    &-who {
+      .description {
+        display: flex;
+
+        & > *:nth-child(1) {
+          flex: 2;
+          display: flex;
+          align-items: center;
+        }
+
+        & > *:nth-child(2) {
+          flex: 1;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+
+          img {
+            width: 70%;
+          }
+        }
+      }
+    }
+  }
+
+  .footer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px 0;
+  }
+}
+
+$margin-small: 20px;
+@media only screen and (max-width: 1150px) {
+  .home {
+    .section {
+      padding: 60px 5%;
+
+      &-header {
+        padding-top: 0;
+
+        p {
+          font-size: 20px;
+          line-height: 25px;
+        }
+
+        .logos {
+          margin-bottom: $margin-small;
+        }
+      }
+    }
+  }
+}
+
+@media only screen and (max-width: 860px) {
+  .home {
+    .section {
+      h2 {
+        font-size: 25px;
+        margin-bottom: $margin-small;
+      }
+
+      h1 {
+        font-size: 30px;
+        line-height: 30px;
+      }
+
+      h3 {
+        font-size: 20px;
+      }
+
+      h2, h1 {
+        text-align: center;
+      }
+
+      &-header {
+        p {
+          text-align: center;
+        }
+
+        .logos {
+          justify-content: center;
+        }
+
+        .image {
+          img {
+            max-width: 300px;
+          }
+        }
+
+        .actions {
+          margin-top: $margin-small;
+          text-align: center;
+
+          & > * {
+            display: block;
+
+            &:not(:first-child) {
+              margin: 10px auto 0 auto;
+            }
+          }
+        }
+      }
+
+      &-why, &-how {
+        & > div {
+          width: 100%;
+          display: block;
+          text-align: center;
+
+          &:nth-child(2) {
+            padding-right: 0;
+          }
+
+          &:nth-child(3) {
+            padding-left: 0;
+          }
+
+          img {
+            margin-right: 0;
+          }
+        }
+      }
+
+      &-how {
+        img {
+          max-width: 300px;
+          margin-bottom: $margin-small;
+        }
+      }
+
+      &-who {
+        .description {
+          display: block;
+
+          & > * {
+            display: flex;
+            justify-content: center;
+            text-align: center;
+
+            img {
+              max-width: 300px;
+              width: 100%;
+              margin-bottom: $margin-small;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+

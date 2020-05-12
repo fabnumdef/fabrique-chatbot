@@ -26,9 +26,9 @@ describe('Testing second step of creating bot page', function() {
         beforeEach(() => {
             cy.get('[data-cy=ProblemInput]').clear();
           })
-        
+
         it('should have problem input', function () {
-            cy.get('h2').should('contain', 'À quelle problématique répond votre chatbot ?');
+            cy.get('h4').should('contain', 'À quelle problématique répond votre chatbot ?');
             cy.get('[data-cy=ProblemInput]')
             .type('John Doe')
             .invoke("val")
@@ -48,9 +48,9 @@ describe('Testing second step of creating bot page', function() {
         beforeEach(() => {
             cy.get('[data-cy=AudienceInput]').clear();
           })
-        
+
         it('should have audience input', function () {
-            cy.get('h2').should('contain', "À qui s'adresse votre chatbot ?");
+            cy.get('h4').should('contain', "À qui s'adresse votre chatbot ?");
             cy.get('[data-cy=AudienceInput]')
             .type('John Doe')
             .invoke("val")
@@ -69,9 +69,9 @@ describe('Testing second step of creating bot page', function() {
         beforeEach(() => {
             cy.get('[data-cy=SolutionInput]').clear();
           })
-        
+
         it('should have solution input', function () {
-            cy.get('h2').should('contain', 'Quelle solution propose votre chatbot ?');
+            cy.get('h4').should('contain', 'Quelle solution propose votre chatbot ?');
             cy.get('[data-cy=SolutionInput]')
             .type('John Doe')
             .invoke("val")
@@ -86,4 +86,3 @@ describe('Testing second step of creating bot page', function() {
         });
     })
 });
-  
