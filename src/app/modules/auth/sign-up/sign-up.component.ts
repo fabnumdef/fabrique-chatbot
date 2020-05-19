@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { UserService } from '@service/user.service';
 import { User } from '@model/user.model';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-sign-up',
@@ -46,7 +47,7 @@ export class SignUpComponent implements OnInit {
       lastName: ['', [Validators.required, Validators.maxLength(50)]],
       email: ['', [
         Validators.required,
-        Validators.pattern('^[A-Za-z0-9._%+-]+@([A-Za-z0-9._%+-]*\\.)?gouv\\.fr$'),
+        environment.production ? Validators.pattern('^[A-Za-z0-9._%+-]+@([A-Za-z0-9._%+-]*\\.)?gouv\\.fr$') : Validators.email,
         Validators.maxLength(200)
       ]],
       chatbotTheme: ['', [Validators.required, Validators.maxLength(50)]],
