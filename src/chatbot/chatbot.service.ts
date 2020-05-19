@@ -163,18 +163,22 @@ export class ChatbotService {
       'Question': 'main_question',
       'Type de réponse': 'response_type',
       'Réponse(s)': 'response',
-      'Questions synonymes (à séparer par un point-virgule ;)': 'questions'
+      'Questions synonymes (à séparer par un point-virgule ;)': 'questions',
+      'Expire le': 'expires_at'
     };
     const options: Sheet2JSONOpts = {};
-    const templateFile: TemplateFileDto[] = this._xlsx.utils.sheet_to_json(worksheet, options).map((t: TemplateFileDto) => {
+    const excelJson = this._xlsx.utils.sheet_to_json(worksheet, options);
+    const templateFile: TemplateFileDto[] = excelJson.map((t: TemplateFileDto, idx: number) => {
       for (let key of Object.keys(t)) {
-        console.log(key);
         if(!!headers[key]) {
           t[headers[key]] = t[key];
         }
         delete t[key];
       }
       t.id = t.id?.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/\W/g, '_');
+      if(!t.id) {
+        t.id = excelJson[idx - 1].id;
+      }
       t.questions = t.questions ? (<any>t.questions).split(';').map(q => q.trim()) : [];
       return t;
     });
