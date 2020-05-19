@@ -30,11 +30,13 @@
         Utilisateurs 👨‍👩‍👧‍👦
       </button>
     </mat-menu>
-    <button mat-stroked-button
-            color="accent"
+    <button mat-button
+            color="primary"
+            class="chatbot-button"
             *ngIf="user"
             (click)="logout()">
-      Déconnexion
+      <mat-icon>exit_to_app</mat-icon>
+      {{ user.firstName }} {{ user.lastName }}
     </button>
   </div>
 </div>

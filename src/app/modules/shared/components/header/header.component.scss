@@ -26,5 +26,9 @@
     display: flex;
     align-items: center;
     margin-right: $space-margin;
+
+    & > *:not(:last-child) {
+      margin-right: 15px;
+    }
   }
 }

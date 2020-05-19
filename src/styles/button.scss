@@ -1,3 +1,5 @@
+@import 'src/styles/variables';
+
 button {
   &.mat-flat-button, &.mat-stroked-button {
     border-radius: 50px;
@@ -18,6 +20,38 @@ button {
 
     .mat-icon {
       margin-right: 5px;
+    }
+  }
+
+  &.mat-button.chatbot-button {
+    font-family: $title-font;
+    font-size: 16px;
+    color: #000;
+    padding-left: 0;
+    $icon-height: 36px;
+
+    .mat-icon {
+      margin-right: 15px;
+      background-color: #F1EFF1;
+      min-height: $icon-height;
+      min-width: $icon-height;
+      line-height: $icon-height;
+      border-radius: $border-radius;
+      font-size: 20px;
+    }
+
+    .mat-button-wrapper {
+      justify-content: flex-start;
+      line-height: $icon-height;
+    }
+
+    &.mat-primary {
+      color: $primary-color;
+
+      .mat-icon {
+        background-color: $primary-color;
+        color: $white;
+      }
     }
   }
 }
