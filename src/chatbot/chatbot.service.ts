@@ -157,11 +157,23 @@ export class ChatbotService {
    * @param worksheet
    */
   private _convertExcelToJson(worksheet: WorkSheet): TemplateFileDto[] {
-    const options: Sheet2JSONOpts = {
-      header: ['id', 'category', 'main_question', 'response_type', 'response', '', 'questions'],
-      range: 1
+    const headers = {
+      'ID': 'id',
+      'Catégorie': 'category',
+      'Question': 'main_question',
+      'Type de réponse': 'response_type',
+      'Réponse(s)': 'response',
+      'Questions synonymes (à séparer par un point-virgule ;)': 'questions'
     };
+    const options: Sheet2JSONOpts = {};
     const templateFile: TemplateFileDto[] = this._xlsx.utils.sheet_to_json(worksheet, options).map((t: TemplateFileDto) => {
+      for (let key of Object.keys(t)) {
+        console.log(key);
+        if(!!headers[key]) {
+          t[headers[key]] = t[key];
+        }
+        delete t[key];
+      }
       t.id = t.id?.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/\W/g, '_');
       t.questions = t.questions ? (<any>t.questions).split(';').map(q => q.trim()) : [];
       return t;
