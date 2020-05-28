@@ -7,7 +7,7 @@
         <img src="assets/img/logo_fabrique_chatbot.svg" alt="logo fabrique à chatbots">
       </div>
       <div class="image" *ngIf="isSmallScreen">
-        <img src="assets/img/smartphone.png" alt="Image d'un smartphone avec un chatbot">
+        <img src="assets/img/smartphone.gif" alt="Image d'un smartphone avec un chatbot">
       </div>
       <h1>Créer facilement votre chatbot</h1>
       <p>Mettez à disposition l'information et laissez le chatbot répondre aux questions de vos agents.</p>
@@ -26,7 +26,7 @@
       </div>
     </div>
     <div class="image" *ngIf="!isSmallScreen">
-      <img src="assets/img/smartphone.png" alt="Image d'un smartphone avec un chatbot">
+      <img src="assets/img/smartphone.gif" alt="Image d'un smartphone avec un chatbot">
     </div>
   </div>
   <div class="section section-grey section-why">
@@ -61,7 +61,25 @@
     <h2>Générez votre bot en 3 étapes</h2>
     <div>
       <div>
-        <img src="assets/img/desktop.png" alt="Aperçu Backoffice Chatbot"/>
+        <mat-carousel timings="250ms ease-in"
+                      [autoplay]="true"
+                      [interval]="5000"
+                      [hideIndicators]="false"
+                      [loop]="true"
+                      [maintainAspectRatio]="true"
+                      [proportion]="isSmallScreen ? 75 : 70"
+                      [maxWidth]="isSmallScreen ? '300px' : '100%'"
+                      color="primary">
+          <mat-carousel-slide [hideOverlay]="true">
+            <img src="assets/img/desktop_1.png" alt="Aperçu Backoffice Chatbot"/>
+          </mat-carousel-slide>
+          <mat-carousel-slide [hideOverlay]="true">
+            <img src="assets/img/desktop_2.png" alt="Aperçu Backoffice Chatbot"/>
+          </mat-carousel-slide>
+          <mat-carousel-slide [hideOverlay]="true">
+            <img src="assets/img/desktop_3.png" alt="Aperçu Backoffice Chatbot"/>
+          </mat-carousel-slide>
+        </mat-carousel>
       </div>
       <div>
         <h3>L'apparence de votre bot</h3>

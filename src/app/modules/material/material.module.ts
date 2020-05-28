@@ -14,18 +14,19 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatCarouselModule } from '@ngmodule/material-carousel';
 
 @NgModule({
   declarations: [],
   imports: [
     MatStepperModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatIconModule, MatProgressSpinnerModule, MatDividerModule,
     MatSelectModule, MatRadioModule, MatDialogModule, MatTableModule, MatProgressBarModule, MatTooltipModule, MatMenuModule,
-    MatCheckboxModule
+    MatCheckboxModule, MatCarouselModule.forRoot()
   ],
   exports: [
     MatStepperModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatIconModule, MatProgressSpinnerModule, MatDividerModule,
     MatSelectModule, MatRadioModule, MatDialogModule, MatTableModule, MatProgressBarModule, MatTooltipModule, MatMenuModule,
-    MatCheckboxModule
+    MatCheckboxModule, MatCarouselModule
   ]
 })
 export class MaterialModule { }

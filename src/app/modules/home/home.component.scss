@@ -58,8 +58,8 @@
         justify-content: center;
 
         img {
-          width: 100%;
-          max-width: 450px;
+          width: auto;
+          max-height: 450px;
         }
       }
 
@@ -148,6 +148,10 @@
     justify-content: center;
     padding: 20px 0;
   }
+
+  ::ng-deep.carousel {
+    margin: auto;
+  }
 }
 
 $margin-small: 20px;
@@ -204,7 +208,7 @@ $margin-small: 20px;
 
         .image {
           img {
-            max-width: 300px;
+            max-height: 300px;
           }
         }
 
