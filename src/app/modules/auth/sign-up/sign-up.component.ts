@@ -51,6 +51,7 @@ export class SignUpComponent implements OnInit {
         Validators.maxLength(200)
       ]],
       chatbotTheme: ['', [Validators.required, Validators.maxLength(50)]],
+      acceptCGU: [false, [Validators.requiredTrue]],
     });
   }
 
