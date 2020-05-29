@@ -17,7 +17,7 @@
       <div class="line">
         <div class="line-number">
           <mat-icon color="accent">list</mat-icon>
-          <b>Ligne {{item.key}}</b>
+          <b>Ligne {{item.key > 0 ? item.key : 0}}</b>
         </div>
         <div>
           {{item.value}}
