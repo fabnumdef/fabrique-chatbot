@@ -1,6 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { Sheet2JSONOpts, WorkBook, WorkSheet } from "xlsx";
-import { TemplateFileDto } from "@dto/template-file.dto";
+import { TemplateFileDto, TemplateResponseType } from "@dto/template-file.dto";
 import { TemplateFileCheckResumeDto } from "@dto/template-file-check-resume.dto";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
@@ -14,6 +14,7 @@ import { UpdateChatbotDto } from "@dto/update-chatbot.dto";
 import * as fs from "fs";
 import { AnsiblePlaybook, Options } from "ansible-playbook-cli-js";
 import { execShellCommand, jsonToDotenv } from "@core/utils";
+import { ResponseType } from "../../chatbot/chatbot-back/src/core/enums/response-type.enum";
 
 const yaml = require('js-yaml');
 const crypto = require('crypto');
@@ -170,13 +171,13 @@ export class ChatbotService {
     const excelJson = this._xlsx.utils.sheet_to_json(worksheet, options);
     const templateFile: TemplateFileDto[] = excelJson.map((t: TemplateFileDto, idx: number) => {
       for (let key of Object.keys(t)) {
-        if(!!headers[key]) {
+        if (!!headers[key]) {
           t[headers[key]] = t[key];
         }
         delete t[key];
       }
       t.id = t.id?.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/\W/g, '_');
-      if(!t.id) {
+      if (!t.id) {
         t.id = excelJson[idx - 1].id;
       }
       t.questions = t.questions ? (<any>t.questions).split(';').map(q => q.trim()) : [];
@@ -201,6 +202,13 @@ export class ChatbotService {
    * @param templateFileCheckResume
    */
   private _checkFile(templateFile: TemplateFileDto[], templateFileCheckResume?: TemplateFileCheckResumeDto): void | boolean {
+    // ONLY FOR FABRIQUE, NOT BO
+    if (!templateFile.find(t => t.id === 'phrase_presentation')) {
+      this._addMessage(templateFileCheckResume.errors, -1, `La phrase de présentation n'est pas renseignée (id: phrase_presentation).`);
+    }
+    if (!templateFile.find(t => t.id === 'phrase_hors_sujet')) {
+      this._addMessage(templateFileCheckResume.errors, -2, `La phrase d'hors sujet n'est pas renseignée (id: phrase_hors_sujet).`);
+    }
     templateFile.forEach((excelRow: TemplateFileDto, index: number) => {
       const excelIndex = index + 2;
       // ERRORS
@@ -215,6 +223,10 @@ export class ChatbotService {
       }
       if (!excelRow.response && !excelRow.response_type) {
         this._addMessage(templateFileCheckResume.errors, excelIndex, `La réponse et le type de réponse n'est pas renseigné.`);
+      }
+      if ([TemplateResponseType.quick_reply, TemplateResponseType.image, TemplateResponseType.button].includes(excelRow.response_type)
+        && templateFile[index - 1]?.response_type !== TemplateResponseType.text) {
+        this._addMessage(templateFileCheckResume.errors, excelIndex, `Ce type de réponse nécessite d'être précédée d'une réponse de type texte.`);
       }
       // Si il y a une question principale il est censé y avoir une réponse, une catégorie etc ...
       if (!!excelRow.main_question) {

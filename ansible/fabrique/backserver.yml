@@ -49,6 +49,7 @@
     - name: Install last version of npm
       become: yes
       command: npm install -g npm
+      ignore_errors: yes
 
     - name: NODE | Install pm2
       become: yes
