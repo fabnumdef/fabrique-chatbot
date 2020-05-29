@@ -126,7 +126,7 @@
 
     - name: Stop rasa chatbot
       become: true
-      command: 'screen -wipe'
+      command: 'pkill screen'
       ignore_errors: true
       when: updateRasa
 

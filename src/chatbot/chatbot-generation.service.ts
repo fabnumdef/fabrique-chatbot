@@ -33,7 +33,7 @@ export class ChatbotGenerationService {
     if (!botsToBeCreated || botsToBeCreated.length < 1) {
       return;
     }
-    console.log('Chatbots waiting for creation', botsToBeCreated.length);
+    console.log(`${new Date().toLocaleString()} - Chatbots waiting for creation`, botsToBeCreated.length);
 
     this.updateChatbotRepos();
 
@@ -63,11 +63,11 @@ export class ChatbotGenerationService {
     const ansiblePlaybook = new AnsiblePlaybook(playbookOptions);
     await ansiblePlaybook.command(`generate-chatbot.yml --vault-password-file ../fabrique/password_file -i ${chatbot.ip_adress}, -e '${JSON.stringify(updateChatbot)}'`).then(async (result) => {
       await this._chatbotService.findAndUpdate(chatbot.id, {status: ChatbotStatus.running});
-      console.log(`CHATBOT UPDATED - ${chatbot.id} - ${chatbot.name}`);
+      console.log(`${new Date().toLocaleString()} - CHATBOT UPDATED - ${chatbot.id} - ${chatbot.name}`);
       console.log(result);
     }).catch(() => {
       this._chatbotService.findAndUpdate(chatbot.id, {status: ChatbotStatus.error_configuration});
-      console.error(`ERROR UPDATING CHATBOT - ${chatbot.id} - ${chatbot.name}`);
+      console.error(`${new Date().toLocaleString()} - ERROR UPDATING CHATBOT - ${chatbot.id} - ${chatbot.name}`);
     });
 
     fs.unlinkSync(`${this._appDir}/chatbot/credentials.yml`);
@@ -78,10 +78,10 @@ export class ChatbotGenerationService {
     const playbookOptions = new Options(`${this._appDir}/fabrique`);
     const ansiblePlaybook = new AnsiblePlaybook(playbookOptions);
     await ansiblePlaybook.command(`update-chatbot-repo.yml --vault-id dev@password_file`).then((result) => {
-      console.log('UPDATING CHATBOTS REPOSITORIES');
+      console.log(`${new Date().toLocaleString()} - UPDATING CHATBOTS REPOSITORIES`);
       console.log(result);
     }).catch(error => {
-      console.error('ERRROR UPDATING CHATBOTS REPOSITORIES');
+      console.error(`${new Date().toLocaleString()} - ERRROR UPDATING CHATBOTS REPOSITORIES`);
     });
   }
 
@@ -96,7 +96,7 @@ export class ChatbotGenerationService {
     });
     for (const chatbot of botsToBeCreated) {
       await this._chatbotService.findAndUpdate(chatbot.id, {status: ChatbotStatus.configuration});
-      console.log(`GENERATING CHATBOT - ${chatbot.id} - ${chatbot.name}`);
+      console.log(`${new Date().toLocaleString()} - GENERATING CHATBOT - ${chatbot.id} - ${chatbot.name}`);
       const extraVars: LaunchUpdateChatbotDto = new LaunchUpdateChatbotDto(true, true, true);
       await this.updateChatbot(chatbot, extraVars);
       this._initChatbot(chatbot);

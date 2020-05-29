@@ -28,13 +28,13 @@ export class OvhStorageService {
     const targetURL = `${this._endpoint}/${filePath}`;
     return this._http.get(targetURL, this._setHeaders()).pipe(
       tap(() => {
-        console.log(`GET OBJECT STORAGE - ${filePath}`);
+        console.log(`${new Date().toLocaleString()} - GET OBJECT STORAGE - ${filePath}`);
       }),
       map(
         r => r.data
       ),
       catchError(err => {
-        console.error(`FAIL - GET OBJECT STORAGE - ${filePath} - ${err.message}`);
+        console.error(`${new Date().toLocaleString()} - FAIL - GET OBJECT STORAGE - ${filePath} - ${err.message}`);
         return err;
       })
     ).toPromise();
@@ -50,13 +50,13 @@ export class OvhStorageService {
     const targetURL = `${this._endpoint}/${filePath}`;
     return this._http.put(targetURL, file, this._setHeaders()).pipe(
       tap(() => {
-        console.log(`SET OBJECT STORAGE - ${filePath}`);
+        console.log(`${new Date().toLocaleString()} - SET OBJECT STORAGE - ${filePath}`);
       }),
       map(
         r => r.data
       ),
       catchError(err => {
-        console.error(`FAIL - SET OBJECT STORAGE - ${filePath} - ${err.message}`);
+        console.error(`${new Date().toLocaleString()} - FAIL - SET OBJECT STORAGE - ${filePath} - ${err.message}`);
         return err;
       })
     ).toPromise();
@@ -72,10 +72,10 @@ export class OvhStorageService {
     return this._http.get(targetURL, this._setHeaders()).pipe(
       map(r => r.data),
       tap((data) => {
-        console.log(`GET LIST OBJECT STORAGE - ${dirPath}`);
+        console.log(`${new Date().toLocaleString()} - GET LIST OBJECT STORAGE - ${dirPath}`);
       }),
       catchError(err => {
-        console.error(`FAIL - GET LIST OBJECT STORAGE - ${dirPath} - ${err.message}`);
+        console.error(`${new Date().toLocaleString()} - FAIL - GET LIST OBJECT STORAGE - ${dirPath} - ${err.message}`);
         return err;
       })
     ).toPromise();
@@ -97,9 +97,9 @@ export class OvhStorageService {
       this._token = res.data.access.token;
       const serviceCatalog = res.data.access.serviceCatalog.find(s => s.type === 'object-store');
       this._endpoint = `${serviceCatalog.endpoints.find(e => e.region === this._config.region).publicURL}/${this._config.container}`;
-      console.log('CONNECTED TO OVH OBJECT STORAGE');
+      console.log(`${new Date().toLocaleString()} - CONNECTED TO OVH OBJECT STORAGE`);
     }, err => {
-      console.error('FAILED TO CONNECT TO OVH OBJECT STORAGE - ', err.message);
+      console.error(`${new Date().toLocaleString()} - FAILED TO CONNECT TO OVH OBJECT STORAGE - `, err.message);
     });
   }
 
