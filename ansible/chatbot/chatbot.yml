@@ -20,6 +20,12 @@
         upgrade: 'yes'
         update_cache: 'yes'
 
+    - name: Get v10 of nodejs
+      become: true
+      command:
+        cmd: 'curl -sL https://deb.nodesource.com/setup_10.x -o nodesource_setup.sh ; bash nodesource_setup.sh'
+        chdir: '~'
+
     - name: Install required dependencies (python, ssl, postgresql, node ...)
       become: true
       apt:
@@ -38,7 +44,6 @@
           - libpq-dev
           - python-psycopg2
           - acl
-          - npm
           - nodejs
           - git
           - nginx

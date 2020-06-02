@@ -16,6 +16,7 @@ export const chatbotsMock: Chatbot[] = [
     intra_def: false,
     status: ChatbotStatus.creation,
     user: null,
-    created_at: null
+    created_at: null,
+    function: null
   }
 ];
