@@ -54,8 +54,12 @@ export class ChatbotGenerationService {
 
   async updateChatbot(chatbot: Chatbot, updateChatbot: LaunchUpdateChatbotDto) {
     // Get credentials
-    const file = await this._ovhStorageService.get(`${chatbot.id.toString(10)}/credentials.yml`).then();
-    const dotenv = await this._ovhStorageService.get(`${chatbot.id.toString(10)}/.env`).then();
+    const file = await this._ovhStorageService.get(`${chatbot.id.toString(10)}/credentials.yml`).then().catch(() => {
+      this._chatbotService.findAndUpdate(chatbot.id, {status: ChatbotStatus.error_configuration});
+    });
+    const dotenv = await this._ovhStorageService.get(`${chatbot.id.toString(10)}/.env`).then().catch(() => {
+      this._chatbotService.findAndUpdate(chatbot.id, {status: ChatbotStatus.error_configuration});
+    });
     fs.writeFileSync(`${this._appDir}/chatbot/credentials.yml`, file, 'utf8');
     fs.writeFileSync(`${this._appDir}/chatbot/.env`, dotenv, 'utf8');
 
