@@ -94,8 +94,10 @@ export class ChatbotGenerationService {
   private async _generateChatbots() {
     // On les récupère ici pour être sûr (si la commande ansible précédente prend trop de temps)
     const botsToBeCreated: Chatbot[] = await this._chatbotService.findAll({
-      status: ChatbotStatus.pending_configuration,
-      ip_adress: Not(IsNull()),
+      where: {
+        status: ChatbotStatus.pending_configuration,
+        ip_adress: Not(IsNull()),
+      },
       relations: ['user']
     });
     for (const chatbot of botsToBeCreated) {
