@@ -130,7 +130,7 @@
       lineinfile:
         path: '{{ appsDir }}/{{ botDir }}/endpoints.yml'
         regexp: '^  password:'
-        line: '  password: {{ DB_PASSWORD }}'
+        line: '  password: "{{ DB_PASSWORD }}"'
       when: updateRasa
 
     - name: Train rasa
