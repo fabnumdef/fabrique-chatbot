@@ -14,7 +14,6 @@ import { UpdateChatbotDto } from "@dto/update-chatbot.dto";
 import * as fs from "fs";
 import { AnsiblePlaybook, Options } from "ansible-playbook-cli-js";
 import { execShellCommand, jsonToDotenv } from "@core/utils";
-import { ResponseType } from "../../chatbot/chatbot-back/src/core/enums/response-type.enum";
 
 const yaml = require('js-yaml');
 const crypto = require('crypto');
