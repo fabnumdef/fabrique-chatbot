@@ -41,7 +41,11 @@ export class ChatbotModel {
 
   @IsString()
   @IsNotEmpty()
-  intra_def: boolean = true;
+  intra_def: boolean = false;
+
+  @IsString()
+  @IsNotEmpty()
+  include_small_talk: boolean = true;
 
   @IsString()
   @IsOptional()

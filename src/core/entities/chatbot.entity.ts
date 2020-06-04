@@ -40,6 +40,9 @@ export class Chatbot {
   @Column( { default: false })
   intra_def: boolean;
 
+  @Column( { default: true })
+  include_small_talk: boolean;
+
   @Column('enum', { name: 'status', enum: ChatbotStatus, default: ChatbotStatus.pending, nullable: false})
   status: ChatbotStatus;
 

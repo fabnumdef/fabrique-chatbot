@@ -47,4 +47,8 @@ export class CreateChatbotDto {
   @IsString()
   @IsNotEmpty()
   intraDef: boolean = false;
+
+  @IsString()
+  @IsNotEmpty()
+  includeSmallTalk: boolean = true;
 }

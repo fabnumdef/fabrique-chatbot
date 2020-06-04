@@ -9,6 +9,7 @@ import { LaunchUpdateChatbotDto } from "@dto/launch-update-chatbot.dto";
 import { OvhStorageService } from "../shared/services/ovh-storage.service";
 import * as fs from "fs";
 import { MailService } from "../shared/services/mail.service";
+import * as path from "path";
 const crypto = require('crypto');
 const FormData = require('form-data');
 
@@ -148,6 +149,19 @@ export class ChatbotGenerationService {
       ...{Authorization: `Bearer ${token}`},
     };
     await this._http.post(`http://${chatbot.ip_adress}/api/file/import`, form, {headers: headers}).toPromise().then();
+
+    // Import small talk
+    if(chatbot.include_small_talk) {
+      const smallTalkFilePath = path.resolve(__dirname, '..', 'assets', 'SMALL_TALK.xlsx');
+      const formST = new FormData();
+      formST.append('file', fs.readFileSync(smallTalkFilePath), 'SMALL_TALK.xlsx');
+      formST.append('deleteIntents', false.toString());
+      let headers: any = {
+        ...formST.getHeaders(),
+        ...{Authorization: `Bearer ${token}`},
+      };
+      await this._http.post(`http://${chatbot.ip_adress}/api/file/import`, formST, {headers: headers}).toPromise().then();
+    }
 
     // Import config
     const configForm = new FormData();
