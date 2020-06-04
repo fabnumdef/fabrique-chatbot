@@ -117,6 +117,22 @@
       become: yes
       when: updateBack
 
+    - name: Copy endpoints.yml rasa file
+      become: true
+      copy:
+        src: '{{ appsDir }}/{{ botDir }}/endpoints.example.yml'
+        dest: '{{ appsDir }}/{{ botDir }}/endpoints.yml'
+        remote_src: yes
+      when: updateRasa
+
+    - name: Update endpoints.yml rasa file
+      become: true
+      lineinfile:
+        path: '{{ appsDir }}/{{ botDir }}/endpoints.yml'
+        regexp: '^password:'
+        line: '  password: {{ DB_PASSWORD }}'
+      when: updateRasa
+
     - name: Train rasa
       become: true
       command:
