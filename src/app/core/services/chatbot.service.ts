@@ -32,7 +32,8 @@ export class ChatbotService {
     formData.append('problematic', botConfig.problematic);
     formData.append('audience', botConfig.audience);
     formData.append('solution', botConfig.solution);
-    formData.append('intraDef', botConfig.intraDef);
+    formData.append('intraDef', botConfig.intraDef.toString());
+    formData.append('includeSmallTalk', botConfig.includeSmallTalk.toString());
 
     const headers = new HttpHeaders();
     headers.append('Content-Type', 'multipart/form-data');

@@ -1,10 +1,10 @@
 <div class="file-check">
   <form [formGroup]="formGroup" *ngIf="formGroup">
     <div class="chatbot-subtitle">
-      <h4>Téléchargement de la base documentaire</h4>
+      <h4>Téléchargement de la base de connaissances</h4>
     </div>
     <div class="file-input">
-      <span>Chargez la base documentaire de votre chatbot, nous allons vérifier la conformité de votre fichier (format de fichier Excel .xlsx).
+      <span>Chargez la base de connaissances de votre chatbot, nous allons vérifier la conformité de votre fichier (format de fichier Excel .xlsx).
         <br/>Si vous n’avez pas le modèle de référence, vous pouvez le télécharger
         <a target="_blank"
            data-cy="TemplateDownloadButton"
@@ -32,7 +32,7 @@
     </div>
 
     <div class="feedback-wrapper" data-cy="FileWrapper" *ngIf="fileTemplateCheckResume">
-      <h3>Base documentaire</h3>
+      <h3>Base de connaissances</h3>
       <div class="file-wrapper" *ngIf="fileCtrl.value">
         <div class="file-header">
           <div class="file-name">
@@ -144,6 +144,10 @@
       <mat-radio-button data-cy="InternetRadioBtn" [value]="false">Internet</mat-radio-button>
       <mat-radio-button data-cy="IntradefRadioBtn" [value]="true">Intradef</mat-radio-button>
     </mat-radio-group>
+    <div class="chatbot-subtitle">
+      <h4>Conversation</h4>
+    </div>
+    <mat-checkbox formControlName="includeSmallTalk">Ajouter des connaissances de conversation générique (Bonjour, Aurevoir, Comment vas-tu etc ...)</mat-checkbox>
     <div class="chatbot-subtitle">
       <h4>Utilisateurs de la plateforme ou contacts</h4>
     </div>
