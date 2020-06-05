@@ -18,8 +18,19 @@
           <app-file-check-step [formGroup]="formArray.at(0)">></app-file-check-step>
         </div>
         <div class="bot-step-actions">
-          <button mat-stroked-button color="accent" matStepperPrevious disabled>Précédent</button>
-          <button mat-flat-button color="accent" matStepperNext data-cy="ParamNextBtn" [disabled]="!formArray.at(0).valid">Suivant</button>
+          <button mat-stroked-button
+                  color="accent"
+                  matStepperPrevious
+                  disabled>
+            Précédent
+          </button>
+          <button mat-flat-button
+                  color="accent"
+                  matStepperNext
+                  data-cy="ParamNextBtn"
+                  [disabled]="!formArray.at(0).valid">
+            Suivant
+          </button>
         </div>
       </div>
     </mat-step>
