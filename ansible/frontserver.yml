@@ -93,15 +93,15 @@
       become: true
       lineinfile:
         path: '/etc/nginx/sites-available/{{ angularDir }}.cfg'
-        regexp: '^    listen [::]:443 ssl ipv6only=on;'
-        line: '      listen [::]:443 ssl http2 ipv6only=on;'
+        regexp: '^    listen \[::]:443 ssl ipv6only=on;'
+        line: '    listen [::]:443 ssl http2 ipv6only=on;'
 
     - name: Update nginx site conf to use http2
       become: true
       lineinfile:
         path: '/etc/nginx/sites-available/{{ angularDir }}.cfg'
         regexp: '^    listen 443 ssl;'
-        line: '      listen 443 ssl http2;'
+        line: '    listen 443 ssl http2;'
 
     - name: restart nginx
       service:
