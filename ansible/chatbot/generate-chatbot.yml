@@ -55,6 +55,13 @@
 
     - name: copy the nginx config file
       copy:
+        src: '{{ appsDir }}/{{ nestDir }}/ansible/chatbot/nginx.conf'
+        dest: '/etc/nginx/nginx.conf'
+      become: yes
+      when: updateFront
+
+    - name: copy the nginx site config file
+      copy:
         src: '{{ appsDir }}/{{ nestDir }}/ansible/chatbot/nginx_conf.cfg'
         dest: '/etc/nginx/sites-available/{{ frontDir }}.cfg'
       become: yes
