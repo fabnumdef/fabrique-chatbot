@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { finalize } from 'rxjs/operators';
 import { MatDialog } from '@angular/material/dialog';
 import { WarningsDialogComponent } from '../warnings-dialog/warnings-dialog.component';
@@ -7,11 +7,7 @@ import { DestroyObservable } from '@utils/destroy-observable';
 import { FileTemplateCheckResume } from '@model/file-template-check-resume.model';
 import { ChatbotService } from '@service/chatbot.service';
 import { ToastrService } from 'ngx-toastr';
-
-interface Role {
-  value: string;
-  viewValue: string;
-}
+import { ChatbotUserRole } from '@enum/chatbot-user-role.enum';
 
 @Component({
   selector: 'app-file-check-step',
@@ -24,14 +20,9 @@ export class FileCheckStepComponent extends DestroyObservable implements OnInit 
   fileTemplateCheckResume: FileTemplateCheckResume;
   objectKeys = Object.keys;
 
-  roles: Role[] = [
-    {value: 'role-0', viewValue: 'Rôle A'},
-    {value: 'role-1', viewValue: 'Rôle B'},
-    {value: 'role-2', viewValue: 'Rôle C'}
-  ];
-
   constructor(public chatbotService: ChatbotService,
               private dialog: MatDialog,
+              private _fb: FormBuilder,
               private _toast: ToastrService) {
     super();
   }
@@ -41,6 +32,10 @@ export class FileCheckStepComponent extends DestroyObservable implements OnInit 
 
   get fileCtrl(): FormControl {
     return <FormControl> this.formGroup.get('file');
+  }
+
+  get usersFormArray(): FormArray {
+    return <FormArray> this.formGroup.get('users');
   }
 
   uploadFile($event) {
@@ -63,6 +58,15 @@ export class FileCheckStepComponent extends DestroyObservable implements OnInit 
   resetFile() {
     this.fileTemplateCheckResume = null;
     this.fileCtrl.setValue(null);
+  }
+
+  addUser() {
+    this.usersFormArray.push(this._fb.group({
+      firstName: ['', [Validators.required, Validators.maxLength(50)]],
+      lastName: ['', [Validators.required, Validators.maxLength(50)]],
+      email: ['', [Validators.required, Validators.maxLength(255), Validators.email]],
+      role: [ChatbotUserRole.writer, [Validators.required]]
+    }));
   }
 
   /**

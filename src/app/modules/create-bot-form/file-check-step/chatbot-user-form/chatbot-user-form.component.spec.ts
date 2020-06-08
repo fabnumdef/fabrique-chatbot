@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { SuccessStepComponent } from './success-step.component';
+import { ChatbotUserFormComponent } from './chatbot-user-form.component';
 
-describe('SuccessStepComponent', () => {
-  let component: SuccessStepComponent;
-  let fixture: ComponentFixture<SuccessStepComponent>;
+describe('ChatbotUserFormComponent', () => {
+  let component: ChatbotUserFormComponent;
+  let fixture: ComponentFixture<ChatbotUserFormComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ SuccessStepComponent ]
+      declarations: [ ChatbotUserFormComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(SuccessStepComponent);
+    fixture = TestBed.createComponent(ChatbotUserFormComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

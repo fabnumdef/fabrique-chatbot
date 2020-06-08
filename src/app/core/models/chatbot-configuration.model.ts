@@ -1,7 +1,10 @@
+import { ChatbotUser } from '@model/chatbot-user.model';
+
 export class ChatbotConfiguration {
   file: File;
-  includeSmallTalk: boolean;
+  users: ChatbotUser[];
   name: string;
+  function: string;
   icon: File;
   problematic: string;
   audience: string;

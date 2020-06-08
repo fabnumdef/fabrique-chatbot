@@ -18,19 +18,16 @@
       width: 100%;
     }
 
-    .author-description {
+    .user-description {
       margin-bottom: 30px;
     }
 
-    .author-content {
+    .user-header {
       display: flex;
       justify-content: space-between;
-      flex-wrap: wrap;
-      margin: 0 0;
-      width: 100%;
 
-      .author-content-element {
-        width: 48%;
+      .mat-icon {
+        cursor: pointer;
       }
     }
 

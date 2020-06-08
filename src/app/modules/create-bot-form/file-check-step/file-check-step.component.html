@@ -148,53 +148,31 @@
       <mat-radio-button data-cy="IntradefRadioBtn" [value]="true">Intradef</mat-radio-button>
     </mat-radio-group>
     <div class="chatbot-subtitle">
-      <h4>Conversation</h4>
+      <h4>Utilisateurs de la plateforme</h4>
     </div>
-    <mat-checkbox formControlName="includeSmallTalk">Ajouter des connaissances de conversation générique (Bonjour, Aurevoir, Comment vas-tu etc ...)</mat-checkbox>
-    <div class="chatbot-subtitle">
-      <h4>Utilisateurs de la plateforme ou contacts</h4>
-    </div>
-    <div class="author-description">
+    <div class="user-description">
       <span>
         Vous pouvez sautez cette étape et les ajouter plus tard.
       </span>
     </div>
-    <div class="author-content">
-      <div class="author-content-element">
-        <mat-form-field class="full-width-input" appearance="outline">
-          <mat-label>Nom, Prénom</mat-label>
-          <input matInput
-                 data-cy="NameInput"
-                 formControlName="author"
-                 [placeholder]="'Saisir ...'"/>
-          <mat-error *ngIf="controls.author.hasError('required')">
-            Vous n'avez pas saisi le nom du contact.
-          </mat-error>
-        </mat-form-field>
-      </div>
-      <div class="author-content-element">
-        <mat-form-field class="full-width-input" appearance="outline">
-          <mat-label>Rôle</mat-label>
-          <mat-select formControlName="role" data-cy="RoleSelector">
-            <mat-option *ngFor="let role of roles" [value]="role.value">
-              {{role.viewValue}}
-            </mat-option>
-          </mat-select>
-          <mat-error *ngIf="controls.role.hasError('required')">Vous n'avez pas renseigné le rôle du contact</mat-error>
-        </mat-form-field>
-      </div>
-      <div class="author-content-element">
-        <mat-form-field class="full-width-input" appearance="outline">
-          <mat-label>Email</mat-label>
-          <input matInput
-                 data-cy="EmailInput"
-                 formControlName="email"
-                 [placeholder]="'Saisir ...'"/>
-          <mat-error *ngIf="controls.email.hasError('required')">
-            Vous n'avez pas saisi le mail du contact.
-          </mat-error>
-        </mat-form-field>
+    <div>
+      <div *ngFor="let userForm of usersFormArray.controls; let idx = index">
+        <div class="user-header">
+          <h4>Utilisateur {{ idx + 1 }}</h4>
+          <mat-icon (click)="usersFormArray.removeAt(idx)"
+                    color="accent"
+                    aria-label="Supprimer l'utilisateur">
+            delete
+          </mat-icon>
+        </div>
+        <app-chatbot-user-form [chatbotUserForm]="userForm"></app-chatbot-user-form>
       </div>
     </div>
+    <button mat-stroked-button
+            color="accent"
+            (click)="addUser()"
+            [disabled]="!usersFormArray.valid">
+      <mat-icon>add</mat-icon> Ajouter un utilisateur
+    </button>
   </form>
 </div>

@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormArray, FormControl, FormGroup } from '@angular/forms';
 import { DomSanitizer } from '@angular/platform-browser';
+import { ChatbotUserRole_Fr } from '@enum/chatbot-user-role.enum';
 
 @Component({
   selector: 'app-resume-step',
@@ -12,6 +13,7 @@ export class ResumeStepComponent implements OnInit {
   @Input() formArray: FormArray;
   @Input() chatbotGenerated: boolean;
   iconPreview;
+  chatbotUserRole_Fr = ChatbotUserRole_Fr;
 
   constructor(private _sanitizer: DomSanitizer) {
   }

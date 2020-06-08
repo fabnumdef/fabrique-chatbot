@@ -27,13 +27,14 @@ export class ChatbotService {
     formData.append('file', botConfig.file, botConfig.file.name);
     formData.append('icon', botConfig.icon, botConfig.icon.name);
     formData.append('name', botConfig.name);
+    formData.append('function', botConfig.function);
     formData.append('primaryColor', botConfig.primaryColor);
     formData.append('secondaryColor', botConfig.secondaryColor);
     formData.append('problematic', botConfig.problematic);
     formData.append('audience', botConfig.audience);
     formData.append('solution', botConfig.solution);
     formData.append('intraDef', botConfig.intraDef.toString());
-    formData.append('includeSmallTalk', botConfig.includeSmallTalk.toString());
+    formData.append('users', JSON.stringify(botConfig.users));
 
     const headers = new HttpHeaders();
     headers.append('Content-Type', 'multipart/form-data');

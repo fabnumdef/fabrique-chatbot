@@ -8,10 +8,10 @@ import { FileCheckStepComponent } from './file-check-step/file-check-step.compon
 import { CustomizationStepComponent } from './customization-step/customization-step.component';
 import { ColorPickerModule } from 'ngx-color-picker';
 import { ResumeStepComponent } from './resume-step/resume-step.component';
-import { SuccessStepComponent } from './success-step/success-step.component';
 import { DescriptionStepComponent } from './description-step/description-step.component';
 import { WarningsDialogComponent } from './warnings-dialog/warnings-dialog.component';
 import { ChatbotPreviewComponent } from './customization-step/chatbot-preview/chatbot-preview.component';
+import { ChatbotUserFormComponent } from './file-check-step/chatbot-user-form/chatbot-user-form.component';
 
 @NgModule({
   declarations: [
@@ -20,9 +20,9 @@ import { ChatbotPreviewComponent } from './customization-step/chatbot-preview/ch
     DescriptionStepComponent,
     CustomizationStepComponent,
     ResumeStepComponent,
-    SuccessStepComponent,
     WarningsDialogComponent,
-    ChatbotPreviewComponent
+    ChatbotPreviewComponent,
+    ChatbotUserFormComponent
   ],
   imports: [
     CommonModule,

@@ -4,6 +4,20 @@
       <h4>Récapitulatif des données</h4>
     </div>
     <div class="info-block">
+      <h4>Paramétrage</h4>
+      <mat-divider></mat-divider>
+      <div class="label">Sur quel réseau doit être déployé votre chatbot ?</div>
+      <div class="value">{{formArray.at(0).value.intraDef ? 'Intradef' : 'Internet'}}</div>
+      <ng-container *ngIf="formArray.at(0).value.users?.length > 0">
+        <ng-container *ngFor="let user of formArray.at(0).value.users; let idx = index">
+          <mat-divider></mat-divider>
+          <div class="label">Utilisateur {{ idx + 1 }}</div>
+          <div class="value">{{ user.firstName }} {{ user.lastName }} ({{ user.email }}) - {{ chatbotUserRole_Fr[user.role] }}</div>
+        </ng-container>
+      </ng-container>
+    </div>
+
+    <div class="info-block">
       <h4>Description</h4>
       <mat-divider></mat-divider>
       <div class="label">À quelle problématique répond votre chatbot ?</div>
@@ -53,7 +67,7 @@
     </div>
     <mat-divider></mat-divider>
     <div class="red">
-      <mat-icon>warning</mat-icon> &nbsp; <b>N'oubliez pas de créer une fiche cyclade pour référencer votre chatbot.</b>
+      <mat-icon>warning</mat-icon> &nbsp; <b>N'oubliez pas de créer une fiche Sicl@de pour référencer votre chatbot.</b>
     </div>
   </div>
 </div>
