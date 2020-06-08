@@ -93,6 +93,11 @@
         state: 'present'
         template: 'template0'
 
+    - name: Adds unaccent extension
+      postgresql_ext:
+        name: unaccent
+        db: rasa
+
     - name: Ensure user has access to the database
       become: true
       become_user: postgres
