@@ -1,6 +1,7 @@
-import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { ChatbotStatus } from "@enum/chatbot-status.enum";
 import { User } from "@entity/user.entity";
+import { ChatbotUser } from "@entity/chatbot-user.entity";
 
 @Entity('chatbot')
 export class Chatbot {
@@ -40,14 +41,14 @@ export class Chatbot {
   @Column( { default: false })
   intra_def: boolean;
 
-  @Column( { default: true })
-  include_small_talk: boolean;
-
   @Column('enum', { name: 'status', enum: ChatbotStatus, default: ChatbotStatus.pending, nullable: false})
   status: ChatbotStatus;
 
   @ManyToOne(type => User, user => user.chatbots)
   user: User;
+
+  @OneToMany(type => ChatbotUser, user => user.chatbot, { cascade: true })
+  users: ChatbotUser[];
 
   @CreateDateColumn({type: "timestamp"})
   created_at: number;

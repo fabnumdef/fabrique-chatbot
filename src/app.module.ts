@@ -14,6 +14,7 @@ import { APP_INTERCEPTOR } from "@nestjs/core";
 import { LoggerInterceptor } from "@interceptor/logger.interceptor";
 import { AdminModule } from './admin/admin.module';
 import { ScheduleModule } from "@nestjs/schedule";
+import { ChatbotUser } from "@entity/chatbot-user.entity";
 
 @Module({
   imports: [
@@ -30,7 +31,7 @@ import { ScheduleModule } from "@nestjs/schedule";
       username: process.env.DATABASE_USER,
       password: process.env.DATABASE_PASSWORD,
       database: process.env.DATABASE_NAME,
-      "entities": [User, Chatbot],
+      "entities": [User, Chatbot, ChatbotUser],
       "synchronize": true
     }),
     MailerModule.forRoot({

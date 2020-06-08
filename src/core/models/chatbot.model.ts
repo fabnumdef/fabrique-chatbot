@@ -1,6 +1,7 @@
 import { IsNotEmpty, IsObject, IsOptional, IsString } from "class-validator";
 import { ChatbotStatus } from "@enum/chatbot-status.enum";
 import { UserModel } from "@model/user.model";
+import { ChatbotUserModel } from "@model/chatbot-user.model";
 
 export class ChatbotModel {
   @IsString()
@@ -44,14 +45,14 @@ export class ChatbotModel {
   intra_def: boolean = false;
 
   @IsString()
-  @IsNotEmpty()
-  include_small_talk: boolean = true;
-
-  @IsString()
   @IsOptional()
   status: ChatbotStatus;
 
   @IsObject()
   @IsOptional()
   user: UserModel;
+
+  @IsObject()
+  @IsOptional()
+  users: ChatbotUserModel[];
 }

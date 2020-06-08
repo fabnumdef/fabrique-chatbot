@@ -1,6 +1,7 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { FileUploadDto } from "@dto/file-upload.dto";
 import { IsNotEmpty, IsOptional, IsString, MaxLength } from "class-validator";
+import { ChatbotUser } from "@entity/chatbot-user.entity";
 
 export class CreateChatbotDto {
   @IsString()
@@ -50,5 +51,5 @@ export class CreateChatbotDto {
 
   @IsString()
   @IsNotEmpty()
-  includeSmallTalk: boolean = true;
+  users: ChatbotUser[];
 }

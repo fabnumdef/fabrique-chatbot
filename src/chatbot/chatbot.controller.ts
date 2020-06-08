@@ -50,6 +50,9 @@ export class ChatbotController {
                @Req() req) {
     const file: FileModel = files.file[0];
     const icon: FileModel = files.icon[0];
+    // form data
+    // @ts-ignore
+    botConfiguration.users = JSON.parse(botConfiguration.users);
     const errors = this._chatbotService.checkTemplateFile(file).errors;
     if (errors && Object.keys(errors).length > 0) {
       throw new HttpException('Le fichier contient des erreurs bloquantes.', HttpStatus.INTERNAL_SERVER_ERROR);

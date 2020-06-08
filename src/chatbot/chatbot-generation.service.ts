@@ -131,7 +131,7 @@ export class ChatbotGenerationService {
       password: password
     });
 
-    // Log user & import file
+    // Log user
     let token;
     await this._http.post(`http://${chatbot.ip_adress}/api/auth/login`, {
       email: user.email,
@@ -139,6 +139,19 @@ export class ChatbotGenerationService {
     }).toPromise().then(response => {
       token = response.data.chatbotToken;
     });
+
+    // Create other users
+    if(chatbot.users && chatbot.users.length > 0) {
+      chatbot.users.forEach(chatbotUser => {
+        const password = crypto.randomBytes(12).toString('hex');
+        this._http.post(`http://${chatbot.ip_adress}/api/user`, {...chatbotUser, ...{password: password}}).toPromise().then();
+        this._mailService.sendEmail(user.email, 'Création de compte', 'create-chatbot', {
+          firstName: user.first_name,
+          ipAdress: chatbot.ip_adress,
+          password: password
+        });
+      });
+    }
 
     // Import file
     const form = new FormData();
@@ -149,19 +162,6 @@ export class ChatbotGenerationService {
       ...{Authorization: `Bearer ${token}`},
     };
     await this._http.post(`http://${chatbot.ip_adress}/api/file/import`, form, {headers: headers}).toPromise().then();
-
-    // Import small talk
-    if(chatbot.include_small_talk) {
-      const smallTalkFilePath = path.resolve(__dirname, '..', 'assets', 'SMALL_TALK.xlsx');
-      const formST = new FormData();
-      formST.append('file', fs.readFileSync(smallTalkFilePath), 'SMALL_TALK.xlsx');
-      formST.append('deleteIntents', false.toString());
-      let headers: any = {
-        ...formST.getHeaders(),
-        ...{Authorization: `Bearer ${token}`},
-      };
-      await this._http.post(`http://${chatbot.ip_adress}/api/file/import`, formST, {headers: headers}).toPromise().then();
-    }
 
     // Import config
     const configForm = new FormData();

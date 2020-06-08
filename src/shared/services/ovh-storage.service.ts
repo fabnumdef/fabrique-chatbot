@@ -106,7 +106,7 @@ export class OvhStorageService {
   private _setHeaders() {
     return {
       headers: {
-        'X-Auth-Token': this._token.id
+        'X-Auth-Token': this._token?.id
       }
     }
   }
