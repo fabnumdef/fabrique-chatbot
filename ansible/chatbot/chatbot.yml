@@ -64,7 +64,7 @@
       pip:
         executable: pip3
         name:
-          - rasa
+          - rasa>1.10.0,<1.11.0
           - psycopg2-binary
 
     - name: NODE | Install pm2
