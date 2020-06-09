@@ -11,7 +11,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 export class CustomizationStepComponent implements OnInit {
 
   @Input() formGroup: FormGroup;
-  icons = ['avion.svg', 'bateau.svg', 'camion.svg', 'tank.svg', 'parachute.svg', 'femme.svg', 'homme.svg'];
+  icons = ['avion.png', 'bateau.png', 'camion.png', 'tank.png', 'parachute.png', 'femme.png', 'homme.png'];
   imgPreview = null;
 
   constructor(private _http: HttpClient,
