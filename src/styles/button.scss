@@ -1,8 +1,13 @@
 @import 'src/styles/variables';
 
 button {
+  &.mat-flat-button {
+    height: 38px;
+  }
+
   &.mat-flat-button, &.mat-stroked-button {
     border-radius: 50px;
+    border-width: 2px;
 
     &:not([disabled]) {
       border-color: currentColor!important;

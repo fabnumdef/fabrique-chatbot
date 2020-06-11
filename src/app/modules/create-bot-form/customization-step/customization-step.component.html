@@ -21,7 +21,7 @@
     <mat-form-field appearance="outline">
       <input matInput
              formControlName="function"
-             [placeholder]="'Fonction'"
+             [placeholder]="'Fonction ex: RH Marine'"
              maxlength="50"/>
       <mat-error *ngIf="controls.function.hasError('maxlength')">
         La fonction de votre chatbot ne doit pas dépasser 50 caractères.
@@ -83,7 +83,7 @@
                   color="accent"
                   data-cy="UpdateIconBtn"
                   (click)="iconUploader.click()">
-            Mettre à jour
+            Remplacer fichier
           </button>
         </div>
       </div>
