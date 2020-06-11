@@ -38,10 +38,6 @@ export class ChatbotModel {
 
   @IsString()
   @IsNotEmpty()
-  solution: string;
-
-  @IsString()
-  @IsNotEmpty()
   intra_def: boolean = false;
 
   @IsString()

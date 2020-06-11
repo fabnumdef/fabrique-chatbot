@@ -25,10 +25,6 @@ export class ChatbotDto {
 
   @IsString()
   @IsNotEmpty()
-  solution: string;
-
-  @IsString()
-  @IsNotEmpty()
   intraDef: boolean = true;
 
   @IsString()

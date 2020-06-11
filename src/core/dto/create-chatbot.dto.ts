@@ -42,11 +42,6 @@ export class CreateChatbotDto {
 
   @IsString()
   @IsNotEmpty()
-  @MaxLength(200)
-  solution: string;
-
-  @IsString()
-  @IsNotEmpty()
   intraDef: boolean = false;
 
   @IsString()

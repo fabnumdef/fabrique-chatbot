@@ -32,9 +32,6 @@ export class Chatbot {
   @Column({ nullable: false, length: 200 })
   audience: string;
 
-  @Column({ nullable: false, length: 200 })
-  solution: string;
-
   @Column( { nullable: true, length: 50 })
   ip_adress: string;
 
