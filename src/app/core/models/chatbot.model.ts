@@ -10,7 +10,6 @@ export class Chatbot {
   secondaryColor: string;
   problematic: string;
   audience: string;
-  solution: string;
   ipAdress: string;
   status: ChatbotStatus;
   createdAt: string;

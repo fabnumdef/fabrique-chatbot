@@ -52,7 +52,6 @@ export class CreateBotFormComponent implements OnInit {
         this._fb.group({
           problematic: ['', [Validators.required, Validators.maxLength(200)]],
           audience: ['', [Validators.required, Validators.maxLength(200)]],
-          solution: ['', [Validators.required, Validators.maxLength(200)]],
         }),
         this._fb.group({
           name: ['', [Validators.required, Validators.maxLength(50)]],

@@ -8,7 +8,6 @@ export class ChatbotConfiguration {
   icon: File;
   problematic: string;
   audience: string;
-  solution: string;
   intraDef: boolean;
   primaryColor: string;
   secondaryColor: string;

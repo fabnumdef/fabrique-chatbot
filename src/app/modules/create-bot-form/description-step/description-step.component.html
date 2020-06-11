@@ -32,21 +32,5 @@
         {{getErrorMessage('audience')}}
       </mat-error>
     </mat-form-field>
-
-    <div class="chatbot-subtitle">
-      <h4>Quelle solution propose votre chatbot ?</h4>
-    </div>
-    <mat-form-field appearance="outline">
-      <mat-label>200 caractères maximum</mat-label>
-      <textarea matInput
-                formControlName="solution"
-                [placeholder]="'Saisir ...'"
-                data-cy="SolutionInput"
-                maxlength="200"
-                required></textarea>
-      <mat-error *ngIf="controls.solution.invalid">
-        {{getErrorMessage('solution')}}
-      </mat-error>
-    </mat-form-field>
   </form>
 </div>

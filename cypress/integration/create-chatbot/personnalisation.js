@@ -15,7 +15,6 @@ describe('Testing third step of creating bot page', function() {
       cy.get('[data-cy=ParamNextBtn]').click();
       cy.get('[data-cy=ProblemInput]').type('Lorem ipsum dolor sit amet, consectetuer adipiscing elit.')
       cy.get('[data-cy=AudienceInput]').type('Lorem ipsum dolor sit amet, consectetuer adipiscing elit.')
-      cy.get('[data-cy=SolutionInput]').type('Lorem ipsum dolor sit amet, consectetuer adipiscing elit.')
       cy.get('[data-cy=DescNextBtn]').click();
 
     })

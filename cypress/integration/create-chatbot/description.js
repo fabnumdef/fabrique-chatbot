@@ -64,25 +64,4 @@ describe('Testing second step of creating bot page', function() {
             .should("be.equal", charLoremIpsum200);
         });
     })
-
-    describe('Solution input tests', () => {
-        beforeEach(() => {
-            cy.get('[data-cy=SolutionInput]').clear();
-          })
-
-        it('should have solution input', function () {
-            cy.get('h4').should('contain', 'Quelle solution propose votre chatbot ?');
-            cy.get('[data-cy=SolutionInput]')
-            .type('John Doe')
-            .invoke("val")
-            .should("be.equal", "John Doe");
-        });
-
-        it('should have have less than 200 characters', function () {
-            cy.get('[data-cy=SolutionInput]')
-            .type(charLoremIpsum250)
-            .invoke("val")
-            .should("be.equal", charLoremIpsum200);
-        });
-    })
 });

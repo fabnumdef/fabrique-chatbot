@@ -29,10 +29,6 @@ export class DescriptionStepComponent implements OnInit {
       return this.formGroup.controls.audience.hasError('required') ? 'Vous n\'avez pas saisi le public visé.' :
         this.formGroup.controls.audience.hasError('maxlength') ? 'Vous avez dépassé le nombre de caractères maximum autorisés' : '';
     }
-    if (field === 'solution') {
-      return this.formGroup.controls.solution.hasError('required') ? 'Vous n\'avez pas saisi le but de votre chatbot.' :
-        this.formGroup.controls.solution.hasError('maxlength') ? 'Vous avez dépassé le nombre de caractères maximum autorisés' : '';
-    }
     return '';
   }
 
