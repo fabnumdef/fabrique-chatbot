@@ -144,7 +144,7 @@
       become: true
       command:
         chdir: '{{ appsDir }}/{{ botDir }}/'
-        cmd: 'rasa train'
+        cmd: 'rasa train --augmentation 0'
       when: updateRasa
 
     - name: Stop rasa chatbot
