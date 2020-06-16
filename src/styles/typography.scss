@@ -1,9 +1,14 @@
 @import 'variables';
 
 body.mat-typography {
-  h1, h2, h3, h4 {
+  h1, h2, h3, h4, h5 {
     color: $primary-color;
     font-family: $title-font;
+  }
+
+  h5 {
+    color: $primary-color-300;
+    font-size: 15px;
   }
 
   h1 {

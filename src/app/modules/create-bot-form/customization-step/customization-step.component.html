@@ -92,6 +92,7 @@
     <div class="chatbot-subtitle">
       <h4>Quelles sont vos couleurs ?</h4>
     </div>
+    <h5>Possibilité 1 : Choisissez vos couleurs</h5>
     <div class="color-picker-div" (click)="colorPickerPrimary.click()" data-cy="PrimaryPicker">
       <label>
         Choisir la couleur du chatbot
@@ -117,6 +118,17 @@
                  (colorPickerChange)="controls.secondaryColor.setValue($event)"/>
         </div>
       </label>
+    </div>
+    <mat-divider></mat-divider>
+    <h5>Possibilité 2 : Si vous n'avez pas d'idées, laissez vous guider !</h5>
+    <p>Cliquez ci-dessous jusqu'à trouver votre binôme de couleur idéal.</p>
+    <div>
+      <button mat-flat-button
+              color="accent"
+              type="button"
+              (click)="shuffleColors()">
+        C'est parti
+      </button>
     </div>
   </form>
 </div>

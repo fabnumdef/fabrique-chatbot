@@ -57,8 +57,8 @@ export class CreateBotFormComponent implements OnInit {
           name: ['', [Validators.required, Validators.maxLength(50)]],
           function: ['', [Validators.maxLength(50)]],
           icon: [null, Validators.required],
-          primaryColor: ['#207fef', [Validators.required, Validators.maxLength(20)]],
-          secondaryColor: ['#e20613', [Validators.required, Validators.maxLength(20)]],
+          primaryColor: ['#6e91f0', [Validators.required, Validators.maxLength(20)]],
+          secondaryColor: ['#eef2fd', [Validators.required, Validators.maxLength(20)]],
         }),
       ])
     });

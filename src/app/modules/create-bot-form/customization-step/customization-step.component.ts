@@ -14,6 +14,38 @@ export class CustomizationStepComponent implements OnInit {
   icons = ['avion.png', 'bateau.png', 'camion.png', 'tank.png', 'parachute.png', 'femme.png', 'homme.png'];
   imgPreview = null;
 
+  colorsSet = [
+    {
+      primaryColor: '#9E9E9E',
+      secondaryColor: '#E6E6E6'
+    },
+    {
+      primaryColor: '#57A6FF',
+      secondaryColor: '#CBE3FF'
+    },
+    {
+      primaryColor: '#F3722C',
+      secondaryColor: '#FDE3D5'
+    },
+    {
+      primaryColor: '#FF5757',
+      secondaryColor: '#FFC8C8'
+    },
+    {
+      primaryColor: '#66BE82',
+      secondaryColor: '#D6EDDD'
+    },
+    {
+      primaryColor: '#A4A4EC',
+      secondaryColor: '#F0F0FC'
+    },
+    {
+      primaryColor: '#FFB000',
+      secondaryColor: '#FEE9BA'
+    }
+  ];
+  colorsIdx = 0;
+
   constructor(private _http: HttpClient,
               private _sanitizer: DomSanitizer) {
   }
@@ -35,7 +67,7 @@ export class CustomizationStepComponent implements OnInit {
   }
 
   selectIcon(iconName: string) {
-    this._http.get('assets/img/icons/' + iconName, { responseType: 'blob' }).subscribe((file: any) => {
+    this._http.get('assets/img/icons/' + iconName, {responseType: 'blob'}).subscribe((file: any) => {
       file.name = iconName;
       this._storeIcon(file);
     });
@@ -44,6 +76,12 @@ export class CustomizationStepComponent implements OnInit {
   resetIconFile() {
     this.imgPreview = null;
     this.controls.icon.setValue(null);
+  }
+
+  shuffleColors() {
+    this.controls.primaryColor.setValue(this.colorsSet[this.colorsIdx].primaryColor);
+    this.controls.secondaryColor.setValue(this.colorsSet[this.colorsIdx].secondaryColor);
+    this.colorsIdx = (this.colorsIdx >= 6) ? 0 : this.colorsIdx + 1;
   }
 
   /**
