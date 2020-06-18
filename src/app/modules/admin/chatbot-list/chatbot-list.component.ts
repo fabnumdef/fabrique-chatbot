@@ -67,6 +67,21 @@ export class ChatbotListComponent implements OnInit {
     ].includes(chatbot.status);
   }
 
+  deleteChatbot(chatbot: Chatbot) {
+    const dialogRef = this._dialog.open(ConfirmDialogComponent, {
+      data: {
+        message: `Êtes-vous sûr de vouloir supprimer le chatbot <b>${chatbot.name}</b> ?.`
+      },
+      autoFocus: false
+    });
+
+    dialogRef.afterClosed()
+      .pipe(filter(r => !!r))
+      .subscribe(() => {
+        this._chatbotService.delete(chatbot.id).subscribe();
+      });
+  }
+
   /**
    * PRIVATE FUNCTIONS
    */

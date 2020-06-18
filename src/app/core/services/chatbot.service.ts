@@ -61,6 +61,15 @@ export class ChatbotService {
     );
   }
 
+  delete(chatbotId: number) {
+    this._loading$.next(true);
+    return this._http.delete<any>(`${this._adminUrl}/${chatbotId}`).pipe(
+      finalize(() => {
+        this._loading$.next(false);
+      })
+    );
+  }
+
   launchUpdateChatbot(chatbotId: number, body: ChatbotLaunchUpdate): Observable<any> {
     this._loading$.next(true);
     return this._http.post<any>(`${this._adminUrl}/update/${chatbotId}`, body).pipe(
