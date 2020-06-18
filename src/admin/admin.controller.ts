@@ -63,12 +63,10 @@ export class AdminController {
   async getChatbots(): Promise<ChatbotDto[]> {
     const chatbots: Chatbot[] = await this._chatbotService.findAll({
       relations: ['user'],
-      order: [
-        {id :'ASC'}
-      ],
       where: [
         {status: Not(ChatbotStatus.deleted)}
-      ]
+      ],
+      order: {id :'ASC'}
     });
     return plainToClass(ChatbotDto, camelcaseKeys(chatbots, {deep: true}));
   }
