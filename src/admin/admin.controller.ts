@@ -27,7 +27,7 @@ import { LaunchUpdateChatbotDto } from "@dto/launch-update-chatbot.dto";
 import { ChatbotStatus } from "@enum/chatbot-status.enum";
 import { ChatbotGenerationService } from "../chatbot/chatbot-generation.service";
 import { UpdateChatbotDto } from "@dto/update-chatbot.dto";
-import { DeleteResult } from "typeorm";
+import { DeleteResult, Not } from "typeorm";
 
 @ApiTags('admin')
 @Controller('admin')
@@ -62,7 +62,13 @@ export class AdminController {
   @Roles(UserRole.admin)
   async getChatbots(): Promise<ChatbotDto[]> {
     const chatbots: Chatbot[] = await this._chatbotService.findAll({
-      relations: ['user']
+      relations: ['user'],
+      order: [
+        {id :'ASC'}
+      ],
+      where: [
+        {status: Not(ChatbotStatus.deleted)}
+      ]
     });
     return plainToClass(ChatbotDto, camelcaseKeys(chatbots, {deep: true}));
   }
