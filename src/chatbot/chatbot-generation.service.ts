@@ -9,7 +9,6 @@ import { LaunchUpdateChatbotDto } from "@dto/launch-update-chatbot.dto";
 import { OvhStorageService } from "../shared/services/ovh-storage.service";
 import * as fs from "fs";
 import { MailService } from "../shared/services/mail.service";
-import * as path from "path";
 const crypto = require('crypto');
 const FormData = require('form-data');
 

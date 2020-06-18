@@ -94,6 +94,8 @@
         template: 'template0'
 
     - name: Adds unaccent extension
+      become: true
+      become_user: postgres
       postgresql_ext:
         name: unaccent
         db: rasa

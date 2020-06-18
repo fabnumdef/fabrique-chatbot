@@ -140,12 +140,12 @@
         line: '  password: "{{ DB_PASSWORD }}"'
       when: updateRasa
 
-#    - name: Train rasa
-#      become: true
-#      command:
-#        chdir: '{{ appsDir }}/{{ botDir }}/'
-#        cmd: 'rasa train --augmentation 0'
-#      when: updateRasa
+    - name: Train rasa
+      become: true
+      command:
+        chdir: '{{ appsDir }}/{{ botDir }}/'
+        cmd: 'rasa train --augmentation 0'
+      when: updateRasa
 
     - name: Stop rasa chatbot
       become: true
