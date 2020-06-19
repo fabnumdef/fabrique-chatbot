@@ -73,7 +73,7 @@
         path: '/etc/nginx/sites-available/{{ frontDir }}.cfg'
         regexp: '^    root /var/www/chatbot-front;'
         insertafter : '    server_name  {{ botDomain }};'
-      when: updateFront && botDomain
+      when: updateFront and botDomain
 
     - name: create symlink
       file:
@@ -94,7 +94,7 @@
       become: yes
       command:
         cmd: 'certbot --nginx -d {{ botDomain }} -n --redirect --agree-tos -m vincent.laine@beta.gouv.fr'
-      when: updateFront && botDomain
+      when: updateFront and botDomain
 
     - name: Copy chatbot-template
       synchronize:
