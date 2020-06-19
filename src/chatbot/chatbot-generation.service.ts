@@ -35,7 +35,7 @@ export class ChatbotGenerationService {
     }
     console.log(`${new Date().toLocaleString()} - Chatbots waiting for creation`, botsToBeCreated.length);
 
-    this.updateChatbotRepos();
+    await this.updateChatbotRepos();
 
     this._generateChatbots();
 
@@ -65,7 +65,8 @@ export class ChatbotGenerationService {
 
     const playbookOptions = new Options(`${this._appDir}/chatbot`);
     const ansiblePlaybook = new AnsiblePlaybook(playbookOptions);
-    await ansiblePlaybook.command(`generate-chatbot.yml --vault-password-file ../fabrique/password_file -i ${chatbot.ip_adress}, -e '${JSON.stringify(updateChatbot)}'`).then(async (result) => {
+    const extraVars = {...updateChatbot, ...{botDomain: chatbot.domain_name}};
+    await ansiblePlaybook.command(`generate-chatbot.yml --vault-password-file ../fabrique/password_file -i ${chatbot.ip_adress}, -e '${JSON.stringify(extraVars)}'`).then(async (result) => {
       await this._chatbotService.findAndUpdate(chatbot.id, {status: ChatbotStatus.running});
       console.log(`${new Date().toLocaleString()} - CHATBOT UPDATED - ${chatbot.id} - ${chatbot.name}`);
       console.log(result);

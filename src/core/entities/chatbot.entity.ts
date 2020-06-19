@@ -35,6 +35,9 @@ export class Chatbot {
   @Column( { nullable: true, length: 50 })
   ip_adress: string;
 
+  @Column( { nullable: true, length: 50 })
+  domain_name: string;
+
   @Column( { default: false })
   intra_def: boolean;
 

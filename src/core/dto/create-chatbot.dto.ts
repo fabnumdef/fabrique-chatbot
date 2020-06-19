@@ -37,6 +37,11 @@ export class CreateChatbotDto {
 
   @IsString()
   @IsNotEmpty()
+  @MaxLength(50)
+  domainName: string;
+
+  @IsString()
+  @IsNotEmpty()
   @MaxLength(200)
   audience: string;
 

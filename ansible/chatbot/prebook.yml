@@ -10,10 +10,10 @@
 
   vars:
     - ssh_key: "~/.ssh/id_rsa.pub"
-    - ansible_user: "root"
+    - ansible_user: "debian"
     - ansible_password: "{{ ROOT_PASSWORD }}"
 
-  remote_user: root
+  remote_user: debian
 
   tasks:
 
