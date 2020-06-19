@@ -6,7 +6,7 @@ export class OvhStorageService {
   private _config = {
     username: process.env.OBJECT_STORAGE_USER,
     password: process.env.OBJECT_STORAGE_PASSWORD,
-    authURL: 'https://auth.cloud.ovh.net/v2.0',
+    authURL: 'https://auth.cloud.ovh.net/v3',
     tenantId: process.env.OBJECT_STORAGE_ID,
     region: process.env.OBJECT_STORAGE_REGION,
     container: process.env.OBJECT_STORAGE_CONTAINER_NAME
@@ -86,14 +86,23 @@ export class OvhStorageService {
   private async _connection() {
     const body = {
       auth: {
-        passwordCredentials: {
-          username: this._config.username,
-          password: this._config.password
-        },
-        tenantId: this._config.tenantId
+        identity: {
+          methods: [
+            "password"
+          ],
+          password: {
+            user: {
+              name: this._config.username,
+              domain: {
+                name: this._config.tenantId
+              },
+              password: this._config.password
+            }
+          }
+        }
       }
     };
-    await this._http.post(`${this._config.authURL}/tokens`, body).toPromise().then(res => {
+    await this._http.post(`${this._config.authURL}/auth/tokens`, body).toPromise().then(res => {
       this._token = res.data.access.token;
       const serviceCatalog = res.data.access.serviceCatalog.find(s => s.type === 'object-store');
       this._endpoint = `${serviceCatalog.endpoints.find(e => e.region === this._config.region).publicURL}/${this._config.container}`;
