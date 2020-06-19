@@ -47,7 +47,7 @@
           - screen
           - rsync
           - certbot
-          - python3-certbot-nginx
+          - python-certbot-nginx
 
     - name: Install last version of pip
       become: true

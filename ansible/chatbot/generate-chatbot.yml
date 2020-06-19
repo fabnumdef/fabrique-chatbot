@@ -71,8 +71,8 @@
       become: yes
       lineinfile:
         path: '/etc/nginx/sites-available/{{ frontDir }}.cfg'
-        regexp: '^    root /var/www/chatbot-front;'
-        insertafter : '    server_name  {{ botDomain }};'
+        insertafter : '^    root /var/www/chatbot-front;'
+        line: '    server_name  {{ botDomain }};'
       when: updateFront and botDomain
 
     - name: create symlink
