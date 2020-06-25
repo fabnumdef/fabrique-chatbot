@@ -43,6 +43,12 @@
         path: '{{ appsDir }}/{{ nestDir }}/chatbot/{{ frontDir }}'
       register: installFront
 
+    - name: npm install chatbot-front librairies
+      become: yes
+      npm:
+        path: '{{ appsDir }}/{{ nestDir }}/chatbot/{{ frontDir }}/projects/ngx-rasa-webchat'
+      register: installFront
+
     - name: npm build chatbot-front
       become: yes
       command:
