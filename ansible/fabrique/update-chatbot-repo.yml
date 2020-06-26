@@ -57,4 +57,4 @@
       command:
         cmd: npm run build:prod
         chdir: '{{ appsDir }}/{{ nestDir }}/chatbot/{{ frontDir }}'
-      when: pullFront.changed or installFront.changed
+      when: pullFront.changed
