@@ -25,7 +25,6 @@ export class OvhStorageService {
    * @param retry
    */
   public async get(filePath: string, retry = false): Promise<any> {
-    console.log(this._endpoint);
     const targetURL = `${this._endpoint}/${filePath}`;
     return this._http.get(targetURL, this._setHeaders()).pipe(
       tap(() => {
@@ -34,8 +33,9 @@ export class OvhStorageService {
       map(
         r => r.data
       ),
-      catchError(err => {
+      catchError(async (err) => {
         if(!retry) {
+          await this._connection();
           return this.get(filePath, true);
         }
         console.error(`${new Date().toLocaleString()} - FAIL - GET OBJECT STORAGE - ${filePath} - ${err.message}`);
@@ -59,8 +59,9 @@ export class OvhStorageService {
       map(
         r => r.data
       ),
-      catchError(err => {
+      catchError(async (err) => {
         if(!retry) {
+          await this._connection();
           return this.set(file, filePath, true);
         }
         console.error(`${new Date().toLocaleString()} - FAIL - SET OBJECT STORAGE - ${filePath} - ${err.message}`);
@@ -81,8 +82,9 @@ export class OvhStorageService {
       tap((data) => {
         console.log(`${new Date().toLocaleString()} - GET LIST OBJECT STORAGE - ${dirPath}`);
       }),
-      catchError(err => {
+      catchError(async (err) => {
         if(!retry) {
+          await this._connection();
           return this.list(dirPath, true);
         }
         console.error(`${new Date().toLocaleString()} - FAIL - GET LIST OBJECT STORAGE - ${dirPath} - ${err.message}`);
