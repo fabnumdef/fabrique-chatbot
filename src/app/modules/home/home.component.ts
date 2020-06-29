@@ -9,6 +9,7 @@ import { BreakpointObserver } from '@angular/cdk/layout';
 export class HomeComponent implements OnInit {
 
   isSmallScreen = false;
+  idxImage = 0;
 
   constructor(private _breakpointObserver: BreakpointObserver) {
   }
@@ -18,5 +19,4 @@ export class HomeComponent implements OnInit {
       this.isSmallScreen = result.matches;
     });
   }
-
 }

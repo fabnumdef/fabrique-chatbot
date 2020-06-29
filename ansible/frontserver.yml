@@ -29,7 +29,7 @@
         pkg:
           - nginx
           - certbot
-          - python3-certbot-nginx
+          - python-certbot-nginx
           - npm
           - nodejs
           - openssl

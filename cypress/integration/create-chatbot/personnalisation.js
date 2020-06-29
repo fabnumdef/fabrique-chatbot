@@ -39,7 +39,7 @@ describe('Testing third step of creating bot page', function() {
 
     describe('Icon input tests', function() {
 
-        const fixturePath = 'logo_fabrique_chatbot.png';
+        const fixturePath = 'logo_fabrique_chatbot.svg';
 
         it('Should have clickable icons', function() {
 
