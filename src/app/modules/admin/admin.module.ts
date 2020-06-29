@@ -22,10 +22,6 @@ import { EditChatbotDialogComponent } from './chatbot-list/edit-chatbot-dialog/e
     MaterialModule,
     SharedModule,
     ReactiveFormsModule
-  ],
-  entryComponents: [
-    LaunchChatbotUpdateDialogComponent,
-    EditChatbotDialogComponent
   ]
 })
 export class AdminModule { }

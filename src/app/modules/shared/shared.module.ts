@@ -21,9 +21,6 @@ import { RouterModule } from '@angular/router';
     ConfirmDialogComponent,
     HeaderComponent,
     FooterComponent
-  ],
-  entryComponents: [
-    ConfirmDialogComponent
   ]
 })
 export class SharedModule { }

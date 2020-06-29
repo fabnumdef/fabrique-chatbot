@@ -14,23 +14,23 @@
     "e2e": "ng e2e",
     "cypress:local": "concurrently \"npm run start:local\" \"cypress open\"",
     "cypress:dev": "concurrently \"npm run start:dev\" \"cypress open\"",
-    "clean": "rimraf ./dist"
+    "clean": "rimraf ./dist",
+    "postinstall": "ngcc"
   },
   "private": true,
   "dependencies": {
-    "@angular/animations": "~9.1.1",
-    "@angular/cdk": "^9.2.0",
-    "@angular/common": "~9.1.1",
-    "@angular/compiler": "~9.1.1",
-    "@angular/core": "~9.1.1",
-    "@angular/forms": "~9.1.1",
-    "@angular/localize": "^9.1.1",
-    "@angular/material": "^9.2.0",
-    "@angular/platform-browser": "~9.1.1",
-    "@angular/platform-browser-dynamic": "~9.1.1",
-    "@angular/router": "~9.1.1",
-    "@angular/service-worker": "~9.1.1",
-    "@ngmodule/material-carousel": "^0.6.0",
+    "@angular/animations": "~10.0.1",
+    "@angular/cdk": "^10.0.0",
+    "@angular/common": "~10.0.1",
+    "@angular/compiler": "~10.0.1",
+    "@angular/core": "~10.0.1",
+    "@angular/forms": "~10.0.1",
+    "@angular/localize": "^10.0.1",
+    "@angular/material": "^10.0.0",
+    "@angular/platform-browser": "~10.0.1",
+    "@angular/platform-browser-dynamic": "~10.0.1",
+    "@angular/router": "~10.0.1",
+    "@angular/service-worker": "~10.0.1",
     "cypress-file-upload": "^4.0.6",
     "ngx-color-picker": "^9.0.0",
     "ngx-toastr": "^12.0.1",
@@ -39,10 +39,10 @@
     "zone.js": "~0.10.3"
   },
   "devDependencies": {
-    "@angular-devkit/build-angular": "^0.901.7",
-    "@angular/cli": "~9.1.1",
-    "@angular/compiler-cli": "~9.1.1",
-    "@angular/language-service": "~9.1.1",
+    "@angular-devkit/build-angular": "^0.1000.0",
+    "@angular/cli": "~10.0.0",
+    "@angular/compiler-cli": "~10.0.1",
+    "@angular/language-service": "~10.0.1",
     "@types/jasmine": "~3.5.10",
     "@types/jasminewd2": "~2.0.3",
     "@types/node": "~13.11.1",
@@ -59,6 +59,6 @@
     "karma-jasmine-html-reporter": "^1.5.3",
     "ts-node": "~8.8.2",
     "tslint": "~6.1.1",
-    "typescript": "~3.8.3"
+    "typescript": "~3.9.5"
   }
 }
