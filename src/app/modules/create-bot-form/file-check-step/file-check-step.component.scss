@@ -18,6 +18,19 @@
       width: 100%;
     }
 
+    .chatbot-domain {
+      display: flex;
+      align-items: center;
+
+      .mat-form-field {
+        width: 300px;
+      }
+
+      & > div {
+        padding-bottom: 11px;
+      }
+    }
+
     .user-description {
       margin-bottom: 30px;
     }

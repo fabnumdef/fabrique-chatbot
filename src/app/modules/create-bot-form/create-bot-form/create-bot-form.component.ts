@@ -47,6 +47,7 @@ export class CreateBotFormComponent implements OnInit {
         this._fb.group({
           file: ['', Validators.required],
           intraDef: [false, Validators.required],
+          domainName: ['', [Validators.required, Validators.maxLength(50), Validators.pattern('^[a-z-]+$')]],
           users: this._fb.array([])
         }),
         this._fb.group({

@@ -32,6 +32,7 @@ export class ChatbotService {
     formData.append('secondaryColor', botConfig.secondaryColor);
     formData.append('problematic', botConfig.problematic);
     formData.append('audience', botConfig.audience);
+    formData.append('domainName', botConfig.domainName);
     formData.append('intraDef', botConfig.intraDef.toString());
     formData.append('users', JSON.stringify(botConfig.users));
 

@@ -148,6 +148,30 @@
       <mat-radio-button data-cy="IntradefRadioBtn" [value]="true">Intradef</mat-radio-button>
     </mat-radio-group>
     <div class="chatbot-subtitle">
+      <h4>Accès à votre chatbot</h4>
+    </div>
+    <div class="chatbot-domain">
+      <div>https://</div>
+      <mat-form-field appearance="outline">
+        <mat-label>Nom de domaine</mat-label>
+        <input matInput
+               placeholder="Saisir..."
+               formControlName="domainName"
+               maxlength="50"
+               required>
+        <mat-error *ngIf="controls.domainName.hasError('required')">
+          Vous n'avez pas saisi de nom de domaine.
+        </mat-error>
+        <mat-error *ngIf="controls.domainName.hasError('maxlength')">
+          Le nom de domaine est trop long, il doit faire au maximum 50 caractères.
+        </mat-error>
+        <mat-error *ngIf="controls.domainName.hasError('pattern')">
+          Le nom de domaine ne peut contenir que des lettres minuscules sans accents et des tirets.
+        </mat-error>
+      </mat-form-field>
+      <div>.chatbot.fabnum.fr</div>
+    </div>
+    <div class="chatbot-subtitle">
       <h4>Utilisateurs de l'interface de gestion du chatbot (back-office)</h4>
     </div>
     <div class="user-description">

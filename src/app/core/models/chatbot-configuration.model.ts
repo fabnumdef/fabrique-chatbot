@@ -11,4 +11,5 @@ export class ChatbotConfiguration {
   intraDef: boolean;
   primaryColor: string;
   secondaryColor: string;
+  domainName: string;
 }
