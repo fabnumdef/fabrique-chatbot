@@ -134,6 +134,20 @@
       </div>
     </div>
   </div>
+  <div class="section section-band section-band-fixed" *ngIf="isFixedBand" [@fadeInOut]="isFixedBand">
+    <button mat-flat-button
+            color="accent"
+            [routerLink]="'/auth/sign_up'">
+      Créer votre chatbot
+    </button>
+  </div>
+  <div class="section section-band">
+    <button mat-flat-button
+            color="accent"
+            [routerLink]="'/auth/sign_up'">
+      Créer votre chatbot
+    </button>
+  </div>
   <div class="footer section-grey">
     <a href="https://fabrique-a-chatbots.gitbook.io/fabrique-a-chatbots/cgu" target="_blank" rel="noopener">Mentions
       légales</a>
