@@ -8,13 +8,14 @@ import { ConfigModule } from "@nestjs/config";
 import { UserModule } from './user/user.module';
 import { Chatbot } from "@entity/chatbot.entity";
 import { AuthModule } from './auth/auth.module';
-import { HandlebarsAdapter, MailerModule } from "@nestjs-modules/mailer";
+import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
 import * as path from "path";
 import { APP_INTERCEPTOR } from "@nestjs/core";
 import { LoggerInterceptor } from "@interceptor/logger.interceptor";
 import { AdminModule } from './admin/admin.module';
 import { ScheduleModule } from "@nestjs/schedule";
 import { ChatbotUser } from "@entity/chatbot-user.entity";
+import { MailerModule } from "@nestjs-modules/mailer";
 
 @Module({
   imports: [
