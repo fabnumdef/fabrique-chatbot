@@ -9,7 +9,7 @@ import { LaunchUpdateChatbotDto } from "@dto/launch-update-chatbot.dto";
 import { OvhStorageService } from "../shared/services/ovh-storage.service";
 import * as fs from "fs";
 import { MailService } from "../shared/services/mail.service";
-import { dotenvToJson, jsonToDotenv } from "@core/utils";
+import { dotenvToJson, execShellCommand, jsonToDotenv } from "@core/utils";
 const crypto = require('crypto');
 const FormData = require('form-data');
 
@@ -61,15 +61,21 @@ export class ChatbotGenerationService {
     let dotenv = await this._ovhStorageService.get(`${chatbot.id.toString(10)}/.env`).then().catch(() => {
       this._chatbotService.findAndUpdate(chatbot.id, {status: ChatbotStatus.error_configuration});
     });
+    fs.writeFileSync(`${this._appDir}/chatbot/credentials.yml`, file, 'utf8');
+    fs.writeFileSync(`${this._appDir}/chatbot/.env`, dotenv, 'utf8');
+
     // update email config
+    await execShellCommand(`ansible-vault decrypt --vault-password-file fabrique/password_file chatbot/.env`, `${this._appDir}/ansible`).then();
+    dotenv = fs.readFileSync(`${this._appDir}/chatbot/.env`);
+    console.log(dotenv);
     dotenv = {...dotenvToJson(dotenv), ...{
         MAIL_HOST: process.env.MAIL_HOST,
         MAIL_PORT: process.env.MAIL_PORT,
         MAIL_USER: process.env.MAIL_USER,
         MAIL_PASSWORD: process.env.MAIL_PASSWORD
-    }};
-    fs.writeFileSync(`${this._appDir}/chatbot/credentials.yml`, file, 'utf8');
+      }};
     fs.writeFileSync(`${this._appDir}/chatbot/.env`, jsonToDotenv(dotenv), 'utf8');
+    await execShellCommand(`ansible-vault encrypt --vault-password-file fabrique/password_file chatbot/.env`, `${this._appDir}/ansible`).then();
 
     const playbookOptions = new Options(`${this._appDir}/chatbot`);
     const ansiblePlaybook = new AnsiblePlaybook(playbookOptions);

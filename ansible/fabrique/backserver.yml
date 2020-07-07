@@ -147,6 +147,6 @@
 
     - name: NODE | Start APP
       become: yes
-      shell: sudo pm2 start main.js --name FabriqueBack
+      shell: pm2 start main.js --name FabriqueBack
       args:
         chdir: '{{ appsDir }}/{{ nestDir }}/dist'
