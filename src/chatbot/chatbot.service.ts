@@ -103,6 +103,13 @@ export class ChatbotService {
       });
     }
 
+    if(updateChatbot.ipAdress || updateChatbot.domainName) {
+      chatbot = await this.findAndUpdate(chatbot.id, {
+        ip_adress: updateChatbot.ipAdress,
+        domain_name: updateChatbot.domainName
+      });
+    }
+
     switch (chatbot.status) {
       case ChatbotStatus.pending:
         return this.findAndUpdate(chatbot.id, {
