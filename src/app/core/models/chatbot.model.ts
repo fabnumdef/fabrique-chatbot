@@ -11,6 +11,7 @@ export class Chatbot {
   problematic: string;
   audience: string;
   ipAdress: string;
+  domainName: string;
   status: ChatbotStatus;
   createdAt: string;
 }

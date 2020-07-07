@@ -27,6 +27,18 @@
         </mat-form-field>
 
         <mat-form-field appearance="outline">
+          <mat-label>Nom de domaine</mat-label>
+          <input matInput
+                 placeholder="Saisir..."
+                 formControlName="domainName"
+                 maxlength="50"
+                 required>
+          <mat-error *ngIf="controls.domainName.hasError('pattern')">
+            Le format du nom de domaine est incorrect.
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
           <mat-label>Mot de passe root</mat-label>
           <input matInput
                  placeholder="Saisir..."
@@ -55,6 +67,18 @@
           </mat-error>
           <mat-error *ngIf="controls.ipAdress.hasError('pattern')">
             Le format de l'adresse IP est incorrect.
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Nom de domaine</mat-label>
+          <input matInput
+                 placeholder="Saisir..."
+                 formControlName="domainName"
+                 maxlength="50"
+                 required>
+          <mat-error *ngIf="controls.domainName.hasError('pattern')">
+            Le format du nom de domaine est incorrect.
           </mat-error>
         </mat-form-field>
       </ng-container>

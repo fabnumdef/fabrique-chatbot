@@ -5,4 +5,5 @@ export class ChatbotUpdate {
   rootPassword?: string;
   ipAdress?: string;
   status?: ChatbotStatus;
+  domainName?: string;
 }
