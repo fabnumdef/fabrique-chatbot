@@ -9,6 +9,7 @@ import { LaunchUpdateChatbotDto } from "@dto/launch-update-chatbot.dto";
 import { OvhStorageService } from "../shared/services/ovh-storage.service";
 import * as fs from "fs";
 import { MailService } from "../shared/services/mail.service";
+import { dotenvToJson, jsonToDotenv } from "@core/utils";
 const crypto = require('crypto');
 const FormData = require('form-data');
 
@@ -57,11 +58,18 @@ export class ChatbotGenerationService {
     const file = await this._ovhStorageService.get(`${chatbot.id.toString(10)}/credentials.yml`).then().catch(() => {
       this._chatbotService.findAndUpdate(chatbot.id, {status: ChatbotStatus.error_configuration});
     });
-    const dotenv = await this._ovhStorageService.get(`${chatbot.id.toString(10)}/.env`).then().catch(() => {
+    let dotenv = await this._ovhStorageService.get(`${chatbot.id.toString(10)}/.env`).then().catch(() => {
       this._chatbotService.findAndUpdate(chatbot.id, {status: ChatbotStatus.error_configuration});
     });
+    // update email config
+    dotenv = {...dotenvToJson(dotenv), ...{
+        MAIL_HOST: process.env.MAIL_HOST,
+        MAIL_PORT: process.env.MAIL_PORT,
+        MAIL_USER: process.env.MAIL_USER,
+        MAIL_PASSWORD: process.env.MAIL_PASSWORD
+    }};
     fs.writeFileSync(`${this._appDir}/chatbot/credentials.yml`, file, 'utf8');
-    fs.writeFileSync(`${this._appDir}/chatbot/.env`, dotenv, 'utf8');
+    fs.writeFileSync(`${this._appDir}/chatbot/.env`, jsonToDotenv(dotenv), 'utf8');
 
     const playbookOptions = new Options(`${this._appDir}/chatbot`);
     const ansiblePlaybook = new AnsiblePlaybook(playbookOptions);

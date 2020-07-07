@@ -4,6 +4,8 @@
  * @param curDir {string}
  * @return {Promise<string>}
  */
+import { parse } from "dotenv";
+
 export function execShellCommand(cmd, curDir?: string) {
   const execOptions = {
     cwd: curDir,
@@ -27,4 +29,8 @@ export function jsonToDotenv(json: any): string {
     dotenv += `${property}=${json[property]}\n`;
   }
   return dotenv;
+}
+
+export function dotenvToJson(dotenv: string): any {
+  return parse(dotenv);
 }

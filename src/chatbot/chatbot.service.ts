@@ -306,7 +306,11 @@ export class ChatbotService {
       DATABASE_USER: 'rasa_user',
       DATABASE_PASSWORD: dbPassword,
       DATABASE_NAME: 'rasa',
-      JWT_SECRET: jwtSecret
+      JWT_SECRET: jwtSecret,
+      MAIL_HOST: process.env.MAIL_HOST,
+      MAIL_PORT: process.env.MAIL_PORT,
+      MAIL_USER: process.env.MAIL_USER,
+      MAIL_PASSWORD: process.env.MAIL_PASSWORD
     };
 
     const yamlStr = yaml.safeDump(credentials);
