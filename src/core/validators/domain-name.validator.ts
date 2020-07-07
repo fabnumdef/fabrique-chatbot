@@ -4,6 +4,9 @@ import {ValidatorConstraint, ValidatorConstraintInterface} from "class-validator
 export class DomainNameValidator implements ValidatorConstraintInterface {
 
   validate(domainName: string) {
+    if(!domainName) {
+      return true;
+    }
     return /^[a-z-]+$/.test(domainName);
   }
 
