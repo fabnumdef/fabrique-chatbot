@@ -77,6 +77,10 @@
         production: yes
         state: present
 
+    - name: Launch PM2 at startup
+      become: yes
+      shell: pm2 startup
+
     - name: Ensure the PostgreSQL service is running
       service:
         name: 'postgresql'

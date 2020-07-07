@@ -138,6 +138,11 @@
       become: yes
       when: updateBack
 
+    - name: PM2 save app
+      shell: pm2 save
+      become: yes
+      when: updateBack
+
     - name: Copy endpoints.yml rasa file
       become: true
       copy:
