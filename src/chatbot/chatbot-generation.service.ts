@@ -65,9 +65,8 @@ export class ChatbotGenerationService {
     fs.writeFileSync(`${this._appDir}/chatbot/.env`, dotenv, 'utf8');
 
     // update email config
-    await execShellCommand(`ansible-vault decrypt --vault-password-file fabrique/password_file chatbot/.env`, `${this._appDir}/ansible`).then();
-    dotenv = fs.readFileSync(`${this._appDir}/chatbot/.env`);
-    console.log(dotenv);
+    await execShellCommand(`ansible-vault decrypt --vault-password-file fabrique/password_file chatbot/.env`, `${this._appDir}`).then();
+    dotenv = fs.readFileSync(`${this._appDir}/chatbot/.env`, 'utf8');
     dotenv = {...dotenvToJson(dotenv), ...{
         MAIL_HOST: process.env.MAIL_HOST,
         MAIL_PORT: process.env.MAIL_PORT,
@@ -75,7 +74,7 @@ export class ChatbotGenerationService {
         MAIL_PASSWORD: process.env.MAIL_PASSWORD
       }};
     fs.writeFileSync(`${this._appDir}/chatbot/.env`, jsonToDotenv(dotenv), 'utf8');
-    await execShellCommand(`ansible-vault encrypt --vault-password-file fabrique/password_file chatbot/.env`, `${this._appDir}/ansible`).then();
+    await execShellCommand(`ansible-vault encrypt --vault-password-file fabrique/password_file chatbot/.env`, `${this._appDir}`).then();
 
     const playbookOptions = new Options(`${this._appDir}/chatbot`);
     const ansiblePlaybook = new AnsiblePlaybook(playbookOptions);
