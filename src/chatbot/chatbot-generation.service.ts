@@ -64,14 +64,15 @@ export class ChatbotGenerationService {
     fs.writeFileSync(`${this._appDir}/chatbot/credentials.yml`, file, 'utf8');
     fs.writeFileSync(`${this._appDir}/chatbot/.env`, dotenv, 'utf8');
 
-    // update email config
+    // update email config & domain name
     await execShellCommand(`ansible-vault decrypt --vault-password-file fabrique/password_file chatbot/.env`, `${this._appDir}`).then();
     dotenv = fs.readFileSync(`${this._appDir}/chatbot/.env`, 'utf8');
     dotenv = {...dotenvToJson(dotenv), ...{
         MAIL_HOST: process.env.MAIL_HOST,
         MAIL_PORT: process.env.MAIL_PORT,
         MAIL_USER: process.env.MAIL_USER,
-        MAIL_PASSWORD: process.env.MAIL_PASSWORD
+        MAIL_PASSWORD: process.env.MAIL_PASSWORD,
+        HOST_URL: chatbot.domain_name ? `https://${chatbot.domain_name}.chatbot.fabnum.fr` : `http://${chatbot.ip_adress}`
       }};
     fs.writeFileSync(`${this._appDir}/chatbot/.env`, jsonToDotenv(dotenv), 'utf8');
     await execShellCommand(`ansible-vault encrypt --vault-password-file fabrique/password_file chatbot/.env`, `${this._appDir}`).then();
