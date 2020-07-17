@@ -100,6 +100,8 @@
       synchronize:
         src: '{{ appsDir }}/{{ nestDir }}/chatbot/{{ botDir }}/'
         dest: '{{ appsDir }}/{{ botDir }}'
+        rsync_opts:
+          - '--exclude=models/'
       when: updateRasa
 
     - name: npm install chatbot-back
