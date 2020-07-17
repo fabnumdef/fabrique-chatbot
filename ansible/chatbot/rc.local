@@ -1,0 +1,6 @@
+#!/bin/sh -e
+# This script is executed at the end of each multiuser runlevel
+
+screen -S rasa -dmS rasa run -m models --enable-api --log-file out.log --cors "*" --debug
+
+exit 0
