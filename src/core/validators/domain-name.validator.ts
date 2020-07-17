@@ -1,13 +1,14 @@
-import {ValidatorConstraint, ValidatorConstraintInterface} from "class-validator";
+import { ValidationArguments, ValidatorConstraint, ValidatorConstraintInterface } from "class-validator";
 
-@ValidatorConstraint({ name: "domainName", async: false })
+@ValidatorConstraint({name: "domainName", async: false})
 export class DomainNameValidator implements ValidatorConstraintInterface {
 
-  validate(domainName: string) {
-    if(!domainName) {
+  validate(domainName: string, validationArguments: ValidationArguments) {
+    if (!domainName) {
       return true;
     }
-    return /^[a-z-]+$/.test(domainName);
+    // @ts-ignore
+    return (validationArguments?.constraints[0]?.admin) ? /^[a-z-.]+$/.test(domainName) : /^[a-z-]+$/.test(domainName);
   }
 
   defaultMessage() {

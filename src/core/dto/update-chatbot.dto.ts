@@ -21,7 +21,7 @@ export class UpdateChatbotDto {
   ipAdress: string;
 
   @IsString()
-  @Validate(DomainNameValidator)
+  @Validate(DomainNameValidator, [{admin: true}])
   @IsOptional()
   @MaxLength(50)
   domainName: string;
