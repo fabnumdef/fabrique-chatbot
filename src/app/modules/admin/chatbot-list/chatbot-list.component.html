@@ -44,7 +44,6 @@
         </th>
         <td mat-cell *matCellDef="let row">
           <button mat-icon-button color="accent"
-                  *ngIf="showEditChatbot(row)"
                   aria-label="Modifier le chatbot"
                   (click)="editChatbot(row)">
             <mat-icon matTooltip="Modifier le chatbot"

@@ -97,6 +97,17 @@
             Vous n'avez pas saisi de nom.
           </mat-error>
         </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Nom de domaine</mat-label>
+          <input matInput
+                 placeholder="Saisir..."
+                 formControlName="domainName"
+                 maxlength="50">
+          <mat-error *ngIf="controls.domainName.hasError('pattern')">
+            Le format du nom de domaine est incorrect.
+          </mat-error>
+        </mat-form-field>
       </ng-container>
     </ng-container>
 

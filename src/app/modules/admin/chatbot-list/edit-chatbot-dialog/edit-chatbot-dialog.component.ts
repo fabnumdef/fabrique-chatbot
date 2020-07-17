@@ -38,7 +38,7 @@ export class EditChatbotDialogComponent implements OnInit {
       rootPassword: [null, [Validators.maxLength(200)]],
       ipAdress: [this.chatbot.ipAdress ? this.chatbot.ipAdress : null,
         [Validators.pattern(this.ipAdressPattern), Validators.maxLength(50)]],
-      domainName: [this.chatbot.domainName, [Validators.maxLength(50), Validators.pattern('^[a-z-]+$')]]
+      domainName: [this.chatbot.domainName, [Validators.maxLength(50), Validators.pattern('^[a-z-.]+$')]]
     });
 
     switch (this.chatbot.status) {
