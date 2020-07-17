@@ -150,3 +150,13 @@
       shell: pm2 start main.js --name FabriqueBack
       args:
         chdir: '{{ appsDir }}/{{ nestDir }}/dist'
+
+    - name: Update PM2 script at startup
+      become: yes
+      shell: pm2 startup
+
+    - name: reload pm2 startup script
+      become: yes
+      systemd:
+        name: pm2-root.service
+        state: reloaded

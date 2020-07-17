@@ -147,6 +147,7 @@
 
     - name: reload pm2 startup script
       when: updateBack
+      become: yes
       systemd:
         name: pm2-root.service
         state: reloaded
