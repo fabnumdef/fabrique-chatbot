@@ -52,6 +52,13 @@
         state: link
       become: yes
 
+    - name: start nginx
+      service:
+        name: nginx
+        state: started
+        enabled: yes
+      become: yes
+
     - name: remove old angular app
       file:
         path: '{{ appsDir }}/{{ angularDir }}/'

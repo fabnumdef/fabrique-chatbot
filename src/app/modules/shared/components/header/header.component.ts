@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Inject, Input, OnInit } from '@angular/core';
 import { UserRole } from '@enum/user-role.enum';
 import { User } from '@model/user.model';
 import { AuthService } from '@service/auth.service';
@@ -15,7 +15,8 @@ export class HeaderComponent implements OnInit {
   user: User;
   isUserAdmin = false;
 
-  constructor(private _auth: AuthService) {
+  constructor(private _auth: AuthService,
+              @Inject(Window) public window: Window) {
   }
 
   ngOnInit(): void {

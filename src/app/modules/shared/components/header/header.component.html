@@ -32,10 +32,11 @@
         Utilisateurs 👨‍👩‍👧‍👦
       </button>
       <mat-divider></mat-divider>
-      <button mat-menu-item
-              [routerLink]="'/monitoring'">
-        Monitoring 📋
-      </button>
+      <a target="_blank" [href]="window.location.origin + '/grafana'">
+        <button mat-menu-item>
+          Monitoring 📋
+        </button>
+      </a>
     </mat-menu>
     <button mat-button
             color="primary"

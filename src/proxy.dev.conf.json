@@ -1,8 +1,0 @@
-{
-  "/api/*": {
-    "target": "https://chatbot.d.fabnum.fr",
-    "secure": false,
-    "logLevel": "debug",
-    "changeOrigin": true
-  }
-}
