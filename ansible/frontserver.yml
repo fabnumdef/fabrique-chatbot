@@ -38,19 +38,6 @@
       become: yes
       command: npm install -g npm
 
-    - name: start nginx
-      service:
-        name: nginx
-        state: started
-      become: yes
-
-    - name: copy the nginx config file
-      become: yes
-      copy:
-        src: '{{ userDir }}/{{ angularDir }}/ansible/nginx.conf'
-        dest: '/etc/nginx/nginx.conf'
-        remote_src: yes
-
     - name: copy the nginx site config file
       copy:
         src: '{{ userDir }}/{{ angularDir }}/ansible/static_site.cfg'
@@ -64,7 +51,6 @@
         dest: '/etc/nginx/sites-enabled/default'
         state: link
       become: yes
-
 
     - name: remove old angular app
       file:

@@ -40,6 +40,14 @@ const routes: Routes = [
     ]
   },
   {
+    path: 'monitoring',
+    loadChildren: () => import('./modules/monitoring/monitoring.module').then(m => m.MonitoringModule),
+    canActivate: [AuthGuard, RoleGuard],
+    data: {
+      expectedRole: UserRole.admin
+    }
+  },
+  {
     path: '',
     component: NotAuthenticatedLayoutComponent,
     canActivate: [AuthGuard],
