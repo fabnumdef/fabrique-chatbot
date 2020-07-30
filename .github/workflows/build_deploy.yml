@@ -60,16 +60,6 @@ jobs:
             ansible-vault decrypt --vault-id dev@~/fabrique-chatbot-back/ansible/fabrique/password_file ~/fabrique-chatbot-back/ansible/fabrique/.env
             ansible-playbook ~/fabrique-chatbot-back/ansible/fabrique/backserver.yml --vault-id dev@~/fabrique-chatbot-back/ansible/fabrique/password_file
 
-      - name: launch update chatbot repo ansible script
-        uses: appleboy/ssh-action@master
-        env:
-          HOST: 51.254.201.98
-          USERNAME: fab_user
-          PORT: 22
-          KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-        with:
-          script: ansible-playbook ~/fabrique-chatbot-back/ansible/fabrique/update-chatbot-repo.yml --vault-id dev@~/fabrique-chatbot-back/ansible/fabrique/password_file
-
       - name: delete tmp dir
         uses: appleboy/ssh-action@master
         env:

@@ -329,6 +329,7 @@ export class ChatbotService {
     const ansiblePlaybook = new AnsiblePlaybook(playbookOptions);
     await ansiblePlaybook.command(`prebook.yml --vault-password-file ../fabrique/password_file -i ${updateChatbot.ipAdress},`).then(result => console.log(result));
     await ansiblePlaybook.command(`debianserver.yml --vault-password-file ../fabrique/password_file -i ${updateChatbot.ipAdress},`).then(result => console.log(result));
+    await ansiblePlaybook.command(`prometheus.yml --vault-password-file ../fabrique/password_file -i ${updateChatbot.ipAdress},`).then(result => console.log(result));
     await ansiblePlaybook.command(`chatbot.yml --vault-password-file ../fabrique/password_file -i ${updateChatbot.ipAdress},`).then(result => console.log(result));
 
     fs.unlinkSync(`${appDir}/ansible/chatbot/credentials.yml`);

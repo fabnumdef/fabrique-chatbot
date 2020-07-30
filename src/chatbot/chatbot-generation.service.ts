@@ -36,8 +36,6 @@ export class ChatbotGenerationService {
     }
     console.log(`${new Date().toLocaleString()} - Chatbots waiting for creation`, botsToBeCreated.length);
 
-    await this.updateChatbotRepos();
-
     this._generateChatbots();
 
     /**
@@ -54,6 +52,7 @@ export class ChatbotGenerationService {
   }
 
   async updateChatbot(chatbot: Chatbot, updateChatbot: LaunchUpdateChatbotDto) {
+    await this.updateChatbotRepos(chatbot);
     // Get credentials
     const file = await this._ovhStorageService.get(`${chatbot.id.toString(10)}/credentials.yml`).then().catch(() => {
       this._chatbotService.findAndUpdate(chatbot.id, {status: ChatbotStatus.error_configuration});
@@ -93,10 +92,11 @@ export class ChatbotGenerationService {
     fs.unlinkSync(`${this._appDir}/chatbot/.env`);
   }
 
-  async updateChatbotRepos() {
+  async updateChatbotRepos(chatbot: Chatbot) {
     const playbookOptions = new Options(`${this._appDir}/fabrique`);
     const ansiblePlaybook = new AnsiblePlaybook(playbookOptions);
-    await ansiblePlaybook.command(`update-chatbot-repo.yml --vault-id dev@password_file`).then((result) => {
+    const extraVars = {frontBranch: chatbot.front_branch, backBranch: chatbot.back_branch, botBranch: chatbot.bot_branch};
+    await ansiblePlaybook.command(`update-chatbot-repo.yml --vault-id dev@password_file -e '${JSON.stringify(extraVars)}'`).then((result) => {
       console.log(`${new Date().toLocaleString()} - UPDATING CHATBOTS REPOSITORIES`);
       console.log(result);
     }).catch(error => {

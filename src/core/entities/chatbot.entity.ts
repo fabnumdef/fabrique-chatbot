@@ -52,4 +52,13 @@ export class Chatbot {
 
   @CreateDateColumn({type: "timestamp"})
   created_at: number;
+
+  @Column( { default: 'master' })
+  front_branch: string;
+
+  @Column( { default: 'master' })
+  back_branch: string;
+
+  @Column( { default: 'master' })
+  bot_branch: string;
 }

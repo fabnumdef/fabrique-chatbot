@@ -70,6 +70,13 @@
         port: '80'
         proto: tcp
 
+    - name: Open port 9100
+      become: yes
+      ufw:
+        rule: allow
+        port: '9100'
+        proto: tcp
+
 
   handlers:
 

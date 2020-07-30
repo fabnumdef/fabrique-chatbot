@@ -87,8 +87,31 @@
         port: '465'
         proto: tcp
 
-  handlers:
+    - name: Open port 3000
+      become: yes
+      ufw:
+        rule: allow
+        port: '3000'
+        proto: tcp
+        src: 127.0.0.1
 
+    - name: Open port 3001
+      become: yes
+      ufw:
+        rule: allow
+        port: '3001'
+        proto: tcp
+        src: 127.0.0.1
+
+    - name: Open port 9090
+      become: yes
+      ufw:
+        rule: allow
+        port: '9090'
+        proto: tcp
+        src: 127.0.0.1
+
+  handlers:
     - name: restart ssh
       become: yes
       service:

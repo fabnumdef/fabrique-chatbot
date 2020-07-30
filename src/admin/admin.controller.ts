@@ -101,7 +101,6 @@ export class AdminController {
     if (!chatbot) {
       throw new HttpException(`Ce chatbot n'existe pas ou n'est pas en fonctionnement.`, HttpStatus.INTERNAL_SERVER_ERROR);
     }
-    await this._chatbotGenerationService.updateChatbotRepos();
     return this._chatbotGenerationService.updateChatbot(chatbot, updateChatbot);
   }
 }
