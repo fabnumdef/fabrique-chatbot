@@ -1,4 +1,7 @@
-# Fabrique à chatbots
+<p align="center">
+  <a href="https://chatbot.fabnum.fr" target="blank"><img src="https://chatbot.d.fabnum.fr/assets/img/logo_fabrique_chatbot.svg" width="320" alt="Logo Fabrique à chatbots" /></a>
+</p>
+
 ## Fabrique - FRONT
 [![build status](https://github.com/fabnumdef/fabrique-chatbot-front/workflows/Build/badge.svg)](https://github.com/fabnumdef/fabrique-chatbot-front/actions)
 [![Cypress status](https://img.shields.io/badge/cypress.io-tests-green.svg)](https://dashboard.cypress.io/projects/v5uzfp/runs)
@@ -34,3 +37,12 @@ Tests réalisés avec [Cypress](https://docs.cypress.io/).
 ### Tests
 
 Run `npm run cypress:local`
+
+## Restons en contact
+
+- Site web - [https://chatbot.fabnum.fr](https://chatbot.fabnum.fr/)
+- Auteurs - [Beta.gouv](https://beta.gouv.fr/startups/fabrique-chatbots.html)
+
+## License
+
+[MIT licensed](LICENSE).
