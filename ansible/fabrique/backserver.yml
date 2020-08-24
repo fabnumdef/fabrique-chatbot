@@ -63,7 +63,7 @@
 
     - name: copy the nginx site config file
       copy:
-        src: '{{ userDir }}/{{ nestDir }}/ansible/static_site.cfg'
+        src: '{{ userDir }}/{{ nestDir }}/ansible/fabrique/static_site.cfg'
         dest: '/etc/nginx/sites-available/{{ angularDir }}.cfg'
         remote_src: yes
       become: yes
