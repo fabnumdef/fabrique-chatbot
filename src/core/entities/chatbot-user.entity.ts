@@ -5,7 +5,7 @@ import { ChatbotUserRole } from "@enum/chatbot-user-role.enum";
 @Entity('chatbot_user')
 export class ChatbotUser {
   @PrimaryGeneratedColumn()
-  id!: number;
+  id: number;
 
   @Column({length: 200})
   email: string;

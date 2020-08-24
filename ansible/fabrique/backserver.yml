@@ -12,6 +12,7 @@
     - userDir: '/home/fab_user'
     - appsDir: '/var/www'
     - nestDir: 'fabrique-chatbot-back'
+    - angularDir: 'fabrique-chatbot-front'
     - ansible_become_pass: "{{ USER_PASSWORD }}"
 
   tasks:
@@ -38,6 +39,8 @@
           - git
           - rsync
           - sshpass
+          - certbot
+          - python-certbot-nginx
 
     - name: Install last version of pip
       become: true
@@ -58,12 +61,56 @@
         dest: '/etc/nginx/nginx.conf'
         remote_src: yes
 
+    - name: copy the nginx site config file
+      copy:
+        src: '{{ userDir }}/{{ nestDir }}/ansible/ansible/static_site.cfg'
+        dest: '/etc/nginx/sites-available/{{ angularDir }}.cfg'
+        remote_src: yes
+      become: yes
+
+    - name: create symlink
+      file:
+        src: '/etc/nginx/sites-available/{{ angularDir }}.cfg'
+        dest: '/etc/nginx/sites-enabled/default'
+        state: link
+      become: yes
+
     - name: start nginx
       service:
         name: nginx
         state: started
         enabled: yes
       become: yes
+
+    - name: Install SSL certificate
+      become: yes
+      command:
+        cmd: 'certbot --nginx -d {{ devDomain }} -n --redirect --agree-tos -m vincent.laine@beta.gouv.fr'
+
+    - name: Update nginx site conf to use http2
+      become: true
+      lineinfile:
+        path: '/etc/nginx/sites-available/{{ angularDir }}.cfg'
+        regexp: '^    listen \[::]:443 ssl ipv6only=on;'
+        line: '    listen [::]:443 ssl http2 ipv6only=on;'
+
+    - name: Update nginx site conf to use http2
+      become: true
+      lineinfile:
+        path: '/etc/nginx/sites-available/{{ angularDir }}.cfg'
+        regexp: '^    listen 443 ssl;'
+        line: '    listen 443 ssl http2;'
+
+    - name: restart nginx
+      service:
+        name: nginx
+        state: restarted
+      become: yes
+
+    #    - name: Check auto renew SSL certificate (never end ?)
+    #      become: yes
+    #      command:
+    #        cmd: 'certbot renew --dry-run'
 
     - name: NODE | Install pm2
       become: yes
