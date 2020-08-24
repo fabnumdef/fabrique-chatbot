@@ -14,7 +14,6 @@
     - appsDir: '/var/www'
     - angularDir: 'fabrique-chatbot-front'
     - ansible_become_pass: "{{ user_password }}"
-    - devDomain: 'chatbot.d.fabnum.fr'
 
   tasks:
     - name: Update and upgrade apt packages
@@ -28,8 +27,6 @@
       apt:
         pkg:
           - nginx
-          - certbot
-          - python-certbot-nginx
           - npm
           - nodejs
           - openssl
@@ -37,20 +34,6 @@
     - name: Install last version of npm
       become: yes
       command: npm install -g npm
-
-    - name: copy the nginx site config file
-      copy:
-        src: '{{ userDir }}/{{ angularDir }}/ansible/static_site.cfg'
-        dest: '/etc/nginx/sites-available/{{ angularDir }}.cfg'
-        remote_src: yes
-      become: yes
-
-    - name: create symlink
-      file:
-        src: '/etc/nginx/sites-available/{{ angularDir }}.cfg'
-        dest: '/etc/nginx/sites-enabled/default'
-        state: link
-      become: yes
 
     - name: start nginx
       service:
@@ -70,39 +53,3 @@
         src: '{{ userDir }}/{{ angularDir }}/'
         dest: '{{ appsDir }}/{{ angularDir }}'
       become: yes
-
-    - name: restart nginx
-      service:
-        name: nginx
-        state: restarted
-      become: yes
-
-    - name: Install SSL certificate
-      become: yes
-      command:
-        cmd: 'certbot --nginx -d {{ devDomain }} -n --redirect --agree-tos -m vincent.laine@beta.gouv.fr'
-
-    - name: Update nginx site conf to use http2
-      become: true
-      lineinfile:
-        path: '/etc/nginx/sites-available/{{ angularDir }}.cfg'
-        regexp: '^    listen \[::]:443 ssl ipv6only=on;'
-        line: '    listen [::]:443 ssl http2 ipv6only=on;'
-
-    - name: Update nginx site conf to use http2
-      become: true
-      lineinfile:
-        path: '/etc/nginx/sites-available/{{ angularDir }}.cfg'
-        regexp: '^    listen 443 ssl;'
-        line: '    listen 443 ssl http2;'
-
-    - name: restart nginx
-      service:
-        name: nginx
-        state: restarted
-      become: yes
-
-#    - name: Check auto renew SSL certificate (never end ?)
-#      become: yes
-#      command:
-#        cmd: 'certbot renew --dry-run'
