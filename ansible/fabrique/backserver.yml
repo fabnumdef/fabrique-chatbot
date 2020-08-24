@@ -14,6 +14,7 @@
     - nestDir: 'fabrique-chatbot-back'
     - angularDir: 'fabrique-chatbot-front'
     - ansible_become_pass: "{{ USER_PASSWORD }}"
+    - devDomain: 'chatbot.d.fabnum.fr'
 
   tasks:
     - name: Update and upgrade apt packages
