@@ -31,8 +31,7 @@
           - software-properties-common
 
     - name: Node get packages
-      command:
-        cmd: 'curl -sL https://deb.nodesource.com/setup_12.x | sudo bash -'
+      command: curl -sL https://deb.nodesource.com/setup_12.x | sudo bash -
       become: yes
 
     - name: Install required dependencies (nginx, node, npm ...)
