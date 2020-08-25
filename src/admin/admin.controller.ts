@@ -29,7 +29,7 @@ import { ChatbotStatus } from "@enum/chatbot-status.enum";
 import { UpdateChatbotDto } from "@dto/update-chatbot.dto";
 import { DeleteResult, Not } from "typeorm";
 import { InjectQueue } from "@nestjs/bull";
-import { Queue } from "bull";
+import { Job, Queue } from "bull";
 
 @ApiTags('admin')
 @Controller('admin')
@@ -107,5 +107,14 @@ export class AdminController {
     }
     await this.chatbotUpdateQueue.add('update', {chatbot, updateChatbot}, {removeOnComplete: true});
     return;
+  }
+
+  @Get('chatbots_queue')
+  @ApiOperation({summary: 'Return the current queue'})
+  @UseGuards(RolesGuard)
+  @Roles(UserRole.admin)
+  async getChatbotsQueue(): Promise<Job[]> {
+    const queue: Job[] = await this.chatbotUpdateQueue.getJobs(['completed', 'waiting', 'active', 'delayed', 'failed', 'paused']);
+    return queue;
   }
 }
