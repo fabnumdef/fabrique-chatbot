@@ -27,13 +27,7 @@
       apt:
         pkg:
           - nginx
-          - npm
-          - nodejs
           - openssl
-
-    - name: Install last version of npm
-      become: yes
-      command: npm install -g npm
 
     - name: start nginx
       service:
