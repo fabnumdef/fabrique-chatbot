@@ -16,6 +16,7 @@ import { AdminModule } from './admin/admin.module';
 import { ScheduleModule } from "@nestjs/schedule";
 import { ChatbotUser } from "@entity/chatbot-user.entity";
 import { MailerModule } from "@nestjs-modules/mailer";
+import { RedisModule } from "nestjs-redis";
 
 @Module({
   imports: [
@@ -58,6 +59,10 @@ import { MailerModule } from "@nestjs-modules/mailer";
       },
     }),
     ScheduleModule.forRoot(),
+    RedisModule.register({
+      host: process.env.REDIS_HOST,
+      port: Number(process.env.REDIS_PORT)
+    }),
     ChatbotModule,
     UserModule,
     AuthModule,

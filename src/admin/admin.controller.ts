@@ -7,7 +7,8 @@ import {
   HttpStatus,
   Param,
   Post,
-  Put, Req,
+  Put,
+  Injectable,
   UseGuards
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiTags } from "@nestjs/swagger";
@@ -25,18 +26,20 @@ import { RolesGuard } from "@guard/roles.guard";
 import { UserRole } from "@enum/user-role.enum";
 import { LaunchUpdateChatbotDto } from "@dto/launch-update-chatbot.dto";
 import { ChatbotStatus } from "@enum/chatbot-status.enum";
-import { ChatbotGenerationService } from "../chatbot/chatbot-generation.service";
 import { UpdateChatbotDto } from "@dto/update-chatbot.dto";
 import { DeleteResult, Not } from "typeorm";
+import { InjectQueue } from "@nestjs/bull";
+import { Queue } from "bull";
 
 @ApiTags('admin')
 @Controller('admin')
 @ApiBearerAuth()
 @UseGuards(JwtAuthGuard)
+@Injectable()
 export class AdminController {
   constructor(private readonly _userService: UserService,
               private readonly _chatbotService: ChatbotService,
-              private readonly _chatbotGenerationService: ChatbotGenerationService) {
+              @InjectQueue('chatbot_update') private readonly chatbotUpdateQueue: Queue) {
   }
 
   @Get('user')
@@ -49,7 +52,7 @@ export class AdminController {
   }
 
   @Delete('user/:email')
-  @ApiOperation({ summary: 'Delete user' })
+  @ApiOperation({summary: 'Delete user'})
   @UseGuards(RolesGuard)
   @Roles(UserRole.admin)
   async deleteUser(@Param('email') email: string): Promise<DeleteResult> {
@@ -66,7 +69,7 @@ export class AdminController {
       where: [
         {status: Not(ChatbotStatus.deleted)}
       ],
-      order: {id :'ASC'}
+      order: {id: 'ASC'}
     });
     return plainToClass(ChatbotDto, camelcaseKeys(chatbots, {deep: true}));
   }
@@ -85,7 +88,8 @@ export class AdminController {
   @Roles(UserRole.admin)
   async update(@Param('id') chatbotId: number,
                @Body() updateChatbot: UpdateChatbotDto): Promise<Chatbot> {
-    return this._chatbotService.update(chatbotId, updateChatbot);
+    await this.chatbotUpdateQueue.add('update_status', {chatbotId, updateChatbot}, {removeOnComplete: true});
+    return;
   }
 
   @Post('chatbot/update/:id')
@@ -101,6 +105,7 @@ export class AdminController {
     if (!chatbot) {
       throw new HttpException(`Ce chatbot n'existe pas ou n'est pas en fonctionnement.`, HttpStatus.INTERNAL_SERVER_ERROR);
     }
-    return this._chatbotGenerationService.updateChatbot(chatbot, updateChatbot);
+    await this.chatbotUpdateQueue.add('update', {chatbot, updateChatbot}, {removeOnComplete: true});
+    return;
   }
 }

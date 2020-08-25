@@ -42,6 +42,7 @@
           - sshpass
           - certbot
           - python-certbot-nginx
+          - redis-server
 
     - name: Install last version of pip
       become: true
