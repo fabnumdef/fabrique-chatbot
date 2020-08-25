@@ -14,6 +14,14 @@ import { AdminProcessor } from "./admin.processor";
       redis: {
         host: process.env.REDIS_HOST,
         port: Number(process.env.REDIS_PORT),
+      },
+      defaultJobOptions: {
+        removeOnComplete: true,
+        removeOnFail: true
+      },
+      limiter: {
+        max: 1,
+        duration: 60*10*1000
       }
     }),
   ],

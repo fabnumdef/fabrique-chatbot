@@ -88,7 +88,7 @@ export class AdminController {
   @Roles(UserRole.admin)
   async update(@Param('id') chatbotId: number,
                @Body() updateChatbot: UpdateChatbotDto): Promise<Chatbot> {
-    await this.chatbotUpdateQueue.add('update_status', {chatbotId, updateChatbot}, {removeOnComplete: true});
+    await this.chatbotUpdateQueue.add('update_status', {chatbotId, updateChatbot});
     return;
   }
 
@@ -105,7 +105,7 @@ export class AdminController {
     if (!chatbot) {
       throw new HttpException(`Ce chatbot n'existe pas ou n'est pas en fonctionnement.`, HttpStatus.INTERNAL_SERVER_ERROR);
     }
-    await this.chatbotUpdateQueue.add('update', {chatbot, updateChatbot}, {removeOnComplete: true});
+    await this.chatbotUpdateQueue.add('update', {chatbot, updateChatbot});
     return;
   }
 
