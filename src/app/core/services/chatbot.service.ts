@@ -89,6 +89,15 @@ export class ChatbotService {
     );
   }
 
+  getQueueJobs(): Observable<any[]> {
+    this._loading$.next(true);
+    return this._http.get<any>(`${this._adminUrl}/queue`).pipe(
+      finalize(() => {
+        this._loading$.next(false);
+      })
+    );
+  }
+
   checkFile(file: File): Observable<FileTemplateCheckResume> {
     const formData: FormData = new FormData();
     formData.append('file', file, file.name);

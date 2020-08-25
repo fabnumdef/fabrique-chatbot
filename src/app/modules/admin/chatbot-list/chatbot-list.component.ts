@@ -89,7 +89,7 @@ export class ChatbotListComponent implements OnInit {
   private _loadChatbots() {
     this._chatbotService.getChatbots().subscribe(chatbots => {
       this.chatbots = chatbots;
-      console.log(chatbots);
+      // console.log(chatbots);
     });
   }
 
