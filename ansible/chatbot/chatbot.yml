@@ -66,13 +66,12 @@
         name: pip
         extra_args: -U
 
-    # TODO: fix versions numbers
     - name: Install RASA
       become: true
       pip:
         executable: pip3
         name:
-          - rasa>1.10.0,<1.11.0
+          - rasa==2.0.0a1
           - psycopg2-binary
 
     - name: NODE | Install pm2
