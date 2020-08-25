@@ -1,6 +1,5 @@
 import { Module } from '@nestjs/common';
 import { TerminusModule } from "@nestjs/terminus";
-import { TerminusOptionsService } from "./health/terminus-options.service";
 import { ChatbotModule } from './chatbot/chatbot.module';
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { User } from "@entity/user.entity";
@@ -17,15 +16,14 @@ import { ScheduleModule } from "@nestjs/schedule";
 import { ChatbotUser } from "@entity/chatbot-user.entity";
 import { MailerModule } from "@nestjs-modules/mailer";
 import { RedisModule } from "nestjs-redis";
+import { HealthController } from './health/health.controller';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
     }),
-    TerminusModule.forRootAsync({
-      useClass: TerminusOptionsService,
-    }),
+    TerminusModule,
     TypeOrmModule.forRoot({
       type: "postgres",
       host: process.env.DATABASE_HOST,
@@ -73,7 +71,8 @@ import { RedisModule } from "nestjs-redis";
       provide: APP_INTERCEPTOR,
       useClass: LoggerInterceptor,
     },
-  ]
+  ],
+  controllers: [HealthController]
 })
 export class AppModule {
 }
