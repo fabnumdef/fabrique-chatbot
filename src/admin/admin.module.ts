@@ -21,7 +21,7 @@ import { AdminProcessor } from "./admin.processor";
       },
       limiter: {
         max: 1,
-        duration: 60*10*1000
+        duration: 60*1000
       }
     }),
   ],
