@@ -66,10 +66,6 @@
         name: pip
         extra_args: -U
 
-#    - name: Install last version of npm
-#      become: true
-#      command: npm install -g npm
-
     # TODO: fix versions numbers
     - name: Install RASA
       become: true

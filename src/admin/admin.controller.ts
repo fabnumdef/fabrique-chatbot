@@ -109,7 +109,7 @@ export class AdminController {
     return;
   }
 
-  @Get('chatbots_queue')
+  @Get('chatbot/queue')
   @ApiOperation({summary: 'Return the current queue'})
   @UseGuards(RolesGuard)
   @Roles(UserRole.admin)

@@ -11,18 +11,18 @@ export class AdminProcessor {
   }
 
   @Process('update')
-  updateChatbot(job: Job) {
+  async updateChatbot(job: Job) {
     console.log('Update Chatbot...');
     console.log(job.data);
-    this._chatbotGenerationService.updateChatbot(job.data.chatbot, job.data.updateChatbot);
+    await this._chatbotGenerationService.updateChatbot(job.data.chatbot, job.data.updateChatbot);
     console.log('Update Chatbot completed');
   }
 
   @Process('update_status')
-  updateStatusChatbot(job: Job) {
+  async updateStatusChatbot(job: Job) {
     console.log('Update Chatbot Status ...');
     console.log(job.data);
-    this._chatbotService.update(job.data.chatbotId, job.data.updateChatbot);
+    await this._chatbotService.update(job.data.chatbotId, job.data.updateChatbot);
     console.log('Update Chatbot Status completed');
   }
 }

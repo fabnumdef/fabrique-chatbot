@@ -61,11 +61,6 @@
         name: pip
         extra_args: -U
 
-#    - name: Install last version of npm
-#      become: yes
-#      command: npm install -g npm
-#      ignore_errors: yes
-
     - name: copy the nginx config file
       become: yes
       copy:
