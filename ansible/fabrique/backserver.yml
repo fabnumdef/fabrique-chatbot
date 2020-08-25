@@ -24,15 +24,15 @@
         update_cache: 'yes'
 
     - name: Install dependencies for nodejs
-        become: yes
-        apt:
-          pkg:
-            - curl
-            - software-properties-common
+      become: yes
+      apt:
+        pkg:
+          - curl
+          - software-properties-common
 
-    - name: NODE | Stop APP
-        shell: curl -sL https://deb.nodesource.com/setup_12.x | sudo bash -
-        become: yes
+    - name: Node get packages
+      shell: curl -sL https://deb.nodesource.com/setup_12.x | sudo bash -
+      become: yes
 
     - name: Install required dependencies (nginx, node, npm ...)
       become: yes
