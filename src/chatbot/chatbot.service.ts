@@ -150,13 +150,6 @@ export class ChatbotService {
     }
   }
 
-  // convertToRasaFiles(file): any {
-  //   const workbook: WorkBook = XLSX.read(file.buffer);
-  //   const worksheet: WorkSheet = workbook.Sheets[workbook.SheetNames[0]];
-  //   const templateFile: TemplateFileDto[] = this.convertExcelToJson(worksheet);
-  //   RasaService.jsonToRasa(templateFile);
-  // }
-
   /************************************************************************************ PRIVATE FUNCTIONS ************************************************************************************/
 
   /**

@@ -73,6 +73,11 @@
         name:
           - rasa==2.0.0a1
           - psycopg2-binary
+          - rasa[spacy]
+
+    - name: Install Spacy
+      become: yes
+      shell: python3 -m spacy download fr_core_news_md && python3 -m spacy link fr_core_news_md fr
 
     - name: NODE | Install pm2
       become: yes
