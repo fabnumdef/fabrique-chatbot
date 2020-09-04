@@ -14,6 +14,7 @@
     - backDir: 'chatbot-back'
     - botDir: 'chatbot-template'
     - frontDir: 'chatbot-front'
+    - webchatDir: 'ngx-rasa-webchat'
     - ansible_become_pass: "{{ USER_PASSWORD }}"
     - ansible_ssh_private_key_file: "/root/.ssh/id_rsa"
 
@@ -51,6 +52,12 @@
       synchronize:
         src: '{{ appsDir }}/{{ nestDir }}/chatbot/{{ frontDir }}/dist/{{ frontDir }}/'
         dest: '{{ appsDir }}/{{ frontDir }}'
+      when: updateFront
+
+    - name: Copy ngx-rasa-webchat
+      synchronize:
+        src: '{{ appsDir }}/{{ nestDir }}/chatbot/{{ frontDir }}/dist/{{ webchatDir }}/'
+        dest: '{{ appsDir }}/{{ webchatDir }}'
       when: updateFront
 
     - name: copy the nginx config file
@@ -172,7 +179,7 @@
       become: true
       command:
         chdir: '{{ appsDir }}/{{ botDir }}/'
-        cmd: 'rasa train --augmentation 10'
+        cmd: 'rasa train --augmentation 50'
       when: updateRasa
 
     - name: Stop rasa chatbot
