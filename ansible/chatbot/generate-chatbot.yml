@@ -78,7 +78,7 @@
       become: yes
       lineinfile:
         path: '/etc/nginx/sites-available/{{ frontDir }}.cfg'
-        insertafter : '^    expires $expires;'
+        insertbefore : '^    location / {'
         line: '    server_name  {{ botDomain }};'
       when: updateFront and botDomain
 
