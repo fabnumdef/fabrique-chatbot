@@ -78,7 +78,7 @@
       become: yes
       lineinfile:
         path: '/etc/nginx/sites-available/{{ frontDir }}.cfg'
-        insertafter : '^    root /var/www/chatbot-front;'
+        insertafter : '^    listen [::]:80 default_server;'
         line: '    server_name  {{ botDomain }};'
       when: updateFront and botDomain
 
