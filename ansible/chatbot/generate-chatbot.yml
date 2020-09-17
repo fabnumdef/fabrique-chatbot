@@ -52,12 +52,14 @@
       synchronize:
         src: '{{ appsDir }}/{{ nestDir }}/chatbot/{{ frontDir }}/dist/{{ frontDir }}/'
         dest: '{{ appsDir }}/{{ frontDir }}'
+        delete: yes
       when: updateFront
 
     - name: Copy webchat
       synchronize:
         src: '{{ appsDir }}/{{ nestDir }}/chatbot/{{ frontDir }}/dist/{{ webchatDir }}/'
         dest: '{{ appsDir }}/{{ webchatDir }}'
+        delete: yes
       when: updateFront
 
     - name: copy the nginx config file
