@@ -105,6 +105,16 @@
         cmd: 'certbot --nginx -d {{ botDomain }} -n --redirect --agree-tos -m vincent.laine@beta.gouv.fr'
       when: updateFront and botDomain
 
+    - name: Install RASA version
+      become: true
+      pip:
+        executable: pip3
+        name:
+          - rasa==2.0.0a1
+          - psycopg2-binary
+          - rasa[spacy]
+      when: updateRasa
+
     - name: Copy chatbot-template
       synchronize:
         src: '{{ appsDir }}/{{ nestDir }}/chatbot/{{ botDir }}/'
