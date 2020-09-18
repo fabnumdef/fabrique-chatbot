@@ -184,6 +184,10 @@
     align-items: center;
     justify-content: center;
     padding: 20px 0;
+
+    & > *:not(:first-child) {
+      margin-left: 10px;
+    }
   }
 }
 
