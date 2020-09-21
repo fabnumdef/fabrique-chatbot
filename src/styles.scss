@@ -92,3 +92,17 @@ body {
 .red {
   color: $error-color;
 }
+
+.chatbot-info {
+  padding: 10px;
+  border: 1px solid $primary-color;
+  color: $primary-color;
+  display: flex;
+  align-items: center;
+  border-radius: $border-radius;
+  box-sizing: border-box;
+
+  .mat-icon {
+    margin-right: 10px;
+  }
+}

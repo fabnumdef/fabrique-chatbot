@@ -16,32 +16,32 @@ export class CustomizationStepComponent implements OnInit {
 
   colorsSet = [
     {
-      primaryColor: '#9E9E9E',
-      secondaryColor: '#E6E6E6'
+      primaryColor: '#000000',
+      secondaryColor: '#F0F0F0'
     },
     {
-      primaryColor: '#57A6FF',
-      secondaryColor: '#CBE3FF'
+      primaryColor: '#3C6EF5',
+      secondaryColor: '#E9F3FF'
     },
     {
-      primaryColor: '#F3722C',
-      secondaryColor: '#FDE3D5'
+      primaryColor: '#F66414',
+      secondaryColor: '#FFEDE4'
     },
     {
-      primaryColor: '#FF5757',
-      secondaryColor: '#FFC8C8'
+      primaryColor: '#E01D1D',
+      secondaryColor: '#FFE7E7'
     },
     {
-      primaryColor: '#66BE82',
-      secondaryColor: '#D6EDDD'
+      primaryColor: '#1C9944',
+      secondaryColor: '#E4F2E9'
     },
     {
-      primaryColor: '#A4A4EC',
+      primaryColor: '#6E6EBF',
       secondaryColor: '#F0F0FC'
     },
     {
-      primaryColor: '#FFB000',
-      secondaryColor: '#FEE9BA'
+      primaryColor: '#FF9500',
+      secondaryColor: '#FDEECD'
     }
   ];
   colorsIdx = 0;
