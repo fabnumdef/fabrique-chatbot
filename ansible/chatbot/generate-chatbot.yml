@@ -1,0 +1,222 @@
+---
+- name: Init chatbot server
+
+  hosts: all
+
+  remote_user: chatbot_user
+
+  vars_files:
+    - ./credentials.yml
+
+  vars:
+    - appsDir: '/var/www'
+    - nestDir: 'fabrique-chatbot-back'
+    - backDir: 'chatbot-back'
+    - botDir: 'chatbot-template'
+    - frontDir: 'chatbot-front'
+    - webchatDir: 'webchat'
+    - ansible_become_pass: "{{ USER_PASSWORD }}"
+    - ansible_ssh_private_key_file: "/root/.ssh/id_rsa"
+
+  tasks:
+    - name: Set right rights on www directory
+      become: true
+      file:
+        path: '{{appsDir}}'
+        group: www-data
+        mode: '774'
+        recurse: yes
+
+    - name: Copy chatbot-back
+      synchronize:
+        src: '{{ appsDir }}/{{ nestDir }}/chatbot/{{ backDir }}/'
+        dest: '{{ appsDir }}/{{ backDir }}'
+        rsync_opts:
+          - '--exclude=mediatheque/'
+          - '--exclude=historic/'
+      when: updateBack
+
+    - name: Copy password-file
+      copy:
+        src: '{{ appsDir }}/{{ nestDir }}/ansible/fabrique/password_file'
+        dest: '{{ appsDir }}/{{ backDir }}/password_file'
+      when: updateBack
+
+    - name: Copy env-file
+      copy:
+        src: '{{ appsDir }}/{{ nestDir }}/ansible/chatbot/.env'
+        dest: '{{ appsDir }}/{{ backDir }}/.env'
+      when: updateBack
+
+    - name: Copy chatbot-front
+      synchronize:
+        src: '{{ appsDir }}/{{ nestDir }}/chatbot/{{ frontDir }}/dist/{{ frontDir }}/'
+        dest: '{{ appsDir }}/{{ frontDir }}'
+        delete: yes
+      when: updateFront
+
+    - name: Copy webchat
+      synchronize:
+        src: '{{ appsDir }}/{{ nestDir }}/chatbot/{{ frontDir }}/dist/{{ webchatDir }}/'
+        dest: '{{ appsDir }}/{{ webchatDir }}'
+        delete: yes
+      when: updateFront
+
+    - name: copy the nginx config file
+      copy:
+        src: '{{ appsDir }}/{{ nestDir }}/ansible/chatbot/nginx.conf'
+        dest: '/etc/nginx/nginx.conf'
+      become: yes
+      when: updateFront
+
+    - name: copy the nginx site config file
+      copy:
+        src: '{{ appsDir }}/{{ nestDir }}/ansible/chatbot/nginx_conf.cfg'
+        dest: '/etc/nginx/sites-available/{{ frontDir }}.cfg'
+      become: yes
+      when: updateFront
+
+    - name: add server name to the nginx site config file
+      become: yes
+      lineinfile:
+        path: '/etc/nginx/sites-available/{{ frontDir }}.cfg'
+        insertbefore : '^    location / {'
+        line: '    server_name  {{ botDomain }};'
+      when: updateFront and botDomain
+
+    - name: create symlink
+      file:
+        src: '/etc/nginx/sites-available/{{ frontDir }}.cfg'
+        dest: '/etc/nginx/sites-enabled/default'
+        state: link
+      become: yes
+      when: updateFront
+
+    - name: restart nginx
+      service:
+        name: nginx
+        state: restarted
+      become: yes
+      when: updateFront
+
+    - name: Install SSL certificate
+      become: yes
+      command:
+        cmd: 'certbot --nginx -d {{ botDomain }} -n --redirect --agree-tos -m vincent.laine@beta.gouv.fr'
+      when: updateFront and botDomain
+
+    - name: Install RASA version
+      become: true
+      pip:
+        executable: pip3
+        name:
+          - rasa==2.0.0a1
+          - psycopg2-binary
+          - rasa[spacy]
+      when: updateRasa
+
+    - name: Copy chatbot-template
+      synchronize:
+        src: '{{ appsDir }}/{{ nestDir }}/chatbot/{{ botDir }}/'
+        dest: '{{ appsDir }}/{{ botDir }}'
+        rsync_opts:
+          - '--exclude=models/'
+      when: updateRasa
+
+    - name: npm install chatbot-back
+      become: yes
+      command:
+        cmd: sudo npm install --build-from-source
+        chdir: '{{ appsDir }}/{{ backDir }}'
+      when: updateBack
+
+    - name: npm build chatbot-back
+      become: yes
+      command:
+        cmd: 'npm run build'
+        chdir: '{{ appsDir }}/{{ backDir }}'
+      when: updateBack
+
+    - name: npm copy env file
+      become: yes
+      command:
+        cmd: 'npm run copy'
+        chdir: '{{ appsDir }}/{{ backDir }}'
+      when: updateBack
+
+    - name: NODE | Stop APP
+      shell: pm2 stop ChatbotBack
+      args:
+        chdir: '{{ appsDir }}/{{ backDir }}'
+      ignore_errors: yes
+      become: yes
+      when: updateBack
+
+    - name: NODE | Start APP
+      shell: pm2 start main.js --name ChatbotBack
+      args:
+        chdir: '{{ appsDir }}/{{ backDir }}/dist'
+      become: yes
+      when: updateBack
+
+    - name: Update PM2 script at startup
+      become: yes
+      shell: pm2 startup
+      when: updateBack
+
+    - name: reload pm2 startup script
+      when: updateBack
+      become: yes
+      systemd:
+        name: pm2-root.service
+        state: reloaded
+
+    - name: Copy endpoints.yml rasa file
+      become: true
+      copy:
+        src: '{{ appsDir }}/{{ botDir }}/endpoints.example.yml'
+        dest: '{{ appsDir }}/{{ botDir }}/endpoints.yml'
+        remote_src: yes
+      when: updateRasa
+
+    - name: Update endpoints.yml rasa file
+      become: true
+      lineinfile:
+        path: '{{ appsDir }}/{{ botDir }}/endpoints.yml'
+        regexp: '^  password:'
+        line: '  password: "{{ DB_PASSWORD }}"'
+      when: updateRasa
+
+    - name: Train rasa
+      become: true
+      command:
+        chdir: '{{ appsDir }}/{{ botDir }}/'
+        cmd: 'rasa train --augmentation 50'
+      when: updateRasa
+
+    - name: Stop rasa chatbot
+      become: true
+      command: 'pkill screen'
+      ignore_errors: true
+      when: updateRasa
+
+    - name: Start rasa chatbot
+      become: true
+      command:
+        chdir: '{{ appsDir }}/{{ botDir }}/'
+        cmd: 'screen -S rasa -dmS rasa run -m models --enable-api --log-file out.log --cors "*" --debug'
+      when: updateRasa
+
+    - name: copy rc.local file to restart bot on boot
+      copy:
+        src: '{{ appsDir }}/{{ nestDir }}/ansible/chatbot/rc.local'
+        dest: '/etc/rc.local'
+      become: yes
+      when: updateRasa
+
+    - name: Set right rights on rc.local file
+      become: yes
+      when: updateRasa
+      file:
+        path: '/etc/rc.local'
+        mode: '755'

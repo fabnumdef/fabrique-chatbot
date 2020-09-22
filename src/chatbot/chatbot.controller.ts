@@ -1,62 +1,85 @@
-import { Body, Controller, Post, UploadedFile, UseInterceptors } from '@nestjs/common';
-import { ApiBody, ApiConsumes, ApiTags } from "@nestjs/swagger";
-import { FileInterceptor } from "@nestjs/platform-express";
-import { BotCreationDto } from "../core/dto/bot-creation.dto";
-import { FileUploadDto } from "../core/dto/file-upload.dto";
+import {
+  Body,
+  Controller,
+  HttpException,
+  HttpStatus,
+  Post, Req,
+  UploadedFile,
+  UploadedFiles,
+  UseGuards,
+  UseInterceptors
+} from '@nestjs/common';
+import { ApiBearerAuth, ApiBody, ApiConsumes, ApiOperation, ApiTags } from "@nestjs/swagger";
+import { FileFieldsInterceptor, FileInterceptor } from "@nestjs/platform-express";
+import { FileUploadDto } from "@dto/file-upload.dto";
 import { ChatbotService } from "./chatbot.service";
+import { plainToClass } from "class-transformer";
+import { ChatbotDto } from "@dto/chatbot.dto";
+import camelcaseKeys = require("camelcase-keys");
+import { CreateChatbotDto } from "@dto/create-chatbot.dto";
+import snakecaseKeys = require("snakecase-keys");
+import { ChatbotModel } from "@model/chatbot.model";
+import { JwtAuthGuard } from "@guard/jwt.guard";
+import { FileModel } from "@model/file.model";
 
 @ApiTags('chatbot')
 @Controller('chatbot')
+@ApiBearerAuth()
+@UseGuards(JwtAuthGuard)
 export class ChatbotController {
   constructor(private readonly _chatbotService: ChatbotService) {
   }
 
   @Post('create')
-  @UseInterceptors(FileInterceptor(
-    'file',
+  @UseInterceptors(FileFieldsInterceptor(
+    [
+      {name: 'file', maxCount: 1},
+      {name: 'icon', maxCount: 1},
+    ],
     {
-      fileFilter: ChatbotService.excelFileFilter,
-    }))
-  @ApiConsumes('multipart/form-data')
-  create(@UploadedFile() file, @Body() botConfiguration: BotCreationDto) {
-    const errors = this._chatbotService.checkTemplateFile(file).errors;
-    if(errors && Object.keys(errors).length > 0) {
-      throw 'Fichier incorrect';
+      limits: {
+        fileSize: 1e+7
+      },
+      fileFilter: ChatbotService.multipleFileFilters,
     }
-    this._chatbotService.convertToAnsibleScript(file);
-    console.log('bot config', botConfiguration);
+  ))
+  @ApiConsumes('multipart/form-data')
+  @ApiOperation({summary: 'Create chatbot'})
+  async create(@UploadedFiles() files,
+               @Body() botConfiguration: CreateChatbotDto,
+               @Req() req) {
+    const file: FileModel = files.file[0];
+    const icon: FileModel = files.icon[0];
+    // form data
+    // @ts-ignore
+    botConfiguration.users = JSON.parse(botConfiguration.users);
+    const errors = this._chatbotService.checkTemplateFile(file).errors;
+    if (errors && Object.keys(errors).length > 0) {
+      throw new HttpException('Le fichier contient des erreurs bloquantes.', HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+    const botModel = await this._chatbotService.create(plainToClass(ChatbotModel, snakecaseKeys({...botConfiguration, ...{user: req.user}})), file, icon);
+    return plainToClass(ChatbotDto, camelcaseKeys(botModel, {deep: true}));
   }
 
   @Post('check-file')
-  @UseInterceptors(FileInterceptor(
-    'file',
-    {
-      fileFilter: ChatbotService.excelFileFilter,
-    }
-  ))
+  @UseInterceptors(
+    FileInterceptor(
+      'file',
+      {
+        limits: {
+          fileSize: 1e+7
+        },
+        fileFilter: ChatbotService.excelFileFilter,
+      }
+    )
+  )
   @ApiConsumes('multipart/form-data')
   @ApiBody({
     description: 'Template file (excel)',
     type: FileUploadDto,
   })
+  @ApiOperation({summary: 'Check excel file'})
   checkTemplateFile(@UploadedFile() file) {
     return this._chatbotService.checkTemplateFile(file);
-  }
-
-  // TODO: A transférer vers chatbot-back
-  @Post()
-  @UseInterceptors(FileInterceptor(
-    'file',
-    {
-      fileFilter: ChatbotService.excelFileFilter,
-    }
-  ))
-  @ApiConsumes('multipart/form-data')
-  @ApiBody({
-    description: 'Template file (excel)',
-    type: FileUploadDto,
-  })
-  convertToRasaFiles(@UploadedFile() file) {
-    return this._chatbotService.convertToRasaFiles(file);
   }
 }

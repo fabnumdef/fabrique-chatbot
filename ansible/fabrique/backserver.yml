@@ -1,0 +1,230 @@
+---
+- name: Init server for Angular App
+
+  hosts: localhost
+
+  remote_user: fab_user
+
+  vars_files:
+    - ./vars.yml
+
+  vars:
+    - userDir: '/home/fab_user'
+    - appsDir: '/var/www'
+    - nestDir: 'fabrique-chatbot-back'
+    - angularDir: 'fabrique-chatbot-front'
+    - ansible_become_pass: "{{ USER_PASSWORD }}"
+    - devDomain: 'chatbot.d.fabnum.fr'
+
+  tasks:
+    - name: Update and upgrade apt packages
+      become: yes
+      apt:
+        upgrade: 'yes'
+        update_cache: 'yes'
+
+    - name: Install dependencies for nodejs
+      become: yes
+      apt:
+        pkg:
+          - curl
+          - software-properties-common
+
+    - name: Node get packages
+      shell: 'curl -sL https://deb.nodesource.com/setup_12.x | sudo bash -'
+      become: yes
+
+    - name: Install required dependencies (nginx, node, npm ...)
+      become: yes
+      apt:
+        pkg:
+          - python-setuptools
+          - build-essential
+          - nginx
+          - nodejs
+          - postgresql
+          - postgresql-contrib
+          - acl
+          - libpq-dev
+          - python3-psycopg2
+          - git
+          - rsync
+          - sshpass
+          - certbot
+          - python-certbot-nginx
+          - redis-server
+
+    - name: Install last version of pip
+      become: true
+      pip:
+        executable: pip3
+        name: pip
+        extra_args: -U
+
+    - name: copy the nginx config file
+      become: yes
+      copy:
+        src: '{{ userDir }}/{{ nestDir }}/ansible/fabrique/nginx.conf'
+        dest: '/etc/nginx/nginx.conf'
+        remote_src: yes
+
+    - name: copy the nginx site config file
+      copy:
+        src: '{{ userDir }}/{{ nestDir }}/ansible/fabrique/static_site.cfg'
+        dest: '/etc/nginx/sites-available/{{ angularDir }}.cfg'
+        remote_src: yes
+      become: yes
+
+    - name: create symlink
+      file:
+        src: '/etc/nginx/sites-available/{{ angularDir }}.cfg'
+        dest: '/etc/nginx/sites-enabled/default'
+        state: link
+      become: yes
+
+    - name: start nginx
+      service:
+        name: nginx
+        state: started
+        enabled: yes
+      become: yes
+
+    - name: Install SSL certificate
+      become: yes
+      command:
+        cmd: 'certbot --nginx -d {{ devDomain }} -n --redirect --agree-tos -m vincent.laine@beta.gouv.fr'
+
+    - name: Update nginx site conf to use http2
+      become: true
+      lineinfile:
+        path: '/etc/nginx/sites-available/{{ angularDir }}.cfg'
+        regexp: '^    listen \[::]:443 ssl ipv6only=on;'
+        line: '    listen [::]:443 ssl http2 ipv6only=on;'
+
+    - name: Update nginx site conf to use http2
+      become: true
+      lineinfile:
+        path: '/etc/nginx/sites-available/{{ angularDir }}.cfg'
+        regexp: '^    listen 443 ssl;'
+        line: '    listen 443 ssl http2;'
+
+    - name: restart nginx
+      service:
+        name: nginx
+        state: restarted
+      become: yes
+
+    #    - name: Check auto renew SSL certificate (never end ?)
+    #      become: yes
+    #      command:
+    #        cmd: 'certbot renew --dry-run'
+
+    - name: NODE | Install pm2
+      become: yes
+      npm:
+        name: pm2
+        global: yes
+        production: yes
+        state: present
+
+    - name: Ensure the PostgreSQL service is running
+      service:
+        name: 'postgresql'
+        state: 'started'
+        enabled: 'yes'
+
+    - name: Ensure database is created
+      become: yes
+      become_user: postgres
+      postgresql_db:
+        name: 'fabrique_chatbot'
+        encoding: 'UTF-8'
+        lc_collate: 'fr_FR.UTF-8'
+        lc_ctype: 'fr_FR.UTF-8'
+#        conn_limit: '100' # Only available in ansible 2.8
+        state: 'present'
+        template: 'template0'
+
+    - name: Ensure user has access to the database
+      become: true
+      become_user: postgres
+      postgresql_user:
+        db: 'fabrique_chatbot'
+        name: 'fabrique_chatbot_user'
+        password: '{{ DB_PASSWORD }}'
+        priv: 'ALL'
+        state: 'present'
+
+    - name: Ensure user does not have unnecessary privileges
+      become: yes
+      become_user: postgres
+      postgresql_user:
+        name: 'fabrique_chatbot_user'
+        role_attr_flags: 'NOSUPERUSER,NOCREATEDB'
+        state: 'present'
+
+    - name: Copy env file
+      copy:
+        src: '{{ userDir }}/{{ nestDir }}/ansible/fabrique/.env'
+        dest: '{{ userDir }}/{{ nestDir }}/.env'
+
+    - name: Get list of files to delete
+      become: yes
+      find:
+        path: '{{ appsDir }}/{{ nestDir }}/'
+        file_type: any
+        excludes: 'node_modules,chatbot'
+      register: files_to_delete
+
+    - name: remove old nestjs app
+      become: yes
+      file:
+        path: '{{ item.path }}'
+        state: absent
+      with_items: "{{ files_to_delete.files }}"
+
+    - name: copy nestjs app
+      copy:
+        src: '{{ userDir }}/{{ nestDir }}/'
+        dest: '{{ appsDir }}/{{ nestDir }}'
+      become: yes
+
+    - name: npm install nestjs app
+      become: yes
+      npm:
+        path: '{{ appsDir }}/{{ nestDir }}'
+
+    - name: npm build nestjs app
+      become: yes
+      command:
+        cmd: 'npm run build'
+        chdir: '{{ appsDir }}/{{ nestDir }}'
+
+    - name: npm copy env file
+      become: yes
+      command:
+        cmd: 'npm run copy'
+        chdir: '{{ appsDir }}/{{ nestDir }}'
+
+    - name: NODE | Stop APP
+      shell: pm2 stop FabriqueBack
+      args:
+        chdir: '{{ appsDir }}/{{ nestDir }}'
+      ignore_errors: yes
+      become: yes
+
+    - name: NODE | Start APP
+      become: yes
+      shell: pm2 start main.js --name FabriqueBack
+      args:
+        chdir: '{{ appsDir }}/{{ nestDir }}/dist'
+
+    - name: Update PM2 script at startup
+      become: yes
+      shell: pm2 startup
+
+    - name: reload pm2 startup script
+      become: yes
+      systemd:
+        name: pm2-root.service
+        state: reloaded

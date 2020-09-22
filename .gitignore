@@ -35,5 +35,8 @@ lerna-debug.log*
 
 /files/*
 
-# Ansible
-/ansible/hosts
+# ENV variables
+/.env
+
+# Directory with other github repos
+/chatbot

@@ -1,0 +1,87 @@
+---
+
+# Prerequisits: SSH access for user with password
+
+- hosts: all
+
+  remote_user: chatbot_user
+
+  vars_files:
+    - ./credentials.yml
+
+  vars:
+    - ansible_become_pass: "{{ USER_PASSWORD }}"
+
+  tasks:
+
+    - name: Do not allow root access via ssh
+      become: yes
+      lineinfile:
+        line: PermitRootLogin no
+        dest: /etc/ssh/sshd_config
+        regexp: ^PermitRootLogin
+      notify: restart ssh
+
+    - name: Do not allow ssh access via password
+      become: yes
+      lineinfile:
+        line: PasswordAuthentication no
+        dest: /etc/ssh/sshd_config
+        regexp: ^PasswordAuthentication
+      notify: restart ssh
+
+    - name: Delete ssh host keys
+      become: yes
+      shell: "rm /etc/ssh/ssh_host_* && dpkg-reconfigure openssh-server"
+      notify: restart ssh
+      when: renew_ssh is defined and renew_ssh == "yes"
+
+    - name: Make sure uft is installed
+      become: yes
+      apt:
+        name: ufw
+
+    - name: Configure firewall
+      become: yes
+      ufw:
+        policy: deny
+        rule: allow
+        name: OpenSSH
+        state: enabled
+
+    - name: Open port 5005
+      become: yes
+      ufw:
+        rule: allow
+        port: '5005'
+        proto: tcp
+
+    - name: Open port 443
+      become: yes
+      ufw:
+        rule: allow
+        port: '443'
+        proto: tcp
+
+    - name: Open port 80
+      become: yes
+      ufw:
+        rule: allow
+        port: '80'
+        proto: tcp
+
+    - name: Open port 9100
+      become: yes
+      ufw:
+        rule: allow
+        port: '9100'
+        proto: tcp
+
+
+  handlers:
+
+    - name: restart ssh
+      become: yes
+      service:
+        name: ssh
+        state: restarted
