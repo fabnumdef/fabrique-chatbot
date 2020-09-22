@@ -2,7 +2,7 @@
 
 # Prerequisits: SSH access for user with password
 
-- hosts: dev
+- hosts: all
 
   remote_user: fab_user
 

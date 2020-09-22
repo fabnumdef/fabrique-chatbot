@@ -24,8 +24,22 @@ jobs:
         id: host
         with:
           cond: ${{ github.ref == '/master' }}
-          if_true: '51.91.100.194'
-          if_false: '51.254.201.98'
+          if_true: ${{ secrets.PROD_IP }}
+          if_false: ${{ secrets.DEV_IP }}
+
+      - uses: haya14busa/action-cond@v1
+        id: vault_password
+        with:
+          cond: ${{ github.ref == '/master' }}
+          if_true: ${{ secrets.PROD_VAULT_PASSWORD }}
+          if_false: ${{ secrets.DEV_VAULT_PASSWORD }}
+
+      - uses: haya14busa/action-cond@v1
+        id: env_file
+        with:
+          cond: ${{ github.ref == '/master' }}
+          if_true: ~/fabrique-chatbot-back/ansible/fabrique/.env.prod
+          if_false: ~/fabrique-chatbot-back/ansible/fabrique/.env.dev
 
       - name: copy app via ssh key
         uses: appleboy/scp-action@master
@@ -63,10 +77,11 @@ jobs:
           script: |
             rm -rf ~/fabrique-chatbot-back/ansible/fabrique/password_file
             cat >> ~/fabrique-chatbot-back/ansible/fabrique/password_file << 'END'
-            ${{ secrets.VAULT_PASSWORD }}
+            ${{ steps.vault_password.outputs.value }}
             END
-            ansible-vault decrypt --vault-id dev@~/fabrique-chatbot-back/ansible/fabrique/password_file ~/fabrique-chatbot-back/ansible/fabrique/.env
-            ansible-playbook ~/fabrique-chatbot-back/ansible/fabrique/backserver.yml --vault-id dev@~/fabrique-chatbot-back/ansible/fabrique/password_file
+            ansible-vault decrypt --vault-password-file ~/fabrique-chatbot-back/ansible/fabrique/password_file ${{ steps.env_file.outputs.value }}
+            mv ${{ steps.vault_password.outputs.value }} ~/fabrique-chatbot-back/ansible/fabrique/.env
+            ansible-playbook ~/fabrique-chatbot-back/ansible/fabrique/backserver.yml --vault-password-file ~/fabrique-chatbot-back/ansible/fabrique/password_file
 
       - name: delete tmp dir
         uses: appleboy/ssh-action@master

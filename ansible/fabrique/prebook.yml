@@ -4,7 +4,7 @@
 #   ssh access with root and password
 #   ssh authentication key on local machine
 
-- hosts: dev
+- hosts: all
   vars_prompt:
 
     - name: root_password
@@ -31,15 +31,18 @@
   tasks:
 
     - name: apply root password
+      become: true
       user:
         name: root
         password: "{{ root_password }}"
 
     - name: ensure sudo is installed
+      become: true
       apt:
         name: sudo
 
     - name: ensure user is present
+      become: true
       user:
         name: fab_user
         append: yes
@@ -47,6 +50,7 @@
         password: "{{ user_password }}"
 
     - name: ensure user is accessable with ssh key
+      become: true
       authorized_key:
         user: fab_user
         key: "{{ lookup('file', '{{ ssh_key }}') }}"
