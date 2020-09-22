@@ -80,7 +80,7 @@ jobs:
             ${{ steps.vault_password.outputs.value }}
             END
             ansible-vault decrypt --vault-password-file ~/fabrique-chatbot-back/ansible/fabrique/password_file ${{ steps.env_file.outputs.value }}
-            mv ${{ steps.vault_password.outputs.value }} ~/fabrique-chatbot-back/ansible/fabrique/.env
+            mv ${{ steps.env_file.outputs.value }} ~/fabrique-chatbot-back/ansible/fabrique/.env
             ansible-playbook ~/fabrique-chatbot-back/ansible/fabrique/backserver.yml --vault-password-file ~/fabrique-chatbot-back/ansible/fabrique/password_file
 
       - name: delete tmp dir
