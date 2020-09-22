@@ -23,21 +23,21 @@ jobs:
       - uses: haya14busa/action-cond@v1
         id: host
         with:
-          cond: ${{ env.ENVIRONMENT }}==prod
+          cond: ${{ env.ENVIRONMENT == prod }}
           if_true: ${{ secrets.PROD_IP }}
           if_false: ${{ secrets.DEV_IP }}
 
       - uses: haya14busa/action-cond@v1
         id: vault_password
         with:
-          cond: ${{ env.ENVIRONMENT }}==prod
+          cond: ${{ env.ENVIRONMENT == prod }}
           if_true: ${{ secrets.PROD_VAULT_PASSWORD }}
           if_false: ${{ secrets.DEV_VAULT_PASSWORD }}
 
       - uses: haya14busa/action-cond@v1
         id: env_file
         with:
-          cond: ${{ env.ENVIRONMENT }}==dev
+          cond: ${{ env.ENVIRONMENT == dev }}
           if_true: ~/fabrique-chatbot-back/ansible/fabrique/.env.prod
           if_false: ~/fabrique-chatbot-back/ansible/fabrique/.env.dev
 
