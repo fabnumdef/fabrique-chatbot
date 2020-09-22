@@ -23,7 +23,7 @@ jobs:
       - uses: haya14busa/action-cond@v1
         id: host
         with:
-          cond: endsWith(github.ref, '/develop')
+          cond: endsWith(github.ref, '/master')
           if_true: ${{ secrets.PROD_IP }}
           if_false: ${{ secrets.DEV_IP }}
 
@@ -41,47 +41,47 @@ jobs:
           if_true: ~/fabrique-chatbot-back/ansible/fabrique/.env.prod
           if_false: ~/fabrique-chatbot-back/ansible/fabrique/.env.dev
 
-#      - name: copy app via ssh key
-#        uses: appleboy/scp-action@master
-#        env:
-#          HOST: '${{ steps.host.outputs.value }}'
-#          USERNAME: fab_user
-#          PORT: 22
-#          KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-#        with:
-#          source: "./"
-#          target: "~/fabrique-chatbot-back/"
-#          strip_components: 1
-#          timeout: 240s
-#
-#      - name: copy ansible scripts via ssh key
-#        uses: appleboy/scp-action@master
-#        env:
-#          HOST: '${{ steps.host.outputs.value }}'
-#          USERNAME: fab_user
-#          PORT: 22
-#          KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-#        with:
-#          source: "./ansible/"
-#          target: "~/fabrique-chatbot-back/"
-#          timeout: 120s
-#
-#      - name: launch deploy ansible script
-#        uses: appleboy/ssh-action@master
-#        env:
-#          HOST: '${{ steps.host.outputs.value }}'
-#          USERNAME: fab_user
-#          PORT: 22
-#          KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-#        with:
-#          script: |
-#            rm -rf ~/fabrique-chatbot-back/ansible/fabrique/password_file
-#            cat >> ~/fabrique-chatbot-back/ansible/fabrique/password_file << 'END'
-#            ${{ steps.vault_password.outputs.value }}
-#            END
-#            ansible-vault decrypt --vault-password-file ~/fabrique-chatbot-back/ansible/fabrique/password_file ${{ steps.env_file.outputs.value }}
-#            mv ${{ steps.env_file.outputs.value }} ~/fabrique-chatbot-back/ansible/fabrique/.env
-#            ansible-playbook ~/fabrique-chatbot-back/ansible/fabrique/backserver.yml --vault-password-file ~/fabrique-chatbot-back/ansible/fabrique/password_file
+      - name: copy app via ssh key
+        uses: appleboy/scp-action@master
+        env:
+          HOST: '${{ steps.host.outputs.value }}'
+          USERNAME: fab_user
+          PORT: 22
+          KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+        with:
+          source: "./"
+          target: "~/fabrique-chatbot-back/"
+          strip_components: 1
+          timeout: 240s
+
+      - name: copy ansible scripts via ssh key
+        uses: appleboy/scp-action@master
+        env:
+          HOST: '${{ steps.host.outputs.value }}'
+          USERNAME: fab_user
+          PORT: 22
+          KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+        with:
+          source: "./ansible/"
+          target: "~/fabrique-chatbot-back/"
+          timeout: 120s
+
+      - name: launch deploy ansible script
+        uses: appleboy/ssh-action@master
+        env:
+          HOST: '${{ steps.host.outputs.value }}'
+          USERNAME: fab_user
+          PORT: 22
+          KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+        with:
+          script: |
+            rm -rf ~/fabrique-chatbot-back/ansible/fabrique/password_file
+            cat >> ~/fabrique-chatbot-back/ansible/fabrique/password_file << 'END'
+            ${{ steps.vault_password.outputs.value }}
+            END
+            ansible-vault decrypt --vault-password-file ~/fabrique-chatbot-back/ansible/fabrique/password_file ${{ steps.env_file.outputs.value }}
+            mv ${{ steps.env_file.outputs.value }} ~/fabrique-chatbot-back/ansible/fabrique/.env
+            ansible-playbook ~/fabrique-chatbot-back/ansible/fabrique/backserver.yml --vault-password-file ~/fabrique-chatbot-back/ansible/fabrique/password_file
 
       - name: delete tmp dir
         uses: appleboy/ssh-action@master
