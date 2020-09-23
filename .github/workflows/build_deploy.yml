@@ -23,7 +23,7 @@ jobs:
       - uses: haya14busa/action-cond@v1
         id: host
         with:
-          cond: ${{ env.ENVIRONMENT == 'prod' }}
+          cond: ${{ env.ENVIRONMENT == 'dev' }}
           if_true: ${{ secrets.PROD_IP }}
           if_false: ${{ secrets.DEV_IP }}
 
