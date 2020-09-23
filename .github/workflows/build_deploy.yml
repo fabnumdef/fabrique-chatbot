@@ -23,37 +23,44 @@ jobs:
       - uses: haya14busa/action-cond@v1
         id: host
         with:
-          cond: ${{ env.ENVIRONMENT == 'dev' }}
+          cond: ${{ env.ENVIRONMENT == 'prod' }}
           if_true: ${{ secrets.PROD_IP }}
           if_false: ${{ secrets.DEV_IP }}
 
       - uses: haya14busa/action-cond@v1
         id: vault_password
         with:
-          cond: ${{ env.ENVIRONMENT == 'dev' }}
+          cond: ${{ env.ENVIRONMENT == 'prod' }}
           if_true: ${{ secrets.PROD_VAULT_PASSWORD }}
           if_false: ${{ secrets.DEV_VAULT_PASSWORD }}
 
       - uses: haya14busa/action-cond@v1
         id: user_password
         with:
-          cond: ${{ env.ENVIRONMENT == 'dev' }}
+          cond: ${{ env.ENVIRONMENT == 'prod' }}
           if_true: ${{ secrets.PROD_USER_PASSWORD }}
           if_false: ${{ secrets.DEV_USER_PASSWORD }}
 
       - uses: haya14busa/action-cond@v1
         id: db_password
         with:
-          cond: ${{ env.ENVIRONMENT == 'dev' }}
+          cond: ${{ env.ENVIRONMENT == 'prod' }}
           if_true: ${{ secrets.PROD_DB_PASSWORD }}
           if_false: ${{ secrets.DEV_DB_PASSWORD }}
 
       - uses: haya14busa/action-cond@v1
         id: env_file
         with:
-          cond: ${{ env.ENVIRONMENT == 'dev' }}
+          cond: ${{ env.ENVIRONMENT == 'prod' }}
           if_true: ~/fabrique-chatbot-back/ansible/fabrique/.env.prod
           if_false: ~/fabrique-chatbot-back/ansible/fabrique/.env.dev
+
+      - uses: haya14busa/action-cond@v1
+        id: domain
+        with:
+          cond: ${{ env.ENVIRONMENT == 'prod' }}
+          if_true: chatbot.fabnum.fr
+          if_false: chatbot.d.fabnum.fr
 
       - name: copy app via ssh key
         uses: appleboy/scp-action@master
@@ -95,15 +102,15 @@ jobs:
             END
             ansible-vault decrypt --vault-password-file ~/fabrique-chatbot-back/ansible/fabrique/password_file ${{ steps.env_file.outputs.value }}
             mv ${{ steps.env_file.outputs.value }} ~/fabrique-chatbot-back/ansible/fabrique/.env
-            ansible-playbook ~/fabrique-chatbot-back/ansible/fabrique/backserver.yml --vault-password-file ~/fabrique-chatbot-back/ansible/fabrique/password_file --extra-vars '{"DB_PASSWORD":$'"${{ steps.db_password.outputs.value }}"',"USER_PASSWORD":$'"${{ steps.user_password.outputs.value }}"'}'
+            ansible-playbook ~/fabrique-chatbot-back/ansible/fabrique/backserver.yml --vault-password-file ~/fabrique-chatbot-back/ansible/fabrique/password_file --extra-vars 'DB_PASSWORD='${{ steps.db_password.outputs.value }}' USER_PASSWORD='${{ steps.user_password.outputs.value }}' DOMAIN='${{ steps.domain.outputs.value }}''
 
-#      - name: delete tmp dir
-#        uses: appleboy/ssh-action@master
-#        env:
-#          HOST: '${{ steps.host.outputs.value }}'
-#          USERNAME: fab_user
-#          PORT: 22
-#          KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-#        with:
-#          script:
-#            rm -rf ~/fabrique-chatbot-back
+      - name: delete tmp dir
+        uses: appleboy/ssh-action@master
+        env:
+          HOST: '${{ steps.host.outputs.value }}'
+          USERNAME: fab_user
+          PORT: 22
+          KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+        with:
+          script:
+            rm -rf ~/fabrique-chatbot-back

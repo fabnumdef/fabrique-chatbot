@@ -14,7 +14,6 @@
     - nestDir: 'fabrique-chatbot-back'
     - angularDir: 'fabrique-chatbot-front'
     - ansible_become_pass: "{{ USER_PASSWORD }}"
-    - devDomain: 'chatbot.d.fabnum.fr'
 
   tasks:
     - name: Update and upgrade apt packages
@@ -92,7 +91,7 @@
     - name: Install SSL certificate
       become: yes
       command:
-        cmd: 'certbot --nginx -d {{ devDomain }} -n --redirect --agree-tos -m vincent.laine@beta.gouv.fr'
+        cmd: 'certbot --nginx -d {{ DOMAIN }} -n --redirect --agree-tos -m vincent.laine@beta.gouv.fr'
 
     - name: Update nginx site conf to use http2
       become: true
