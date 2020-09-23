@@ -52,6 +52,9 @@
           - certbot
           - python-certbot-nginx
           - redis-server
+          - python-pip
+          - python3-venv
+          - python3-pip
 
     - name: Install last version of pip
       become: true
