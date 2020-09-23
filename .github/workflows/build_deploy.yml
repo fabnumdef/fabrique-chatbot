@@ -30,28 +30,28 @@ jobs:
       - uses: haya14busa/action-cond@v1
         id: vault_password
         with:
-          cond: ${{ env.ENVIRONMENT == 'prod' }}
+          cond: ${{ env.ENVIRONMENT == 'dev' }}
           if_true: ${{ secrets.PROD_VAULT_PASSWORD }}
           if_false: ${{ secrets.DEV_VAULT_PASSWORD }}
 
       - uses: haya14busa/action-cond@v1
         id: user_password
         with:
-          cond: ${{ env.ENVIRONMENT == 'prod' }}
+          cond: ${{ env.ENVIRONMENT == 'dev' }}
           if_true: ${{ secrets.PROD_USER_PASSWORD }}
           if_false: ${{ secrets.DEV_USER_PASSWORD }}
 
       - uses: haya14busa/action-cond@v1
         id: db_password
         with:
-          cond: ${{ env.ENVIRONMENT == 'prod' }}
+          cond: ${{ env.ENVIRONMENT == 'dev' }}
           if_true: ${{ secrets.PROD_DB_PASSWORD }}
           if_false: ${{ secrets.DEV_DB_PASSWORD }}
 
       - uses: haya14busa/action-cond@v1
         id: env_file
         with:
-          cond: ${{ env.ENVIRONMENT == 'prod' }}
+          cond: ${{ env.ENVIRONMENT == 'dev' }}
           if_true: ~/fabrique-chatbot-back/ansible/fabrique/.env.prod
           if_false: ~/fabrique-chatbot-back/ansible/fabrique/.env.dev
 
@@ -95,7 +95,7 @@ jobs:
             END
             ansible-vault decrypt --vault-password-file ~/fabrique-chatbot-back/ansible/fabrique/password_file ${{ steps.env_file.outputs.value }}
             mv ${{ steps.env_file.outputs.value }} ~/fabrique-chatbot-back/ansible/fabrique/.env
-            ansible-playbook ~/fabrique-chatbot-back/ansible/fabrique/backserver.yml --vault-password-file ~/fabrique-chatbot-back/ansible/fabrique/password_file --extra-vars '{"DB_PASSWORD":${{ steps.db_password.outputs.value }},"USER_PASSWORD":${{ steps.user_password.outputs.value }}}'
+            ansible-playbook ~/fabrique-chatbot-back/ansible/fabrique/backserver.yml --vault-password-file ~/fabrique-chatbot-back/ansible/fabrique/password_file --extra-vars '{"DB_PASSWORD":"${{ steps.db_password.outputs.value }}","USER_PASSWORD":"${{ steps.user_password.outputs.value }}"}'
 
       - name: delete tmp dir
         uses: appleboy/ssh-action@master
