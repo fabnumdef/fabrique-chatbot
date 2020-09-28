@@ -30,5 +30,15 @@
     & > *:not(:last-child) {
       margin-right: 15px;
     }
+
+    .chatbot-button {
+      transition: 0.25s;
+    }
+
+    .chatbot-button:hover {
+      color: $white;
+      background-color: $primary-color;
+      transition: 0.25s;
+    }
   }
 }
