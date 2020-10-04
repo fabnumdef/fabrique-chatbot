@@ -10,29 +10,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Set env to dev
-          if: endsWith(github.ref, '/develop')
-          run: |
-            echo "::set-env name=ENVIRONMENT::dev"
+        if: endsWith(github.ref, '/develop')
+        run: |
+          echo "::set-env name=ENVIRONMENT::dev"
       - name: Set env to prod
         if: endsWith(github.ref, '/master')
         run: |
           echo "::set-env name=ENVIRONMENT::prod"
 
       - uses: actions/checkout@v1
-      - uses: actions/setup-node@v1 #this installs node and npm for us
-        with:
-          node-version: '10.x'
-
-      - uses: actions/cache@v1 # this allows for re-using node_modules caching, making builds a bit faster.
-        with:
-          path: ~/.npm
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-
-
-      - run: npm install #TODO: --only-prod, le build crash à voir pq
-      - run: npm install -g @angular/cli > /dev/null
-      - run: npm run build:dev
 
       - uses: haya14busa/action-cond@v1
         id: host
@@ -47,6 +33,21 @@ jobs:
           cond: ${{ env.ENVIRONMENT == 'prod' }}
           if_true: ${{ secrets.PROD_USER_PASSWORD }}
           if_false: ${{ secrets.DEV_USER_PASSWORD }}
+
+      - uses: actions/setup-node@v1 #this installs node and npm for us
+        with:
+          node-version: '10.x'
+
+      - uses: actions/cache@v1 # this allows for re-using node_modules caching, making builds a bit faster.
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      - run: npm install #TODO: --only-prod, le build crash à voir pq
+      - run: npm install -g @angular/cli > /dev/null
+      - run: npm run build:dev
 
       - name: copy app via ssh key
         uses: appleboy/scp-action@master
