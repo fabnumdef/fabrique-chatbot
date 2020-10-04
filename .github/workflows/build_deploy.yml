@@ -10,9 +10,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Set env to dev
-          if: endsWith(github.ref, '/develop')
-          run: |
-            echo "::set-env name=ENVIRONMENT::dev"
+        if: endsWith(github.ref, '/develop')
+        run: |
+          echo "::set-env name=ENVIRONMENT::dev"
       - name: Set env to prod
         if: endsWith(github.ref, '/master')
         run: |
