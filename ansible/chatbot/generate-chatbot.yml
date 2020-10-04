@@ -110,7 +110,7 @@
       pip:
         executable: pip3
         name:
-          - rasa==2.0.0a1
+          - rasa==2.0.0rc2
           - psycopg2-binary
           - rasa[spacy]
       when: updateRasa
@@ -191,7 +191,7 @@
       become: true
       command:
         chdir: '{{ appsDir }}/{{ botDir }}/'
-        cmd: 'rasa train --augmentation 50'
+        cmd: 'rasa train --augmentation 50 --data domain.yml'
       when: updateRasa
 
     - name: Stop rasa chatbot
