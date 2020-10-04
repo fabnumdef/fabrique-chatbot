@@ -1,0 +1,18 @@
+.confirm-dialog {
+  max-width: 800px;
+  padding: 20px;
+
+  .message {
+    margin: 20px 0;
+  }
+
+  .actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+
+    & > *:not(:last-child) {
+      margin-right: 20px;
+    }
+  }
+}

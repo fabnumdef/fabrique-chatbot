@@ -1,0 +1,53 @@
+@import "src/styles/variables";
+
+.warnings {
+  display: flex;
+  flex-direction: column;
+  width: 90%;
+  margin: auto;
+  height: 100%;
+  overflow: hidden;
+
+  .close {
+    display: flex;
+    width: 100%;
+    justify-content: flex-end;
+
+    .mat-icon {
+      margin-right: inherit;
+    }
+  }
+
+  .title {
+    text-align: center;
+  }
+
+  .details {
+    // 100% - close height - h3 height
+    max-height: calc(100% - 108px);
+    overflow-y: auto;
+    padding: 0 20px;
+
+    .line {
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+      padding: 10px;
+
+      .line-number {
+        color: $accent-color;
+        display: flex;
+        align-items: center;
+        min-width: 100px;
+
+        .mat-icon {
+          margin-right: 5px;
+        }
+      }
+    }
+
+    .mat-divider {
+      margin: 0;
+    }
+  }
+}

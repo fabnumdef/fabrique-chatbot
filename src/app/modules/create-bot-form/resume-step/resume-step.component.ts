@@ -1,8 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { FormArray } from '@angular/forms';
-import { ChatbotConfiguration } from '../../../core/models';
-import { ChatbotService } from '../../../core/services';
-import { ActivatedRoute, Router } from '@angular/router';
+import { FormArray, FormControl, FormGroup } from '@angular/forms';
+import { DomSanitizer } from '@angular/platform-browser';
+import { ChatbotUserRole_Fr } from '@enum/chatbot-user-role.enum';
 
 @Component({
   selector: 'app-resume-step',
@@ -12,25 +11,35 @@ import { ActivatedRoute, Router } from '@angular/router';
 export class ResumeStepComponent implements OnInit {
 
   @Input() formArray: FormArray;
+  @Input() chatbotGenerated: boolean;
+  iconPreview;
+  chatbotUserRole_Fr = ChatbotUserRole_Fr;
 
-  constructor(public chatbotService: ChatbotService,
-              private _router: Router,
-              private _route: ActivatedRoute) {
+  constructor(private _sanitizer: DomSanitizer) {
+  }
+
+  get iconControl(): FormControl {
+    return <FormControl> (<FormGroup> this.formArray.at(2)).controls.icon;
   }
 
   ngOnInit(): void {
-  }
-
-  generateChatbot() {
-    const chatbotConfiguration: ChatbotConfiguration = this.formArray
-      .getRawValue()
-      .reduce((obj1, obj2) => Object.assign(obj1, obj2));
-    this.chatbotService.createChatbot(chatbotConfiguration).subscribe(() => {
-      this._router.navigate(['./success'], {relativeTo: this._route});
-    }, err => {
-      // TODO Delete when BACK is OK
-      this._router.navigate(['./success'], {relativeTo: this._route});
+    this.iconControl.valueChanges.subscribe(() => {
+      this._generateIconPreview();
     });
   }
 
+  private _generateIconPreview() {
+    this.iconPreview = null;
+    const file = this.iconControl.value;
+
+    if (!file) {
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = (_event) => {
+      this.iconPreview = this._sanitizer.bypassSecurityTrustResourceUrl(<string> reader.result);
+    };
+  }
 }

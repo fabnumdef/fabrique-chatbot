@@ -1,20 +1,62 @@
+@import 'src/styles/variables';
+
 button {
+  &.mat-flat-button {
+    height: 38px;
+  }
+
   &.mat-flat-button, &.mat-stroked-button {
     border-radius: 50px;
-    min-width: 180px;
+    border-width: 2px;
 
     &:not([disabled]) {
       border-color: currentColor!important;
     }
+
+    &:not(.small) {
+      min-width: 180px;
+    }
   }
 
-  &.mat-button-base .mat-button-wrapper {
+  &.mat-button-base:not(.mat-icon-button) .mat-button-wrapper {
     display: flex;
     align-items: center;
     justify-content: center;
 
     .mat-icon {
       margin-right: 5px;
+    }
+  }
+
+  &.mat-button.chatbot-button {
+    font-family: $title-font;
+    font-size: 16px;
+    color: #000;
+    padding-left: 0;
+    $icon-height: 36px;
+
+    .mat-icon {
+      margin-right: 15px;
+      background-color: #F1EFF1;
+      min-height: $icon-height;
+      min-width: $icon-height;
+      line-height: $icon-height;
+      border-radius: $border-radius;
+      font-size: 20px;
+    }
+
+    .mat-button-wrapper {
+      justify-content: flex-start;
+      line-height: $icon-height;
+    }
+
+    &.mat-primary {
+      color: $primary-color;
+
+      .mat-icon {
+        background-color: $primary-color;
+        color: $white;
+      }
     }
   }
 }

@@ -27,17 +27,35 @@ export class ErrorInterceptor implements HttpInterceptor {
   }
 
   private handleErrorResponse(err: HttpErrorResponse) {
-    this.showBackendMessage(err);
+    this._showBackendMessage(err);
     if (err.status === 401) {
       // Clear session information as they are outdated
       sessionStorage.clear();
-      this._router.navigate(['/login']);
+      this._router.navigate(['/auth/login']);
     }
   }
 
-  private showBackendMessage(err: HttpErrorResponse): void {
+  private _showBackendMessage(err: HttpErrorResponse): void {
     const error: Error = err.error;
-    const messageToShow = (error && error.message) ? error.message : 'Une erreur est survenue';
+    const messageToShow = (error && error.message) ? this._generateErrorMessage(error.message) : 'Une erreur est survenue';
     this._toastr.error(messageToShow);
+  }
+
+  private _generateErrorMessage(errorMessage: any): string {
+    if (typeof errorMessage === 'string') {
+      return <string> errorMessage;
+    }
+    if (errorMessage instanceof Array) {
+      let messageToReturn = '';
+      errorMessage.forEach(e => {
+        const keys = Object.keys(e.constraints);
+        keys.forEach(k => {
+          messageToReturn += e.constraints[k];
+          messageToReturn += '.';
+        });
+      });
+      return messageToReturn;
+    }
+    return 'Une erreur est survenue';
   }
 }

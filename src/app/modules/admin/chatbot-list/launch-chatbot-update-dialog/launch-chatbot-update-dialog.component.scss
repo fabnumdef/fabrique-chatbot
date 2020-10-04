@@ -1,0 +1,20 @@
+.update-chatbot {
+  max-width: 800px;
+  padding: 20px;
+
+  form {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px;
+  }
+
+  .actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+
+    & > *:not(:last-child) {
+      margin-right: 20px;
+    }
+  }
+}

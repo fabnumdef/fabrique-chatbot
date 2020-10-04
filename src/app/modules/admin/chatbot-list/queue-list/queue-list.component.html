@@ -1,0 +1,48 @@
+<div class="queue-list">
+
+  <h1>Queue</h1>
+  <mat-divider></mat-divider>
+
+  <div class="table-wrapper">
+    <table mat-table [dataSource]="jobs">
+      <ng-container matColumnDef="id">
+        <th mat-header-cell *matHeaderCellDef>
+          #
+        </th>
+        <td mat-cell *matCellDef="let row">{{row.id}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="name">
+        <th mat-header-cell *matHeaderCellDef>
+          Nom
+        </th>
+        <td mat-cell *matCellDef="let row">{{row.name}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="chatbotId">
+        <th mat-header-cell *matHeaderCellDef>
+          Chatbot ID
+        </th>
+        <td mat-cell *matCellDef="let row">{{row.data.chatbotId ? row.data.chatbotId : row.data.chatbot.id}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="createdAt">
+        <th mat-header-cell *matHeaderCellDef>
+          Crée le
+        </th>
+        <td mat-cell *matCellDef="let row">{{row.timestamp | date:'dd/MM/yyyy HH:mm:ss'}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="launchedAt">
+        <th mat-header-cell *matHeaderCellDef>
+          Commencé le
+        </th>
+        <td mat-cell *matCellDef="let row">{{row.processedOn | date:'dd/MM/yyyy HH:mm:ss'}}</td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+    <mat-progress-bar mode="indeterminate" *ngIf="loading$ | async"></mat-progress-bar>
+  </div>
+</div>

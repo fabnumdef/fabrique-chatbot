@@ -1,9 +1,10 @@
 import { RouterModule, Routes } from '@angular/router';
 import { NgModule } from '@angular/core';
-import { AuthenticatedLayoutComponent } from './core/components/authenticated-layout/authenticated-layout.component';
-import { NotAuthenticatedLayoutComponent } from './core/components/not-authenticated-layout/not-authenticated-layout.component';
-import { AuthGuard } from './core/guards/auth.guard';
-
+import { AuthenticatedLayoutComponent } from '@core/components/authenticated-layout/authenticated-layout.component';
+import { NotAuthenticatedLayoutComponent } from '@core/components/not-authenticated-layout/not-authenticated-layout.component';
+import { AuthGuard } from '@guard/auth.guard';
+import { RoleGuard } from '@guard/role.guard';
+import { UserRole } from '@enum/user-role.enum';
 
 const routes: Routes = [
   {
@@ -11,14 +12,26 @@ const routes: Routes = [
     loadChildren: () => import('./modules/home/home.module').then(m => m.HomeModule)
   },
   {
+    path: 'mentions-legales',
+    loadChildren: () => import('./modules/legal-mention/legal-mention.module').then(m => m.LegalMentionModule)
+  },
+  {
     path: '',
     component: AuthenticatedLayoutComponent,
-    // canActivate: [AuthGuard],
-    // canActivateChild: [AuthGuard],
+    canActivate: [AuthGuard],
+    canActivateChild: [AuthGuard],
     children: [
       {
         path: 'create',
         loadChildren: () => import('./modules/create-bot-form/create-bot-form.module').then(m => m.CreateBotFormModule)
+      },
+      {
+        path: 'admin',
+        loadChildren: () => import('./modules/admin/admin.module').then(m => m.AdminModule),
+        canActivate: [RoleGuard],
+        data: {
+          expectedRole: UserRole.admin
+        }
       },
       {
         path: 'ui',
@@ -29,6 +42,8 @@ const routes: Routes = [
   {
     path: '',
     component: NotAuthenticatedLayoutComponent,
+    canActivate: [AuthGuard],
+    canActivateChild: [AuthGuard],
     children: [
       {
         path: 'auth',
@@ -45,4 +60,5 @@ const routes: Routes = [
   ],
   exports: [RouterModule]
 })
-export class AppRoutingModule { }
+export class AppRoutingModule {
+}

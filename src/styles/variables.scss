@@ -6,7 +6,26 @@ COLORS
 $primary-color: map-get($chatbot-primary, 500);
 $accent-color: map-get($chatbot-accent, 500);
 $white: #ffffff;
+$grey: #8E8E8E;
 $grey-lighter: #f7f7f7;
 $grey-light: #d4d4d4;
 
-$title-font: 'Gilroy';
+$primary-color-50: map-get($chatbot-primary, 50);
+$primary-color-100: map-get($chatbot-primary, 100);
+$primary-color-200: map-get($chatbot-primary, 200);
+$primary-color-300: map-get($chatbot-primary, 300);
+$error-color: map-get($chatbot-warn, 500);
+
+$shadow-uniform: 0 0 10px -3px rgba(110,145,240,0.3);
+
+$title-font: 'Gilroy', sans-serif;
+
+/**
+INPUTS
+ */
+
+$input-height: 52px;
+$input-border-color: rgba(0, 0, 0, 0.12);
+$input-border-color-hover: rgba(0, 0, 0, 0.87);
+
+$border-radius: 4px;

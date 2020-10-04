@@ -1,4 +1,37 @@
 @import '~ngx-toastr/toastr';
+@import 'src/styles/variables';
+/* Roboto regular */
+
+@font-face {
+  font-family: 'Roboto';
+  src: url('assets/fonts/Roboto/Roboto-Regular.woff2') format('woff2'),
+  url('assets/fonts/Roboto/Roboto-Regular.woff') format('woff');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Roboto italic */
+
+@font-face {
+  font-family: 'Roboto';
+  src: url('assets/fonts/Roboto/Roboto-Italic.woff2') format('woff2'),
+  url('assets/fonts/Roboto/Roboto-Italic.woff') format('woff');
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+
+/* Roboto bold */
+
+@font-face {
+  font-family: 'Roboto';
+  src: url('assets/fonts/Roboto/Roboto-Bold.woff2') format('woff2'),
+  url('assets/fonts/Roboto/Roboto-Bold.woff') format('woff');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
 
 @font-face {
   font-family: 'Gilroy';
@@ -6,7 +39,70 @@
   url('assets/fonts/Gilroy-ExtraBold/Gilroy-ExtraBold.woff') format('woff');
   font-weight: 800;
   font-style: normal;
+  font-display: swap;
+}
+
+/* Material icons */
+@font-face {
+  font-family: 'Material Icons Outlined';
+  font-style: normal;
+  font-weight: 400;
+  src: url('assets/fonts/Material-Icons/material-icons-outlined.woff2') format('woff2');
+}
+
+.material-icons-outlined {
+  font-family: 'Material Icons Outlined';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  display: inline-block;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  -webkit-font-smoothing: antialiased;
+}
+
+.material-icons {
+  font-family: 'Material Icons Outlined', sans-serif;
+  font-size: 24px;
+  line-height: 1;
 }
 
 html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+
+  &::-webkit-scrollbar {
+    width: 10px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background-color: rgba(0, 0, 0, 0.2);
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 0, 0, 0.2);
+  }
+}
+
+.red {
+  color: $error-color;
+}
+
+.chatbot-info {
+  padding: 10px;
+  border: 1px solid $primary-color;
+  color: $primary-color;
+  display: flex;
+  align-items: center;
+  border-radius: $border-radius;
+  box-sizing: border-box;
+
+  .mat-icon {
+    margin-right: 10px;
+  }
+}

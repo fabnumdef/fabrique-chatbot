@@ -7,9 +7,8 @@ import { RouterModule } from '@angular/router';
 import { ToastrModule } from 'ngx-toastr';
 import { JwtInterceptor } from './interceptors/jwt.interceptor';
 import { ErrorInterceptor } from './interceptors/error.interceptor';
-import { HeaderComponent } from './components/header/header.component';
-import { FooterComponent } from './components/footer/footer.component';
 import { MaterialModule } from '../modules/material/material.module';
+import { SharedModule } from '../modules/shared/shared.module';
 
 @NgModule({
   imports: [
@@ -17,13 +16,12 @@ import { MaterialModule } from '../modules/material/material.module';
     HttpClientModule,
     RouterModule,
     ToastrModule.forRoot(),
-    MaterialModule
+    MaterialModule,
+    SharedModule
   ],
   declarations: [
   AuthenticatedLayoutComponent,
-  NotAuthenticatedLayoutComponent,
-  HeaderComponent,
-  FooterComponent],
+  NotAuthenticatedLayoutComponent],
   providers: [
     {provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true},
     {provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true}

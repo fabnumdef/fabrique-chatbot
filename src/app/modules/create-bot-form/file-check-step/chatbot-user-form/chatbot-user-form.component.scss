@@ -1,0 +1,19 @@
+.chatbot-user-form {
+  form {
+    display: flex;
+    flex-wrap: wrap;
+
+    .mat-form-field {
+      width: 50%;
+      box-sizing: border-box;
+
+      &:nth-child(2n) {
+        padding-left: 10px;
+      }
+
+      &:nth-child(2n+1) {
+        padding-right: 10px;
+      }
+    }
+  }
+}

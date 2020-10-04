@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { UserService } from '@service/user.service';
+import { User } from '@model/user.model';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-sign-up',
@@ -13,7 +16,9 @@ export class SignUpComponent implements OnInit {
 
   constructor(private _fb: FormBuilder,
               private _router: Router,
-              private _route: ActivatedRoute) { }
+              private _route: ActivatedRoute,
+              private _userService: UserService) {
+  }
 
   ngOnInit() {
     this.initSignUpForm();
@@ -24,8 +29,12 @@ export class SignUpComponent implements OnInit {
   }
 
   signUp() {
-    // CALL TO SERVICE /auth/signup ? with form value
-    this._router.navigate(['./success'], {relativeTo: this._route, state: {email: 'vincent@laine.xyz'}});
+    if (!this.signUpForm.valid) {
+      return;
+    }
+    this._userService.create(this.signUpForm.getRawValue()).subscribe((user: User) => {
+      this._router.navigate(['./success'], {relativeTo: this._route, state: {email: user.email}});
+    });
   }
 
   /**
@@ -34,10 +43,15 @@ export class SignUpComponent implements OnInit {
 
   private initSignUpForm() {
     this.signUpForm = this._fb.group({
-      firstName: ['', Validators.required],
-      lastName: ['', Validators.required],
-      email: ['', [Validators.required, Validators.email]],
-      description: ['', Validators.required],
+      firstName: ['', [Validators.required, Validators.maxLength(50)]],
+      lastName: ['', [Validators.required, Validators.maxLength(50)]],
+      email: ['', [
+        Validators.required,
+        environment.production ? Validators.pattern('^[A-Za-z0-9._%+-]+@([A-Za-z0-9._%+-]*\\.)?gouv\\.fr$') : Validators.email,
+        Validators.maxLength(200)
+      ]],
+      chatbotTheme: ['', [Validators.required, Validators.maxLength(50)]],
+      acceptCGU: [false, [Validators.requiredTrue]],
     });
   }
 

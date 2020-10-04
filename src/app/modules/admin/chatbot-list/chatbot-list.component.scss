@@ -1,0 +1,16 @@
+.chatbot-list {
+  .table-wrapper {
+    margin-top: 20px;
+
+    .mat-table {
+      width: 100%;
+
+      .mat-column-actions {
+
+        & > * :not(:last-child) {
+          margin-right: 10px;
+        }
+      }
+    }
+  }
+}

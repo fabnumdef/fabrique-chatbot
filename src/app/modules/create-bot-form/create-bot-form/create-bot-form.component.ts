@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ChatbotConfiguration } from '@model/chatbot-configuration.model';
+import { ChatbotService } from '@service/chatbot.service';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-create-bot-form',
@@ -9,8 +12,11 @@ import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 export class CreateBotFormComponent implements OnInit {
 
   createBotForm: FormGroup;
+  chatbotGenerated = false;
 
-  constructor(private _fb: FormBuilder) {
+  constructor(public chatbotService: ChatbotService,
+              private _fb: FormBuilder,
+              private _toast: ToastrService) {
   }
 
   ngOnInit(): void {
@@ -19,6 +25,16 @@ export class CreateBotFormComponent implements OnInit {
 
   get formArray(): FormArray | null {
     return <FormArray> this.createBotForm.get('formArray');
+  }
+
+  generateChatbot() {
+    const chatbotConfiguration: ChatbotConfiguration = this.formArray
+      .getRawValue()
+      .reduce((obj1, obj2) => Object.assign(obj1, obj2));
+    console.log(chatbotConfiguration);
+    this.chatbotService.createChatbot(chatbotConfiguration).subscribe(() => {
+      this.chatbotGenerated = true;
+    });
   }
 
   /**
@@ -30,12 +46,20 @@ export class CreateBotFormComponent implements OnInit {
       formArray: this._fb.array([
         this._fb.group({
           file: ['', Validators.required],
+          intraDef: [false, Validators.required],
+          domainName: ['', [Validators.required, Validators.maxLength(50), Validators.pattern('^[a-z-]+$')]],
+          users: this._fb.array([])
         }),
         this._fb.group({
-          name: ['', Validators.required],
+          problematic: ['', [Validators.required, Validators.maxLength(200)]],
+          audience: ['', [Validators.required, Validators.maxLength(200)]],
+        }),
+        this._fb.group({
+          name: ['', [Validators.required, Validators.maxLength(50)]],
+          function: ['', [Validators.maxLength(50)]],
           icon: [null, Validators.required],
-          primaryColor: ['#207fef', Validators.required],
-          secondaryColor: ['#e20613', Validators.required],
+          primaryColor: ['#6e91f0', [Validators.required, Validators.maxLength(20)]],
+          secondaryColor: ['#eef2fd', [Validators.required, Validators.maxLength(20)]],
         }),
       ])
     });

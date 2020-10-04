@@ -1,0 +1,76 @@
+@import 'src/styles/variables';
+
+.resume {
+  .info-block {
+    margin-top: 20px;
+    background-color: $white;
+    padding: 20px;
+
+    .mat-divider {
+      margin: 10px 0;
+    }
+
+    .label {
+      margin-bottom: 10px;
+      font-weight: bold;
+    }
+
+    .value {
+      color: $grey;
+    }
+
+    .icon {
+      width:60px;
+      height: 60px;
+      overflow: hidden;
+      border-radius: $border-radius;
+      background-color: $grey-lighter;
+
+      img {
+        width: 60px;
+        height: auto;
+      }
+    }
+
+    .color-wrapper {
+      display: flex;
+      align-items: center;
+      margin-bottom: 5px;
+
+      & > *:nth-child(1) {
+        width: 100px;
+      }
+
+      & > *:nth-child(2) {
+        width: 20px;
+        height: 20px;
+        border-radius: 100px;
+      }
+    }
+  }
+
+  .success-tab {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: 800px;
+    margin: auto;
+
+    $icon-size: 60px;
+    & > .mat-icon {
+      width: $icon-size;
+      height: $icon-size;
+      font-size: $icon-size;
+    }
+
+    .mat-divider {
+      margin: 20px 0;
+      width: 100%;
+    }
+
+    & > div {
+      display: flex;
+      align-items: center;
+    }
+  }
+}
