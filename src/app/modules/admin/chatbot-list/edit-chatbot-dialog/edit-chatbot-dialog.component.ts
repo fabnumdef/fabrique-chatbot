@@ -35,6 +35,7 @@ export class EditChatbotDialogComponent implements OnInit {
     this.updateChatbotFormGroup = this._fb.group({
       status: [this.chatbot.status, Validators.required],
       name: [this.chatbot.name, [Validators.maxLength(50)]],
+      rootUser: [null, [Validators.maxLength(200)]],
       rootPassword: [null, [Validators.maxLength(200)]],
       ipAdress: [this.chatbot.ipAdress ? this.chatbot.ipAdress : null,
         [Validators.pattern(this.ipAdressPattern), Validators.maxLength(50)]],

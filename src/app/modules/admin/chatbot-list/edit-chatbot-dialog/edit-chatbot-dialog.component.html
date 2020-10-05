@@ -39,6 +39,18 @@
         </mat-form-field>
 
         <mat-form-field appearance="outline">
+          <mat-label>Utilisateur root</mat-label>
+          <input matInput
+                 placeholder="Saisir..."
+                 formControlName="rootUser"
+                 maxlength="200"
+                 required>
+          <mat-error *ngIf="controls.rootUser.hasError('required')">
+            Vous n'avez pas saisi d'utilisateur root.
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
           <mat-label>Mot de passe root</mat-label>
           <input matInput
                  placeholder="Saisir..."

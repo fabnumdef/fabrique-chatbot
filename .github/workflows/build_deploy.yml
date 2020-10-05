@@ -47,7 +47,12 @@ jobs:
 
       - run: npm install #TODO: --only-prod, le build crash à voir pq
       - run: npm install -g @angular/cli > /dev/null
+
       - run: npm run build:dev
+        if: ${{ env.ENVIRONMENT != 'prod' }}
+
+      - run: npm run build:prod
+        if: ${{ env.ENVIRONMENT == 'prod' }}
 
       - name: copy app via ssh key
         uses: appleboy/scp-action@master
