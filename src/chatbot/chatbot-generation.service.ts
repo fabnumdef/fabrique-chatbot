@@ -186,6 +186,10 @@ export class ChatbotGenerationService {
     configForm.append('secondaryColor', chatbot.secondary_color);
     configForm.append('problematic', chatbot.problematic);
     configForm.append('audience', chatbot.audience);
+    headers = {
+      ...configForm.getHeaders(),
+      ...{Authorization: `Bearer ${token}`},
+    };
     await this._http.post(`http://${chatbot.ip_adress}/api/config`, configForm, {headers: headers}).toPromise().then();
 
     // Train Rasa

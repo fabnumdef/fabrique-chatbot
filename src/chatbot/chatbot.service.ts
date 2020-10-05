@@ -116,8 +116,8 @@ export class ChatbotService {
           status: ChatbotStatus.creation
         });
       case ChatbotStatus.creation:
-        if (!chatbot.intra_def && (!updateChatbot.ipAdress || !updateChatbot.rootPassword)) {
-          throw new HttpException(`L'adresse IP du VPS et le password root sont obligatoires pour changer de statut.`, HttpStatus.INTERNAL_SERVER_ERROR);
+        if (!chatbot.intra_def && (!updateChatbot.ipAdress || !updateChatbot.rootPassword || !updateChatbot.rootUser)) {
+          throw new HttpException(`L'adresse IP du VPS, l'user root et le password root sont obligatoires pour changer de statut.`, HttpStatus.INTERNAL_SERVER_ERROR);
         }
         await this._generateChatbot(chatbot, updateChatbot);
         return this.findAndUpdate(chatbot.id, {
@@ -208,6 +208,9 @@ export class ChatbotService {
     if (!templateFile.find(t => t.id === 'phrase_hors_sujet')) {
       this._addMessage(templateFileCheckResume.errors, -2, `La phrase d'hors sujet n'est pas renseignée (id: phrase_hors_sujet).`);
     }
+    if (!templateFile.find(t => t.id === 'phrase_feedback')) {
+      this._addMessage(templateFileCheckResume.errors, -2, `La phrase de feedback n'est pas renseignée (id: phrase_feedback).`);
+    }
     templateFile.forEach((excelRow: TemplateFileDto, index: number) => {
       const excelIndex = index + 2;
       // ERRORS
@@ -238,7 +241,7 @@ export class ChatbotService {
         }
         // Si il n'y a pas de question principale, c'est censé être une suite de réponse (et donc avoir une question principale relié ou un lien vers cet id)
       } else {
-        const excludedIds = ['phrase_presentation', 'phrase_hors_sujet'];
+        const excludedIds = ['phrase_presentation', 'phrase_hors_sujet', 'phrase_feedback'];
         const mainQuestion = templateFile.find(t =>
           (t.id === excelRow.id && !!t.main_question) || (t.response && t.response.includes(`<${excelRow.id}>`))
         );
@@ -289,6 +292,7 @@ export class ChatbotService {
     const credentials = {
       USER_PASSWORD: userPassword,
       DB_PASSWORD: dbPassword,
+      ROOT_USER: updateChatbot.rootUser,
       ROOT_PASSWORD: updateChatbot.rootPassword
     };
 

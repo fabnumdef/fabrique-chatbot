@@ -12,6 +12,11 @@ export class UpdateChatbotDto {
   @IsString()
   @IsOptional()
   @MaxLength(200)
+  rootUser: string;
+
+  @IsString()
+  @IsOptional()
+  @MaxLength(200)
   rootPassword: string;
 
   @IsString()

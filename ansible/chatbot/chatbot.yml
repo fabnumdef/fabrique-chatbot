@@ -12,6 +12,8 @@
     - appsDir: '/var/www/'
     - rasaDir: 'rasa-chatbot'
     - ansible_become_pass: "{{ USER_PASSWORD }}"
+    - NODEJS_VERSION: "12"
+    - ansible_distribution_release: "xenial" #trusty
 
   tasks:
     - name: Update and upgrade apt packages
@@ -27,9 +29,18 @@
           - curl
           - software-properties-common
 
-    - name: Node get packages
-      command: curl -sL https://deb.nodesource.com/setup_12.x | sudo bash -
+    - name: Install the gpg key for nodejs LTS
       become: yes
+      apt_key:
+        url: "https://deb.nodesource.com/gpgkey/nodesource.gpg.key"
+        state: present
+
+    - name: Install the nodejs LTS repos
+      become: yes
+      apt_repository:
+        repo: "deb https://deb.nodesource.com/node_{{ NODEJS_VERSION }}.x {{ ansible_distribution_release }} main"
+        state: present
+        update_cache: yes
 
     - name: Install required dependencies (python, ssl, postgresql, node ...)
       become: true
@@ -75,9 +86,9 @@
           - psycopg2-binary
           - rasa[spacy]
 
-    - name: Install Spacy
-      become: yes
-      shell: python3 -m spacy download fr_core_news_md && python3 -m spacy link fr_core_news_md fr
+#    - name: Install Spacy
+#      become: yes
+#      shell: python3 -m spacy download fr_core_news_md && python3 -m spacy link fr_core_news_md fr
 
     - name: NODE | Install pm2
       become: yes
