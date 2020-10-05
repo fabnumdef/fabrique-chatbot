@@ -68,7 +68,7 @@ jobs:
           timeout: 240s
 
       - name: copy ansible scripts via ssh key
-        uses: appleboy/scp-actioter
+        uses: appleboy/scp-action@master
         env:
           HOST: '${{ steps.host.outputs.value }}'
           USERNAME: fab_user
