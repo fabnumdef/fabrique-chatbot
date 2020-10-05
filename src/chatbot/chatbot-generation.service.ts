@@ -179,7 +179,7 @@ export class ChatbotGenerationService {
 
     // Import config
     const configForm = new FormData();
-    configForm.append('icon', Buffer.from(icon.buffer), chatbot.icon);
+    configForm.append('file', Buffer.from(icon.buffer), icon.originalname);
     configForm.append('name', chatbot.name);
     configForm.append('function', chatbot.function);
     configForm.append('primaryColor', chatbot.primary_color);
