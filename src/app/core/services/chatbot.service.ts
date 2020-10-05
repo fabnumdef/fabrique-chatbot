@@ -54,7 +54,6 @@ export class ChatbotService {
 
   updateChatbot(chatbotId: number, body: ChatbotUpdate) {
     this._loading$.next(true);
-    console.log(body);
     return this._http.put<any>(`${this._adminUrl}/${chatbotId}`, body).pipe(
       finalize(() => {
         this._loading$.next(false);
