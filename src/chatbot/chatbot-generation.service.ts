@@ -71,7 +71,7 @@ export class ChatbotGenerationService {
         MAIL_PORT: process.env.MAIL_PORT,
         MAIL_USER: process.env.MAIL_USER,
         MAIL_PASSWORD: process.env.MAIL_PASSWORD,
-        HOST_URL: chatbot.domain_name ? `https://${chatbot.domain_name}.chatbot.fabnum.fr` : `http://${chatbot.ip_adress}`
+        HOST_URL: chatbot.domain_name ? `https://${chatbot.domain_name}` : `http://${chatbot.ip_adress}`
       }};
     fs.writeFileSync(`${this._appDir}/chatbot/.env`, jsonToDotenv(dotenv), 'utf8');
     await execShellCommand(`ansible-vault encrypt --vault-password-file fabrique/password_file chatbot/.env`, `${this._appDir}`).then();
@@ -139,11 +139,6 @@ export class ChatbotGenerationService {
 
     // Create first admin user
     await this._http.post(`http://${chatbot.ip_adress}/api/user/admin`, userToCreate).toPromise().then();
-    this._mailService.sendEmail(user.email, 'Création de compte', 'create-chatbot', {
-      firstName: user.first_name,
-      ipAdress: chatbot.ip_adress,
-      password: password
-    });
 
     // Log user
     let token;
@@ -159,11 +154,6 @@ export class ChatbotGenerationService {
       chatbot.users.forEach(chatbotUser => {
         const password = crypto.randomBytes(12).toString('hex');
         this._http.post(`http://${chatbot.ip_adress}/api/user`, {...chatbotUser, ...{password: password}}).toPromise().then();
-        this._mailService.sendEmail(user.email, 'Création de compte', 'create-chatbot', {
-          firstName: user.first_name,
-          ipAdress: chatbot.ip_adress,
-          password: password
-        });
       });
     }
 
