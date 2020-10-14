@@ -1,10 +1,12 @@
-<div class="chatbot-user-form">
+<div class="chatbot-user-form"
+     data-cy="UserForm">
   <form [formGroup]="chatbotUserForm" *ngIf="chatbotUserForm">
     <mat-form-field appearance="outline">
       <mat-label>Prénom</mat-label>
       <input matInput
              placeholder="Saisir..."
              formControlName="firstName"
+             data-cy="FirstNameInput"
              maxlength="50"
              required>
       <mat-error *ngIf="controls.firstName.hasError('required')">
@@ -20,6 +22,7 @@
       <input matInput
              placeholder="Saisir..."
              formControlName="lastName"
+             data-cy="LastNameInput"
              maxlength="50"
              required>
       <mat-error *ngIf="controls.lastName.hasError('required')">
@@ -35,6 +38,7 @@
       <input matInput
              placeholder="Saisir..."
              formControlName="email"
+             data-cy="EmailInput"
              maxlength="255"
              required>
       <mat-error *ngIf="controls.email.hasError('required')">
@@ -48,6 +52,7 @@
     <mat-form-field appearance="outline">
       <mat-label>Rôle</mat-label>
       <mat-select formControlName="role"
+                  data-cy="RoleSelector"
                   placeholder="Choisir..."
                   required>
         <mat-option *ngFor="let role of chatbotUserRole" [value]="role">{{ chatbotUserRole_Fr[role] }}</mat-option>

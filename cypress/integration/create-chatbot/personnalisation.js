@@ -1,10 +1,12 @@
 describe('Testing third step of creating bot page', function() {
 
     before(() => {
-      const fixturePath = 'TEMPLATE_CHATBOT-WARNING.xlsx'
+      const fixturePath = 'TEMPLATE_CHATBOT-WARNING.xlsx';
+
       cy.window().then((win) => {
         win.sessionStorage.clear()
       });
+
       cy.visit('/auth/login');
       cy.get('[data-cy=EmailInput]').type(Cypress.env('USER_EMAIL'));
       cy.get('[data-cy=PasswordInput]').type(Cypress.env('USER_PASSWORD'));
@@ -24,8 +26,6 @@ describe('Testing third step of creating bot page', function() {
     });
 
     describe('Chatbot name tests', function() {
-
-
         it('Should have chatbot name input', function() {
             cy.get('[data-cy=ChatbotNameInput]')
             .type('John Doe')
@@ -38,18 +38,15 @@ describe('Testing third step of creating bot page', function() {
     })
 
     describe('Icon input tests', function() {
-
-        const fixturePath = 'logo_fabrique_chatbot.svg';
+        const fixturePath = 'logo_fabrique_chatbot.png';
 
         it('Should have clickable icons', function() {
-
             cy.get('[data-cy=PresetIcon]').click({multiple:true});
             cy.get('[data-cy=SelectedIconWrapper').should('be.visible');
         })
 
 
         it('Should have update icon button', function() {
-
             cy.get('[data-cy=UpdateIconBtn').should('be.visible');
             cy.get('[data-cy=ImportIconInput]').attachFile(fixturePath, { force: true });
             cy.get('[data-cy=SelectedIconWrapper').should('be.visible');
@@ -57,7 +54,6 @@ describe('Testing third step of creating bot page', function() {
         })
 
         it('Should have delete icon button', function() {
-
             cy.get('[data-cy=SelectedIconWrapper').should('be.visible');
             cy.get('[data-cy=DeleteIconBtn]').should('be.visible');
             cy.get('[data-cy=DeleteIconBtn').click();
@@ -65,7 +61,6 @@ describe('Testing third step of creating bot page', function() {
         })
 
         it('Should have upload icon button', function() {
-
             cy.get('[data-cy=SelectedIconWrapper').should('not.exist');
             cy.get('[data-cy=ImportIconBtn]').should('be.visible');
             cy.get('[data-cy=ImportIconInput]').attachFile(fixturePath, { force: true });
@@ -77,8 +72,6 @@ describe('Testing third step of creating bot page', function() {
     })
 
     describe('Color pickers tests', function() {
-
-
         it('Should have primary color input div', function() {
             cy.get('[data-cy=PrimaryPicker]').should('be.visible');
         })

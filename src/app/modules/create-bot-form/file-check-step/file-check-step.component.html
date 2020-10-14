@@ -185,6 +185,7 @@
           <h4>Utilisateur {{ idx + 1 }}</h4>
           <mat-icon (click)="usersFormArray.removeAt(idx)"
                     color="accent"
+                    data-cy="DeleteUserBtn"
                     aria-label="Supprimer l'utilisateur">
             delete
           </mat-icon>
@@ -194,6 +195,7 @@
     </div>
     <button mat-stroked-button
             color="accent"
+            data-cy="AddUserBtn"
             (click)="addUser()"
             [disabled]="!usersFormArray.valid">
       <mat-icon>add</mat-icon> Ajouter un utilisateur

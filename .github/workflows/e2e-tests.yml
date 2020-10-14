@@ -11,15 +11,16 @@ jobs:
       # Install NPM dependencies, cache them correctly
       # and run all Cypress tests
       - name: Cypress run
-        uses: cypress-io/github-action@v1
+        uses: cypress-io/github-action@v2
         with:
           record: true
           start: npm run start:dev
           wait-on: 'http://localhost:4200'
-          wait-on-timeout: 120
+          wait-on-timeout: 180
         env:
           CYPRESS_USER_EMAIL: ${{ secrets.CYPRESS_USER_EMAIL }}
           CYPRESS_USER_PASSWORD: ${{ secrets.CYPRESS_USER_PASSWORD }}
           CYPRESS_ADMIN_EMAIL: ${{ secrets.CYPRESS_ADMIN_EMAIL }}
           CYPRESS_ADMIN_PASSWORD: ${{ secrets.CYPRESS_ADMIN_PASSWORD }}
+          CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
 

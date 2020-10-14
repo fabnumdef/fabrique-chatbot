@@ -18,6 +18,7 @@ describe('Testing the Sign Up page', function() {
       cy.get('[data-cy=LastNameInput]').clear();
       cy.get('[data-cy=EmailInput]').clear();
       cy.get('[data-cy=ThemeInput]').clear();
+      cy.get('[data-cy=CguCheckbox]').find('input').uncheck({force: true});
     })
 
     it('should disable btn if the form is not valid', function() {
@@ -34,6 +35,9 @@ describe('Testing the Sign Up page', function() {
 
       cy.get('[data-cy=EmailInput]').type('bruce.wayne');
       cy.get('[data-cy=SignUpBtn]').should('be.disabled');
+
+      cy.get('[data-cy=CguCheckbox]').find('input').check({force: true});
+      cy.get('[data-cy=SignUpBtn]').should('be.disabled');
     });
 
     it('should stay on sign up page & show error if email already exists', function() {
@@ -41,6 +45,7 @@ describe('Testing the Sign Up page', function() {
       cy.get('[data-cy=LastNameInput]').type('Wayne');
       cy.get('[data-cy=EmailInput]').type(Cypress.env('USER_EMAIL'));
       cy.get('[data-cy=ThemeInput]').type('BatBot');
+      cy.get('[data-cy=CguCheckbox]').find('input').check({force: true});
       cy.get('[data-cy=SignUpBtn]').click();
 
       cy.url().should('include', '/auth/sign_up');

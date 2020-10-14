@@ -2,7 +2,7 @@
   <h1>Créer un chatbot</h1>
   <mat-divider></mat-divider>
 
-  <mat-horizontal-stepper labelPosition="bottom" [linear]="true">
+  <mat-horizontal-stepper labelPosition="bottom" [linear]="env.production">
     <mat-step [stepControl]="formArray.at(0)" [completed]="chatbotGenerated" [editable]="!chatbotGenerated">
       <ng-template matStepLabel>
         <h2>Paramétrage</h2>
@@ -27,8 +27,7 @@
           <button mat-flat-button
                   color="accent"
                   matStepperNext
-                  data-cy="ParamNextBtn"
-                  [disabled]="!formArray.at(0).valid">
+                  data-cy="ParamNextBtn">
             Suivant
           </button>
         </div>

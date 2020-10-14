@@ -3,6 +3,7 @@ import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ChatbotConfiguration } from '@model/chatbot-configuration.model';
 import { ChatbotService } from '@service/chatbot.service';
 import { ToastrService } from 'ngx-toastr';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-create-bot-form',
@@ -13,6 +14,7 @@ export class CreateBotFormComponent implements OnInit {
 
   createBotForm: FormGroup;
   chatbotGenerated = false;
+  env = environment;
 
   constructor(public chatbotService: ChatbotService,
               private _fb: FormBuilder,
