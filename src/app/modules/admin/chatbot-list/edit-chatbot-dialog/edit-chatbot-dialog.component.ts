@@ -35,6 +35,10 @@ export class EditChatbotDialogComponent implements OnInit {
     this.updateChatbotFormGroup = this._fb.group({
       status: [this.chatbot.status, Validators.required],
       name: [this.chatbot.name, [Validators.maxLength(50)]],
+      frontBranch: [this.chatbot.frontBranch, [Validators.maxLength(50)]],
+      backBranch: [this.chatbot.backBranch, [Validators.maxLength(50)]],
+      botBranch: [this.chatbot.botBranch, [Validators.maxLength(50)]],
+      apiKey: [this.chatbot.apiKey, [Validators.maxLength(200)]],
       rootUser: [null, [Validators.maxLength(200)]],
       rootPassword: [null, [Validators.maxLength(200)]],
       ipAdress: [this.chatbot.ipAdress ? this.chatbot.ipAdress : null,
@@ -52,6 +56,9 @@ export class EditChatbotDialogComponent implements OnInit {
         break;
       case ChatbotStatus.running:
         this.controls.name.setValidators(Validators.required);
+        this.controls.frontBranch.setValidators(Validators.required);
+        this.controls.backBranch.setValidators(Validators.required);
+        this.controls.botBranch.setValidators(Validators.required);
         break;
     }
   }

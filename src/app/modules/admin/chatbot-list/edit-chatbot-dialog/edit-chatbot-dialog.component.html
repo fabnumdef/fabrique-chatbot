@@ -120,6 +120,50 @@
             Le format du nom de domaine est incorrect.
           </mat-error>
         </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Branche Front</mat-label>
+          <input matInput
+                 placeholder="Saisir..."
+                 formControlName="frontBranch"
+                 maxlength="50"
+                 required>
+          <mat-error *ngIf="controls.frontBranch.hasError('required')">
+            Vous n'avez pas saisi de branche front.
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Branche Back</mat-label>
+          <input matInput
+                 placeholder="Saisir..."
+                 formControlName="backBranch"
+                 maxlength="50"
+                 required>
+          <mat-error *ngIf="controls.backBranch.hasError('required')">
+            Vous n'avez pas saisi de branche back.
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Branche Bot</mat-label>
+          <input matInput
+                 placeholder="Saisir..."
+                 formControlName="botBranch"
+                 maxlength="50"
+                 required>
+          <mat-error *ngIf="controls.botBranch.hasError('required')">
+            Vous n'avez pas saisi de branche bot.
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>API KEY</mat-label>
+          <input matInput
+                 placeholder="Saisir..."
+                 formControlName="apiKey"
+                 maxlength="200">
+        </mat-form-field>
       </ng-container>
     </ng-container>
 

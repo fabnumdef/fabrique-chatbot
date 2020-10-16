@@ -14,4 +14,8 @@ export class Chatbot {
   domainName: string;
   status: ChatbotStatus;
   createdAt: string;
+  frontBranch: string;
+  backBranch: string;
+  botBranch: string;
+  apiKey: string;
 }
