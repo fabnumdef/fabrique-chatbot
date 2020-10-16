@@ -1,9 +1,9 @@
-import { IsNotEmpty, IsString, Length } from "class-validator";
+import { IsNotEmpty, IsString, Matches } from "class-validator";
 
 export class ResetPasswordDto {
   @IsString()
   @IsNotEmpty()
-  @Length(8, 200)
+  @Matches(/^(?=\D*\d)(?=[^a-z]*[a-z])(?=[^A-Z]*[A-Z]).{8,200}$/gm)
   password: string;
 
   @IsString()
