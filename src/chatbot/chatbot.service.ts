@@ -14,6 +14,7 @@ import { UpdateChatbotDto } from "@dto/update-chatbot.dto";
 import * as fs from "fs";
 import { AnsiblePlaybook, Options } from "ansible-playbook-cli-js";
 import { execShellCommand, jsonToDotenv } from "@core/utils";
+import snakecaseKeys = require("snakecase-keys");
 
 const yaml = require('js-yaml');
 const crypto = require('crypto');
@@ -143,7 +144,7 @@ export class ChatbotService {
         }
         return this.findAndUpdate(chatbot.id, {status: ChatbotStatus.running});
       case ChatbotStatus.running:
-        return this.findAndUpdate(chatbot.id, updateChatbot);
+        return this.findAndUpdate(chatbot.id, snakecaseKeys(updateChatbot));
       case ChatbotStatus.deleted:
         throw new HttpException(`Le chatbot est archivé, impossible de le modifier.`, HttpStatus.INTERNAL_SERVER_ERROR);
     }
