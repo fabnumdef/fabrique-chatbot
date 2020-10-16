@@ -21,6 +21,7 @@ import snakecaseKeys = require("snakecase-keys");
 import { ChatbotModel } from "@model/chatbot.model";
 import { JwtAuthGuard } from "@guard/jwt.guard";
 import { FileModel } from "@model/file.model";
+const crypto = require('crypto');
 
 @ApiTags('chatbot')
 @Controller('chatbot')
@@ -57,7 +58,8 @@ export class ChatbotController {
     if (errors && Object.keys(errors).length > 0) {
       throw new HttpException('Le fichier contient des erreurs bloquantes.', HttpStatus.INTERNAL_SERVER_ERROR);
     }
-    const botModel = await this._chatbotService.create(plainToClass(ChatbotModel, snakecaseKeys({...botConfiguration, ...{user: req.user}})), file, icon);
+    const api_key = crypto.randomBytes(12).toString('hex');
+    const botModel = await this._chatbotService.create(plainToClass(ChatbotModel, snakecaseKeys({...botConfiguration, ...{user: req.user, api_key: api_key}})), file, icon);
     return plainToClass(ChatbotDto, camelcaseKeys(botModel, {deep: true}));
   }
 

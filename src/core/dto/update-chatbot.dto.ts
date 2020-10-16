@@ -31,8 +31,23 @@ export class UpdateChatbotDto {
   @MaxLength(50)
   domainName: string;
 
-  // TODO DELETE
   @IsString()
   @IsOptional()
   status: ChatbotStatus;
+
+  @IsString()
+  @IsOptional()
+  frontBranch: string;
+
+  @IsString()
+  @IsOptional()
+  backBranch: string;
+
+  @IsString()
+  @IsOptional()
+  botBranch: string;
+
+  @IsString()
+  @IsOptional()
+  apiKey: string;
 }

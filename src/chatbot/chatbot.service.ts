@@ -96,7 +96,6 @@ export class ChatbotService {
       throw new HttpException('Ce chatbot n\'existe pas.', HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    // TODO DELETE, JUST FOR TESTS
     if (updateChatbot.status) {
       chatbot = await this.findAndUpdate(chatbot.id, {
         status: updateChatbot.status

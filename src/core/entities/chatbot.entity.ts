@@ -61,4 +61,7 @@ export class Chatbot {
 
   @Column( { default: 'master' })
   bot_branch: string;
+
+  @Column({ nullable: true })
+  api_key: string;
 }
