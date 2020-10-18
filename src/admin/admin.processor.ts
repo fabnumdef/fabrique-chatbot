@@ -35,7 +35,7 @@ export class AdminProcessor {
     });
     if (isTraining && (updateChatbot.updateBack || updateChatbot.updateRasa)) {
       console.log('Update Chatbot aborting, chatbot is training');
-      await this._chatbotUpdateQueue.add('update', {chatbot, updateChatbot});
+      await job.retry();
       return;
     }
     try {
@@ -45,7 +45,7 @@ export class AdminProcessor {
       await this._http.put(`${host_url}/api/config/block`, {isBlocked: false}, {headers}).toPromise().then();
       console.log('Update Chatbot completed');
     } catch (err) {
-      await this._chatbotUpdateQueue.add('update', {chatbot, updateChatbot});
+      await job.retry();
       console.error('Update Chatbot failed');
     }
   }
