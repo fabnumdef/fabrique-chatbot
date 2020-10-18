@@ -97,6 +97,15 @@ export class ChatbotService {
     );
   }
 
+  deleteJob(jobId): Observable<any[]> {
+    this._loading$.next(true);
+    return this._http.delete<any>(`${this._adminUrl}/queue/${jobId}`).pipe(
+      finalize(() => {
+        this._loading$.next(false);
+      })
+    );
+  }
+
   checkFile(file: File): Observable<FileTemplateCheckResume> {
     const formData: FormData = new FormData();
     formData.append('file', file, file.name);
