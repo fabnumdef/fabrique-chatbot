@@ -26,8 +26,6 @@ export class AdminProcessor {
     let headers: any = {
       'x-api-key': chatbot.api_key
     };
-    console.log(headers);
-    console.log(host_url);
     let isTraining;
     await this._http.get(`${host_url}/api/config/training`, {headers}).toPromise().then(response => {
       isTraining = response.data;
@@ -42,9 +40,9 @@ export class AdminProcessor {
     }
     try {
       console.log(job.data);
-      await this._http.post(`${host_url}/api/config/block`, {isBlocked: true}, {headers}).toPromise().then();
+      await this._http.put(`${host_url}/api/config/block`, {isBlocked: true}, {headers}).toPromise().then();
       await this._chatbotGenerationService.updateChatbot(job.data.chatbot, job.data.updateChatbot);
-      await this._http.post(`${host_url}/api/config/block`, {isBlocked: false}, {headers}).toPromise().then();
+      await this._http.put(`${host_url}/api/config/block`, {isBlocked: false}, {headers}).toPromise().then();
       console.log('Update Chatbot completed');
     } catch (err) {
       await this._chatbotUpdateQueue.add('update', {chatbot, updateChatbot});
