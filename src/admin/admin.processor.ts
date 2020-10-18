@@ -26,10 +26,13 @@ export class AdminProcessor {
     let headers: any = {
       'x-api-key': chatbot.api_key
     };
+    console.log(headers);
+    console.log(host_url);
     let isTraining;
     await this._http.get(`${host_url}/api/config/training`, {headers}).toPromise().then(response => {
       isTraining = response.data;
     }).catch(err => {
+      console.error(err);
       isTraining = true;
     });
     if (isTraining && (updateChatbot.updateBack || updateChatbot.updateRasa)) {
