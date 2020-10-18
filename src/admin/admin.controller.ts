@@ -117,4 +117,14 @@ export class AdminController {
     const queue: Job[] = await this.chatbotUpdateQueue.getJobs(['completed', 'waiting', 'active', 'delayed', 'failed', 'paused']);
     return queue;
   }
+
+  @Delete('chatbot/queue/:id')
+  @ApiOperation({summary: 'Delete job in the queue'})
+  @UseGuards(RolesGuard)
+  @Roles(UserRole.admin)
+  async deleteJobInQueue(@Param('id') jobId: number): Promise<void> {
+    const job: Job = await this.chatbotUpdateQueue.getJob(jobId);
+    await job.remove();
+    return;
+  }
 }
