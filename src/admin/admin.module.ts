@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { HttpModule, Module } from '@nestjs/common';
 import { AdminController } from './admin.controller';
 import { UserModule } from "../user/user.module";
 import { ChatbotModule } from "../chatbot/chatbot.module";
@@ -24,6 +24,7 @@ import { AdminProcessor } from "./admin.processor";
         duration: 60*1000
       }
     }),
+    HttpModule
   ],
   controllers: [
     AdminController
