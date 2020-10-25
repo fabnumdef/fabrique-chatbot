@@ -80,7 +80,7 @@
       become: yes
       lineinfile:
         path: '/etc/nginx/sites-available/{{ frontDir }}.cfg'
-        insertbefore : '^    location /backoffice {'
+        insertbefore : '^    location / {'
         line: '    server_name  {{ botDomain }};'
       when: updateFront and botDomain
 
