@@ -46,14 +46,20 @@ describe('Testing the Reset Password page', function() {
     cy.get('[data-cy=PasswordInput]').clear();
     cy.get('[data-cy=PasswordCheckInput]').clear();
     cy.get('[data-cy=PasswordInput]').type('passwordA0');
+    cy.get('[data-cy=PasswordCheckInput]').type('passwordA0');
+    cy.get('[data-cy=ResetPasswordBtn]').should('be.disabled');
+
+    cy.get('[data-cy=PasswordInput]').clear();
+    cy.get('[data-cy=PasswordCheckInput]').clear();
+    cy.get('[data-cy=PasswordInput]').type('passwordA0');
     cy.get('[data-cy=PasswordCheckInput]').type('passwordA0Bis');
     cy.get('[data-cy=ResetPasswordBtn]').should('be.disabled');
     cy.get('.mat-error').should('contain', 'Les mot de passe ne correspondent pas.');
   });
 
   it('should enable button if passwords are same', function() {
-    cy.get('[data-cy=PasswordInput]').type('passwordA0');
-    cy.get('[data-cy=PasswordCheckInput]').type('passwordA0');
+    cy.get('[data-cy=PasswordInput]').type('passwordA0$');
+    cy.get('[data-cy=PasswordCheckInput]').type('passwordA0$');
     cy.get('[data-cy=ResetPasswordBtn]').should('be.enabled');
   });
 });
