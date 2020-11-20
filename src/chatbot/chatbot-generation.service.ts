@@ -64,6 +64,7 @@ export class ChatbotGenerationService {
         HOST_URL: chatbot.domain_name ? `https://${chatbot.domain_name}` : `http://${chatbot.ip_adress}`
       }};
     fs.writeFileSync(`${this._appDir}/chatbot/.env`, jsonToDotenv(dotenv), 'utf8');
+    await execShellCommand(`ansible-vault encrypt --vault-password-file fabrique/password_file chatbot/credentials.yml`, `${this._appDir}`).then();
     await execShellCommand(`ansible-vault encrypt --vault-password-file fabrique/password_file chatbot/.env`, `${this._appDir}`).then();
 
     const playbookOptions = new Options(`${this._appDir}/chatbot`);

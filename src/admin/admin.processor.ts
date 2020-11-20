@@ -16,7 +16,7 @@ export class AdminProcessor {
 
   @Process('update')
   async updateChatbot(job: Job) {
-    console.log('Update Chatbot...');
+    console.log('Update Chatbot...', job.data.chatbot.id);
 
     const chatbot: Chatbot = job.data.chatbot;
     const updateChatbot: LaunchUpdateChatbotDto = job.data.updateChatbot;
@@ -26,7 +26,7 @@ export class AdminProcessor {
       'x-api-key': chatbot.api_key
     };
     try {
-      console.log(job.data);
+      // console.log(job.data);
       await this._http.post(
         `${host_url}/api/update`,
         {
@@ -37,7 +37,7 @@ export class AdminProcessor {
           }
         },
         {headers}).toPromise().then();
-      console.log('Update Chatbot completed');
+      console.log('Update Chatbot completed', job.data.chatbot.id);
     } catch (err) {
       console.error(err);
       await job.retry();
@@ -47,9 +47,9 @@ export class AdminProcessor {
 
   @Process('update_status')
   async updateStatusChatbot(job: Job) {
-    console.log('Update Chatbot Status ...');
-    console.log(job.data);
+    console.log('Update Chatbot Status ...', job.data.chatbotId);
+    // console.log(job.data);
     await this._chatbotService.update(job.data.chatbotId, job.data.updateChatbot);
-    console.log('Update Chatbot Status completed');
+    console.log('Update Chatbot Status completed', job.data.chatbotId);
   }
 }
