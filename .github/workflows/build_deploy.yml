@@ -12,11 +12,11 @@ jobs:
       - name: Set env to dev
         if: endsWith(github.ref, '/develop')
         run: |
-          echo "::set-env name=ENVIRONMENT::dev"
+          echo "ENVIRONMENT=dev" >> $GITHUB_ENV
       - name: Set env to prod
         if: endsWith(github.ref, '/master')
         run: |
-          echo "::set-env name=ENVIRONMENT::prod"
+          echo "ENVIRONMENT=prod" >> $GITHUB_ENV
 
       - uses: actions/checkout@v1
 
