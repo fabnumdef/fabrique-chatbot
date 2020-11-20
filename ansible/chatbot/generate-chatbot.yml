@@ -9,6 +9,7 @@
     - ./credentials.yml
 
   vars:
+    - ssh_key: "~/.ssh/id_rsa.pub"
     - ansible_user: "chatbot_user"
     - ansible_password: "{{ USER_PASSWORD }}"
     - ansible_become_pass: "{{ USER_PASSWORD }}"
@@ -28,6 +29,13 @@
         group: www-data
         mode: '774'
         recurse: yes
+
+    # For synchronize / rsync to work
+    - name: ensure user is accessable with ssh key
+      become: true
+      authorized_key:
+        user: chatbot_user
+        key: "{{ lookup('file', '{{ ssh_key }}') }}"
 
     - name: Copy chatbot-back
       synchronize:
@@ -112,6 +120,14 @@
         dest: '{{ appsDir }}/{{ botDir }}'
         rsync_opts:
           - '--exclude=models/'
+
+    - name: delete user access with ssh key
+      become: true
+      authorized_key:
+        user: chatbot_user
+        state: absent
+        key: "{{ lookup('file', '{{ ssh_key }}') }}"
+
 
     - name: npm install chatbot-back
       become: yes
