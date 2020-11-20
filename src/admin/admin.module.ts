@@ -10,19 +10,7 @@ import { AdminProcessor } from "./admin.processor";
     UserModule,
     ChatbotModule,
     BullModule.registerQueue({
-      name: 'chatbot_update',
-      redis: {
-        host: process.env.REDIS_HOST,
-        port: Number(process.env.REDIS_PORT),
-      },
-      defaultJobOptions: {
-        removeOnComplete: true,
-        removeOnFail: true
-      },
-      limiter: {
-        max: 1,
-        duration: 60*1000
-      }
+      name: 'admin_update'
     }),
     HttpModule
   ],

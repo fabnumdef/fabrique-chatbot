@@ -10,6 +10,8 @@
     - ./credentials.yml
 
   vars:
+    - ansible_user: "chatbot_user"
+    - ansible_password: "{{ USER_PASSWORD }}"
     - ansible_become_pass: "{{ USER_PASSWORD }}"
 
   tasks:
@@ -20,14 +22,6 @@
         line: PermitRootLogin no
         dest: /etc/ssh/sshd_config
         regexp: ^PermitRootLogin
-      notify: restart ssh
-
-    - name: Do not allow ssh access via password
-      become: yes
-      lineinfile:
-        line: PasswordAuthentication no
-        dest: /etc/ssh/sshd_config
-        regexp: ^PasswordAuthentication
       notify: restart ssh
 
     - name: Delete ssh host keys
@@ -70,13 +64,12 @@
         port: '80'
         proto: tcp
 
-    - name: Open port 9100
-      become: yes
-      ufw:
-        rule: allow
-        port: '9100'
-        proto: tcp
-
+#    - name: Open port 9100
+#      become: yes
+#      ufw:
+#        rule: allow
+#        port: '9100'
+#        proto: tcp
 
   handlers:
 

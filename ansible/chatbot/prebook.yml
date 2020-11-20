@@ -9,7 +9,6 @@
     - ./credentials.yml
 
   vars:
-    - ssh_key: "~/.ssh/id_rsa.pub"
     - ansible_user: "{{ ROOT_USER | default('debian') }}"
     - ansible_password: "{{ ROOT_PASSWORD }}"
 
@@ -29,9 +28,3 @@
         append: yes
         groups: sudo, root, www-data
         password: "{{ USER_PASSWORD | password_hash('sha512') }}"
-
-    - name: ensure user is accessable with ssh key
-      become: true
-      authorized_key:
-        user: chatbot_user
-        key: "{{ lookup('file', '{{ ssh_key }}') }}"

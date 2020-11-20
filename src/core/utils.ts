@@ -1,11 +1,11 @@
+import { parse } from "dotenv";
+
 /**
  * Executes a shell command and return it as a Promise.
  * @param cmd {string}
  * @param curDir {string}
  * @return {Promise<string>}
  */
-import { parse } from "dotenv";
-
 export function execShellCommand(cmd, curDir?: string) {
   const execOptions = {
     cwd: curDir,

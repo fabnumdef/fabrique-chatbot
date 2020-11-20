@@ -39,7 +39,7 @@ import { Job, Queue } from "bull";
 export class AdminController {
   constructor(private readonly _userService: UserService,
               private readonly _chatbotService: ChatbotService,
-              @InjectQueue('chatbot_update') private readonly chatbotUpdateQueue: Queue) {
+              @InjectQueue('admin_update') private readonly adminUpdateQueue: Queue) {
   }
 
   @Get('user')
@@ -88,7 +88,7 @@ export class AdminController {
   @Roles(UserRole.admin)
   async update(@Param('id') chatbotId: number,
                @Body() updateChatbot: UpdateChatbotDto): Promise<Chatbot> {
-    await this.chatbotUpdateQueue.add('update_status', {chatbotId, updateChatbot});
+    await this.adminUpdateQueue.add('update_status', {chatbotId, updateChatbot});
     return;
   }
 
@@ -105,7 +105,7 @@ export class AdminController {
     if (!chatbot) {
       throw new HttpException(`Ce chatbot n'existe pas ou n'est pas en fonctionnement.`, HttpStatus.INTERNAL_SERVER_ERROR);
     }
-    await this.chatbotUpdateQueue.add('update', {chatbot, updateChatbot});
+    await this.adminUpdateQueue.add('update', {chatbot, updateChatbot});
     return;
   }
 
@@ -114,7 +114,7 @@ export class AdminController {
   @UseGuards(RolesGuard)
   @Roles(UserRole.admin)
   async getChatbotsQueue(): Promise<Job[]> {
-    const queue: Job[] = await this.chatbotUpdateQueue.getJobs(['completed', 'waiting', 'active', 'delayed', 'failed', 'paused']);
+    const queue: Job[] = await this.adminUpdateQueue.getJobs(['completed', 'waiting', 'active', 'delayed', 'failed', 'paused']);
     return queue;
   }
 
@@ -123,7 +123,7 @@ export class AdminController {
   @UseGuards(RolesGuard)
   @Roles(UserRole.admin)
   async deleteJobInQueue(@Param('id') jobId: number): Promise<void> {
-    const job: Job = await this.chatbotUpdateQueue.getJob(jobId);
+    const job: Job = await this.adminUpdateQueue.getJob(jobId);
     await job.remove();
     return;
   }

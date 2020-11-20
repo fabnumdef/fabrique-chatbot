@@ -15,6 +15,8 @@ import * as fs from "fs";
 import { AnsiblePlaybook, Options } from "ansible-playbook-cli-js";
 import { execShellCommand, jsonToDotenv } from "@core/utils";
 import snakecaseKeys = require("snakecase-keys");
+import { InjectQueue } from "@nestjs/bull";
+import { Queue } from "bull";
 
 const yaml = require('js-yaml');
 const crypto = require('crypto');
@@ -25,7 +27,8 @@ export class ChatbotService {
   private _xlsx = XLSX;
 
   constructor(@InjectRepository(Chatbot) private readonly _chatbotsRepository: Repository<Chatbot>,
-              private readonly _ovhStorageService: OvhStorageService) {
+              private readonly _ovhStorageService: OvhStorageService,
+              @InjectQueue('chatbot_update') private readonly _chatbotUpdateQueue: Queue) {
   }
 
   findAll(params?: any): Promise<Chatbot[]> {
@@ -103,7 +106,7 @@ export class ChatbotService {
       });
     }
 
-    if(updateChatbot.ipAdress || updateChatbot.domainName) {
+    if (updateChatbot.ipAdress || updateChatbot.domainName) {
       chatbot = await this.findAndUpdate(chatbot.id, {
         ip_adress: updateChatbot.ipAdress,
         domain_name: updateChatbot.domainName
@@ -116,14 +119,11 @@ export class ChatbotService {
           status: ChatbotStatus.creation
         });
       case ChatbotStatus.creation:
-        if (!chatbot.intra_def && (!updateChatbot.ipAdress || !updateChatbot.rootPassword || !updateChatbot.rootUser)) {
-          throw new HttpException(`L'adresse IP du VPS, l'user root et le password root sont obligatoires pour changer de statut.`, HttpStatus.INTERNAL_SERVER_ERROR);
+        if (!chatbot.intra_def && (!updateChatbot.ipAdress || !updateChatbot.rootPassword || !updateChatbot.rootUser || !updateChatbot.userPassword)) {
+          throw new HttpException(`L'adresse IP du VPS, l'user root, le password root et le password utilisateur sont obligatoires pour changer de statut.`, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        await this._generateChatbot(chatbot, updateChatbot);
-        return this.findAndUpdate(chatbot.id, {
-          status: ChatbotStatus.pending_configuration,
-          ip_adress: updateChatbot.ipAdress
-        });
+        await this._chatbotUpdateQueue.add('pending_configuration', {chatbot, updateChatbot});
+        return;
       case ChatbotStatus.error_configuration:
         if (!chatbot.intra_def && !updateChatbot.ipAdress) {
           throw new HttpException(`L'adresse IP du VPS est obligatoire pour changer de statut.`, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -267,15 +267,10 @@ export class ChatbotService {
     keyValueObject[index] += message;
   }
 
-  private async _generateChatbot(chatbot: Chatbot, updateChatbot: UpdateChatbotDto) {
+  public async generateChatbot(chatbot: Chatbot, updateChatbot: UpdateChatbotDto) {
     // generate user password & db password
     const passwordLength = 32;
-    const userPassword = crypto
-      .randomBytes(Math.ceil((passwordLength * 3) / 4))
-      .toString('base64') // convert to base64 format
-      .slice(0, passwordLength) // return required number of characters
-      .replace(/\+/g, '0') // replace '+' with '0'
-      .replace(/\//g, '0'); // replace '/' with '0'
+
     const dbPassword = crypto
       .randomBytes(Math.ceil((passwordLength * 3) / 4))
       .toString('base64') // convert to base64 format
@@ -290,7 +285,7 @@ export class ChatbotService {
       .replace(/\//g, '0'); // replace '/' with '0'
 
     const credentials = {
-      USER_PASSWORD: userPassword,
+      USER_PASSWORD: updateChatbot.userPassword,
       DB_PASSWORD: dbPassword,
       ROOT_USER: updateChatbot.rootUser,
       ROOT_PASSWORD: updateChatbot.rootPassword
@@ -317,16 +312,14 @@ export class ChatbotService {
 
     await execShellCommand(`ansible-vault encrypt --vault-password-file fabrique/password_file chatbot/credentials.yml`, `${appDir}/ansible`).then();
     await execShellCommand(`ansible-vault encrypt --vault-password-file fabrique/password_file chatbot/.env`, `${appDir}/ansible`).then();
-    const credentialsEncrypted = fs.readFileSync(`${appDir}/ansible/chatbot/credentials.yml`, 'utf8');
     const envEncrypted = fs.readFileSync(`${appDir}/ansible/chatbot/.env`, 'utf8');
-    this._ovhStorageService.set(credentialsEncrypted, `${chatbot.id.toString(10)}/credentials.yml`);
     this._ovhStorageService.set(envEncrypted, `${chatbot.id.toString(10)}/.env`);
 
     const playbookOptions = new Options(`${appDir}/ansible/chatbot`);
     const ansiblePlaybook = new AnsiblePlaybook(playbookOptions);
     await ansiblePlaybook.command(`prebook.yml --vault-password-file ../fabrique/password_file -i ${updateChatbot.ipAdress},`).then(result => console.log(result));
     await ansiblePlaybook.command(`debianserver.yml --vault-password-file ../fabrique/password_file -i ${updateChatbot.ipAdress},`).then(result => console.log(result));
-    await ansiblePlaybook.command(`prometheus.yml --vault-password-file ../fabrique/password_file -i ${updateChatbot.ipAdress},`).then(result => console.log(result));
+    // await ansiblePlaybook.command(`prometheus.yml --vault-password-file ../fabrique/password_file -i ${updateChatbot.ipAdress},`).then(result => console.log(result));
     await ansiblePlaybook.command(`chatbot.yml --vault-password-file ../fabrique/password_file -i ${updateChatbot.ipAdress},`).then(result => console.log(result));
 
     fs.unlinkSync(`${appDir}/ansible/chatbot/credentials.yml`);

@@ -15,8 +15,8 @@ import { AdminModule } from './admin/admin.module';
 import { ScheduleModule } from "@nestjs/schedule";
 import { ChatbotUser } from "@entity/chatbot-user.entity";
 import { MailerModule } from "@nestjs-modules/mailer";
-import { RedisModule } from "nestjs-redis";
 import { HealthController } from './health/health.controller';
+import { BullModule } from "@nestjs/bull";
 
 @Module({
   imports: [
@@ -57,9 +57,20 @@ import { HealthController } from './health/health.controller';
       },
     }),
     ScheduleModule.forRoot(),
-    RedisModule.register({
-      host: process.env.REDIS_HOST,
-      port: Number(process.env.REDIS_PORT)
+    // @ts-ignore
+    BullModule.forRoot({
+      redis: {
+        host: process.env.REDIS_HOST,
+        port: Number(process.env.REDIS_PORT),
+      },
+      defaultJobOptions: {
+        removeOnComplete: true,
+        removeOnFail: true
+      },
+      limiter: {
+        max: 1,
+        duration: 60*1000
+      }
     }),
     ChatbotModule,
     UserModule,

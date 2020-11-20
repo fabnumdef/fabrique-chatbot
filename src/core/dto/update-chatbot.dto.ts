@@ -20,6 +20,11 @@ export class UpdateChatbotDto {
   rootPassword: string;
 
   @IsString()
+  @IsOptional()
+  @MaxLength(200)
+  userPassword: string;
+
+  @IsString()
   @Validate(IpAdressValidator)
   @IsOptional()
   @MaxLength(50)

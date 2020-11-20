@@ -9,9 +9,11 @@
     - ./credentials.yml
 
   vars:
+    - ansible_user: "chatbot_user"
+    - ansible_password: "{{ USER_PASSWORD }}"
+    - ansible_become_pass: "{{ USER_PASSWORD }}"
     - appsDir: '/var/www/'
     - rasaDir: 'rasa-chatbot'
-    - ansible_become_pass: "{{ USER_PASSWORD }}"
     - NODEJS_VERSION: "12"
     - ansible_distribution_release: "xenial" #trusty
 
@@ -69,6 +71,7 @@
           - rsync
           - certbot
           - python-certbot-nginx
+          - ansible
 
     - name: Install last version of pip
       become: true
@@ -82,13 +85,9 @@
       pip:
         executable: pip3
         name:
-          - rasa==2.0.1
+          - rasa==2.0.6
           - psycopg2-binary
           - rasa[spacy]
-
-#    - name: Install Spacy
-#      become: yes
-#      shell: python3 -m spacy download fr_core_news_md && python3 -m spacy link fr_core_news_md fr
 
     - name: NODE | Install pm2
       become: yes
