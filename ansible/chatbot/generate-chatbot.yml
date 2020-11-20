@@ -213,6 +213,13 @@
         path: '/etc/rc.local'
         mode: '755'
 
+    - name: create git dir
+      become: yes
+      file:
+        path: '{{ gitDir }}'
+        state: directory
+        mode: '755'
+
     - name: copy files for bot
       copy:
         src: '{{ item.src }}'
