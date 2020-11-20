@@ -14,7 +14,7 @@
     - ansible_password: "{{ USER_PASSWORD }}"
     - ansible_become_pass: "{{ USER_PASSWORD }}"
     - appsDir: '/var/www'
-    - gitDIr: '/var/www/git'
+    - gitDir: '/var/www/git'
     - nestDir: 'fabrique-chatbot-back'
     - backDir: 'chatbot-back'
     - botDir: 'chatbot-template'
