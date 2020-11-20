@@ -6,6 +6,7 @@ import { Chatbot } from "@entity/chatbot.entity";
 import { SharedModule } from "../shared/shared.module";
 import { ChatbotGenerationService } from './chatbot-generation.service';
 import { BullModule } from "@nestjs/bull";
+import { ChatbotProcessor } from "./chatbot.processor";
 
 @Module({
   imports: [
@@ -17,7 +18,7 @@ import { BullModule } from "@nestjs/bull";
     }),
   ],
   controllers: [ChatbotController],
-  providers: [ChatbotService, ChatbotGenerationService],
+  providers: [ChatbotService, ChatbotGenerationService, ChatbotProcessor],
   exports: [ChatbotService, ChatbotGenerationService]
 })
 export class ChatbotModule {}
