@@ -284,9 +284,11 @@ export class ChatbotService {
       .replace(/\+/g, '0') // replace '+' with '0'
       .replace(/\//g, '0'); // replace '/' with '0'
 
+    updateChatbot.dbPassword = dbPassword
+
     const credentials = {
       USER_PASSWORD: updateChatbot.userPassword,
-      DB_PASSWORD: dbPassword,
+      DB_PASSWORD: updateChatbot.dbPassword,
       ROOT_USER: updateChatbot.rootUser,
       ROOT_PASSWORD: updateChatbot.rootPassword
     };
@@ -296,7 +298,7 @@ export class ChatbotService {
       DATABASE_HOST: 'localhost',
       DATABASE_PORT: '5432',
       DATABASE_USER: 'rasa_user',
-      DATABASE_PASSWORD: dbPassword,
+      DATABASE_PASSWORD: updateChatbot.dbPassword,
       DATABASE_NAME: 'rasa',
       JWT_SECRET: jwtSecret,
       MAIL_HOST: process.env.MAIL_HOST,

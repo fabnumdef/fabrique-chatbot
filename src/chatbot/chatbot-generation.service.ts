@@ -42,7 +42,8 @@ export class ChatbotGenerationService {
     await this.updateChatbotRepos(chatbot);
 
     const credentials = {
-      USER_PASSWORD: updateChatbot.userPassword
+      USER_PASSWORD: updateChatbot.userPassword,
+      DB_PASSWORD: updateChatbot.dbPassword
     };
 
     let dotenv = await this._ovhStorageService.get(`${chatbot.id.toString(10)}/.env`).then().catch(() => {
