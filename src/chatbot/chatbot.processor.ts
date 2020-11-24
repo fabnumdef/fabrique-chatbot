@@ -34,7 +34,7 @@ export class ChatbotProcessor {
     await this._chatbotService.findAndUpdate(job.data.chatbot.id, {status: ChatbotStatus.configuration});
     console.log(`${new Date().toLocaleString()} - GENERATING CHATBOT - ${job.data.chatbot.id} - ${job.data.chatbot.name}`);
     await this._chatbotGenerationService.updateChatbot(job.data.chatbot, job.data.updateChatbot);
-    await this._chatbotGenerationService.initChatbot(job.data.chatbot);
+    // await this._chatbotGenerationService.initChatbot(job.data.chatbot);
     console.log('Update Configuration completed', job.data.chatbot.id);
   }
 }

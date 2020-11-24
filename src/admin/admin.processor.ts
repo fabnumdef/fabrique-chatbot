@@ -26,17 +26,18 @@ export class AdminProcessor {
       'x-api-key': chatbot.api_key
     };
     try {
+      await this._chatbotGenerationService.updateChatbot(job.data.chatbot, job.data.updateChatbot);
       // console.log(job.data);
-      await this._http.post(
-        `${host_url}/api/update`,
-        {
-          ...updateChatbot, ...{
-            frontBranch: chatbot.front_branch,
-            backBranch: chatbot.back_branch,
-            botBranch: chatbot.bot_branch
-          }
-        },
-        {headers}).toPromise().then();
+      // await this._http.post(
+      //   `${host_url}/api/update`,
+      //   {
+      //     ...updateChatbot, ...{
+      //       frontBranch: chatbot.front_branch,
+      //       backBranch: chatbot.back_branch,
+      //       botBranch: chatbot.bot_branch
+      //     }
+      //   },
+      //   {headers}).toPromise().then();
       console.log('Update Chatbot completed', job.data.chatbot.id);
     } catch (err) {
       console.error(err);

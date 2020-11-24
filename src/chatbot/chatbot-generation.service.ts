@@ -1,16 +1,17 @@
 import { HttpService, Injectable } from '@nestjs/common';
+import { Cron, CronExpression } from "@nestjs/schedule";
 import { ChatbotService } from "./chatbot.service";
 import { ChatbotStatus } from "@enum/chatbot-status.enum";
+import { IsNull, Not } from "typeorm";
 import { AnsiblePlaybook, Options } from 'ansible-playbook-cli-js';
 import { Chatbot } from "@entity/chatbot.entity";
+import { LaunchUpdateChatbotDto } from "@dto/launch-update-chatbot.dto";
 import { OvhStorageService } from "../shared/services/ovh-storage.service";
 import * as fs from "fs";
 import { MailService } from "../shared/services/mail.service";
 import { dotenvToJson, execShellCommand, jsonToDotenv } from "@core/utils";
-import { UpdateChatbotDto } from "@dto/update-chatbot.dto";
 const crypto = require('crypto');
 const FormData = require('form-data');
-const yaml = require('js-yaml');
 
 @Injectable()
 export class ChatbotGenerationService {
@@ -23,33 +24,43 @@ export class ChatbotGenerationService {
               private readonly _mailService: MailService) {
   }
 
-  // @Cron(CronExpression.EVERY_5_MINUTES)
-  // // @Cron(CronExpression.EVERY_30_SECONDS)
-  // async checkChatbots() {
-  //   const botsToBeCreated: Chatbot[] = await this._chatbotService.findAll({
-  //     status: ChatbotStatus.pending_configuration,
-  //     ip_adress: Not(IsNull())
-  //   });
-  //   if (!botsToBeCreated || botsToBeCreated.length < 1) {
-  //     return;
-  //   }
-  //   console.log(`${new Date().toLocaleString()} - Chatbots waiting for creation`, botsToBeCreated.length);
-  //
-  //   this._generateChatbots();
-  // }
+  @Cron(CronExpression.EVERY_5_MINUTES)
+  // @Cron(CronExpression.EVERY_30_SECONDS)
+  async checkChatbots() {
+    const botsToBeCreated: Chatbot[] = await this._chatbotService.findAll({
+      status: ChatbotStatus.pending_configuration,
+      ip_adress: Not(IsNull())
+    });
+    if (!botsToBeCreated || botsToBeCreated.length < 1) {
+      return;
+    }
+    console.log(`${new Date().toLocaleString()} - Chatbots waiting for creation`, botsToBeCreated.length);
 
-  async updateChatbot(chatbot: Chatbot, updateChatbot: UpdateChatbotDto) {
+    this._generateChatbots();
+
+    /**
+     * Récupérer et stocker en variable d'environnement la clef SSH
+     * Récupérer et stocker dans un fichier le vault-password
+     *
+     * Générer les variables d'environnements et les encrypter avec le vault-password
+     * Stocker le fichier .env crypté dans dans l'object storage au cas ou
+     *
+     * Appel au back pour créer le premier utilisateur
+     * Appel au back pour importer la base documentaire (remplissage de la bdd) - A voir comment faire niveau sécu
+     * Appel au back pour générer les fichiers Rasa + Train Rasa
+     */
+  }
+
+  async updateChatbot(chatbot: Chatbot, updateChatbot: LaunchUpdateChatbotDto) {
     await this.updateChatbotRepos(chatbot);
-
-    const credentials = {
-      USER_PASSWORD: updateChatbot.userPassword,
-      DB_PASSWORD: updateChatbot.dbPassword
-    };
-
+    // Get credentials
+    const file = await this._ovhStorageService.get(`${chatbot.id.toString(10)}/credentials.yml`).then().catch(() => {
+      this._chatbotService.findAndUpdate(chatbot.id, {status: ChatbotStatus.error_configuration});
+    });
     let dotenv = await this._ovhStorageService.get(`${chatbot.id.toString(10)}/.env`).then().catch(() => {
       this._chatbotService.findAndUpdate(chatbot.id, {status: ChatbotStatus.error_configuration});
     });
-    fs.writeFileSync(`${this._appDir}/chatbot/credentials.yml`, yaml.safeDump(credentials), 'utf8');
+    fs.writeFileSync(`${this._appDir}/chatbot/credentials.yml`, file, 'utf8');
     fs.writeFileSync(`${this._appDir}/chatbot/.env`, dotenv, 'utf8');
 
     // update email config & domain name
@@ -63,12 +74,11 @@ export class ChatbotGenerationService {
         HOST_URL: chatbot.domain_name ? `https://${chatbot.domain_name}` : `http://${chatbot.ip_adress}`
       }};
     fs.writeFileSync(`${this._appDir}/chatbot/.env`, jsonToDotenv(dotenv), 'utf8');
-    await execShellCommand(`ansible-vault encrypt --vault-password-file fabrique/password_file chatbot/credentials.yml`, `${this._appDir}`).then();
     await execShellCommand(`ansible-vault encrypt --vault-password-file fabrique/password_file chatbot/.env`, `${this._appDir}`).then();
 
     const playbookOptions = new Options(`${this._appDir}/chatbot`);
     const ansiblePlaybook = new AnsiblePlaybook(playbookOptions);
-    const extraVars = {botDomain: chatbot.domain_name};
+    const extraVars = {...updateChatbot, ...{botDomain: chatbot.domain_name}};
     await ansiblePlaybook.command(`generate-chatbot.yml --vault-password-file ../fabrique/password_file -i ${chatbot.ip_adress}, -e '${JSON.stringify(extraVars)}'`).then(async (result) => {
       await this._chatbotService.findAndUpdate(chatbot.id, {status: ChatbotStatus.running});
       console.log(`${new Date().toLocaleString()} - CHATBOT UPDATED - ${chatbot.id} - ${chatbot.name}`);
@@ -94,7 +104,27 @@ export class ChatbotGenerationService {
     });
   }
 
-  async initChatbot(chatbot: Chatbot) {
+  /************************************************************************************ PRIVATE FUNCTIONS ************************************************************************************/
+
+  private async _generateChatbots() {
+    // On les récupère ici pour être sûr (si la commande ansible précédente prend trop de temps)
+    const botsToBeCreated: Chatbot[] = await this._chatbotService.findAll({
+      where: {
+        status: ChatbotStatus.pending_configuration,
+        ip_adress: Not(IsNull()),
+      },
+      relations: ['user']
+    });
+    for (const chatbot of botsToBeCreated) {
+      await this._chatbotService.findAndUpdate(chatbot.id, {status: ChatbotStatus.configuration});
+      console.log(`${new Date().toLocaleString()} - GENERATING CHATBOT - ${chatbot.id} - ${chatbot.name}`);
+      const extraVars: LaunchUpdateChatbotDto = new LaunchUpdateChatbotDto(true, true, true);
+      await this.updateChatbot(chatbot, extraVars);
+      this._initChatbot(chatbot);
+    }
+  }
+
+  private async _initChatbot(chatbot: Chatbot) {
     const password = crypto.randomBytes(12).toString('hex');
     const user = chatbot.user;
     const file = await this._ovhStorageService.get(chatbot.file).then();
@@ -158,24 +188,4 @@ export class ChatbotGenerationService {
     };
     await this._http.post(`http://${chatbot.ip_adress}/api/rasa/train`, {}, {headers: headers}).toPromise().then();
   }
-
-  /************************************************************************************ PRIVATE FUNCTIONS ************************************************************************************/
-
-  // private async _generateChatbots() {
-  //   // On les récupère ici pour être sûr (si la commande ansible précédente prend trop de temps)
-  //   const botsToBeCreated: Chatbot[] = await this._chatbotService.findAll({
-  //     where: {
-  //       status: ChatbotStatus.pending_configuration,
-  //       ip_adress: Not(IsNull()),
-  //     },
-  //     relations: ['user']
-  //   });
-  //   for (const chatbot of botsToBeCreated) {
-  //     await this._chatbotService.findAndUpdate(chatbot.id, {status: ChatbotStatus.configuration});
-  //     console.log(`${new Date().toLocaleString()} - GENERATING CHATBOT - ${chatbot.id} - ${chatbot.name}`);
-  //     const extraVars: LaunchUpdateChatbotDto = new LaunchUpdateChatbotDto(true, true, true);
-  //     await this.updateChatbot(chatbot, extraVars);
-  //     this._initChatbot(chatbot);
-  //   }
-  // }
 }
