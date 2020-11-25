@@ -5,9 +5,14 @@ import { ChatbotService } from "../chatbot/chatbot.service";
 import { Chatbot } from "@entity/chatbot.entity";
 import { HttpService } from "@nestjs/common";
 import { LaunchUpdateChatbotDto } from "@dto/launch-update-chatbot.dto";
+import * as fs from "fs";
+
+const FormData = require('form-data');
 
 @Processor('admin_update')
 export class AdminProcessor {
+
+  private _appDir = '/var/www/fabrique-chatbot-back/ansible';
 
   constructor(private readonly _chatbotGenerationService: ChatbotGenerationService,
               private readonly _chatbotService: ChatbotService,
@@ -22,26 +27,35 @@ export class AdminProcessor {
     const updateChatbot: LaunchUpdateChatbotDto = job.data.updateChatbot;
     const host_url = chatbot.domain_name ? `https://${chatbot.domain_name}` : `http://${chatbot.ip_adress}`;
 
-    let headers: any = {
-      'x-api-key': chatbot.api_key
-    };
     try {
+      const nginx_conf = fs.readFileSync(`${this._appDir}/chatbot/nginx.conf`, {encoding: 'base64'});
+      const nginx_site = fs.readFileSync(`${this._appDir}/chatbot/nginx_conf.cfg`, {encoding: 'base64'});
+
+      const updateForm = new FormData();
+      updateForm.append('updateFront', updateChatbot.updateFront.toString());
+      updateForm.append('updateBack', updateChatbot.updateBack.toString());
+      updateForm.append('updateRasa', updateChatbot.updateRasa.toString());
+      updateForm.append('frontBranch', chatbot.front_branch);
+      updateForm.append('backBranch', chatbot.back_branch);
+      updateForm.append('botBranch', chatbot.bot_branch);
+      updateForm.append('nginx_conf', nginx_conf);
+      updateForm.append('nginx_site', nginx_site);
+      const headers = {
+        ...updateForm.getHeaders(),
+        ...{'x-api-key': chatbot.api_key},
+      };
       // console.log(job.data);
       await this._http.post(
         `${host_url}/api/update`,
-        {
-          ...updateChatbot, ...{
-            frontBranch: chatbot.front_branch,
-            backBranch: chatbot.back_branch,
-            botBranch: chatbot.bot_branch
-          }
-        },
-        {headers}).toPromise().then();
+        updateForm,
+        {headers: headers}
+      ).toPromise().then();
       console.log('Update Chatbot completed', job.data.chatbot.id);
     } catch (err) {
       console.error(err);
-      await job.retry();
+      console.error(err?.response?.data.message);
       console.error('Update Chatbot failed');
+      await job.retry();
     }
   }
 
