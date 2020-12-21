@@ -1,0 +1,73 @@
+<div class="chatbot-preview">
+  <div class="header" [style]="'background-color: ' + chatbot.primaryColor">
+    <div class="icon">
+      <img [src]="iconSrc" *ngIf="iconSrc">
+    </div>
+    <div class="name">
+      <div data-cy="ChatbotNamePreview">
+        <b>{{ chatbot.name ? chatbot.name : 'Nom du chatbot' }}</b>
+      </div>
+      <div>
+        {{ chatbot.function ? chatbot.function : 'Fonction du chatbot' }}
+      </div>
+    </div>
+  </div>
+  <div class="body">
+    <div class="message">
+      <div class="icon">
+        <img [src]="iconSrc" *ngIf="iconSrc" data-cy="ChatbotIconPreview">
+      </div>
+      <div class="bot-message" [style]="'background-color: ' + chatbot.primaryColor">
+        Bonjour que puis-je pour vous ?
+      </div>
+    </div>
+    <div class="message">
+      <div class="user-message" [style]="'background-color: ' + chatbot.secondaryColor">
+        Lorem Ipsum
+      </div>
+    </div>
+    <div class="message">
+      <div class="icon">
+        <img [src]="iconSrc" *ngIf="iconSrc">
+      </div>
+      <div class="bot-message" [style]="'background-color: ' + chatbot.primaryColor">
+        Désolé aucune question ne correspond à votre requête.
+      </div>
+    </div>
+    <div class="message">
+      <div class="icon">
+        <img [src]="iconSrc" *ngIf="iconSrc">
+      </div>
+      <div class="bot-message" [style]="'background-color: ' + chatbot.primaryColor">
+        Pouvez-vous reformuler ?
+      </div>
+    </div>
+    <div class="message">
+      <div class="user-message" [style]="'background-color: ' + chatbot.secondaryColor">
+        Lorem Ipsum
+      </div>
+    </div>
+    <div class="message">
+      <div class="icon">
+        <img [src]="iconSrc" *ngIf="iconSrc">
+      </div>
+      <div class="bot-message" [style]="'background-color: ' + chatbot.primaryColor">
+        Désolé aucune question ne correspond à votre requête.
+      </div>
+    </div>
+    <div class="message">
+      <div class="icon">
+        <img [src]="iconSrc" *ngIf="iconSrc">
+      </div>
+      <div class="bot-message" [style]="'background-color: ' + chatbot.primaryColor">
+        Pouvez-vous reformuler ?
+      </div>
+    </div>
+  </div>
+  <div class="footer" [style]="'background-color: ' + chatbot.secondaryColor">
+    Tapez votre message ...
+  </div>
+</div>
+<div class="close-chatbot-btn" [style]="'background-color: ' + chatbot.primaryColor">
+  <mat-icon>close</mat-icon>
+</div>

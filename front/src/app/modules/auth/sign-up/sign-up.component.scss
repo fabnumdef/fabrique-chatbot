@@ -1,0 +1,17 @@
+.SignUp {
+  text-align: center;
+
+  form {
+    display: flex;
+    align-items: flex-start;
+    flex-direction: column;
+
+    mat-form-field {
+      width: 100%;
+    }
+  }
+
+  mat-divider {
+    margin-top: 20px;
+  }
+}

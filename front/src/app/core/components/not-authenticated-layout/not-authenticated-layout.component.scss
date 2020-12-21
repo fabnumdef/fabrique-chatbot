@@ -1,0 +1,14 @@
+@import 'src/styles/variables';
+
+:host {
+  background-color: $grey-lighter;
+  display: block;
+}
+
+.body {
+  max-width: 90%;
+  margin: 40px auto;
+
+  // full height - header height - footer height - margin-top - margin-bottom
+  min-height: calc(100vh - 100px - 70px - 40px - 40px);
+}

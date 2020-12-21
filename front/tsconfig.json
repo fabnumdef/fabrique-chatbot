@@ -1,0 +1,49 @@
+{
+  "angularCompilerOptions": {
+    "fullTemplateTypeCheck": true,
+    "strictInjectionParameters": true
+  },
+  "compileOnSave": false,
+  "compilerOptions": {
+    "baseUrl": "./",
+    "outDir": "./dist/out-tsc",
+    "sourceMap": true,
+    "declaration": false,
+    "downlevelIteration": true,
+    "experimentalDecorators": true,
+    "module": "esnext",
+    "moduleResolution": "node",
+    "importHelpers": true,
+    "target": "esnext",
+    "paths": {
+      "@service/*": [
+        "src/app/core/services/*"
+      ],
+      "@model/*": [
+        "src/app/core/models/*"
+      ],
+      "@enum/*": [
+        "src/app/core/enums/*"
+      ],
+      "@guard/*": [
+        "src/app/core/guards/*"
+      ],
+      "@interceptor/*": [
+        "src/app/core/interceptors/*"
+      ],
+      "@utils/*": [
+        "src/app/core/utils/*"
+      ],
+      "@core/*": [
+        "src/app/core/*"
+      ]
+    },
+    "typeRoots": [
+      "node_modules/@types"
+    ],
+    "lib": [
+      "esnext",
+      "dom"
+    ]
+  }
+}

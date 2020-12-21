@@ -1,0 +1,93 @@
+<div class="SignUp">
+  <h2>
+    Création de compte
+  </h2>
+
+  <form [formGroup]="signUpForm"
+        *ngIf="signUpForm"
+        (keyup.enter)="signUp()">
+    <mat-form-field appearance="outline">
+      <mat-label>Prénom</mat-label>
+      <input matInput
+             placeholder="Saisir..."
+             formControlName="firstName"
+             data-cy="FirstNameInput"
+             maxlength="50"
+             required>
+      <mat-error *ngIf="controls.firstName.hasError('required')">
+        Vous n'avez pas saisi de prénom.
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Nom</mat-label>
+      <input matInput
+             placeholder="Saisir..."
+             formControlName="lastName"
+             data-cy="LastNameInput"
+             maxlength="50"
+             required>
+      <mat-error *ngIf="controls.lastName.hasError('required')">
+        Vous n'avez pas saisi de nom.
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Email</mat-label>
+      <input matInput
+             placeholder="Saisir..."
+             formControlName="email"
+             data-cy="EmailInput"
+             maxlength="200"
+             required>
+      <mat-error *ngIf="controls.email.hasError('required')">
+        Vous n'avez pas saisi d'email.
+      </mat-error>
+      <mat-error *ngIf="controls.email.hasError('pattern') || controls.email.hasError('email')">
+        L'email saisi n'est pas valide (exemple@gouv.fr).
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Thème du chatbot</mat-label>
+      <textarea matInput
+                placeholder="Saisir..."
+                formControlName="chatbotTheme"
+                data-cy="ThemeInput"
+                maxlength="50"
+                required>
+      </textarea>
+      <mat-error *ngIf="controls.chatbotTheme.hasError('required')">
+        Vous n'avez pas saisi de thème pour votre chatbot.
+      </mat-error>
+      <mat-error *ngIf="controls.chatbotTheme.hasError('maxlength')">
+        Le thème de votre chatbot ne doit pas dépasser 50 caractères.
+      </mat-error>
+    </mat-form-field>
+
+    <mat-checkbox formControlName="acceptCGU" data-cy="CguCheckbox">
+      J'accepte les <a target="_blank" rel="noopener" href="https://fabrique-a-chatbots.gitbook.io/fabrique-a-chatbots/cgu">CGU</a>
+    </mat-checkbox>
+  </form>
+
+  <button mat-flat-button
+          color="accent"
+          data-cy="SignUpBtn"
+          [disabled]="!signUpForm.valid"
+          (click)="signUp()">
+    C'est parti !
+  </button>
+
+  <mat-divider></mat-divider>
+
+  <h2>
+    Vous avez déjà un compte ?
+  </h2>
+
+  <button mat-stroked-button
+          color="accent"
+          data-cy="LoginBtn"
+          [routerLink]="'/auth/login'">
+    Se connecter
+  </button>
+</div>

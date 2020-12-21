@@ -1,0 +1,44 @@
+@import 'src/styles/variables';
+
+.header {
+  margin-bottom: 10px;
+  height: 100px;
+  display: flex;
+  justify-content: space-between;
+  background-color: $white;
+  box-shadow: $shadow-uniform;
+
+  $space-margin: 15px;
+
+  .image-wrapper {
+    display: flex;
+    align-items: center;
+    height: 100%;
+    cursor: pointer;
+
+    img {
+      margin-left: $space-margin;
+      max-height: 100%;
+    }
+  }
+
+  .action-wrapper {
+    display: flex;
+    align-items: center;
+    margin-right: $space-margin;
+
+    & > *:not(:last-child) {
+      margin-right: 15px;
+    }
+
+    .chatbot-button {
+      transition: 0.25s;
+    }
+
+    .chatbot-button:hover {
+      color: $white;
+      background-color: $primary-color;
+      transition: 0.25s;
+    }
+  }
+}

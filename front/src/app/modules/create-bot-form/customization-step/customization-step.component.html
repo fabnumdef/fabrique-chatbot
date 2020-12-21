@@ -1,0 +1,144 @@
+<div class="customization">
+  <form [formGroup]="formGroup" *ngIf="formGroup">
+    <div class="chatbot-subtitle">
+      <h4>Quelle est l'identité de votre chatbot ?</h4>
+    </div>
+    <mat-form-field appearance="outline">
+      <input matInput
+             formControlName="name"
+             [placeholder]="'Nom'"
+             data-cy="ChatbotNameInput"
+             maxlength="50"
+             required/>
+      <mat-error *ngIf="controls.name.hasError('required')">
+        Vous n'avez pas saisi de nom pour votre chatbot.
+      </mat-error>
+      <mat-error *ngIf="controls.name.hasError('maxlength')">
+        Le nom de votre chatbot ne doit pas dépasser 50 caractères.
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <input matInput
+             formControlName="function"
+             [placeholder]="'Fonction ex: RH Marine'"
+             maxlength="50"/>
+      <mat-error *ngIf="controls.function.hasError('maxlength')">
+        La fonction de votre chatbot ne doit pas dépasser 50 caractères.
+      </mat-error>
+    </mat-form-field>
+
+    <div class="chatbot-subtitle">
+      <h4>Quel est l'icône de votre chatbot ?</h4>
+    </div>
+    <div>
+      Choisir l'icône qui vous convient dans la bibliothèque ci-dessous.
+    </div>
+    <div class="icons-wrapper" data-cy="PresetIcons">
+      <div class="icon"
+           *ngFor="let icon of icons"
+           data-cy="PresetIcon"
+           (click)="selectIcon(icon)">
+        <img [src]="'assets/img/icons/' + icon" [alt]="'Proposition de logo: ' + icon">
+      </div>
+    </div>
+    <div>
+      Ou importer votre propre icône <span class="hint">(*format jpg ou png)</span>
+    </div>
+    <div>
+      <button mat-flat-button
+              color="accent"
+              *ngIf="!controls.icon.value; else iconFileWrapper"
+              class="import-btn"
+              data-cy="ImportIconBtn"
+              (click)="iconUploader.click()">
+        Importer une icône
+      </button>
+    </div>
+    <input hidden
+           type="file"
+           #iconUploader
+           data-cy="ImportIconInput"
+           (change)="uploadIcon($event)"
+           [accept]="'.jpg, .png'"/>
+
+    <ng-template #iconFileWrapper>
+      <div class="icon-file-wrapper" data-cy="SelectedIconWrapper">
+        <div>
+          <div class="icon">
+            <img [src]="imgPreview" *ngIf="imgPreview">
+          </div>
+          <div class="file-name" data-cy="IconName">
+            {{ controls.icon?.value?.name }}
+          </div>
+        </div>
+        <div>
+          <button mat-stroked-button
+                  color="accent"
+                  data-cy="DeleteIconBtn"
+                  (click)="resetIconFile()">
+            Supprimer
+          </button>
+          <button mat-flat-button
+                  color="accent"
+                  data-cy="UpdateIconBtn"
+                  (click)="iconUploader.click()">
+            Remplacer fichier
+          </button>
+        </div>
+      </div>
+    </ng-template>
+
+    <div class="chatbot-subtitle">
+      <h4>Quelles sont vos couleurs ?</h4>
+    </div>
+    <h5>Possibilité 1 : Choisissez vos couleurs</h5>
+    <div class="chatbot-info">
+      <mat-icon>info</mat-icon>
+      <div>
+        Choisissez les 2 couleurs de votre chatbot, faites attention à la lisibilité du texte.
+      </div>
+    </div>
+    <div class="color-picker-div" (click)="colorPickerPrimary.click()" data-cy="PrimaryPicker">
+      <label>
+        Choisir la couleur du chatbot
+        <div>
+          <input #colorPickerPrimary
+                 class="colorpicker color-picker-icon"
+                 maxlength="20"
+                 [colorPicker]="controls.primaryColor.value"
+                 [style.background]="controls.primaryColor.value"
+                 (colorPickerChange)="controls.primaryColor.setValue($event)"/>
+        </div>
+      </label>
+    </div>
+    <div class="color-picker-div" (click)="colorPickerSecondary.click()" data-cy="SecondaryPicker">
+      <label>
+        Choisir la couleur de l'utilisateur
+        <div>
+          <input #colorPickerSecondary
+                 class="colorpicker color-picker-icon"
+                 maxlength="20"
+                 [colorPicker]="controls.secondaryColor.value"
+                 [style.background]="controls.secondaryColor.value"
+                 (colorPickerChange)="controls.secondaryColor.setValue($event)"/>
+        </div>
+      </label>
+    </div>
+    <mat-divider></mat-divider>
+    <h5>Possibilité 2 : Si vous n'avez pas d'idées, laissez vous guider !</h5>
+    <p>Cliquez ci-dessous jusqu'à trouver votre binôme de couleur idéal.</p>
+    <div>
+      <button mat-flat-button
+              color="accent"
+              type="button"
+              (click)="shuffleColors()">
+        C'est parti
+      </button>
+    </div>
+  </form>
+</div>
+<div class="preview">
+  <app-chatbot-preview [chatbot]="formGroup.getRawValue()" [iconSrc]="imgPreview">
+  </app-chatbot-preview>
+</div>

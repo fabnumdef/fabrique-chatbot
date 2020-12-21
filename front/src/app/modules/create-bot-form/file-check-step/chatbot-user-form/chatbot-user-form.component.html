@@ -1,0 +1,65 @@
+<div class="chatbot-user-form"
+     data-cy="UserForm">
+  <form [formGroup]="chatbotUserForm" *ngIf="chatbotUserForm">
+    <mat-form-field appearance="outline">
+      <mat-label>Prénom</mat-label>
+      <input matInput
+             placeholder="Saisir..."
+             formControlName="firstName"
+             data-cy="FirstNameInput"
+             maxlength="50"
+             required>
+      <mat-error *ngIf="controls.firstName.hasError('required')">
+        Vous n'avez pas saisi de prénom.
+      </mat-error>
+      <mat-error *ngIf="controls.firstName.hasError('maxlength')">
+        Le prénom est trop long, il doit faire au maximum 50 caractères.
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Nom</mat-label>
+      <input matInput
+             placeholder="Saisir..."
+             formControlName="lastName"
+             data-cy="LastNameInput"
+             maxlength="50"
+             required>
+      <mat-error *ngIf="controls.lastName.hasError('required')">
+        Vous n'avez pas saisi de nom.
+      </mat-error>
+      <mat-error *ngIf="controls.lastName.hasError('maxlength')">
+        Le nom est trop long, il doit faire au maximum 50 caractères.
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Email</mat-label>
+      <input matInput
+             placeholder="Saisir..."
+             formControlName="email"
+             data-cy="EmailInput"
+             maxlength="255"
+             required>
+      <mat-error *ngIf="controls.email.hasError('required')">
+        Vous n'avez pas saisi d'email.
+      </mat-error>
+      <mat-error *ngIf="controls.email.hasError('maxlength')">
+        L'email est trop long, il doit faire au maximum 255 caractères.
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Rôle</mat-label>
+      <mat-select formControlName="role"
+                  data-cy="RoleSelector"
+                  placeholder="Choisir..."
+                  required>
+        <mat-option *ngFor="let role of chatbotUserRole" [value]="role">{{ chatbotUserRole_Fr[role] }}</mat-option>
+      </mat-select>
+      <mat-error *ngIf="controls.role.hasError('required')">
+        Vous n'avez pas choisi de rôle.
+      </mat-error>
+    </mat-form-field>
+  </form>
+</div>

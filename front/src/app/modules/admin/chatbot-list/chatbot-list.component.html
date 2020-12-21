@@ -1,0 +1,92 @@
+<div class="chatbot-list">
+  <h1>Chatbots</h1>
+  <mat-divider></mat-divider>
+
+  <div class="table-wrapper">
+    <table mat-table [dataSource]="chatbots">
+      <ng-container matColumnDef="id">
+        <th mat-header-cell *matHeaderCellDef>
+          #
+        </th>
+        <td mat-cell *matCellDef="let row">{{row.id}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="name">
+        <th mat-header-cell *matHeaderCellDef>
+          Nom
+        </th>
+        <td mat-cell *matCellDef="let row">{{row.name}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="problematic">
+        <th mat-header-cell *matHeaderCellDef>
+          Problématique
+        </th>
+        <td mat-cell *matCellDef="let row">{{row.problematic}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="status">
+        <th mat-header-cell *matHeaderCellDef>
+          Statut
+        </th>
+        <td mat-cell *matCellDef="let row">{{chatbotStatus_fr[row.status]}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="createdAt">
+        <th mat-header-cell *matHeaderCellDef>
+          Création
+        </th>
+        <td mat-cell *matCellDef="let row">{{row.createdAt | date: 'dd/MM/yyyy'}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef>
+        </th>
+        <td mat-cell *matCellDef="let row">
+          <button mat-icon-button color="accent"
+                  aria-label="Modifier le chatbot"
+                  (click)="editChatbot(row)">
+            <mat-icon matTooltip="Modifier le chatbot"
+                      aria-label="Bouton pour modifier le chatbot">
+              refresh
+            </mat-icon>
+          </button>
+          <button mat-icon-button color="accent"
+                  aria-label="Mettre à jour le chatbot"
+                  *ngIf="showUpdateChatbot(row)"
+                  (click)="updateChatbot(row)">
+            <mat-icon matTooltip="Mettre à jour le chatbot"
+                      aria-label="Bouton pour mettre à jour le chatbot">
+              get_app
+            </mat-icon>
+          </button>
+          <a target="_blank" [href]="'http://' + row.domainName" rel="noopener">
+            <button mat-icon-button
+                    aria-label="Aller au backoffice"
+                    color="accent">
+              <mat-icon matTooltip="Aller au backoffice"
+                        aria-label="Bouton pour aller sur le backoffice du chatbot">
+                web
+              </mat-icon>
+            </button>
+          </a>
+          <button mat-icon-button
+                  aria-label="Supprimer"
+                  color="accent"
+                  (click)="deleteChatbot(row)">
+            <mat-icon fontSet="material-icons-outlined"
+                      matTooltip="Supprimer"
+                      aria-label="Bouton pour supprimer le chatbot">
+              delete
+            </mat-icon>
+          </button>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+    <mat-progress-bar mode="indeterminate" *ngIf="loading$ | async"></mat-progress-bar>
+  </div>
+  <app-queue-list></app-queue-list>
+</div>

@@ -1,0 +1,111 @@
+<div class="create-bot-form">
+  <h1>Créer un chatbot</h1>
+  <mat-divider></mat-divider>
+
+  <mat-horizontal-stepper labelPosition="bottom" [linear]="true">
+    <mat-step [stepControl]="formArray.at(0)" [completed]="chatbotGenerated" [editable]="!chatbotGenerated">
+      <ng-template matStepLabel>
+        <h2>Paramétrage</h2>
+        <span>
+          Définissez le contenu de votre chatbot et les utilisateurs de la plateforme.
+        </span>
+      </ng-template>
+      <div class="bot-step">
+        <div class="chatbot-title">
+          <h3 data-cy="ParamTitle">Paramétrage</h3>
+        </div>
+        <div>
+          <app-file-check-step [formGroup]="formArray.at(0)">></app-file-check-step>
+        </div>
+        <div class="bot-step-actions">
+          <button mat-stroked-button
+                  color="accent"
+                  matStepperPrevious
+                  disabled>
+            Précédent
+          </button>
+          <button mat-flat-button
+                  color="accent"
+                  matStepperNext
+                  data-cy="ParamNextBtn">
+            Suivant
+          </button>
+        </div>
+      </div>
+    </mat-step>
+    <mat-step [stepControl]="formArray.at(1)" [completed]="chatbotGenerated" [editable]="!chatbotGenerated">
+      <ng-template matStepLabel>
+        <h2>Description</h2>
+        <span>
+          Renseignez le champs d’action de votre chatbot en répondant à quelques questions.
+        </span>
+      </ng-template>
+      <div class="bot-step">
+        <div class="chatbot-title">
+          <h3 data-cy="DescriptionTitle">Description</h3>
+        </div>
+        <div class="bot-step-content">
+          <app-description-step [formGroup]="formArray.at(1)"></app-description-step>
+        </div>
+        <div class="bot-step-actions">
+          <button mat-stroked-button color="accent" matStepperPrevious>Précédent</button>
+          <button mat-flat-button color="accent" data-cy="DescNextBtn" matStepperNext>Suivant</button>
+        </div>
+      </div>
+    </mat-step>
+    <mat-step [stepControl]="formArray.at(2)" [completed]="chatbotGenerated" [editable]="!chatbotGenerated">
+      <ng-template matStepLabel>
+        <h2>Personnalisation</h2>
+        <span>
+          Choisissez différents éléments de design qui vont définir l’identité de votre chatbot.
+        </span>
+      </ng-template>
+      <div class="bot-step">
+        <div class="chatbot-title">
+          <h3 data-cy="CustomizationTitle">Personnalisation</h3>
+        </div>
+        <div class="bot-step-content">
+          <app-customization-step [formGroup]="formArray.at(2)"></app-customization-step>
+        </div>
+        <div class="bot-step-actions">
+          <button mat-stroked-button color="accent" matStepperPrevious>Précédent</button>
+          <button mat-flat-button color="accent" data-cy="CustomNextBtn" matStepperNext>Suivant</button>
+        </div>
+      </div>
+    </mat-step>
+    <mat-step>
+      <ng-template matStepLabel>
+        <h2>Finalisation</h2>
+        <span>
+          Votre chatbot est enfin prêt à fonctionner. Vous allez pouvoir accéder au back-office.
+        </span>
+      </ng-template>
+      <div class="bot-step">
+        <div class="chatbot-title">
+          <h3>Finalisation</h3>
+        </div>
+        <div class="bot-step-content">
+          <app-resume-step [formArray]="formArray" [chatbotGenerated]="chatbotGenerated"></app-resume-step>
+        </div>
+        <div class="bot-step-actions">
+          <button mat-stroked-button
+                  color="accent"
+                  matStepperPrevious
+                  *ngIf="!chatbotGenerated">
+            Précédent
+          </button>
+          <button mat-flat-button
+                  color="accent"
+                  (click)="generateChatbot()"
+                  *ngIf="!chatbotGenerated"
+                  [disabled]="!formArray.valid || (chatbotService.loading$ | async)">
+            Créer le chatbot
+            <mat-spinner *ngIf="chatbotService.loading$ | async"
+                         aria-label="Création du chatbot en cours"
+                         [diameter]="20"></mat-spinner>
+          </button>
+        </div>
+      </div>
+    </mat-step>
+  </mat-horizontal-stepper>
+</div>

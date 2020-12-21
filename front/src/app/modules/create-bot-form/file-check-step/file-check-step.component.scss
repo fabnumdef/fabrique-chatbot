@@ -1,0 +1,172 @@
+@import "src/styles/variables";
+
+.file-check {
+
+  form {
+
+    .file-input {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      button {
+        margin-left: 20px;
+      }
+    }
+
+    mat-form-field {
+      width: 100%;
+    }
+
+    .chatbot-domain {
+      display: flex;
+      align-items: center;
+
+      .mat-form-field {
+        width: 300px;
+      }
+
+      & > div {
+        padding-bottom: 11px;
+      }
+    }
+
+    .user-description {
+      margin-bottom: 30px;
+    }
+
+    .user-header {
+      display: flex;
+      justify-content: space-between;
+
+      .mat-icon {
+        cursor: pointer;
+      }
+    }
+
+    .half-width-input {
+      width: 50%;
+    }
+
+    .mat-divider {
+      margin-top: 20px;
+    }
+
+    .feedback-wrapper {
+      width: 100%;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+
+      h3 {
+        margin-top: 20px;
+        color: $primary-color;
+      }
+
+      .file-wrapper {
+        width: 100%;
+        box-sizing: border-box;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        justify-content: space-between;
+        border: 1px solid $input-border-color;
+
+        .file-header {
+          display: flex;
+          background-color: $grey-lighter;
+          padding: 20px;
+          width: 100%;
+          box-sizing: border-box;
+          justify-content: space-between;
+
+          .file-name {
+            display: flex;
+            align-items: center;
+
+            .mat-icon {
+              margin-right: 10px;
+            }
+          }
+
+          .file-buttons {
+            display: flex;
+            align-items: center;
+
+            & > *:not(:last-child) {
+              margin-right: 20px;
+            }
+          }
+        }
+
+        .file-status {
+          padding: 10px 20px;
+          font-size: 12px;
+
+          .valid {
+            color: $primary-color;
+          }
+
+          .error {
+            color: $accent-color;
+          }
+        }
+
+
+        & > * {
+          display: flex;
+          align-items: center;
+
+          & > *:first-child {
+            margin-right: 15px;
+          }
+
+        }
+      }
+
+      .feedback-wrapper {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 0 20px 20px 20px;
+
+        .content {
+          display: flex;
+          width: 100%;
+          align-items: flex-start;
+
+          .number {
+            min-width: 40px;
+            background-color: $primary-color;
+            color: $white;
+            border-radius: 13px;
+            text-align: center;
+            margin-right: 15px;
+
+            &.error {
+              background-color: $accent-color;
+            }
+          }
+
+          .message {
+            a {
+              text-decoration: underline;
+              color: $accent-color;
+              cursor: pointer;
+            }
+          }
+
+          .help-btn {
+            margin-left: auto;
+          }
+        }
+
+        .mat-divider {
+          width: 100%;
+          margin-bottom: 20px;
+        }
+      }
+    }
+  }
+}

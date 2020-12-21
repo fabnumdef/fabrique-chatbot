@@ -1,0 +1,31 @@
+<div class="warnings">
+  <div class="close">
+    <button mat-icon-button
+            aria-label="Fermer la fenêtre"
+            data-cy="DialogCloseBtn"
+            color="primary"
+            [mat-dialog-close]="false">
+      <mat-icon>clear</mat-icon>
+    </button>
+  </div>
+
+  <div class="title">
+    <h2> {{ getTitle() }}</h2>
+  </div>
+
+  <div class="details">
+    <ng-container *ngFor="let item of details | keyvalue : returnKeyNumber">
+      <div class="line">
+        <div class="line-number">
+          <mat-icon color="accent">list</mat-icon>
+          <b>Ligne {{item.key > 0 ? item.key : 0}}</b>
+        </div>
+        <div>
+          {{item.value}}
+        </div>
+      </div>
+      <mat-divider></mat-divider>
+    </ng-container>
+  </div>
+</div>
+

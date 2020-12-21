@@ -1,0 +1,58 @@
+@import "src/styles/variables";
+
+.create-bot-form {
+  .mat-stepper-horizontal {
+    background-color: transparent;
+  }
+
+  ::ng-deep.mat-stepper-label-position-bottom {
+    .mat-stepper-horizontal-line, .mat-horizontal-stepper-header:not(:last-child)::after, .mat-horizontal-stepper-header:not(:first-child)::before {
+      border: none;
+    }
+
+    .mat-horizontal-content-container {
+      padding-left: 0;
+      padding-right: 0;
+    }
+
+    .mat-horizontal-stepper-header {
+      align-items: flex-start;
+
+      .mat-step-label {
+        padding: 0;
+        text-align: left;
+        white-space: normal;
+
+        h2 {
+          margin: 10px 0;
+        }
+      }
+
+      .mat-step-icon {
+        height: 36px;
+        width: 36px;
+        color: $primary-color;
+        background-color: transparent;
+        border: 2px solid $primary-color;
+        font-weight: bold;
+
+        &-selected {
+          color: $white;
+          background-color: $primary-color;
+        }
+      }
+    }
+
+    .bot-step {
+      &-actions {
+        margin-top: 20px;
+        display: flex;
+        justify-content: flex-end;
+
+        button:first-child {
+          margin-right: 15px;
+        }
+      }
+    }
+  }
+}

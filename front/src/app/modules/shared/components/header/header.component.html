@@ -1,0 +1,51 @@
+<div class="header">
+  <div class="image-wrapper" [routerLink]="'/'">
+    <img src="assets/img/logo_ministere_armees.png" alt="logo ministère des armées">
+    <img src="assets/img/logo_fabrique_chatbot.svg" alt="logo fabrique à chatbots">
+  </div>
+  <div class="action-wrapper" *ngIf="showActions">
+    <a target="_blank"
+       rel="noopener"
+       href="https://fabrique-a-chatbots.gitbook.io/">
+      <button mat-stroked-button
+              color="accent"
+              aria-label="Accéder à la documentation"
+              class="small">
+        <mat-icon>help_outline</mat-icon>
+        Voir la documentation
+      </button>
+    </a>
+    <button mat-flat-button
+            data-cy="AdminBtn"
+            color="accent"
+            [matMenuTriggerFor]="adminMenu"
+            *ngIf="isUserAdmin">
+      Administrateur
+    </button>
+    <mat-menu #adminMenu="matMenu">
+      <button mat-menu-item
+              [routerLink]="'/admin/chatbot'">
+        Chatbots 🤖
+      </button>
+      <button mat-menu-item
+              [routerLink]="'/admin/user'">
+        Utilisateurs 👨‍👩‍👧‍👦
+      </button>
+      <mat-divider></mat-divider>
+      <a target="_blank" [href]="window.location.origin + '/grafana'">
+        <button mat-menu-item>
+          Monitoring 📋
+        </button>
+      </a>
+    </mat-menu>
+    <button mat-button
+            color="primary"
+            class="chatbot-button"
+            *ngIf="user"
+            aria-label="Déconnexion"
+            (click)="logout()">
+      <mat-icon>exit_to_app</mat-icon>
+      Déconnexion
+    </button>
+  </div>
+</div>

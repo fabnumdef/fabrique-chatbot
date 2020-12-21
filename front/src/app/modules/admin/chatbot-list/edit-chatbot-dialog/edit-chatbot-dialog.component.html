@@ -1,0 +1,216 @@
+<div class="edit-chatbot">
+  <h1>Edition du chatbot</h1>
+
+  <form [formGroup]="updateChatbotFormGroup">
+    <ng-container [ngSwitch]="chatbot.status">
+      <div *ngSwitchCase="chatbotStatus.pending">
+        Le chatbot vient d'être soumis à validation. Voulez-vous l'approuver ?
+      </div>
+
+      <ng-container *ngSwitchCase="chatbotStatus.creation">
+        <p>
+          Merci de renseigner les informations suivantes afin de configurer correctement le VPS.
+        </p>
+        <mat-form-field appearance="outline">
+          <mat-label>Adresse IP</mat-label>
+          <input matInput
+                 placeholder="Saisir..."
+                 formControlName="ipAdress"
+                 maxlength="50"
+                 required>
+          <mat-error *ngIf="controls.ipAdress.hasError('required')">
+            Vous n'avez pas saisi d'adresse IP.
+          </mat-error>
+          <mat-error *ngIf="controls.ipAdress.hasError('pattern')">
+            Le format de l'adresse IP est incorrect.
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Nom de domaine</mat-label>
+          <input matInput
+                 placeholder="Saisir..."
+                 formControlName="domainName"
+                 maxlength="50">
+          <mat-error *ngIf="controls.domainName.hasError('pattern')">
+            Le format du nom de domaine est incorrect.
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Utilisateur root</mat-label>
+          <input matInput
+                 placeholder="Saisir..."
+                 formControlName="rootUser"
+                 maxlength="200"
+                 required>
+          <mat-error *ngIf="controls.rootUser.hasError('required')">
+            Vous n'avez pas saisi d'utilisateur root.
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Mot de passe root</mat-label>
+          <input matInput
+                 placeholder="Saisir..."
+                 formControlName="rootPassword"
+                 maxlength="200"
+                 required>
+          <mat-error *ngIf="controls.rootPassword.hasError('required')">
+            Vous n'avez pas saisi de mot de passe root.
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Mot de passe utilisateur</mat-label>
+          <input matInput
+                 placeholder="Saisir..."
+                 formControlName="userPassword"
+                 maxlength="200"
+                 required>
+          <mat-error *ngIf="controls.userPassword.hasError('required')">
+            Vous n'avez pas saisi de mot de passe utilisateur.
+          </mat-error>
+        </mat-form-field>
+      </ng-container>
+
+      <ng-container *ngSwitchCase="chatbotStatus.error_configuration">
+        <p>
+          Une erreur est survenue durant la configuration du chatbot. Voulez-vous relancer le processus de configuration ?.
+        </p>
+        <mat-form-field appearance="outline">
+          <mat-label>Adresse IP</mat-label>
+          <input matInput
+                 placeholder="Saisir..."
+                 formControlName="ipAdress"
+                 maxlength="50"
+                 required>
+          <mat-error *ngIf="controls.ipAdress.hasError('required')">
+            Vous n'avez pas saisi d'adresse IP.
+          </mat-error>
+          <mat-error *ngIf="controls.ipAdress.hasError('pattern')">
+            Le format de l'adresse IP est incorrect.
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Nom de domaine</mat-label>
+          <input matInput
+                 placeholder="Saisir..."
+                 formControlName="domainName"
+                 maxlength="50">
+          <mat-error *ngIf="controls.domainName.hasError('pattern')">
+            Le format du nom de domaine est incorrect.
+          </mat-error>
+        </mat-form-field>
+      </ng-container>
+
+      <ng-container *ngSwitchCase="chatbotStatus.running">
+        <p>
+          Le chatbot est en cours d'éxecution. Voulez-vous modifier son nom ?
+        </p>
+        <mat-form-field appearance="outline">
+          <mat-label>Nom</mat-label>
+          <input matInput
+                 placeholder="Saisir..."
+                 formControlName="name"
+                 maxlength="50"
+                 required>
+          <mat-error *ngIf="controls.name.hasError('required')">
+            Vous n'avez pas saisi de nom.
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Nom de domaine</mat-label>
+          <input matInput
+                 placeholder="Saisir..."
+                 formControlName="domainName"
+                 maxlength="50">
+          <mat-error *ngIf="controls.domainName.hasError('pattern')">
+            Le format du nom de domaine est incorrect.
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Branche Front</mat-label>
+          <input matInput
+                 placeholder="Saisir..."
+                 formControlName="frontBranch"
+                 maxlength="50"
+                 required>
+          <mat-error *ngIf="controls.frontBranch.hasError('required')">
+            Vous n'avez pas saisi de branche front.
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Branche Back</mat-label>
+          <input matInput
+                 placeholder="Saisir..."
+                 formControlName="backBranch"
+                 maxlength="50"
+                 required>
+          <mat-error *ngIf="controls.backBranch.hasError('required')">
+            Vous n'avez pas saisi de branche back.
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Branche Bot</mat-label>
+          <input matInput
+                 placeholder="Saisir..."
+                 formControlName="botBranch"
+                 maxlength="50"
+                 required>
+          <mat-error *ngIf="controls.botBranch.hasError('required')">
+            Vous n'avez pas saisi de branche bot.
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>API KEY</mat-label>
+          <input matInput
+                 placeholder="Saisir..."
+                 formControlName="apiKey"
+                 maxlength="200">
+        </mat-form-field>
+      </ng-container>
+    </ng-container>
+
+    <mat-checkbox #forceUpdateStatus>
+      Forcer la mise à jour du statut
+    </mat-checkbox>
+
+    <ng-container *ngIf="forceUpdateStatus.checked">
+      <mat-form-field appearance="outline">
+        <mat-label>Status</mat-label>
+        <mat-select placeholder="Choisir..."
+                    formControlName="status"
+                    required>
+          <mat-option *ngFor="let status of chatbotStatusKeys" [value]="status">
+            {{ chatbotStatus_Fr[status] }}
+          </mat-option>
+        </mat-select>
+        <mat-error *ngIf="controls.status.hasError('required')">
+          Vous n'avez pas saisi de statut.
+        </mat-error>
+      </mat-form-field>
+    </ng-container>
+  </form>
+
+  <div class="actions">
+    <button mat-flat-button
+            color="accent"
+            [mat-dialog-close]="false">
+      Annuler
+    </button>
+    <button mat-stroked-button
+            color="accent"
+            data-cy="ConfirmBtn"
+            [disabled]="!updateChatbotFormGroup.valid"
+            [mat-dialog-close]="updateChatbotFormGroup.getRawValue()">
+      Confirmer
+    </button>
+  </div>
+</div>

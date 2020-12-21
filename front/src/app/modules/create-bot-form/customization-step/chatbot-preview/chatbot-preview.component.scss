@@ -1,0 +1,113 @@
+@import "src/styles/variables";
+
+:host {
+  display: block;
+  width: 90%;
+  max-width: 360px;
+}
+
+.chatbot-preview {
+  background-color: $white;
+  border-radius: 10px;
+  box-shadow: $shadow-uniform;
+
+  .header, .footer {
+    padding: 0 20px;
+    display: flex;
+    align-items: center;
+  }
+
+  .header {
+    color: $white;
+    height: 71px;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+
+    .icon {
+      background-color: $white;
+      width: 50px;
+      height: 50px;
+      border-radius: 100px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 10px;
+      overflow: hidden;
+
+      img {
+        max-width: 50px;
+        height: auto;
+      }
+    }
+  }
+
+  .footer {
+    height: 60px;
+    font-family: $title-font;
+    font-size: 16px;
+    border-bottom-right-radius: 10px;
+    border-bottom-left-radius: 10px;
+    color: #000000;
+  }
+
+  .body {
+    padding: 20px;
+    color: $white;
+
+    .message {
+      width: 100%;
+      display: flex;
+      align-items: flex-start;
+
+      .icon {
+        background-color: $white;
+        width: 20px;
+        height: 20px;
+        border-radius: 100px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        margin: 10px 10px 0 0;
+
+        img {
+          max-width: 20px;
+          height: auto;
+        }
+      }
+
+      &:not(:last-child) {
+        margin-bottom: 10px;
+      }
+    }
+
+    .bot-message, .user-message {
+      padding: 10px;
+      border-radius: 20px;
+      width: fit-content;
+    }
+
+    .bot-message {
+      border-top-left-radius: 0;
+    }
+
+    .user-message {
+      border-top-right-radius: 0;
+      margin-left: auto;
+      color: #000000;
+    }
+  }
+}
+
+.close-chatbot-btn {
+  margin-top: 10px;
+  margin-left: auto;
+  border-radius: 100px;
+  box-shadow: $shadow-uniform;
+  width: 50px;
+  height: 50px;
+  color: $white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

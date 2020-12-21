@@ -1,0 +1,142 @@
+@import "src/styles/variables";
+
+:host {
+  display: flex;
+}
+
+.customization {
+  flex: 2;
+  margin-right: 30px;
+
+  form {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+
+    & > * {
+      width: 100%;
+    }
+
+    .icons-wrapper {
+      display: flex;
+      margin: 20px 0;
+      flex-wrap: wrap;
+
+      .icon {
+        box-shadow: $shadow-uniform;
+        border: 2px solid transparent;
+        cursor: pointer;
+        transition: border-color 0.2s;
+
+        &:hover {
+          border-color: $input-border-color-hover;
+        }
+
+        &:not(:last-child) {
+          margin-right: 20px;
+        }
+      }
+    }
+
+    .import-btn {
+      margin-top: 20px;
+    }
+
+    .hint {
+      color: $grey;
+      font-size: 12px;
+    }
+
+    .icon-file-wrapper {
+      margin-top: 20px;
+      padding: 0 20px 0 5px;
+      border: 1px solid $grey-light;
+      height: 70px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-radius: $border-radius;
+      width: 100%;
+      box-sizing: border-box;
+
+      & > * {
+        display: flex;
+        align-items: center;
+
+        & > *:not(:last-child) {
+          margin-right: 10px;
+        }
+      }
+    }
+
+    .icons-wrapper, .icon-file-wrapper {
+      .icon {
+        width: 60px;
+        height: 60px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 5px;
+        overflow: hidden;
+
+        img {
+          max-width: 60px;
+          height: auto;
+        }
+      }
+    }
+
+    .chatbot-info {
+      margin-bottom: 10px;
+    }
+
+    .color-picker-div {
+      width: 100%;
+      height: $input-height;
+      border-radius: 5px;
+      margin-bottom: 1.25em;
+      transition: border-color 0.2s;
+      border: 2px solid transparent;
+      display: flex;
+      align-items: center;
+      box-sizing: border-box;
+      background-color: $white;
+      margin-top: 3.5px;
+
+      label {
+        width: 100%;
+        padding: 0 5% 0 5%;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        height: $input-height;
+        border: 1px solid $input-border-color;
+        border-radius: 5px;
+        cursor: pointer;
+        box-sizing: border-box;
+      }
+
+      &:hover {
+        border-color: $input-border-color-hover;
+      }
+
+      .color-picker-icon {
+        height: 30px;
+        width: 30px;
+      }
+    }
+
+    mat-divider {
+      width: 100%;
+      margin: 20px 0;
+    }
+  }
+}
+
+.preview {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
