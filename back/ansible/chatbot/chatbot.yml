@@ -1,0 +1,141 @@
+---
+- name: Init Chatbot server for the Chatbot Factory
+
+  hosts: all
+
+  remote_user: chatbot_user
+
+  vars_files:
+    - ./credentials.yml
+
+  vars:
+    - ansible_user: "chatbot_user"
+    - ansible_password: "{{ USER_PASSWORD }}"
+    - ansible_become_pass: "{{ USER_PASSWORD }}"
+    - appsDir: '/var/www/'
+    - rasaDir: 'rasa-chatbot'
+    - NODEJS_VERSION: "12"
+    - ansible_distribution_release: "xenial" #trusty
+
+  tasks:
+    - name: Update and upgrade apt packages
+      become: true
+      apt:
+        upgrade: 'yes'
+        update_cache: 'yes'
+
+    - name: Install dependencies for nodejs
+      become: yes
+      apt:
+        pkg:
+          - curl
+          - software-properties-common
+
+    - name: Install the gpg key for nodejs LTS
+      become: yes
+      apt_key:
+        url: "https://deb.nodesource.com/gpgkey/nodesource.gpg.key"
+        state: present
+
+    - name: Install the nodejs LTS repos
+      become: yes
+      apt_repository:
+        repo: "deb https://deb.nodesource.com/node_{{ NODEJS_VERSION }}.x {{ ansible_distribution_release }} main"
+        state: present
+        update_cache: yes
+
+    - name: Install required dependencies (python, ssl, postgresql, node ...)
+      become: true
+      apt:
+        pkg:
+          - python3-pip
+          - build-essential
+          - libssl-dev
+          - libffi-dev
+          - bash
+          - openssl
+          - libssl-doc
+          - python3-dev
+          - python-setuptools
+          - postgresql
+          - postgresql-contrib
+          - libpq-dev
+          - python-psycopg2
+          - acl
+          - nodejs
+          - git
+          - nginx
+          - curl
+          - psmisc
+          - screen
+          - rsync
+          - certbot
+          - python-certbot-nginx
+          - ansible
+
+    - name: Install last version of pip
+      become: true
+      pip:
+        executable: pip3
+        name: pip
+        extra_args: -U
+
+    - name: Install RASA
+      become: true
+      pip:
+        executable: pip3
+        name:
+          - rasa==2.0.6
+          - psycopg2-binary
+          - rasa[spacy]
+
+    - name: NODE | Install pm2
+      become: yes
+      npm:
+        name: pm2
+        global: yes
+        production: yes
+        state: present
+
+    - name: Ensure the PostgreSQL service is running
+      service:
+        name: 'postgresql'
+        state: 'started'
+        enabled: 'yes'
+
+    - name: Ensure database is created
+      become: true
+      become_user: postgres
+      postgresql_db:
+        name: 'rasa'
+        encoding: 'UTF-8'
+        lc_collate: 'fr_FR.UTF-8'
+        lc_ctype: 'fr_FR.UTF-8'
+#        conn_limit: '100'
+        state: 'present'
+        template: 'template0'
+
+    - name: Adds unaccent extension
+      become: true
+      become_user: postgres
+      postgresql_ext:
+        name: unaccent
+        db: rasa
+
+    - name: Ensure user has access to the database
+      become: true
+      become_user: postgres
+      postgresql_user:
+        db: 'rasa'
+        name: 'rasa_user'
+        password: '{{ DB_PASSWORD }}'
+        priv: 'ALL'
+        state: 'present'
+
+    - name: Ensure user does not have unnecessary privileges
+      become: true
+      become_user: postgres
+      postgresql_user:
+        name: 'rasa_user'
+        role_attr_flags: 'NOSUPERUSER,NOCREATEDB'
+        state: 'present'

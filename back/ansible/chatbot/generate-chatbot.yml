@@ -1,0 +1,233 @@
+---
+- name: Init chatbot server
+
+  hosts: all
+
+  remote_user: chatbot_user
+
+  vars_files:
+    - ./credentials.yml
+
+  vars:
+    - ssh_key: "~/.ssh/id_rsa.pub"
+    - ansible_user: "chatbot_user"
+    - ansible_password: "{{ USER_PASSWORD }}"
+    - ansible_become_pass: "{{ USER_PASSWORD }}"
+    - appsDir: '/var/www'
+    - gitDir: '/var/www/git'
+    - nestDir: 'fabrique-chatbot-back'
+    - backDir: 'chatbot-back'
+    - botDir: 'chatbot-template'
+    - frontDir: 'chatbot-front'
+    - webchatDir: 'webchat'
+
+  tasks:
+    - name: Set right rights on www directory
+      become: true
+      file:
+        path: '{{appsDir}}'
+        group: www-data
+        mode: '774'
+        recurse: yes
+
+    # For synchronize / rsync to work
+    - name: ensure user is accessable with ssh key
+      become: true
+      authorized_key:
+        user: chatbot_user
+        key: "{{ lookup('file', '{{ ssh_key }}') }}"
+
+    - name: Copy chatbot-back
+      synchronize:
+        src: '{{ appsDir }}/{{ nestDir }}/chatbot/{{ backDir }}/'
+        dest: '{{ appsDir }}/{{ backDir }}'
+        rsync_opts:
+          - '--exclude=mediatheque/'
+          - '--exclude=historic/'
+
+    - name: Copy password-file
+      copy:
+        src: '{{ appsDir }}/{{ nestDir }}/ansible/fabrique/password_file'
+        dest: '{{ appsDir }}/{{ backDir }}/password_file'
+
+    - name: Copy env-file
+      copy:
+        src: '{{ appsDir }}/{{ nestDir }}/ansible/chatbot/.env'
+        dest: '{{ appsDir }}/{{ backDir }}/.env'
+
+    - name: Copy chatbot-front
+      synchronize:
+        src: '{{ appsDir }}/{{ nestDir }}/chatbot/{{ frontDir }}/dist/{{ frontDir }}/'
+        dest: '{{ appsDir }}/{{ frontDir }}'
+        delete: yes
+
+    - name: Copy webchat
+      synchronize:
+        src: '{{ appsDir }}/{{ nestDir }}/chatbot/{{ frontDir }}/dist/{{ webchatDir }}/'
+        dest: '{{ appsDir }}/{{ webchatDir }}'
+        delete: yes
+
+    - name: copy the nginx config file
+      copy:
+        src: '{{ appsDir }}/{{ nestDir }}/ansible/chatbot/nginx.conf'
+        dest: '/etc/nginx/nginx.conf'
+      become: yes
+
+    - name: copy the nginx site config file
+      copy:
+        src: '{{ appsDir }}/{{ nestDir }}/ansible/chatbot/nginx_conf.cfg'
+        dest: '/etc/nginx/sites-available/{{ frontDir }}.cfg'
+      become: yes
+
+    - name: add server name to the nginx site config file
+      become: yes
+      lineinfile:
+        path: '/etc/nginx/sites-available/{{ frontDir }}.cfg'
+        insertbefore : '^    location / {'
+        line: '    server_name  {{ botDomain }};'
+      when: botDomain
+
+    - name: create symlink
+      file:
+        src: '/etc/nginx/sites-available/{{ frontDir }}.cfg'
+        dest: '/etc/nginx/sites-enabled/default'
+        state: link
+      become: yes
+
+    - name: restart nginx
+      service:
+        name: nginx
+        state: restarted
+      become: yes
+
+    - name: Install SSL certificate
+      become: yes
+      command:
+        cmd: 'certbot --nginx -d {{ botDomain }} -n --redirect --agree-tos -m vincent.laine@beta.gouv.fr'
+      when: botDomain
+
+    - name: Install RASA version
+      become: true
+      pip:
+        executable: pip3
+        name:
+          - rasa=>2.1.0,<3.0
+          - psycopg2-binary
+
+    - name: Copy chatbot-template
+      synchronize:
+        src: '{{ appsDir }}/{{ nestDir }}/chatbot/{{ botDir }}/'
+        dest: '{{ appsDir }}/{{ botDir }}'
+        rsync_opts:
+          - '--exclude=models/'
+
+    - name: delete user access with ssh key
+      become: true
+      authorized_key:
+        user: chatbot_user
+        state: absent
+        key: "{{ lookup('file', '{{ ssh_key }}') }}"
+
+
+    - name: npm install chatbot-back
+      become: yes
+      command:
+        cmd: sudo npm install --build-from-source
+        chdir: '{{ appsDir }}/{{ backDir }}'
+
+    - name: npm build chatbot-back
+      become: yes
+      command:
+        cmd: 'npm run build'
+        chdir: '{{ appsDir }}/{{ backDir }}'
+
+    - name: npm copy env file
+      become: yes
+      command:
+        cmd: 'npm run copy'
+        chdir: '{{ appsDir }}/{{ backDir }}'
+
+    - name: NODE | Stop APP
+      shell: pm2 stop ChatbotBack
+      args:
+        chdir: '{{ appsDir }}/{{ backDir }}'
+      ignore_errors: yes
+      become: yes
+
+    - name: NODE | Start APP
+      shell: pm2 start main.js --name ChatbotBack
+      args:
+        chdir: '{{ appsDir }}/{{ backDir }}/dist'
+      become: yes
+
+    - name: Update PM2 script at startup
+      become: yes
+      shell: pm2 startup
+
+    - name: reload pm2 startup script
+      become: yes
+      systemd:
+        name: pm2-root.service
+        state: reloaded
+
+    - name: Copy endpoints.yml rasa file
+      become: true
+      copy:
+        src: '{{ appsDir }}/{{ botDir }}/endpoints.example.yml'
+        dest: '{{ appsDir }}/{{ botDir }}/endpoints.yml'
+        remote_src: yes
+
+    - name: Update endpoints.yml rasa file
+      become: true
+      lineinfile:
+        path: '{{ appsDir }}/{{ botDir }}/endpoints.yml'
+        regexp: '^  password:'
+        line: '  password: "{{ DB_PASSWORD }}"'
+
+    - name: Train rasa
+      become: true
+      command:
+        chdir: '{{ appsDir }}/{{ botDir }}/'
+        cmd: 'rasa train --num-threads 8'
+
+    - name: Stop rasa chatbot
+      become: true
+      command: 'pkill screen'
+      ignore_errors: true
+
+    - name: Start rasa chatbot
+      become: true
+      command:
+        chdir: '{{ appsDir }}/{{ botDir }}/'
+        cmd: 'screen -S rasa -dmS rasa run -m models --enable-api --log-file out.log --cors "*" --debug'
+
+    - name: copy rc.local file to restart bot on boot
+      copy:
+        src: '{{ appsDir }}/{{ nestDir }}/ansible/chatbot/rc.local'
+        dest: '/etc/rc.local'
+      become: yes
+
+    - name: Set right rights on rc.local file
+      become: yes
+      file:
+        path: '/etc/rc.local'
+        mode: '755'
+
+    - name: create git dir
+      become: yes
+      file:
+        path: '{{ gitDir }}'
+        state: directory
+        mode: '755'
+
+    - name: copy files for bot
+      copy:
+        src: '{{ item.src }}'
+        dest: '{{ item.dest }}'
+      with_items:
+        - { src: '{{ appsDir }}/{{ nestDir }}/ansible/chatbot/rc.local', dest: '{{ gitDir }}/rc.local' }
+        - { src: '{{ appsDir }}/{{ nestDir }}/ansible/chatbot/nginx.conf', dest: '{{ gitDir }}/nginx.conf' }
+        - { src: '{{ appsDir }}/{{ nestDir }}/ansible/chatbot/nginx_conf.cfg', dest: '{{ gitDir }}/nginx_conf.cfg' }
+        - { src: '{{ appsDir }}/{{ nestDir }}/ansible/chatbot/.env', dest: '{{ gitDir }}/.env' }
+      become: yes
+

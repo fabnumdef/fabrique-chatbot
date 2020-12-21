@@ -1,0 +1,47 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "declaration": true,
+    "removeComments": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "target": "es2017",
+    "sourceMap": true,
+    "outDir": "./dist",
+    "baseUrl": "./",
+    "incremental": true,
+    "paths": {
+      "@core/*": [
+        "src/core/*"
+      ],
+      "@dto/*": [
+        "src/core/dto/*"
+      ],
+      "@entity/*": [
+        "src/core/entities/*"
+      ],
+      "@model/*": [
+        "src/core/models/*"
+      ],
+      "@enum/*": [
+        "src/core/enums/*"
+      ],
+      "@service/*": [
+        "src/core/services/*"
+      ],
+      "@guard/*": [
+        "src/core/guards/*"
+      ],
+      "@interceptor/*": [
+        "src/core/interceptors/*"
+      ],
+      "@mock/*": [
+        "test/data/*"
+      ],
+      "@decorator/*": [
+        "src/core/decorators/*"
+      ]
+    }
+  },
+  "exclude": ["node_modules", "dist", "chatbot"]
+}

@@ -1,0 +1,123 @@
+---
+
+- name: Init Prometheus
+
+  hosts: localhost
+
+  remote_user: fab_user
+
+  vars:
+    - prometheusVersion: '2.20.0-rc.1'
+    - prometheusUser: 'prometheus_user'
+    - prometheusGroup: 'prometheus_group'
+
+  tasks:
+    - name: Creating prometheus user group
+      group: name="{{ prometheusGroup }}"
+      become: yes
+
+    - name: Creating prometheus user
+      user:
+        name: "{{prometheusUser}}"
+        group: "{{prometheusGroup}}"
+        system: yes
+        shell: "/sbin/nologin"
+        comment: "{{prometheusUser}} nologin User"
+        createhome: "no"
+        state: present
+
+    - name: Install prometheus
+      unarchive:
+        src: "https://github.com/prometheus/prometheus/releases/download/v{{ prometheusVersion }}/prometheus-{{ prometheusVersion }}.linux-amd64.tar.gz"
+        dest: /tmp/
+        remote_src: yes
+
+    - name: Copy prometheus file to bin
+      copy:
+        src: "/tmp/prometheus-{{ prometheusVersion }}.linux-amd64/prometheus"
+        dest: "/usr/local/bin/prometheus"
+        owner: "{{prometheusUser}}"
+        group: "{{prometheusGroup}}"
+        remote_src: yes
+        mode: 0755
+
+    - name: Delete prometheus tmp folder
+      file:
+        path: '/tmp/prometheus-{{ prometheusVersion }}.linux-amd64'
+        state: absent
+
+    - name: Creates directories
+      file:
+        path: /etc/prometheus
+        state: directory
+        owner: '{{prometheusUser}}'
+        group: '{{prometheusGroup}}'
+        mode: 0755
+
+    - name: Creates directories
+      file:
+        path: /var/lib/prometheus
+        state: directory
+        owner: '{{prometheusUser}}'
+        group: '{{prometheusGroup}}'
+        mode: 0755
+
+    - name: config file
+      copy:
+        src: prometheus.conf.yml
+        dest: /etc/prometheus/prometheus.yml
+
+    - name: Copy systemd init file
+      copy:
+        src: prometheus.init.service
+        dest: /etc/systemd/system/prometheus.service
+
+    - name: Start prometheus service
+      systemd:
+        daemon_reload: yes
+        name: prometheus
+        state: started
+        enabled: yes
+
+    - name: Check if prometheus is accessible
+      uri:
+        url: http://localhost:9090
+        method: GET
+        status_code: 200
+
+    - name: Add Grafana apt key
+      apt_key:
+        url: https://packages.grafana.com/gpg.key
+        state: present
+
+    - name: Add Grafana apt package
+      apt_repository:
+        repo: deb https://packages.grafana.com/oss/deb stable main
+        state: present
+
+    - name: Update and upgrade apt packages
+      apt:
+        upgrade: 'yes'
+        update_cache: 'yes'
+
+    - name: Install Grafana
+      apt:
+        pkg:
+          - grafana
+
+    - name: config file
+      copy:
+        src: grafana.conf.ini
+        dest: /etc/grafana/grafana.ini
+
+    - name: Start Grafana service
+      systemd:
+        name: grafana-server
+        state: started
+        enabled: yes
+
+    - name: Check if Grafana is accessible
+      uri:
+        url: http://localhost:3001
+        method: GET
+        status_code: 200

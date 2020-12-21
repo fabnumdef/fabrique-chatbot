@@ -1,0 +1,119 @@
+---
+
+# Prerequisits: SSH access for user with password
+
+- hosts: all
+
+  remote_user: fab_user
+
+  tasks:
+
+    - name: Do not allow root access via ssh
+      become: yes
+      lineinfile:
+        line: PermitRootLogin no
+        dest: /etc/ssh/sshd_config
+        regexp: ^PermitRootLogin
+      notify: restart ssh
+
+    - name: Do not allow ssh access via password
+      become: yes
+      lineinfile:
+        line: PasswordAuthentication no
+        dest: /etc/ssh/sshd_config
+        regexp: ^PasswordAuthentication
+      notify: restart ssh
+
+    - name: Delete ssh host keys
+      become: yes
+      shell: "rm /etc/ssh/ssh_host_* && dpkg-reconfigure openssh-server"
+      notify: restart ssh
+      when: renew_ssh is defined and renew_ssh == "yes"
+
+    - name: Generate ssh key
+      become: yes
+      openssh_keypair:
+        path: ~/.ssh/id_rsa
+
+    - name: Update and upgrade apt packages
+      become: true
+      apt:
+        upgrade: 'yes'
+        update_cache: 'yes'
+
+    - name: Make sure ansible is installed
+      become: true
+      apt:
+        name: ansible
+
+    - name: Make sure uft is installed
+      become: yes
+      apt:
+        name: ufw
+
+    - name: Configure firewall
+      become: yes
+      ufw:
+        policy: deny
+        rule: allow
+        name: OpenSSH
+        state: enabled
+
+    - name: Configure firewall
+      become: yes
+      ufw:
+        rule: allow
+        name: smtp
+        state: enabled
+
+    - name: Open port 80
+      become: yes
+      ufw:
+        rule: allow
+        port: '80'
+        proto: tcp
+
+    - name: Open port 443
+      become: yes
+      ufw:
+        rule: allow
+        port: '443'
+        proto: tcp
+
+    - name: Open port 465
+      become: yes
+      ufw:
+        rule: allow
+        port: '465'
+        proto: tcp
+
+    - name: Open port 3000
+      become: yes
+      ufw:
+        rule: allow
+        port: '3000'
+        proto: tcp
+        src: 127.0.0.1
+
+    - name: Open port 3001
+      become: yes
+      ufw:
+        rule: allow
+        port: '3001'
+        proto: tcp
+        src: 127.0.0.1
+
+    - name: Open port 9090
+      become: yes
+      ufw:
+        rule: allow
+        port: '9090'
+        proto: tcp
+        src: 127.0.0.1
+
+  handlers:
+    - name: restart ssh
+      become: yes
+      service:
+        name: ssh
+        state: restarted
