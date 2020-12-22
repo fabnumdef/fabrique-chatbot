@@ -140,7 +140,7 @@ jobs:
         with:
           source: "./back/"
           target: "~/fabrique-chatbot-back/"
-          strip_components: 1
+          strip_components: 2
           timeout: 240s
 
       - name: copy ansible scripts via ssh key
