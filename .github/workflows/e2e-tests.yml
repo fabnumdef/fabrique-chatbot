@@ -17,7 +17,7 @@ jobs:
           start: npm run start:dev
           wait-on: 'http://localhost:4200'
           wait-on-timeout: 180
-          project: ./front
+          working-directory: front
         env:
           CYPRESS_USER_EMAIL: ${{ secrets.CYPRESS_USER_EMAIL }}
           CYPRESS_USER_PASSWORD: ${{ secrets.CYPRESS_USER_PASSWORD }}
