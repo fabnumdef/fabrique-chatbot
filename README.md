@@ -2,7 +2,9 @@
   <a href="https://chatbot.fabnum.fr" target="blank"><img src="https://chatbot.d.fabnum.fr/assets/img/logo_fabrique_chatbot.svg" width="320" alt="Logo Fabrique à chatbots" /></a>
 </p>
 
-## Fabrique - BACK
+## Fabrique à Chatbots
+[![build status](https://github.com/fabnumdef/fabrique-chatbot-front/workflows/Build/badge.svg)](https://github.com/fabnumdef/fabrique-chatbot-front/actions)
+[![Cypress status](https://img.shields.io/badge/cypress.io-tests-green.svg)](https://dashboard.cypress.io/projects/v5uzfp/runs)
 <img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /> <img src="https://github.com/fabnumdef/fabrique-chatbot-back/workflows/Build%20&%20Deploy/badge.svg">
 
 L’objectif de la ‘Fabrique à chatbots’ est de détailler les étapes de réalisation d’un chatbot — de l’identification d’un cas d’usage, à la mise en place de l’interface du chatbot — afin de ne pas créer de ruptures dans l’expérience utilisateur, et de fournir les documents/code/template utiles pour la réalisation d’un chatbot.
@@ -13,7 +15,11 @@ C’est également une aide pratique pour la constitution d’une base documenta
 
 ### Architecture
 
+Frontend sous [Angular 10](https://angular.io/docs) couplé à [Angular Material](https://material.angular.io/).
+
 Backend sous [NestJS 6](https://docs.nestjs.com/), framework [NodeJS](http://nodejs.org).
+
+Tests réalisés avec [Cypress](https://docs.cypress.io/).
 
 | Repo Git           | URL                                                   | Technologies       | Description                        |
 | ------------------ | ----------------------------------------------------- | ------------------ | ---------------------------------- |
@@ -25,6 +31,14 @@ Backend sous [NestJS 6](https://docs.nestjs.com/), framework [NodeJS](http://nod
 
 ### Utilisation
 
+#### Front
+1. Cloner le repo et `cd` dedans
+2. `cp env.example .env`
+3. Editer le fichier `.env`
+4. `npm install`
+5. `npm run start`
+
+#### Back
 Le Back est couplé à une base de données (PostgreSQL dans notre cas), les données de connexion doivent être renseignée dans le fichier `.env`.
 
 1. Cloner le repo et `cd` dedans
@@ -35,7 +49,7 @@ Le Back est couplé à une base de données (PostgreSQL dans notre cas), les don
 
 ### Tests
 
-// TODO
+Run `npm run cypress:local`
 
 ## Restons en contact
 

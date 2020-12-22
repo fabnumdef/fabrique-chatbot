@@ -1,0 +1,60 @@
+name: Build
+on:
+  pull_request
+
+jobs:
+  build_front:
+    runs-on: ubuntu-latest
+    env:
+      working-directory: ./front
+
+    steps:
+      - uses: actions/checkout@v1
+      - uses: actions/setup-node@v1 #this installs node and npm for us
+        with:
+          node-version: '10.x'
+
+      - uses: actions/cache@v1 # this allows for re-using node_modules caching, making builds a bit faster.
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      - name: install packages
+        run: npm install #TODO: --only-prod, le build crash à voir pq
+        working-directory: ${{env.working-directory}}
+
+      - name: install angular cli
+        run: npm install -g @angular/cli > /dev/null
+        working-directory: ${{env.working-directory}}
+
+      - name: build prod
+        run: npm run build:prod
+        working-directory: ${{env.working-directory}}
+
+  build_back:
+    runs-on: ubuntu-latest
+    env:
+      working-directory: ./back
+
+    steps:
+      - uses: actions/checkout@v1
+      - uses: actions/setup-node@v1 #this installs node and npm for us
+        with:
+          node-version: '10.x'
+
+      - uses: actions/cache@v1 # this allows for re-using node_modules caching, making builds a bit faster.
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      - name: install packages
+        run: npm install
+        working-directory: ${{env.working-directory}}
+
+      - name: build
+        run: npm run build
+        working-directory: ${{env.working-directory}}
