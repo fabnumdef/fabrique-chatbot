@@ -18,6 +18,11 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-node-
 
+      - run: cd front/
       - run: npm install #TODO: --only-prod, le build crash à voir pq
       - run: npm install -g @angular/cli > /dev/null
       - run: npm run build:prod
+
+      - run: cd ../back/
+      - run: npm install
+      - run: npm run build
