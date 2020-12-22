@@ -2,18 +2,19 @@ name: Build & Deploy
 on:
   push:
     tags:
-      - *
+      - '*'
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - name: Set env to dev
-        if: endsWith(github.ref, '/develop')
+        if: endsWith(github.ref, '-beta')
         run: |
           echo "ENVIRONMENT=dev" >> $GITHUB_ENV
+
       - name: Set env to prod
-        if: endsWith(github.ref, '/master')
+        if: endsWith(github.ref, '-prod')
         run: |
           echo "ENVIRONMENT=prod" >> $GITHUB_ENV
 
@@ -72,13 +73,22 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-node-
 
-      - run: npm install #TODO: --only-prod, le build crash à voir pq
-      - run: npm install -g @angular/cli > /dev/null
+      - name: install packages
+        run: npm install #TODO: --only-prod, le build crash à voir pq
+        working-directory: ./front
 
-      - run: npm run build:dev
+      - name: install angular cli
+        run: npm install -g @angular/cli > /dev/null
+        working-directory: ./front
+
+      - name: build dev
+        run: npm run build:dev
+        working-directory: ./front
         if: ${{ env.ENVIRONMENT != 'prod' }}
 
-      - run: npm run build:prod
+      - name: build prod
+        run: npm run build:prod
+        working-directory: ./front
         if: ${{ env.ENVIRONMENT == 'prod' }}
 
       - name: copy front app via ssh key
@@ -172,4 +182,3 @@ jobs:
         with:
           script:
             rm -rf ~/fabrique-chatbot-back
-
