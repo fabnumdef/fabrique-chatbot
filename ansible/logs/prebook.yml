@@ -1,0 +1,28 @@
+---
+
+# Prerequisite:
+#   ssh access with root and password
+#   ssh authentication key on local machine
+
+- hosts: all
+
+  vars:
+    - ansible_user: "{{ ROOT_USER | default('debian') }}"
+    - ansible_password: "{{ ROOT_PASSWORD }}"
+
+  remote_user: debian
+
+  tasks:
+
+    - name: ensure sudo is installed
+      become: true
+      apt:
+        name: sudo
+
+    - name: ensure user is present
+      become: true
+      user:
+        name: log_user
+        append: yes
+        groups: sudo, root, www-data
+        password: "{{ USER_PASSWORD | password_hash('sha512') }}"
