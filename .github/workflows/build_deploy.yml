@@ -5,7 +5,7 @@ on:
       - '*'
 
 jobs:
-  build:
+  build-and-deploy:
     runs-on: ubuntu-latest
     steps:
       - name: Set env to dev
@@ -101,7 +101,7 @@ jobs:
         with:
           source: "./front/dist/fabrique-chatbot-front/"
           target: "~/fabrique-chatbot-front/"
-          strip_components: 3
+          strip_components: 4
           timeout: 240s
 
       - name: copy ansible scripts via ssh key
@@ -112,7 +112,7 @@ jobs:
           PORT: 22
           KEY: ${{ secrets.SSH_PRIVATE_KEY }}
         with:
-          source: "./ansible/"
+          source: "./ansible/front/"
           target: "~/fabrique-chatbot-front/"
           timeout: 120s
 

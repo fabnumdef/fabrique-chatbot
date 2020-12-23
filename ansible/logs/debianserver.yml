@@ -4,13 +4,10 @@
 
 - hosts: all
 
-  remote_user: chatbot_user
-
-  vars_files:
-    - ./credentials.yml
+  remote_user: log_user
 
   vars:
-    - ansible_user: "chatbot_user"
+    - ansible_user: "log_user"
     - ansible_password: "{{ USER_PASSWORD }}"
     - ansible_become_pass: "{{ USER_PASSWORD }}"
 
@@ -55,13 +52,6 @@
       ufw:
         rule: allow
         port: '80'
-        proto: tcp
-
-    - name: Open port 5005
-      become: yes
-      ufw:
-        rule: allow
-        port: '5005'
         proto: tcp
 
   handlers:
