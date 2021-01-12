@@ -8,7 +8,6 @@
 
   vars:
     - ansible_user: "fab_user"
-#    - ansible_password: "{{ USER_PASSWORD }}"
     - ansible_become_pass: "{{ USER_PASSWORD }}"
     # BEATS
     - beats_version: 6.8.13
