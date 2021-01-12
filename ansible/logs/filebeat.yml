@@ -1,0 +1,27 @@
+---
+
+# Prerequisites: SSH access for user with password
+
+- hosts: all
+
+  remote_user: log_user
+
+  vars:
+    - ansible_user: "log_user"
+    - ansible_password: "{{ USER_PASSWORD }}"
+    - ansible_become_pass: "{{ USER_PASSWORD }}"
+    # BEATS
+    - beats_version: 7.10.1
+    - beat: filebeat
+    - beat_conf:
+        logging.to_files: true
+        filebeat:
+          inputs:
+            - type: log
+              enabled: true
+              paths:
+                - /var/log/*.log
+    - output_conf: {"logstash":{"hosts":["127.0.0.1:5044"]}}
+
+  roles:
+    - role: elastic.beats
