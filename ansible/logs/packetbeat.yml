@@ -2,19 +2,20 @@
 
 # Prerequisites: SSH access for user with password
 
-- hosts: all
+- hosts: localhost
 
-  remote_user: log_user
+  remote_user: fab_user
 
   vars:
-    - ansible_user: "log_user"
-    - ansible_password: "{{ USER_PASSWORD }}"
+    - ansible_user: "fab_user"
     - ansible_become_pass: "{{ USER_PASSWORD }}"
     # BEATS
-    - beats_version: 7.10.1
+    - beats_version: 6.8.13
     - beat: packetbeat
+    - oss_version: true
     - beat_conf:
         logging.to_files: true
+        setup.template.enabled: false
         packetbeat:
           interfaces.device: any
           interfaces.internal_networks:
@@ -24,12 +25,6 @@
             period: 30s
           protocols:
             - type: icmp
-#            - type: amqp
-#              ports: [ 5672 ]
-#            - type: cassandra
-#              ports: [ 9042 ]
-#            - type: dhcpv4
-#              ports: [ 67, 68 ]
             - type: dns
               ports: [ 53 ]
               include_authorities: true
@@ -38,18 +33,10 @@
               ports: [ 80, 8080, 8000, 5000, 8002, 5601 ]
             - type: memcache
               ports: [ 11211 ]
-#            - type: mysql
-#              ports: [ 3306,3307 ]
             - type: pgsql
               ports: [ 5432 ]
             - type: redis
               ports: [ 6379 ]
-#            - type: thrift
-#              ports: [ 9090 ]
-#            - type: mongodb
-#              ports: [ 27017 ]
-#            - type: nfs
-#              ports: [ 2049 ]
             - type: tls
               ports:
                 - 443   # HTTPS
@@ -66,7 +53,14 @@
               keep_original: true
           procs.enabled: false
           ignore_outgoing: false
-    - output_conf: {"logstash":{"hosts":["127.0.0.1:5044"]}}
+    - output_conf: {"elasticsearch":{
+      "hosts":["{{ ELASTIC_HOST }}"],
+      "protocol": "https",
+      "username":"{{ ELASTIC_USERNAME }}",
+      "password":"{{ ELASTIC_PASSWORD }}",
+      "index":"{{ ELASTIC_PACKETBEAT_INDEX }}",
+      "ssl.enabled": true
+    }}
 
   roles:
     - role: elastic.beats
