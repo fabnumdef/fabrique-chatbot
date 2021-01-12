@@ -9,6 +9,17 @@
   vars:
     - ansible_become_pass: "{{ USER_PASSWORD }}"
 
+  tasks:
+    - name: Add elastic conf on DB
+      become: yes
+      become_user: postgres
+      postgresql_query:
+        db: 'fabrique_chatbot'
+        query: "INSERT INTO fabrique_config (elastic_host, elastic_username, elastic_password, elastic_metricbeat_index, elastic_packetbeat_index, elastic_filebeat_index) VALUES ('{{ ELASTIC_HOST }}', '{{ ELASTIC_USERNAME }}', '{{ ELASTIC_PASSWORD }}', '{{ ELASTIC_METRICBEAT_INDEX }}', '{{ ELASTIC_PACKETBEAT_INDEX }}', '{{ ELASTIC_FILEBEAT_INDEX }}') ON CONFLICT (id) DO UPDATE SET elastic_host='{{ ELASTIC_HOST }}', elastic_username='{{ ELASTIC_USERNAME }}', elastic_password='{{ ELASTIC_PASSWORD }}', elastic_metricbeat_index='{{ ELASTIC_METRICBEAT_INDEX }}', elastic_packetbeat_index='{{ ELASTIC_PACKETBEAT_INDEX }}', elastic_filebeat_index='{{ ELASTIC_FILEBEAT_INDEX }}'"
+
+    - name: Ansible galaxy install elastic.beats role
+      shell: 'ansible-galaxy install elastic.beats,v7.10.1'
+
 - name: install metricbeat
   import_playbook: metricbeat.yml
   vars:

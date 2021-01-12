@@ -6,6 +6,9 @@ import { Chatbot } from "@entity/chatbot.entity";
 import { HttpService } from "@nestjs/common";
 import { LaunchUpdateChatbotDto } from "@dto/launch-update-chatbot.dto";
 import * as fs from "fs";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Repository } from "typeorm";
+import { FabriqueConfig } from "@entity/config.entity";
 
 const FormData = require('form-data');
 
@@ -16,7 +19,8 @@ export class AdminProcessor {
 
   constructor(private readonly _chatbotGenerationService: ChatbotGenerationService,
               private readonly _chatbotService: ChatbotService,
-              private readonly _http: HttpService) {
+              private readonly _http: HttpService,
+              @InjectRepository(FabriqueConfig) private readonly _fabriqueConfigRepository: Repository<FabriqueConfig>) {
   }
 
   @Process('update')
@@ -24,6 +28,7 @@ export class AdminProcessor {
     console.log('Update Chatbot...', job.data.chatbot.id);
 
     const chatbot: Chatbot = job.data.chatbot;
+    const fabriqueConfig: FabriqueConfig = await this._fabriqueConfigRepository.findOne(1);
     const updateChatbot: LaunchUpdateChatbotDto = job.data.updateChatbot;
     const host_url = chatbot.domain_name ? `https://${chatbot.domain_name}` : `http://${chatbot.ip_adress}`;
 
@@ -40,6 +45,14 @@ export class AdminProcessor {
       updateForm.append('botBranch', chatbot.bot_branch);
       updateForm.append('nginx_conf', nginx_conf);
       updateForm.append('nginx_site', nginx_site);
+      if(fabriqueConfig) {
+        updateForm.append('elastic_host', fabriqueConfig.elastic_host);
+        updateForm.append('elastic_username', fabriqueConfig.elastic_username);
+        updateForm.append('elastic_password', fabriqueConfig.elastic_password);
+        updateForm.append('elastic_metricbeat_index', fabriqueConfig.elastic_metricbeat_index);
+        updateForm.append('elastic_packetbeat_index', fabriqueConfig.elastic_packetbeat_index);
+        updateForm.append('elastic_filebeat_index', fabriqueConfig.elastic_filebeat_index);
+      }
       const headers = {
         ...updateForm.getHeaders(),
         ...{'x-api-key': chatbot.api_key},
