@@ -17,6 +17,7 @@ import { ChatbotUser } from "@entity/chatbot-user.entity";
 import { MailerModule } from "@nestjs-modules/mailer";
 import { HealthController } from './health/health.controller';
 import { BullModule } from "@nestjs/bull";
+import { FabriqueConfig } from "@entity/config.entity";
 
 @Module({
   imports: [
@@ -31,7 +32,7 @@ import { BullModule } from "@nestjs/bull";
       username: process.env.DATABASE_USER,
       password: process.env.DATABASE_PASSWORD,
       database: process.env.DATABASE_NAME,
-      "entities": [User, Chatbot, ChatbotUser],
+      "entities": [User, Chatbot, ChatbotUser, FabriqueConfig],
       "synchronize": true
     }),
     MailerModule.forRoot({
