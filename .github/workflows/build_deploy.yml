@@ -171,7 +171,7 @@ jobs:
             ansible-vault decrypt --vault-password-file ~/fabrique-chatbot-back/ansible/fabrique/password_file ${{ steps.env_file.outputs.value }}
             mv ${{ steps.env_file.outputs.value }} ~/fabrique-chatbot-back/ansible/fabrique/.env
             ansible-playbook ~/fabrique-chatbot-back/ansible/fabrique/backserver.yml --vault-password-file ~/fabrique-chatbot-back/ansible/fabrique/password_file --extra-vars 'DB_PASSWORD='"${{ steps.db_password.outputs.value }}"' USER_PASSWORD='"${{ steps.user_password.outputs.value }}"' DOMAIN='${{ steps.domain.outputs.value }}''
-            ansible-playbook ~/fabrique-chatbot-back/ansible/logs/elastic.yml --vault-password-file ~/fabrique-chatbot-back/ansible/fabrique/password_file --extra-vars 'USER_PASSWORD='"${{ steps.user_password.outputs.value }}"' ELASTIC_HOST='${{ secrets.ELASTIC_HOST }}' ELASTIC_USERNAME='${{ secrets.ELASTIC_USERNAME }}' ELASTIC_PASSWORD='"${{ secrets.ELASTIC_PASSWORD }}"' ELASTIC_METRICBEAT_INDEX='${{ secrets.ELASTIC_METRICBEAT_INDEX }}''
+            ansible-playbook ~/fabrique-chatbot-back/ansible/logs/elastic.yml --vault-password-file ~/fabrique-chatbot-back/ansible/fabrique/password_file --extra-vars 'USER_PASSWORD='"${{ steps.user_password.outputs.value }}"' ELASTIC_HOST='${{ secrets.ELASTIC_HOST }}' ELASTIC_USERNAME='${{ secrets.ELASTIC_USERNAME }}' ELASTIC_PASSWORD='"${{ secrets.ELASTIC_PASSWORD }}"' ELASTIC_METRICBEAT_INDEX='${{ secrets.ELASTIC_METRICBEAT_INDEX }}' ELASTIC_PACKETBEAT_INDEX='${{ secrets.ELASTIC_PACKETBEAT_INDEX }}''
 
       - name: delete tmp dir
         uses: appleboy/ssh-action@master

@@ -7,8 +7,6 @@
   remote_user: fab_user
 
   vars:
-#    - ansible_user: "fab_user"
-#    - ansible_password: "{{ USER_PASSWORD }}"
     - ansible_become_pass: "{{ USER_PASSWORD }}"
 
 - name: install metricbeat
@@ -19,11 +17,15 @@
     ELASTIC_USERNAME: "{{ ELASTIC_USERNAME }}"
     ELASTIC_PASSWORD: "{{ ELASTIC_PASSWORD }}"
     ELASTIC_METRICBEAT_INDEX: "{{ ELASTIC_METRICBEAT_INDEX }}"
-#
-#- name: install packetbeat
-#  import_playbook: packetbeat.yml
-#  vars:
-#    USER_PASSWORD: "{{ USER_PASSWORD }}"
+
+- name: install packetbeat
+  import_playbook: packetbeat.yml
+  vars:
+    USER_PASSWORD: "{{ USER_PASSWORD }}"
+    ELASTIC_HOST: "{{ ELASTIC_HOST }}"
+    ELASTIC_USERNAME: "{{ ELASTIC_USERNAME }}"
+    ELASTIC_PASSWORD: "{{ ELASTIC_PASSWORD }}"
+    ELASTIC_PACKETBEAT_INDEX: "{{ ELASTIC_PACKETBEAT_INDEX }}"
 #
 #- name: install filebeat
 #  import_playbook: filebeat.yml
