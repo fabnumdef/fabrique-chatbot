@@ -26,8 +26,12 @@
     ELASTIC_USERNAME: "{{ ELASTIC_USERNAME }}"
     ELASTIC_PASSWORD: "{{ ELASTIC_PASSWORD }}"
     ELASTIC_PACKETBEAT_INDEX: "{{ ELASTIC_PACKETBEAT_INDEX }}"
-#
-#- name: install filebeat
-#  import_playbook: filebeat.yml
-#  vars:
-#    USER_PASSWORD: "{{ USER_PASSWORD }}"
+
+- name: install filebeat
+  import_playbook: filebeat.yml
+  vars:
+    USER_PASSWORD: "{{ USER_PASSWORD }}"
+    ELASTIC_HOST: "{{ ELASTIC_HOST }}"
+    ELASTIC_USERNAME: "{{ ELASTIC_USERNAME }}"
+    ELASTIC_PASSWORD: "{{ ELASTIC_PASSWORD }}"
+    ELASTIC_FILEBEAT_INDEX: "{{ ELASTIC_FILEBEAT_INDEX }}"
