@@ -4,59 +4,28 @@
 
 - hosts: all
 
-  remote_user: log_user
+  remote_user: fab_user
 
   vars:
-    - ansible_user: "log_user"
+    - ansible_user: "fab_user"
     - ansible_password: "{{ USER_PASSWORD }}"
     - ansible_become_pass: "{{ USER_PASSWORD }}"
-    # ELASTICSEARCH
-    - es_version: 7.10.1
-    - es_data_dirs:
-      - "/opt/elasticsearch/data"
-    - es_log_dir: "/opt/elasticsearch/logs"
-    - es_config:
-        node.name: "node1"
-        cluster.name: "custom-cluster"
-        discovery.seed_hosts: "127.0.0.1"
-        cluster.initial_master_nodes: "node1"
-        http.port: 9200
-        transport.port: 9300
-        node.data: true
-        node.master: true
-        bootstrap.memory_lock: true
-        network.host: 0.0.0.0
-    - es_heap_size: 1g
-    - es_api_port: 9200
-    # KIBANA
-    - kibana_version: 7.x
-    - kibana_elasticsearch_url: "http://127.0.0.1:9200"
-    # LOGSTASH
-    - logstash_version: 7.x
 
-  roles:
-    - role: elastic.elasticsearch
-    - role: geerlingguy.kibana
-      become: yes
-
-  tasks:
-    - name: Open port 9200
-      become: yes
-      ufw:
-        rule: allow
-        port: '9200'
-        proto: tcp
-
-    - name: Open port 9300
-      become: yes
-      ufw:
-        rule: allow
-        port: '9300'
-        proto: tcp
-
-    - name: Open port 5601
-      become: yes
-      ufw:
-        rule: allow
-        port: '5601'
-        proto: tcp
+- name: install metricbeat
+  import_playbook: metricbeat.yml
+  vars:
+    USER_PASSWORD: "{{ USER_PASSWORD }}"
+    ELASTIC_HOST: "{{ ELASTIC_HOST }}"
+    ELASTIC_USERNAME: "{{ ELASTIC_USERNAME }}"
+    ELASTIC_PASSWORD: "{{ ELASTIC_PASSWORD }}"
+    ELASTIC_METRICBEAT_INDEX: "{{ ELASTIC_METRICBEAT_INDEX }}"
+#
+#- name: install packetbeat
+#  import_playbook: packetbeat.yml
+#  vars:
+#    USER_PASSWORD: "{{ USER_PASSWORD }}"
+#
+#- name: install filebeat
+#  import_playbook: filebeat.yml
+#  vars:
+#    USER_PASSWORD: "{{ USER_PASSWORD }}"

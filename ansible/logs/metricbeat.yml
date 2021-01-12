@@ -1,0 +1,60 @@
+---
+
+# Prerequisites: SSH access for user with password
+
+- hosts: all
+
+  remote_user: fab_user
+
+  vars:
+    - ansible_user: "fab_user"
+    - ansible_password: "{{ USER_PASSWORD }}"
+    - ansible_become_pass: "{{ USER_PASSWORD }}"
+    # BEATS
+    - beats_version: 6.8.13
+    - beat: metricbeat
+    - oss_version: true
+    - beat_conf:
+        logging.to_files: true
+        setup.template.enabled: false
+        metricbeat:
+          config.modules:
+            # Glob pattern for configuration reloading
+            path: ${path.config}/conf.d/*.yml
+            # Period on which files under path should be checked for changes
+            reload.period: 30s
+            # Set to true to enable config reloading
+            reload.enabled: true
+          modules:
+            #-------------------------------- System Module --------------------------------
+            - module: system
+              metricsets:
+                - cpu             # CPU usage
+                - load            # CPU load averages
+                - memory          # Memory usage
+                - network         # Network IO
+                #- process         # Per process metrics
+                #- process_summary # Process summary
+                - uptime          # System Uptime
+                #- socket_summary  # Socket summary
+                #- core           # Per CPU core usage
+                #- diskio         # Disk IO
+                #- filesystem     # File system usage for each mountpoint
+                - fsstat         # File system summary metrics
+                #- raid           # Raid
+                #- socket         # Sockets and connection info (linux only)
+                #- service        # systemd service information
+              enabled: true
+              period: 30s
+              processes: [ '.*' ]
+    - output_conf: {"elasticsearch":{
+      "hosts":["{{ ELASTIC_HOST }}"],
+      "protocol": "https",
+      "username":"{{ ELASTIC_USERNAME }}",
+      "password":"{{ ELASTIC_PASSWORD }}",
+      "index":"{{ ELASTIC_METRICBEAT_INDEX }}",
+      "ssl.enabled": true
+    }}
+
+  roles:
+    - role: elastic.beats
