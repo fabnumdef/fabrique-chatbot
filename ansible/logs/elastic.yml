@@ -2,13 +2,13 @@
 
 # Prerequisites: SSH access for user with password
 
-- hosts: all
+- hosts: localhost
 
   remote_user: fab_user
 
   vars:
-    - ansible_user: "fab_user"
-    - ansible_password: "{{ USER_PASSWORD }}"
+#    - ansible_user: "fab_user"
+#    - ansible_password: "{{ USER_PASSWORD }}"
     - ansible_become_pass: "{{ USER_PASSWORD }}"
 
 - name: install metricbeat
