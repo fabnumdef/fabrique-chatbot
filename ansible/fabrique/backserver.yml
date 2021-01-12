@@ -65,7 +65,6 @@
 
     - name: Ansible galaxy install elastic.beats role
       shell: 'ansible-galaxy install elastic.beats,v7.10.1'
-      become: yes
 
     - name: copy the nginx config file
       become: yes
