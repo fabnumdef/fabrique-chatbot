@@ -42,6 +42,10 @@ export class CreateChatbotDto {
 
   @IsString()
   @IsNotEmpty()
+  acceptConditions: boolean = false;
+
+  @IsString()
+  @IsNotEmpty()
   @MaxLength(200)
   audience: string;
 

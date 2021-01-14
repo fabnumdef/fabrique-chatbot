@@ -12,4 +12,5 @@ export class ChatbotConfiguration {
   primaryColor: string;
   secondaryColor: string;
   domainName: string;
+  acceptConditions: boolean;
 }

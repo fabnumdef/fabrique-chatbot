@@ -41,6 +41,10 @@ export class ChatbotModel {
   intra_def: boolean = false;
 
   @IsString()
+  @IsNotEmpty()
+  accept_conditions: boolean = false;
+
+  @IsString()
   @IsOptional()
   status: ChatbotStatus;
 
