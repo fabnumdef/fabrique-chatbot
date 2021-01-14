@@ -22,6 +22,10 @@ export class ResumeStepComponent implements OnInit {
     return <FormControl> (<FormGroup> this.formArray.at(2)).controls.icon;
   }
 
+  get conditionControl(): FormControl {
+    return <FormControl> (<FormGroup> this.formArray.at(3)).controls.acceptConditions;
+  }
+
   ngOnInit(): void {
     this.iconControl.valueChanges.subscribe(() => {
       this._generateIconPreview();

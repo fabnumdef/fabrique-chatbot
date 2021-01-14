@@ -34,6 +34,7 @@ export class ChatbotService {
     formData.append('audience', botConfig.audience);
     formData.append('domainName', botConfig.domainName);
     formData.append('intraDef', botConfig.intraDef.toString());
+    formData.append('acceptConditions', botConfig.acceptConditions.toString());
     formData.append('users', JSON.stringify(botConfig.users));
 
     const headers = new HttpHeaders();

@@ -44,7 +44,7 @@ export class ChatbotService {
   }
 
   async create(chatbot: ChatbotModel, file?: FileModel, icon?: FileModel): Promise<ChatbotModel> {
-    let chatbotSaved: Chatbot = await this._chatbotsRepository.save(chatbot);
+    const chatbotSaved: Chatbot = await this._chatbotsRepository.save(chatbot);
     if (!file || !icon) {
       return chatbotSaved;
     }

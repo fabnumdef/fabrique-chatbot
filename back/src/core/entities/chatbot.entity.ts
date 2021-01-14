@@ -41,6 +41,9 @@ export class Chatbot {
   @Column( { default: false })
   intra_def: boolean;
 
+  @Column( { default: false })
+  accept_conditions: boolean;
+
   @Column('enum', { name: 'status', enum: ChatbotStatus, default: ChatbotStatus.pending, nullable: false})
   status: ChatbotStatus;
 

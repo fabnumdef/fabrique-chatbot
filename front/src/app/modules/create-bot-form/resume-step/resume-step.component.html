@@ -51,6 +51,12 @@
         <div [ngStyle]="{'background-color': formArray.at(2).value.secondaryColor}"></div>
       </div>
     </div>
+
+    <div class="info-block">
+      <mat-checkbox [formControl]="conditionControl" data-cy="ConditionCheckbox">
+        Je m'engage à mettre à disposition du projet une personne afin de garantir la mise à jour du chatbot.
+      </mat-checkbox>
+    </div>
   </div>
 
   <div class="success-tab" *ngIf="chatbotGenerated">
