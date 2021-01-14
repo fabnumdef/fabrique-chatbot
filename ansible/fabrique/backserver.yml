@@ -46,6 +46,7 @@
           - acl
           - libpq-dev
           - python3-psycopg2
+          - python-psycopg2
           - git
           - rsync
           - sshpass

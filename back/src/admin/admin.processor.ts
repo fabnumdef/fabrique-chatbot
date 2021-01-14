@@ -40,6 +40,7 @@ export class AdminProcessor {
       updateForm.append('updateFront', updateChatbot.updateFront.toString());
       updateForm.append('updateBack', updateChatbot.updateBack.toString());
       updateForm.append('updateRasa', updateChatbot.updateRasa.toString());
+      updateForm.append('updateLogs', updateChatbot.updateLogs.toString());
       updateForm.append('frontBranch', chatbot.front_branch);
       updateForm.append('backBranch', chatbot.back_branch);
       updateForm.append('botBranch', chatbot.bot_branch);

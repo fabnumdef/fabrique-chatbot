@@ -22,7 +22,7 @@ export class UserService {
       return this._usersRepository.findOne({where: {email: email}});
     }
     return this._usersRepository.findOne({
-      select: ['email', 'password', 'first_name', 'last_name', 'chatbot_theme', 'role'],
+      select: ['email', 'password', 'first_name', 'last_name', 'chatbot_theme', 'role', 'failed_login_attempts', 'lock_until'],
       where: {email: email}
     });
   }

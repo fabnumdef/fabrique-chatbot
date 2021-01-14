@@ -10,6 +10,12 @@ export class User {
   @Column({select: false, nullable: true, length: 200})
   password: string;
 
+  @Column({nullable: false, default: 0})
+  failed_login_attempts: number;
+
+  @Column({type: "timestamp", nullable: true})
+  lock_until: number;
+
   @Column({nullable: false, length: 50})
   first_name: string;
 
