@@ -164,12 +164,12 @@ export class ChatbotService {
       'Type de réponse': 'response_type',
       'Réponse(s)': 'response',
       'Questions synonymes (à séparer par un point-virgule ;)': 'questions',
-      'Expire le': 'expires_at'
+      'Expire le (DD/MM/YYYY)': 'expires_at'
     };
     const options: Sheet2JSONOpts = {};
     const excelJson = this._xlsx.utils.sheet_to_json(worksheet, options);
     const templateFile: TemplateFileDto[] = excelJson.map((t: TemplateFileDto, idx: number) => {
-      for (let key of Object.keys(t)) {
+      for (const key of Object.keys(t)) {
         if (!!headers[key]) {
           t[headers[key]] = t[key];
         }
