@@ -133,6 +133,10 @@
           background-color: $primary-color;
         }
 
+        .mat-step-header.cdk-focused {
+          background-color: transparent;
+        }
+
         .mat-vertical-content-container {
           margin-left: 40px;
         }
@@ -175,6 +179,7 @@
         position: fixed;
         bottom: 0;
         width: 100vw;
+        padding: 20px 10%;
       }
     }
   }
