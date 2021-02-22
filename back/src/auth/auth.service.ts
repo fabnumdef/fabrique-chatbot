@@ -36,7 +36,7 @@ export class AuthService {
     const userUpdated = await this._userService.setPasswordResetToken(userWithoutPassword);
 
     await this._mailService.sendEmail(userUpdated.email,
-      'Fabrique à Chatbots - Réinitialisation de mot de passe',
+      'Usine à Chatbots - Réinitialisation de mot de passe',
       'forgot-password',
       {  // Data to be sent to template engine.
         firstName: userUpdated.first_name,
@@ -65,7 +65,7 @@ export class AuthService {
     const userUpdated = await this._userService.findAndUpdate(userWithoutPassword.email, valuesToUpdate);
 
     await this._mailService.sendEmail(userUpdated.email,
-      'Fabrique à Chatbots - Mot de passe modifié',
+      'Usine à Chatbots - Mot de passe modifié',
       'reset-password',
       {  // Data to be sent to template engine.
         firstName: userUpdated.first_name,

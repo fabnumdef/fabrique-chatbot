@@ -37,6 +37,10 @@
 
         img {
           max-height: 100%;
+
+          &:last-child {
+            width: 150px;
+          }
         }
 
         mat-divider {

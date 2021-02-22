@@ -33,7 +33,7 @@ async function bootstrap() {
 
   const document = SwaggerModule.createDocument(app, options);
   SwaggerModule.setup('api', app, document, {
-    customSiteTitle: 'API - Fabrique à Chatbots'
+    customSiteTitle: 'API - Usine à Chatbots'
   });
 
   await app.listen(3000);
