@@ -70,7 +70,7 @@ export class UserService {
   async sendEmailPasswordToken(user: User) {
     const userUpdated = await this.setPasswordResetToken(user);
     await this._mailService.sendEmail(userUpdated.email,
-      'Fabrique à Chatbots - Création de compte',
+      'Usine à Chatbots - Création de compte',
       'create-account',
       {  // Data to be sent to template engine.
         firstName: userUpdated.first_name,
