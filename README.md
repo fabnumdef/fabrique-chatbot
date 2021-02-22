@@ -2,12 +2,12 @@
   <a href="https://chatbot.fabnum.fr" target="blank"><img src="https://chatbot.d.fabnum.fr/assets/img/logo_fabrique_chatbot.svg" width="320" alt="Logo Fabrique à chatbots" /></a>
 </p>
 
-## Fabrique à Chatbots
+## Usine à Chatbots
 [![build status](https://github.com/fabnumdef/fabrique-chatbot-front/workflows/Build/badge.svg)](https://github.com/fabnumdef/fabrique-chatbot-front/actions)
 [![Cypress status](https://img.shields.io/badge/cypress.io-tests-green.svg)](https://dashboard.cypress.io/projects/v5uzfp/runs)
 <img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /> <img src="https://github.com/fabnumdef/fabrique-chatbot-back/workflows/Build%20&%20Deploy/badge.svg">
 
-L’objectif de la ‘Fabrique à chatbots’ est de détailler les étapes de réalisation d’un chatbot — de l’identification d’un cas d’usage, à la mise en place de l’interface du chatbot — afin de ne pas créer de ruptures dans l’expérience utilisateur, et de fournir les documents/code/template utiles pour la réalisation d’un chatbot.
+L’objectif de l'‘Usine à chatbots’ est de détailler les étapes de réalisation d’un chatbot — de l’identification d’un cas d’usage, à la mise en place de l’interface du chatbot — afin de ne pas créer de ruptures dans l’expérience utilisateur, et de fournir les documents/code/template utiles pour la réalisation d’un chatbot.
 
 Ce service est un guide pour la définition d’une problématique de diffusion d’informations se prêtant à une solution « chatbot ».
 
@@ -23,8 +23,8 @@ Tests réalisés avec [Cypress](https://docs.cypress.io/).
 
 | Repo Git           | URL                                                   | Technologies       | Description                        |
 | ------------------ | ----------------------------------------------------- | ------------------ | ---------------------------------- |
-| Fabrique - Front   | https://github.com/fabnumdef/fabrique-chatbot-front   | Angular 10         | Front du site de la Fabrique       |
-| Fabrique - Back    | https://github.com/fabnumdef/fabrique-chatbot-back    | NestJS 6           | Back du site de la Fabrique        |
+| Usine - Front   | https://github.com/fabnumdef/fabrique-chatbot-front   | Angular 10         | Front du site de l'Usine       |
+| Usine - Back    | https://github.com/fabnumdef/fabrique-chatbot-back    | NestJS 6           | Back du site de l'Usine        |
 | Chatbot - Front    | https://github.com/fabnumdef/chatbot-front            | Angular 10         | Front des Backoffices des chatbots |
 | Chatbot - Back     | https://github.com/fabnumdef/chatbot-back             | NestJS 6           | Back des Backoffices des chatbots  |
 | Chatbot - Template | https://github.com/fabnumdef/chatbot-template         | RASA 1.10          | Template RASA des chatbots         |
