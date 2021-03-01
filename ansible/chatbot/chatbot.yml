@@ -6,7 +6,7 @@
   remote_user: chatbot_user
 
   vars_files:
-    - ./credentials.yml
+#    - ./credentials.yml
 
   vars:
     - ansible_user: "chatbot_user"
@@ -18,36 +18,70 @@
     - ansible_distribution_release: "xenial" #trusty
 
   tasks:
-    - name: Update and upgrade apt packages
+    - name: Update and upgrade apt packages - Debian
       become: true
       apt:
         upgrade: 'yes'
         update_cache: 'yes'
+      when: ansible_distribution == 'Debian'
 
-    - name: Install dependencies for nodejs
+    - name: Update and upgrade apt packages - CentOS
+      become: true
+      yum:
+        name: '*'
+        state: latest
+        update_cache: 'yes'
+      when: ansible_distribution == 'CentOS'
+
+    - name: Install dependencies for nodejs - Debian
       become: yes
       apt:
         pkg:
           - curl
           - software-properties-common
+      when: ansible_distribution == 'Debian'
 
-    - name: Install the gpg key for nodejs LTS
+    - name: Install dependencies for nodejs - CentOS
+      become: yes
+      yum:
+        pkg:
+          - curl
+          - gcc-c++
+          - make
+      when: ansible_distribution == 'CentOS'
+
+    - name: Install the gpg key for nodejs LTS - Debian
       become: yes
       apt_key:
         url: "https://deb.nodesource.com/gpgkey/nodesource.gpg.key"
         state: present
+      when: ansible_distribution == 'Debian'
 
-    - name: Install the nodejs LTS repos
+    - name: Install the nodejs LTS repos - Debian
       become: yes
       apt_repository:
         repo: "deb https://deb.nodesource.com/node_{{ NODEJS_VERSION }}.x {{ ansible_distribution_release }} main"
         state: present
         update_cache: yes
+      when: ansible_distribution == 'Debian'
+
+    - name: NodeSource binary distribution - CentOS
+      command:
+        cmd: 'curl -sL https://rpm.nodesource.com/setup_{{ NODEJS_VERSION }}.x'
+        warn: false
+      when: ansible_distribution == 'CentOS'
 
     - name: Install last Nginx version
       include_tasks: "../nginx-tasks.yml"
 
-    - name: Install required dependencies (python, ssl, postgresql, node ...)
+#    - name: NodeSource binary distribution 2 - CentOS
+#      become: yes
+#      command:
+#        cmd: 'bash -'
+#        warn: false
+#      when: ansible_distribution == 'CentOS'
+
+    - name: Install required dependencies (python, ssl, postgresql, node ...) - Debian
       become: true
       apt:
         pkg:
@@ -73,6 +107,30 @@
           - rsync
           - certbot
           - python-certbot-nginx
+          - ansible
+      when: ansible_distribution == 'Debian'
+
+    - name: Install required dependencies (python, ssl, postgresql, node ...) - CentOS
+      become: true
+      yum:
+        pkg:
+          - python3-pip
+          - bash
+          - openssl
+          - postgresql
+          - postgresql-contrib
+          - python-psycopg2
+          - acl
+          - nodejs
+          - git
+          - nginx
+          - psmisc
+          - screen
+          - rsync
+          - certbot
+          - python-certbot-nginx
+          - ansible
+      when: ansible_distribution == 'CentOS'
 
     - name: Install last version of pip
       become: true
@@ -98,11 +156,19 @@
         production: yes
         state: present
 
-    - name: Ensure the PostgreSQL service is running
+    - name: Ensure the PostgreSQL service is running - Debian
       service:
         name: 'postgresql'
         state: 'started'
         enabled: 'yes'
+      when: ansible_distribution == 'Debian'
+
+    - name: Ensure the PostgreSQL service is running - CentOS
+      systemd:
+        name: 'postgresql'
+        state: 'started'
+        enabled: 'yes'
+      when: ansible_distribution == 'CentOS'
 
     - name: Ensure database is created
       become: true

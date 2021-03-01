@@ -16,15 +16,32 @@
 
   tasks:
 
-    - name: ensure sudo is installed
+    - name: ensure sudo is installed - Debian
       become: true
       apt:
         name: sudo
+      when: ansible_distribution == 'Debian'
 
-    - name: ensure user is present
+    - name: ensure sudo is installed - CentOS
+      become: true
+      yum:
+        name: sudo
+      when: ansible_distribution == 'CentOS'
+
+    - name: ensure user is present - Debian
       become: true
       user:
         name: chatbot_user
         append: yes
         groups: sudo, root, www-data
         password: "{{ USER_PASSWORD | password_hash('sha512') }}"
+      when: ansible_distribution == 'Debian'
+
+    - name: ensure user is present - CentOS
+      become: true
+      user:
+        name: chatbot_user
+        append: yes
+        groups: wheel, root
+        password: "{{ USER_PASSWORD | password_hash('sha512') }}"
+      when: ansible_distribution == 'CentOS'
