@@ -17,6 +17,7 @@ import { execShellCommand, jsonToDotenv } from "@core/utils";
 import snakecaseKeys = require("snakecase-keys");
 import { InjectQueue } from "@nestjs/bull";
 import { Queue } from "bull";
+import { MailService } from "../shared/services/mail.service";
 
 const yaml = require('js-yaml');
 const crypto = require('crypto');
@@ -28,6 +29,7 @@ export class ChatbotService {
 
   constructor(@InjectRepository(Chatbot) private readonly _chatbotsRepository: Repository<Chatbot>,
               private readonly _ovhStorageService: OvhStorageService,
+              private readonly _mailService: MailService,
               @InjectQueue('chatbot_update') private readonly _chatbotUpdateQueue: Queue) {
   }
 
@@ -55,7 +57,36 @@ export class ChatbotService {
       icon: this._ovhStorageService.set(icon, chatbotSaved.icon)
     }).toPromise().then();
 
-    return this._chatbotsRepository.save(chatbotSaved);
+    await this._mailService.sendEmail('vincent.laine@beta.gouv.fr',
+      'Usine à Chatbots - Demande de création d\'un chatbot',
+      'new-chatbot',
+      {  // Data to be sent to template engine.
+        env: process.env.NODE_ENV,
+        id: chatbotSaved.id,
+        name: chatbotSaved.name,
+        function: chatbotSaved.function,
+        primary_color: chatbotSaved.primary_color,
+        secondary_color: chatbotSaved.secondary_color,
+        problematic: chatbotSaved.problematic,
+        audience: chatbotSaved.audience,
+        domain_name: chatbotSaved.domain_name,
+        intra_def: chatbotSaved.intra_def,
+        user: chatbotSaved.user.email,
+        created_at: chatbotSaved.created_at
+      }, [
+        {
+          filename: file.originalname,
+          content: file.buffer
+        },
+        {
+          filename: icon.originalname,
+          content: icon.buffer
+        }
+      ])
+      .then(() => {
+      });
+
+    return this._chatbotsRepository.save(chatbotSaved);;
   }
 
   async findAndUpdate(id: number, data: any): Promise<Chatbot> {
@@ -134,6 +165,7 @@ export class ChatbotService {
         });
       case ChatbotStatus.pending_configuration:
         if (!chatbot.intra_def) {
+          await this._chatbotUpdateQueue.add('configuration', {chatbot, updateChatbot});
           throw new HttpException(`Le chatbot va être configuré, merci de patienter.`, HttpStatus.INTERNAL_SERVER_ERROR);
         }
         // TODO: generate intraDef package
@@ -307,7 +339,7 @@ export class ChatbotService {
       MAIL_PASSWORD: process.env.MAIL_PASSWORD
     };
 
-    const yamlStr = yaml.safeDump(credentials);
+    const yamlStr = yaml.dump(credentials);
     const appDir = '/var/www/fabrique-chatbot-back';
     fs.writeFileSync(`${appDir}/ansible/chatbot/credentials.yml`, yamlStr, 'utf8');
     fs.writeFileSync(`${appDir}/ansible/chatbot/.env`, jsonToDotenv(env), 'utf8');

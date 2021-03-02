@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="78px" height="78px" viewBox="0 0 78 78" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>Group</title>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="LANDING_DESKTOP" transform="translate(-975.000000, -1549.000000)">
+            <g id="features-copy-4" transform="translate(945.000000, 1521.000000)">
+                <g id="Group" transform="translate(31.000000, 29.000000)">
+                    <rect id="Rectangle" stroke="#6E91F0" fill-rule="nonzero" x="0" y="0" width="76" height="76" rx="38"></rect>
+                    <g id="insights-24px" transform="translate(23.000000, 23.000000)">
+                        <rect id="Rectangle" x="0" y="0" width="30" height="30"></rect>
+                        <g id="Group" transform="translate(1.250000, 3.750000)" fill="#6D90EF" fill-rule="nonzero">
+                            <path d="M25,6.25 C23.1875,6.25 22.175,8.05 22.5875,9.3875 L18.15,13.8375 C17.775,13.725 17.225,13.725 16.85,13.8375 L13.6625,10.65 C14.0875,9.3125 13.075,7.5 11.25,7.5 C9.4375,7.5 8.4125,9.3 8.8375,10.65 L3.1375,16.3375 C1.8,15.925 0,16.9375 0,18.75 C0,20.125 1.125,21.25 2.5,21.25 C4.3125,21.25 5.325,19.45 4.9125,18.1125 L10.6,12.4125 C10.975,12.525 11.525,12.525 11.9,12.4125 L15.0875,15.6 C14.6625,16.9375 15.675,18.75 17.5,18.75 C19.3125,18.75 20.3375,16.95 19.9125,15.6 L24.3625,11.1625 C25.7,11.575 27.5,10.5625 27.5,8.75 C27.5,7.375 26.375,6.25 25,6.25 Z" id="Path"></path>
+                            <polygon id="Path" points="17.5 7.5 18.675 4.9125 21.25 3.75 18.675 2.5875 17.5 0 16.35 2.5875 13.75 3.75 16.35 4.9125"></polygon>
+                            <polygon id="Path" points="3.125 10 3.75 7.5 6.25 6.875 3.75 6.25 3.125 3.75 2.5 6.25 0 6.875 2.5 7.5"></polygon>
+                        </g>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

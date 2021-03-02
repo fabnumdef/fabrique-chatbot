@@ -10,7 +10,7 @@
     - ansible_user: "fab_user"
     - ansible_become_pass: "{{ USER_PASSWORD }}"
     # BEATS
-    - beats_version: 6.8.13
+    - beats_version: 6.8.14
     - beat: packetbeat
     - oss_version: true
     - beat_conf:

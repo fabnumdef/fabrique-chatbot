@@ -11,7 +11,7 @@ import { SharedModule } from '../shared/shared.module';
     CommonModule,
     HomeRoutingModule,
     MaterialModule,
-    SharedModule
+    SharedModule,
   ]
 })
 export class HomeModule { }

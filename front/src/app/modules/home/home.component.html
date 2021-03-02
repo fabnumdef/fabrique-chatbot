@@ -5,53 +5,67 @@
       <mat-divider [vertical]="true"></mat-divider>
       <img src="assets/img/logo_fabrique_chatbot.svg" alt="logo usine à chatbots">
     </div>
-    <div class="actions">
+    <div class="actions" *ngIf="!isSmallScreen">
       <a href="https://fabrique-a-chatbots.gitbook.io/fabrique-a-chatbots/" target="_blank" rel="noopener">
         <button mat-stroked-button
                 color="accent">
           Voir la documentation
         </button>
       </a>
-      <button mat-flat-button
-              color="accent"
-              [routerLink]="'/auth/sign_up'">
-        Créer votre chatbot
-      </button>
     </div>
-  </div>
-  <div class="section section-empty">
-    <mat-divider></mat-divider>
   </div>
   <div class="section section-header">
     <div>
       <div class="image" *ngIf="isSmallScreen">
-        <img src="assets/img/smartphone.gif" alt="Image d'un smartphone avec un chatbot">
+        <img src="assets/img/ANIM.gif" alt="Image d'un smartphone avec un chatbot">
       </div>
       <h1>Créer facilement votre chatbot</h1>
       <p>Outiller la diffusion d’informations à destination des agents du Ministère.</p>
+      <div class="actions">
+        <a href="mailto:fabrique-chatbots@beta.gouv.fr" target="_blank" rel="noopener">
+          <button mat-stroked-button
+                  color="accent">
+            Contactez-nous
+          </button>
+        </a>
+        <button mat-flat-button
+                color="accent"
+                [routerLink]="'/create'">
+          Créer votre chatbot
+        </button>
+        <a *ngIf="isSmallScreen"
+           href="https://fabrique-a-chatbots.gitbook.io/fabrique-a-chatbots/"
+           target="_blank"
+           rel="noopener">
+          <button mat-stroked-button
+                  color="accent">
+            Voir la documentation
+          </button>
+        </a>
+      </div>
     </div>
     <div class="image" *ngIf="!isSmallScreen">
-      <img src="assets/img/smartphone.gif" alt="Image d'un smartphone avec un chatbot">
+      <img src="assets/img/ANIM.gif" alt="Image d'un smartphone avec un chatbot">
     </div>
   </div>
-  <div class="section section-grey section-how">
+  <div class="section section-how">
     <h2>Générez votre bot en 4 étapes</h2>
     <div>
-      <div>
-        <img [src]="'assets/img/ETAPE_' + (idxImage + 1) + '.png'" alt="Aperçu Backoffice Chatbot"/>
-      </div>
-      <div>
-        <mat-vertical-stepper (selectionChange)="idxImage = $event.selectedIndex">
-          <mat-step>
-            <ng-template matStepLabel>La base de connaissance</ng-template>
+      <mat-horizontal-stepper (selectionChange)="idxImage = $event.selectedIndex">
+        <mat-step>
+          <div>
+            <img [src]="'assets/img/ETAPE_1.png'" alt="Aperçu Backoffice Chatbot"/>
+          </div>
+          <div>
+            <h3>La base de connaissance</h3>
             <p>
               Avoir une base documentaire (format excel) sous la forme du template fourni à télécharger et à remplir
               avec : un texte d'introduction du chatbot des questions formulées en synonyme les réponses à ces
               questions.
             </p>
             <p>
-              Avoir une base de question/réponses assez importante avec un scope d'intervention défini. Ex: une centaine
-              de connaissances initiales.
+              Avoir une base de question/réponses assez importante avec un scope d'intervention défini. Ex: une
+              centaine de connaissances initiales.
             </p>
             <br/>
             <a href="https://fabrique-a-chatbots.gitbook.io/fabrique-a-chatbots/" target="_blank" rel="noopener">
@@ -60,15 +74,21 @@
                 Voir la documentation
               </button>
             </a>
-          </mat-step>
-          <mat-step>
-            <ng-template matStepLabel>Cadre d'usage de votre bot</ng-template>
+          </div>
+        </mat-step>
+        <mat-step>
+          <div>
+            <img [src]="'assets/img/ETAPE_2.png'" alt="Aperçu Backoffice Chatbot"/>
+          </div>
+          <div>
+            <h3>Cadre d'usage de votre bot</h3>
             <p>
-              Intradef ou Internet ? Y aura-t-il des contenus à diffusion restreinte ou non ? Quel sujet sera couvert ?
+              Intradef ou Internet ? Y aura-t-il des contenus à diffusion restreinte ou non ? Quel sujet sera couvert
+              ?
             </p>
             <p>
-              Réfléchir au point d'entrée vers le bot : est-ce que vous allez rediriger le public vers une page à part ?
-              est-ce que votre bot vivra sur un site / portail existant ?
+              Réfléchir au point d'entrée vers le bot : est-ce que vous allez rediriger le public vers une page à part
+              ? est-ce que votre bot vivra sur un site / portail existant ?
             </p>
             <br/>
             <a href="https://fabrique-a-chatbots.gitbook.io/fabrique-a-chatbots/" target="_blank" rel="noopener">
@@ -77,9 +97,14 @@
                 Voir la documentation
               </button>
             </a>
-          </mat-step>
-          <mat-step>
-            <ng-template matStepLabel>L'apparence de votre bot</ng-template>
+          </div>
+        </mat-step>
+        <mat-step>
+          <div>
+            <img [src]="'assets/img/ETAPE_3.png'" alt="Aperçu Backoffice Chatbot"/>
+          </div>
+          <div>
+            <h3>L'apparence de votre bot</h3>
             <p>
               Définir l'identité du chatbot : quel personnage ? Quel grade,
               fonction, rôle ? Quelles couleurs ? Quelle représentation ?
@@ -93,16 +118,21 @@
                 Voir la documentation
               </button>
             </a>
-          </mat-step>
-          <mat-step>
-            <ng-template matStepLabel>L'interface de gestion</ng-template>
+          </div>
+        </mat-step>
+        <mat-step>
+          <div>
+            <img [src]="'assets/img/ETAPE_4.png'" alt="Aperçu Backoffice Chatbot"/>
+          </div>
+          <div>
+            <h3>L'interface de gestion</h3>
             <p>
-              Gestion centralisée ou décentralisée du bot ? Identifiez vos contacts clés ! Une fois votre bot en ligne,
-              le travail n'est pas terminé ! Un chatbot doit vivre et continuer à apprendre et à s'enrichir de
+              Gestion centralisée ou décentralisée du bot ? Identifiez vos contacts clés ! Une fois votre bot en
+              ligne, le travail n'est pas terminé ! Un chatbot doit vivre et continuer à apprendre et à s'enrichir de
               connaissances pour satisfaire au mieux les utilisateurs. Vous allez recevoir de nouvelles questions tous
               les jours, et il faudra les ajouter à votre bot via l’interface de gestion.
-              Allez-vous désigner un seul bot manager qui sera chargé des contacter des spécialistes sur d'autres sujets
-              ? Ou préférez-vous donner les accès de la gestion à une équipe prédéfinie ?
+              Allez-vous désigner un seul bot manager qui sera chargé des contacter des spécialistes sur d'autres
+              sujets ? Ou préférez-vous donner les accès de la gestion à une équipe prédéfinie ?
             </p>
             <br/>
             <a href="https://fabrique-a-chatbots.gitbook.io/fabrique-a-chatbots/" target="_blank" rel="noopener">
@@ -111,47 +141,130 @@
                 Voir la documentation
               </button>
             </a>
-          </mat-step>
-        </mat-vertical-stepper>
-      </div>
+          </div>
+        </mat-step>
+      </mat-horizontal-stepper>
     </div>
+  </div>
+  <div class="section section-factory">
+    <h2>L'usine à chatbots</h2>
+    <div class="cards-wrapper">
+      <mat-card>
+        <mat-card-header>
+          <div mat-card-avatar>
+            <img src="assets/img/picto1.svg" alt="logo clef en main">
+          </div>
+        </mat-card-header>
+        <mat-card-content>
+          <h3>Une solution clef en main et gratuite</h3>
+          <p>
+            Vous vous occupez du contenu, on s’occupe de la technique et de tout ce qui fait fonctionner votre bot :
+            hébergement DIRISI, nom de domaine, réseau internet, mises à jour du produit etc. Intradef arrive !
+          </p>
+        </mat-card-content>
+      </mat-card>
+      <mat-card>
+        <mat-card-header>
+          <div mat-card-avatar>
+            <img src="assets/img/picto2.svg" alt="logo horloge">
+          </div>
+        </mat-card-header>
+        <mat-card-content>
+          <h3>Une procédure pour l'homologation raccourcie</h3>
+          <p>
+            Notre premier bot RH marine généré avec l’Usine à chatbots est déjà homologué, vous n’aurez plus qu’une
+            procédure simplifiée d’homologation car il s’agit techniquement d’un clone.
+          </p>
+        </mat-card-content>
+      </mat-card>
+      <mat-card>
+        <mat-card-header>
+          <div mat-card-avatar>
+            <img src="assets/img/picto3.svg" alt="logo graphe">
+          </div>
+        </mat-card-header>
+        <mat-card-content>
+          <h3>Un produit en constante amélioration</h3>
+          <p>
+            Vous avez des besoins d’évolution pour le produit ? Nous sommes à votre écoute pour mettre en place ensemble
+            les fonctionnalités qui vont être utiles à tous demain.
+          </p>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </div>
+  <div class="section section-testimony">
+    <h2>Ils en parlent mieux que nous</h2>
+    <mat-card>
+      <img src="assets/img/testimony.svg" alt="logo apostrophe" class="testimony-badge">
+      <h3>La DPMM dispose aujourd’hui d’un outil moderne, réactif et intuitif !</h3>
+      <p>
+        Grâce à un dialogue permanent avec les équipes de la Fabrique Numérique, nous avons pu construire le chatbot qui
+        convenait parfaitement à notre besoin : des réponses aux questions générales, disponibles sur smartphone pour
+        pouvoir ainsi toucher tous les marins, à toutes heures ! Aujourd’hui, chaque entité du ministère peut décider de
+        lancer rapidement son propre chatbot personnalisé. Il lui suffit de prendre contact avec la FabNum.
+      </p>
+    </mat-card>
+    <div class="testimony-author">
+      <div class="testimony-img">
+        <img src="assets/img/marine_nationale.svg" alt="logo marine">
+      </div>
+      <span>Bruno Frenais De Coutard</span>
+    </div>
+  </div>
+  <div class="section section-contact">
+    <div>
+      Vous avez un projet ?
+    </div>
+    <a href="mailto:fabrique-chatbots@beta.gouv.fr" target="_blank" rel="noopener">
+      <button mat-stroked-button
+              color="accent">
+        Contactez-nous
+      </button>
+    </a>
+    <button mat-flat-button
+            color="accent"
+            [routerLink]="'/create'">
+      Créer votre chatbot
+    </button>
   </div>
   <div class="section section-who">
     <h2>Qui sommes-nous ?</h2>
     <div class="description">
-      <div *ngIf="isSmallScreen">
+      <div>
         <img src="assets/img/logo_fabrique_numerique.svg" alt="logo fabrique numérique">
       </div>
       <div>
-        <span>La Fabrique numérique est l’incubateur de services numériques du ministère des Armées. Nous permettons à des
+        <p>La Fabrique numérique est l’incubateur de services numériques du ministère des Armées. Nous permettons à des
           agents ayant identifié un problème dans leur activité, de créer un nouveau service répondant au besoin des
-          usagers. Pour en savoir plus :
-          <a target="_blank" href="https://beta.gouv.fr/incubateurs/fabnumdef.html" rel="noopener">https://beta.gouv.fr/incubateurs/fabnumdef.html</a>
-        </span>
-      </div>
-      <div *ngIf="!isSmallScreen">
-        <img src="assets/img/logo_fabrique_numerique.svg" alt="logo fabrique numérique">
+          usagers.
+          <br/>
+          Pour en savoir plus :
+          <a target="_blank"
+             href="https://beta.gouv.fr/incubateurs/fabnumdef.html"
+             rel="noopener">
+            https://beta.gouv.fr/incubateurs/fabnumdef.html
+          </a>
+        </p>
       </div>
     </div>
   </div>
-  <div class="section section-band section-band-fixed" *ngIf="isFixedBand" [@fadeInOut]="isFixedBand">
-    <button mat-flat-button
-            color="accent"
-            [routerLink]="'/auth/sign_up'">
-      Créer votre chatbot
-    </button>
-  </div>
-  <div class="section section-band">
-    <button mat-flat-button
-            color="accent"
-            [routerLink]="'/auth/sign_up'">
-      Créer votre chatbot
-    </button>
-  </div>
-  <div class="footer section-grey">
-    <a href="https://fabrique-a-chatbots.gitbook.io/fabrique-a-chatbots/cgu" target="_blank" rel="noopener">Mentions
-      légales</a>
-    <a target="_blank" rel="noopener"
-       href="https://fabrique-a-chatbots.gitbook.io/fabrique-a-chatbots/accessibilite-du-site">Accessibilité</a>
+  <div class="footer">
+    <div class="links">
+      <a href="https://fabrique-a-chatbots.gitbook.io/fabrique-a-chatbots/cgu"
+         target="_blank"
+         rel="noopener">
+        Mentions légales
+      </a>
+      <a target="_blank"
+         rel="noopener"
+         href="https://fabrique-a-chatbots.gitbook.io/fabrique-a-chatbots/accessibilite-du-site">
+        Accessibilité
+      </a>
+    </div>
+    <div class="signature">
+      <div>Conçu et développé avec 💗 par la</div>
+      <img src="assets/img/logo_fabrique_numerique.svg" alt="logo fabrique numérique">
+    </div>
   </div>
 </div>
