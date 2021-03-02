@@ -42,15 +42,20 @@ export class ChatbotGenerationService {
     await this.updateChatbotRepos(chatbot);
 
     const credentials = {
-      USER_PASSWORD: updateChatbot.userPassword,
-      DB_PASSWORD: updateChatbot.dbPassword
+      USER_PASSWORD: updateChatbot.userPassword ? updateChatbot.userPassword : null,
+      DB_PASSWORD: updateChatbot.dbPassword ? updateChatbot.dbPassword : null
     };
 
     let dotenv = await this._ovhStorageService.get(`${chatbot.id.toString(10)}/.env`).then().catch(() => {
       this._chatbotService.findAndUpdate(chatbot.id, {status: ChatbotStatus.error_configuration});
     });
-    fs.writeFileSync(`${this._appDir}/chatbot/credentials.yml`, yaml.safeDump(credentials), 'utf8');
-    fs.writeFileSync(`${this._appDir}/chatbot/.env`, dotenv, 'utf8');
+
+    try {
+      fs.writeFileSync(`${this._appDir}/chatbot/credentials.yml`, yaml.dump(credentials), 'utf8');
+      fs.writeFileSync(`${this._appDir}/chatbot/.env`, dotenv, 'utf8');
+    } catch(err) {
+      console.error(`${new Date().toLocaleString()} - ERROR WRITING FILE - ${chatbot.id} - ${err.message}`);
+    }
 
     // update email config & domain name
     await execShellCommand(`ansible-vault decrypt --vault-password-file fabrique/password_file chatbot/.env`, `${this._appDir}`).then();
@@ -62,13 +67,20 @@ export class ChatbotGenerationService {
         MAIL_PASSWORD: process.env.MAIL_PASSWORD,
         HOST_URL: chatbot.domain_name ? `https://${chatbot.domain_name}` : `http://${chatbot.ip_adress}`
       }};
-    fs.writeFileSync(`${this._appDir}/chatbot/.env`, jsonToDotenv(dotenv), 'utf8');
+
+    try {
+      fs.writeFileSync(`${this._appDir}/chatbot/.env`, jsonToDotenv(dotenv), 'utf8');
+    } catch(err) {
+      console.error(`${new Date().toLocaleString()} - ERROR WRITING FILE - ${chatbot.id} - ${err.message}`);
+    }
+
     await execShellCommand(`ansible-vault encrypt --vault-password-file fabrique/password_file chatbot/credentials.yml`, `${this._appDir}`).then();
     await execShellCommand(`ansible-vault encrypt --vault-password-file fabrique/password_file chatbot/.env`, `${this._appDir}`).then();
 
     const playbookOptions = new Options(`${this._appDir}/chatbot`);
     const ansiblePlaybook = new AnsiblePlaybook(playbookOptions);
     const extraVars = {botDomain: chatbot.domain_name};
+
     await ansiblePlaybook.command(`generate-chatbot.yml --vault-password-file ../fabrique/password_file -i ${chatbot.ip_adress}, -e '${JSON.stringify(extraVars)}'`).then(async (result) => {
       await this._chatbotService.findAndUpdate(chatbot.id, {status: ChatbotStatus.running});
       console.log(`${new Date().toLocaleString()} - CHATBOT UPDATED - ${chatbot.id} - ${chatbot.name}`);
