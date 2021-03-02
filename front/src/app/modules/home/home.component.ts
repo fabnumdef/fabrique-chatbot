@@ -1,6 +1,7 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { BreakpointObserver } from '@angular/cdk/layout';
 import { fadeIn, fadeInOut } from './animation';
+import { MatHorizontalStepper } from "@angular/material/stepper";
 
 @Component({
   selector: 'app-home',
@@ -8,11 +9,12 @@ import { fadeIn, fadeInOut } from './animation';
   styleUrls: ['./home.component.scss'],
   animations: [fadeInOut, fadeIn]
 })
-export class HomeComponent implements OnInit, OnDestroy {
+export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
 
   isSmallScreen = false;
   isFixedBand = false;
   idxImage = 0;
+  @ViewChild(MatHorizontalStepper) stepper: MatHorizontalStepper;
 
   constructor(private _breakpointObserver: BreakpointObserver) {
   }
@@ -22,6 +24,10 @@ export class HomeComponent implements OnInit, OnDestroy {
       this.isSmallScreen = result.matches;
     });
     window.addEventListener('scroll', this.scroll, true);
+  }
+
+  ngAfterViewInit(): void {
+    this.stepper._getIndicatorType = () => 'number';
   }
 
   ngOnDestroy() {

@@ -1,34 +1,57 @@
 @import 'src/styles/variables';
 
 .home {
+  background-color: #fdfdfd;
+  color: $font-black;
+
+  .mat-card {
+    box-shadow: $shadow-uniform;
+    border-radius: 15px;
+    padding: 30px;
+  }
+
+  button.mat-button-base {
+    font-weight: 700;
+  }
+
   .section {
     padding: 60px 10%;
 
-    h2 {
-      margin-top: 0;
-      font-size: 35px;
-      margin-bottom: 40px;
+    h1 {
+      font-size: 48px;
+      line-height: 55px;
     }
 
-    h1 {
-      font-size: 60px;
-      line-height: 60px;
+    h2 {
+      margin-top: 0;
+      font-size: 34px;
+      line-height: 45px;
+      margin-bottom: 36px;
+      text-align: center;
     }
 
     h3 {
-      font-size: 20px;
+      font-size: 22px;
+      line-height: 32px;
+      color: $font-black;
+      margin-top: 30px;
+      margin-bottom: 20px;
     }
 
-    &-grey {
-      background-color: $grey-lighter;
+    p {
+      font-size: 16px;
+      line-height: 28px;
     }
+  }
 
+  .section.section {
     &-menu {
-      padding-top: 30px;
-      padding-bottom: 30px;
+      padding-top: 10px;
+      padding-bottom: 10px;
       display: flex;
       justify-content: space-between;
       align-items: center;
+      box-shadow: $shadow-uniform;
 
       .logos {
         height: 100px;
@@ -48,65 +71,55 @@
           margin: 0 40px 0 20px;
         }
       }
-
-      .actions {
-        & > *:not(:first-child) {
-          margin-left: 20px;
-        }
-      }
-    }
-
-    &-empty {
-      padding-top: 0 !important;
-      padding-bottom: 0 !important;
     }
 
     &-header {
       display: flex;
 
       p {
-        color: $primary-color;
-        font-size: 26px;
+        font-size: 22px;
         line-height: 35px;
+        margin-bottom: 30px;
       }
 
       & > * {
         flex: 1;
+        display: flex;
+        justify-content: center;
+        flex-direction: column;
+
+        &:nth-child(1) {
+          padding-right: 20px;
+        }
+
+        &:nth-child(2) {
+          padding-left: 20px;
+        }
       }
 
       .image {
-        display: flex;
-        align-items: center;
-        justify-content: center;
+        max-width: 60%;
 
         img {
           width: auto;
           max-height: 450px;
         }
       }
+
+      .actions {
+        display: flex;
+
+        & > *:not(:last-child) {
+          margin-right: 15px;
+        }
+      }
     }
 
     &-how {
-      h2 {
-        float: right;
-      }
-
       & > div {
         box-sizing: border-box;
         display: flex;
         width: 100%;
-
-        & > * {
-          flex: 1;
-
-          &:nth-child(1) {
-            padding-right: 20px;
-          }
-
-          &:nth-child(2) {
-            padding-left: 20px;
-          }
-        }
 
         img {
           width: 100%;
@@ -114,36 +127,153 @@
         }
       }
 
-      ::ng-deep .mat-stepper-vertical {
+      ::ng-deep .mat-stepper-horizontal {
         background-color: transparent;
+        max-width: 100%;
+
+        .mat-horizontal-content-container {
+          padding: 0;
+        }
+
+        .mat-horizontal-stepper-header-container {
+          max-width: 70%;
+          margin: 0 auto 40px auto;
+
+          .mat-stepper-horizontal-line {
+            border-top-style: dotted;
+            border-color: $grey-light;
+          }
+        }
 
         .mat-step-header .mat-step-label {
-          font-family: $title-font;
-          color: $primary-color;
-          font-size: 20px;
+          display: none;
         }
 
         .mat-step-header .mat-step-icon {
           background-color: transparent;
-          color: $primary-color;
-          border: 1px solid $primary-color;
+          color: $grey-light;
+          border: 1px solid $grey-light;
           font-weight: bold;
-          width: 30px;
-          height: 30px;
+          width: 40px;
+          height: 40px;
         }
 
         .mat-step-header .mat-step-icon.mat-step-icon-selected {
           color: $white;
           background-color: $primary-color;
+          border-color: $primary-color;
         }
 
         .mat-step-header.cdk-focused {
           background-color: transparent;
         }
 
-        .mat-vertical-content-container {
-          margin-left: 40px;
+        .mat-horizontal-stepper-content {
+          display: flex;
+
+          & > * {
+            flex: 1;
+
+            &:first-child {
+              margin-right: 30px;
+            }
+
+            &:last-child {
+              margin-left: 30px;
+            }
+          }
         }
+      }
+    }
+
+    &-factory {
+      .cards-wrapper {
+        display: flex;
+
+        & > .mat-card {
+          margin: 0 30px;
+          flex: 1;
+
+          &:first-child {
+            margin-left: 0;
+          }
+
+          &:last-child {
+            margin-right: 0;
+          }
+        }
+
+        .mat-card-avatar {
+          width: auto;
+          height: auto;
+
+          img {
+            width: 76px;
+            height: 76px;
+          }
+        }
+      }
+    }
+
+    &-testimony {
+
+      .mat-card {
+        max-width: 80%;
+        margin: auto;
+        padding: 10px 60px 40px 60px;
+        box-sizing: border-box;
+
+        .testimony-badge {
+          position: absolute;
+          top: -40px;
+          left: 55px;
+        }
+
+        h3 {
+          text-align: center;
+          max-width: 50%;
+          margin-left: auto;
+          margin-right: auto;
+        }
+      }
+
+      .testimony-author {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 16px;
+        font-weight: 700;
+        margin-top: 30px;
+
+        .testimony-img {
+          height: 76px;
+          width: 76px;
+          background-color: #ffffff;
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          overflow: hidden;
+          margin-right: 25px;
+
+          img {
+            height: 90%;
+          }
+        }
+      }
+    }
+
+    &-contact {
+      background-color: #f4f7fE;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Gilroy';
+      font-weight: 700;
+      font-size: 22px;
+
+      & > * {
+        margin: 0 10px;
       }
     }
 
@@ -152,12 +282,6 @@
         display: flex;
 
         & > *:nth-child(1) {
-          flex: 2;
-          display: flex;
-          align-items: center;
-        }
-
-        & > *:nth-child(2) {
           flex: 1;
           display: flex;
           align-items: center;
@@ -167,23 +291,17 @@
             width: 70%;
           }
         }
-      }
-    }
 
-    &-band {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: $shadow-uniform;
-      background-color: $white;
-      box-sizing: border-box;
-      padding: 40px 10%;
+        & > *:nth-child(2) {
+          flex: 2;
+          display: flex;
+          align-items: center;
+        }
 
-      &-fixed {
-        position: fixed;
-        bottom: 0;
-        width: 100vw;
-        padding: 20px 10%;
+        a {
+          font-weight: 700;
+          text-decoration: underline;
+        }
       }
     }
   }
@@ -191,11 +309,32 @@
   .footer {
     display: flex;
     align-items: center;
-    justify-content: center;
-    padding: 20px 0;
+    justify-content: space-between;
+    padding: 20px 10%;
+    color: $grey;
 
-    & > *:not(:first-child) {
-      margin-left: 10px;
+    & > * {
+      display: flex;
+      align-items: center;
+    }
+
+    .links {
+      a {
+        color: $grey;
+      }
+
+      & > *:not(:last-child) {
+        margin-right: 20px;
+      }
+    }
+
+    .signature {
+      width: 315px;
+
+      img {
+        height: 40px;
+        margin-left: 5px;
+      }
     }
   }
 }
@@ -205,13 +344,10 @@ $margin-small: 20px;
   .home {
     .section {
       padding: 60px 5%;
+    }
 
-      &-header {
-        p {
-          font-size: 20px;
-          line-height: 25px;
-        }
-      }
+    .footer {
+      padding: 20px 5%;
     }
   }
 }
@@ -236,12 +372,22 @@ $margin-small: 20px;
       h2, h1 {
         text-align: center;
       }
+    }
 
+    .section.section {
       &-menu {
-        flex-direction: column;
+        .logos {
+          height: 60px;
 
-        .actions {
-          display: flex;
+          img {
+            &:last-child {
+              width: 100px;
+            }
+          }
+
+          mat-divider {
+            margin: 0 20px 0 10px;
+          }
         }
       }
 
@@ -250,41 +396,83 @@ $margin-small: 20px;
           text-align: center;
         }
 
+        & > *, & > *:first-child {
+          padding: 0;
+        }
+
         .image {
           margin-bottom: 30px;
+          max-width: 100%;
 
           img {
-            max-height: 300px;
+            width: 100%;
+            height: auto;
+          }
+        }
+
+        .actions {
+          flex-direction: column;
+          align-items: center;
+
+          & > *:not(:last-child) {
+            margin: 0 0 20px 0;
           }
         }
       }
 
       &-how {
-        h2 {
-          float: none;
-        }
-
-        & > div {
-          width: 100%;
-          display: block;
-          text-align: center;
-
-          &:nth-child(2) {
-            padding-right: 0;
+        ::ng-deep .mat-stepper-horizontal {
+          .mat-horizontal-stepper-header-container {
+            max-width: 100%;
           }
 
-          &:nth-child(3) {
-            padding-left: 0;
-          }
+          .mat-horizontal-stepper-content {
+            flex-direction: column;
 
-          img {
-            margin-right: 0;
+            & > *, & > *:first-child, & > *:last-child {
+              margin: 0;
+            }
           }
         }
+      }
 
-        img {
-          max-width: 300px;
-          margin-bottom: $margin-small;
+      &-factory {
+        .cards-wrapper {
+          flex-direction: column;
+
+          & > .mat-card {
+            margin: 0 0 20px 0;
+
+            &:last-child {
+              margin-bottom: 0;
+            }
+          }
+        }
+      }
+
+      &-testimony {
+        .mat-card {
+          max-width: 100%;
+          padding: 10px 30px 40px 30px;
+
+          .testimony-badge {
+            height: 75px;
+            top: -20px;
+            left: 27px;
+          }
+
+          h3 {
+            max-width: 100%;
+          }
+        }
+      }
+
+      &-contact {
+        display: flex;
+        flex-direction: column;
+
+        & > *:not(:last-child) {
+          margin-bottom: 20px;
         }
       }
 
@@ -305,11 +493,16 @@ $margin-small: 20px;
           }
         }
       }
+    }
 
-      &-band {
-        padding: 30px 10%;
+    .footer {
+      flex-direction: column;
+
+      & > *:not(:last-child) {
+        margin-bottom: 20px;
       }
     }
   }
+
 }
 

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="78px" height="78px" viewBox="0 0 78 78" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>Group</title>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="LANDING_DESKTOP" transform="translate(-579.000000, -1549.000000)">
+            <g id="features-copy-3" transform="translate(549.000000, 1521.000000)">
+                <g id="Group" transform="translate(31.000000, 29.000000)">
+                    <rect id="Rectangle" stroke="#6E91F0" fill-rule="nonzero" x="0" y="0" width="76" height="76" rx="38"></rect>
+                    <g id="timelapse-24px" transform="translate(23.000000, 23.000000)">
+                        <polygon id="Path" points="0 0 30 0 30 30 0 30"></polygon>
+                        <path d="M20.3,9.6875 C18.8375,8.225 16.925,7.4875 15,7.4875 L15,14.9875 L9.7,20.2875 C12.625,23.2125 17.375,23.2125 20.3125,20.2875 C23.2375,17.3625 23.2375,12.6125 20.3,9.6875 Z M15,2.4875 C8.1,2.4875 2.5,8.0875 2.5,14.9875 C2.5,21.8875 8.1,27.4875 15,27.4875 C21.9,27.4875 27.5,21.8875 27.5,14.9875 C27.5,8.0875 21.9,2.4875 15,2.4875 Z M15,24.9875 C9.475,24.9875 5,20.5125 5,14.9875 C5,9.4625 9.475,4.9875 15,4.9875 C20.525,4.9875 25,9.4625 25,14.9875 C25,20.5125 20.525,24.9875 15,24.9875 Z" id="Shape" fill="#6D90EF" fill-rule="nonzero"></path>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

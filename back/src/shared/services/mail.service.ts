@@ -12,8 +12,9 @@ export class MailService {
    * @param subject: subject of the email
    * @param template: name of the template
    * @param context: context to pass to the template
+   * @param attachments
    */
-  sendEmail(email: string, subject: string, template: string, context?: any): Promise<any> {
+  sendEmail(email: string, subject: string, template: string, context?: any, attachments?: any[]): Promise<any> {
     return this._mailerService
       .sendMail({
         to: email,
@@ -21,6 +22,7 @@ export class MailService {
         subject: subject,
         template: template,
         context: context,
+        attachments: attachments
       }).then((info) => {
         console.log(`${new Date().toLocaleString()} - MAIL SEND TO: ${email} WITH SUBJECT: ${subject} WITH TEMPLATE: ${template} AND CONTEXT: ${JSON.stringify(context)}`);
       }).catch(() => {

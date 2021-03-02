@@ -72,6 +72,18 @@
             Vous n'avez pas saisi de mot de passe utilisateur.
           </mat-error>
         </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Mot de passe DB (only maj)</mat-label>
+          <input matInput
+                 placeholder="Saisir..."
+                 formControlName="dbPassword"
+                 maxlength="200"
+                 required>
+          <mat-error *ngIf="controls.dbPassword.hasError('required')">
+            Vous n'avez pas saisi de mot de passe base de données.
+          </mat-error>
+        </mat-form-field>
       </ng-container>
 
       <ng-container *ngSwitchCase="chatbotStatus.error_configuration">

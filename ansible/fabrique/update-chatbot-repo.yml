@@ -47,13 +47,13 @@
       become: yes
       npm:
         path: '{{ appsDir }}/{{ nestDir }}/chatbot/{{ frontDir }}'
-      register: installFront or pullFront.changed
+      when: (installFront is defined and installFront) or (pullFront.changed)
 
     - name: npm install chatbot-front librairies
       become: yes
       npm:
         path: '{{ appsDir }}/{{ nestDir }}/chatbot/{{ frontDir }}/projects/ngx-rasa-webchat'
-      register: installFront or pullFront.changed
+      when: (installFront is defined and installFront) or (pullFront.changed)
 
     - name: npm build chatbot-front
       become: yes
