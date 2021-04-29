@@ -127,6 +127,7 @@ export class ChatbotService {
 
   async update(id: number, updateChatbot: UpdateChatbotDto): Promise<Chatbot> {
     let chatbot = await this.findOne(id);
+    console.log('CHATBOT', chatbot);
     if (!chatbot) {
       throw new HttpException('Ce chatbot n\'existe pas.', HttpStatus.INTERNAL_SERVER_ERROR);
     }

@@ -92,15 +92,16 @@ export class ChatbotGenerationService {
   }
 
   async initChatbot(chatbot: Chatbot) {
+    console.log('BEGIN INIT CHATBOT');
     const password = crypto.randomBytes(12).toString('hex');
     const user = chatbot.user;
     const file = await this._ovhStorageService.get(chatbot.file).then();
     const icon = await this._ovhStorageService.get(chatbot.icon).then();
 
     const userToCreate = {
-      email: user.email,
-      firstName: user.first_name,
-      lastName: user.last_name,
+      email: user ? user.email : 'vincent.laine.utc@gmail.com',
+      firstName: user ? user.first_name : 'Vincent',
+      lastName: user ? user.last_name : 'Lainé',
       password: password
     };
 
@@ -112,7 +113,7 @@ export class ChatbotGenerationService {
     // Log user
     let token;
     await this._http.post(`${domain}/api/auth/login`, {
-      email: user.email,
+      email: userToCreate.email,
       password: password
     }).toPromise().then(response => {
       token = response.data.chatbotToken;
@@ -155,6 +156,8 @@ export class ChatbotGenerationService {
     headers = {
       Authorization: `Bearer ${token}`
     };
+    console.log('BEGIN INIT CHATBOT - TRAIN');
     await this._http.post(`${domain}/api/rasa/train`, {}, {headers: headers}).toPromise().then();
+    console.log('END INIT CHATBOT');
   }
 }
