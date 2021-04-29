@@ -14,7 +14,7 @@
     - ansible_become_pass: "{{ USER_PASSWORD }}"
     - appsDir: '/var/www/'
     - rasaDir: 'rasa-chatbot'
-    - NODEJS_VERSION: "16"
+    - NODEJS_VERSION: "12"
     - ansible_distribution_release: "xenial" #trusty
 
   tasks:

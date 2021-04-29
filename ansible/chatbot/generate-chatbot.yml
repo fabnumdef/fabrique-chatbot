@@ -85,7 +85,7 @@
         path: '/etc/nginx/sites-available/{{ frontDir }}.cfg'
         insertbefore : '^    location / {'
         line: '    server_name  {{ botDomain }};'
-      when: botDomain
+      when: botDomain is defined and botDomain != ""
 
     - name: create symlink
       file:
@@ -104,7 +104,7 @@
       become: yes
       command:
         cmd: 'certbot --nginx -d {{ botDomain }} -n --redirect --agree-tos -m vincent.laine@beta.gouv.fr'
-      when: botDomain
+      when: botDomain is defined and botDomain != ""
 
     - name: Install RASA version
       become: true
@@ -130,13 +130,13 @@
 
 
     - name: npm install chatbot-back
-      become: yes
+#      become: yes
       command:
-        cmd: sudo npm install --build-from-source
+        cmd: npm install
         chdir: '{{ appsDir }}/{{ backDir }}'
 
     - name: npm build chatbot-back
-      become: yes
+#      become: yes
       command:
         cmd: 'npm run build'
         chdir: '{{ appsDir }}/{{ backDir }}'
