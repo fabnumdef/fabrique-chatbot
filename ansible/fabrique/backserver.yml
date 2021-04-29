@@ -126,6 +126,7 @@
     #        cmd: 'certbot renew --dry-run'
 
     - name: NODE | Install pm2
+      ignore_errors: yes
       become: yes
       npm:
         name: pm2
