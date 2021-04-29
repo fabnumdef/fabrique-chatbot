@@ -8,6 +8,7 @@ import * as fs from "fs";
 import { MailService } from "../shared/services/mail.service";
 import { dotenvToJson, execShellCommand, jsonToDotenv } from "@core/utils";
 import { UpdateChatbotDto } from "@dto/update-chatbot.dto";
+
 const crypto = require('crypto');
 const FormData = require('form-data');
 const yaml = require('js-yaml');
@@ -38,24 +39,26 @@ export class ChatbotGenerationService {
     try {
       fs.writeFileSync(`${this._appDir}/chatbot/credentials.yml`, yaml.dump(credentials), 'utf8');
       fs.writeFileSync(`${this._appDir}/chatbot/.env`, dotenv, 'utf8');
-    } catch(err) {
+    } catch (err) {
       console.error(`${new Date().toLocaleString()} - ERROR WRITING FILE - ${chatbot.id} - ${err.message}`);
     }
 
     // update email config & domain name
     await execShellCommand(`ansible-vault decrypt --vault-password-file fabrique/password_file chatbot/.env`, `${this._appDir}`).then();
     dotenv = fs.readFileSync(`${this._appDir}/chatbot/.env`, 'utf8');
-    dotenv = {...dotenvToJson(dotenv), ...{
+    dotenv = {
+      ...dotenvToJson(dotenv), ...{
         MAIL_HOST: process.env.MAIL_HOST,
         MAIL_PORT: process.env.MAIL_PORT,
         MAIL_USER: process.env.MAIL_USER,
         MAIL_PASSWORD: process.env.MAIL_PASSWORD,
         HOST_URL: chatbot.domain_name ? `https://${chatbot.domain_name}` : `http://${chatbot.ip_adress}`
-      }};
+      }
+    };
 
     try {
       fs.writeFileSync(`${this._appDir}/chatbot/.env`, jsonToDotenv(dotenv), 'utf8');
-    } catch(err) {
+    } catch (err) {
       console.error(`${new Date().toLocaleString()} - ERROR WRITING FILE - ${chatbot.id} - ${err.message}`);
     }
 
@@ -82,7 +85,11 @@ export class ChatbotGenerationService {
   async updateChatbotRepos(chatbot: Chatbot) {
     const playbookOptions = new Options(`${this._appDir}/fabrique`);
     const ansiblePlaybook = new AnsiblePlaybook(playbookOptions);
-    const extraVars = {frontBranch: chatbot.front_branch, backBranch: chatbot.back_branch, botBranch: chatbot.bot_branch};
+    const extraVars = {
+      frontBranch: chatbot.front_branch,
+      backBranch: chatbot.back_branch,
+      botBranch: chatbot.bot_branch
+    };
     await ansiblePlaybook.command(`update-chatbot-repo.yml --vault-id dev@password_file -e '${JSON.stringify(extraVars)}'`).then((result) => {
       console.log(`${new Date().toLocaleString()} - UPDATING CHATBOTS REPOSITORIES`);
       console.log(result);
@@ -120,7 +127,7 @@ export class ChatbotGenerationService {
     });
 
     // Create other users
-    if(chatbot.users && chatbot.users.length > 0) {
+    if (chatbot.users && chatbot.users.length > 0) {
       chatbot.users.forEach(chatbotUser => {
         const password = crypto.randomBytes(12).toString('hex');
         this._http.post(`${domain}/api/user`, {...chatbotUser, ...{password: password}}).toPromise().then();
