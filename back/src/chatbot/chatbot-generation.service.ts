@@ -104,12 +104,14 @@ export class ChatbotGenerationService {
       password: password
     };
 
+    const domain = chatbot.domain_name ? `https://${chatbot.domain_name}` : `http://${chatbot.ip_adress}`;
+
     // Create first admin user
-    await this._http.post(`http://${chatbot.ip_adress}/api/user/admin`, userToCreate).toPromise().then();
+    await this._http.post(`${domain}/api/user/admin`, userToCreate).toPromise().then();
 
     // Log user
     let token;
-    await this._http.post(`http://${chatbot.ip_adress}/api/auth/login`, {
+    await this._http.post(`${domain}/api/auth/login`, {
       email: user.email,
       password: password
     }).toPromise().then(response => {
@@ -120,7 +122,7 @@ export class ChatbotGenerationService {
     if(chatbot.users && chatbot.users.length > 0) {
       chatbot.users.forEach(chatbotUser => {
         const password = crypto.randomBytes(12).toString('hex');
-        this._http.post(`http://${chatbot.ip_adress}/api/user`, {...chatbotUser, ...{password: password}}).toPromise().then();
+        this._http.post(`${domain}/api/user`, {...chatbotUser, ...{password: password}}).toPromise().then();
       });
     }
 
@@ -132,7 +134,7 @@ export class ChatbotGenerationService {
       ...form.getHeaders(),
       ...{Authorization: `Bearer ${token}`},
     };
-    await this._http.post(`http://${chatbot.ip_adress}/api/file/import`, form, {headers: headers}).toPromise().then();
+    await this._http.post(`${domain}/api/file/import`, form, {headers: headers}).toPromise().then();
 
     // Import config
     const configForm = new FormData();
@@ -147,12 +149,12 @@ export class ChatbotGenerationService {
       ...configForm.getHeaders(),
       ...{Authorization: `Bearer ${token}`},
     };
-    await this._http.post(`http://${chatbot.ip_adress}/api/config`, configForm, {headers: headers}).toPromise().then();
+    await this._http.post(`${domain}/api/config`, configForm, {headers: headers}).toPromise().then();
 
     // Train Rasa
     headers = {
       Authorization: `Bearer ${token}`
     };
-    await this._http.post(`http://${chatbot.ip_adress}/api/rasa/train`, {}, {headers: headers}).toPromise().then();
+    await this._http.post(`${domain}/api/rasa/train`, {}, {headers: headers}).toPromise().then();
   }
 }
