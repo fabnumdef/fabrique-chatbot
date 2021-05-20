@@ -111,7 +111,7 @@
       pip:
         executable: pip3
         name:
-          - rasa==2.5.0
+          - rasa==2.3.4
           - psycopg2-binary
 
     - name: Copy chatbot-template
@@ -199,7 +199,7 @@
       become: true
       command:
         chdir: '{{ appsDir }}/{{ botDir }}/'
-        cmd: 'screen -S rasa -dmS rasa run -m models --enable-api --log-file out.log --cors "*" --debug'
+        cmd: 'screen -S rasa -dmS rasa run -m models --log-file out.log --cors "*" --debug'
 
     - name: copy rc.local file to restart bot on boot
       copy:
