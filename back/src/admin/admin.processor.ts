@@ -33,9 +33,6 @@ export class AdminProcessor {
     const host_url = chatbot.domain_name ? `https://${chatbot.domain_name}` : `http://${chatbot.ip_adress}`;
 
     try {
-      const nginx_conf = fs.readFileSync(`${this._appDir}/chatbot/nginx.conf`, {encoding: 'base64'});
-      const nginx_site = fs.readFileSync(`${this._appDir}/chatbot/nginx_conf.cfg`, {encoding: 'base64'});
-
       const updateForm = new FormData();
       updateForm.append('updateFront', updateChatbot.updateFront.toString());
       updateForm.append('updateBack', updateChatbot.updateBack.toString());
@@ -44,8 +41,9 @@ export class AdminProcessor {
       updateForm.append('frontBranch', chatbot.front_branch);
       updateForm.append('backBranch', chatbot.back_branch);
       updateForm.append('botBranch', chatbot.bot_branch);
-      updateForm.append('nginx_conf', nginx_conf);
-      updateForm.append('nginx_site', nginx_site);
+      updateForm.append('domainName', chatbot.domain_name);
+      updateForm.append('nginx_conf', fs.createReadStream(`${this._appDir}/chatbot/nginx.conf`));
+      updateForm.append('nginx_site', fs.createReadStream(`${this._appDir}/chatbot/nginx_conf.cfg`));
       if(fabriqueConfig) {
         updateForm.append('elastic_host', fabriqueConfig.elastic_host);
         updateForm.append('elastic_username', fabriqueConfig.elastic_username);
