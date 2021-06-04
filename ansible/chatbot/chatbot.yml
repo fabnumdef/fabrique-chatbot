@@ -71,7 +71,6 @@
           - rsync
           - certbot
           - python-certbot-nginx
-          - ansible
 
     - name: Install last version of pip
       become: true
@@ -80,14 +79,14 @@
         name: pip
         extra_args: -U
 
-    - name: Install RASA
+    - name: Install RASA & Ansible
       become: true
       pip:
         executable: pip3
         name:
-          - rasa==2.0.6
+          - rasa==2.6.3
           - psycopg2-binary
-          - rasa[spacy]
+          - ansible
 
     - name: NODE | Install pm2
       become: yes
