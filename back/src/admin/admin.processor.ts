@@ -44,6 +44,7 @@ export class AdminProcessor {
       updateForm.append('frontBranch', chatbot.front_branch);
       updateForm.append('backBranch', chatbot.back_branch);
       updateForm.append('botBranch', chatbot.bot_branch);
+      updateForm.append('domainName', chatbot.domain_name);
       updateForm.append('nginx_conf', nginx_conf);
       updateForm.append('nginx_site', nginx_site);
       if(fabriqueConfig) {

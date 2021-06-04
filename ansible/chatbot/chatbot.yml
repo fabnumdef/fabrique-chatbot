@@ -85,7 +85,7 @@
       pip:
         executable: pip3
         name:
-          - rasa==2.0.6
+          - rasa==2.6.3
           - psycopg2-binary
           - rasa[spacy]
 
