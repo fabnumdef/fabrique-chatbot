@@ -82,7 +82,7 @@ export class AdminProcessor {
 
   @Process('update_domain_name')
   async updateDomainNameChatbot(job: Job) {
-    console.log('Update Chatbot Domain Name ...', job.data.chatbotId);
+    console.log('Update Chatbot Domain Name ...', job.data.chatbot?.id);
     // console.log(job.data);
 
     const chatbot: Chatbot = job.data.chatbot;
@@ -95,11 +95,11 @@ export class AdminProcessor {
     try {
       await this._http.post(
         `${host_url}/api/config/domain-name`,
-        {updateChatbot},
+        updateChatbot,
         {headers: headers}
       ).toPromise().then();
       await this._chatbotService.findAndUpdate(chatbot.id, {domain_name: updateChatbot.domainName})
-      console.log('Update Chatbot Domain Name completed', job.data.chatbotId);
+      console.log('Update Chatbot Domain Name completed', job.data.chatbot?.id);
     } catch (err) {
       console.error(err);
       console.error(err?.response?.data.message);
