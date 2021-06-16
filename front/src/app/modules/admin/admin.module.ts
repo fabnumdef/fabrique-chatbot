@@ -9,6 +9,7 @@ import { LaunchChatbotUpdateDialogComponent } from './chatbot-list/launch-chatbo
 import { ReactiveFormsModule } from '@angular/forms';
 import { EditChatbotDialogComponent } from './chatbot-list/edit-chatbot-dialog/edit-chatbot-dialog.component';
 import { QueueListComponent } from './chatbot-list/queue-list/queue-list.component';
+import { DomainNameUpdateDialogComponent } from './chatbot-list/domain-name-update-dialog/domain-name-update-dialog.component';
 
 @NgModule({
   declarations: [
@@ -16,7 +17,8 @@ import { QueueListComponent } from './chatbot-list/queue-list/queue-list.compone
     UserListComponent,
     LaunchChatbotUpdateDialogComponent,
     EditChatbotDialogComponent,
-    QueueListComponent
+    QueueListComponent,
+    DomainNameUpdateDialogComponent
   ],
   imports: [
     CommonModule,
@@ -26,4 +28,5 @@ import { QueueListComponent } from './chatbot-list/queue-list/queue-list.compone
     ReactiveFormsModule
   ]
 })
-export class AdminModule { }
+export class AdminModule {
+}

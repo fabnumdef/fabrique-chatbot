@@ -60,6 +60,15 @@
               get_app
             </mat-icon>
           </button>
+          <button mat-icon-button color="accent"
+                  aria-label="Mettre à jour le nom de domaine"
+                  *ngIf="showUpdateChatbot(row)"
+                  (click)="updateDomainName(row)">
+            <mat-icon matTooltip="Mettre à jour le nom de domaine"
+                      aria-label="Bouton pour mettre à jour le nom de domaine">
+              public
+            </mat-icon>
+          </button>
           <a target="_blank" [href]="'http://' + row.domainName" rel="noopener">
             <button mat-icon-button
                     aria-label="Aller au backoffice"

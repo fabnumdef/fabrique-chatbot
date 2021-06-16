@@ -83,10 +83,9 @@ export class ChatbotService {
           content: icon.buffer
         }
       ])
-      .then(() => {
-      });
+      .then();
 
-    return this._chatbotsRepository.save(chatbotSaved);;
+    return this._chatbotsRepository.save(chatbotSaved);
   }
 
   async findAndUpdate(id: number, data: any): Promise<Chatbot> {

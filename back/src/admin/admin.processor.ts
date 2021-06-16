@@ -9,6 +9,7 @@ import * as fs from "fs";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { FabriqueConfig } from "@entity/config.entity";
+import { UpdateChatbotDto } from "@dto/update-chatbot.dto";
 
 const FormData = require('form-data');
 
@@ -77,5 +78,33 @@ export class AdminProcessor {
     // console.log(job.data);
     await this._chatbotService.update(job.data.chatbotId, job.data.updateChatbot);
     console.log('Update Chatbot Status completed', job.data.chatbotId);
+  }
+
+  @Process('update_domain_name')
+  async updateDomainNameChatbot(job: Job) {
+    console.log('Update Chatbot Domain Name ...', job.data.chatbotId);
+    // console.log(job.data);
+
+    const chatbot: Chatbot = job.data.chatbot;
+    const updateChatbot: UpdateChatbotDto = job.data.updateChatbot;
+
+    const host_url = chatbot.domain_name ? `https://${chatbot.domain_name}` : `http://${chatbot.ip_adress}`;
+    const headers = {
+      'x-api-key': chatbot.api_key
+    };
+    try {
+      await this._http.post(
+        `${host_url}/api/config/domain-name`,
+        {updateChatbot},
+        {headers: headers}
+      ).toPromise().then();
+      await this._chatbotService.findAndUpdate(chatbot.id, {domain_name: updateChatbot.domainName})
+      console.log('Update Chatbot Domain Name completed', job.data.chatbotId);
+    } catch (err) {
+      console.error(err);
+      console.error(err?.response?.data.message);
+      console.error('Update Chatbot Domain Name failed');
+      await job.retry();
+    }
   }
 }
