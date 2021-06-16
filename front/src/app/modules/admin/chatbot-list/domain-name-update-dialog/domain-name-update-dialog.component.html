@@ -1,0 +1,33 @@
+<div class="edit-domain-name">
+  <h1>Edition du nom de domaine</h1>
+
+  <form [formGroup]="updateDomainNameFormGroup">
+
+    <mat-form-field appearance="outline">
+      <mat-label>Nom de domaine</mat-label>
+      <input matInput
+             placeholder="Saisir..."
+             formControlName="domainName"
+             required
+             maxlength="50">
+      <mat-error *ngIf="controls.domainName.hasError('pattern')">
+        Le format du nom de domaine est incorrect.
+      </mat-error>
+    </mat-form-field>
+  </form>
+
+  <div class="actions">
+    <button mat-flat-button
+            color="accent"
+            [mat-dialog-close]="false">
+      Annuler
+    </button>
+    <button mat-stroked-button
+            color="accent"
+            data-cy="ConfirmBtn"
+            [disabled]="!updateDomainNameFormGroup.valid"
+            [mat-dialog-close]="updateDomainNameFormGroup.getRawValue()">
+      Confirmer
+    </button>
+  </div>
+</div>

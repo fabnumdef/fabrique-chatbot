@@ -109,6 +109,23 @@ export class AdminController {
     return;
   }
 
+  @Post('chatbot/update-domain-name/:id')
+  @ApiOperation({summary: 'Launch chatbot domain name update'})
+  @UseGuards(RolesGuard)
+  @Roles(UserRole.admin)
+  async updateChatbotDomainName(@Param('id') chatbotId: number,
+                      @Body() updateChatbot: UpdateChatbotDto): Promise<any> {
+    const chatbot: Chatbot = await this._chatbotService.findOneWithParam({
+      id: chatbotId,
+      status: ChatbotStatus.running
+    });
+    if (!chatbot) {
+      throw new HttpException(`Ce chatbot n'existe pas ou n'est pas en fonctionnement.`, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+    await this.adminUpdateQueue.add('update_domain_name', {chatbot, updateChatbot});
+    return;
+  }
+
   @Get('chatbot/queue')
   @ApiOperation({summary: 'Return the current queue'})
   @UseGuards(RolesGuard)

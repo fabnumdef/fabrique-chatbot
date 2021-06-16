@@ -8,6 +8,7 @@ import { filter } from 'rxjs/operators';
 import { LaunchChatbotUpdateDialogComponent } from './launch-chatbot-update-dialog/launch-chatbot-update-dialog.component';
 import { EditChatbotDialogComponent } from './edit-chatbot-dialog/edit-chatbot-dialog.component';
 import { ChatbotStatus, ChatbotStatus_Fr } from '@enum/chatbot-status.enum';
+import { DomainNameUpdateDialogComponent } from "./domain-name-update-dialog/domain-name-update-dialog.component";
 
 @Component({
   selector: 'app-chatbot-list',
@@ -39,6 +40,19 @@ export class ChatbotListComponent implements OnInit {
       .pipe(filter(r => !!r))
       .subscribe((r) => {
         this._chatbotService.launchUpdateChatbot(chatbot.id, r).subscribe();
+      });
+  }
+
+  updateDomainName(chatbot: Chatbot): void {
+    const dialogRef = this._dialog.open(DomainNameUpdateDialogComponent, {
+      data: chatbot,
+      autoFocus: false
+    });
+
+    dialogRef.afterClosed()
+      .pipe(filter(r => !!r))
+      .subscribe((r) => {
+        this._chatbotService.launchUpdateDomainName(chatbot.id, r).subscribe();
       });
   }
 

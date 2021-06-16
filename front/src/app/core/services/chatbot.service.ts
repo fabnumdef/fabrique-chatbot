@@ -80,6 +80,15 @@ export class ChatbotService {
     );
   }
 
+  launchUpdateDomainName(chatbotId: number, body: ChatbotUpdate): Observable<any> {
+    this._loading$.next(true);
+    return this._http.post<any>(`${this._adminUrl}/update-domain-name/${chatbotId}`, body).pipe(
+      finalize(() => {
+        this._loading$.next(false);
+      })
+    );
+  }
+
   getChatbots(): Observable<Chatbot[]> {
     this._loading$.next(true);
     return this._http.get<any>(`${this._adminUrl}`).pipe(
