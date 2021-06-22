@@ -44,6 +44,9 @@
         state: present
         update_cache: yes
 
+    - name: Install last Nginx version
+      include_tasks: "../nginx-tasks.yml"
+
     - name: Install required dependencies (python, ssl, postgresql, node ...)
       become: true
       apt:
@@ -64,7 +67,6 @@
           - acl
           - nodejs
           - git
-          - nginx
           - curl
           - psmisc
           - screen

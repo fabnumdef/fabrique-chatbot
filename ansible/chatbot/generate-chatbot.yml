@@ -76,23 +76,15 @@
     - name: copy the nginx site config file
       copy:
         src: '{{ appsDir }}/{{ nestDir }}/ansible/chatbot/nginx_conf.cfg'
-        dest: '/etc/nginx/sites-available/{{ frontDir }}.cfg'
+        dest: '/etc/nginx/conf.d/default.conf'
       become: yes
 
     - name: add server name to the nginx site config file
-      become: yes
       lineinfile:
-        path: '/etc/nginx/sites-available/{{ frontDir }}.cfg'
+        path: '/etc/nginx/conf.d/default.conf'
         insertbefore : '^    location / {'
         line: '    server_name  {{ botDomain }};'
       when: botDomain is defined and botDomain != ""
-
-    - name: create symlink
-      file:
-        src: '/etc/nginx/sites-available/{{ frontDir }}.cfg'
-        dest: '/etc/nginx/sites-enabled/default'
-        state: link
-      become: yes
 
     - name: restart nginx
       service:
