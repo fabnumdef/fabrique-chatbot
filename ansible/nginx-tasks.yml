@@ -1,0 +1,40 @@
+- name: Add nginx source key
+  become: true
+  copy:
+    content: "deb http://nginx.org/packages/mainline/debian buster nginx"
+    dest: "/etc/apt/sources.list.d/nginx.list"
+
+- name: Add the nginx signing key
+  become: true
+  apt_key:
+    url: https://nginx.org/keys/nginx_signing.key
+    state: present
+
+- name: Uninstall old Nginx version
+  become: true
+  apt:
+    pkg:
+      - nginx
+      - nginx-common
+    purge: yes
+    state: absent
+    autoremove: yes
+
+- name: Update and upgrade apt packages
+  become: true
+  apt:
+    upgrade: 'yes'
+    update_cache: 'yes'
+
+- name: Install Nginx
+  become: true
+  apt:
+    pkg:
+      - nginx
+      - python-certbot-nginx
+
+- name: Start Nginx
+  service:
+    name: nginx
+    state: started
+  become: yes
