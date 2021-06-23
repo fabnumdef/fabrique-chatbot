@@ -22,11 +22,11 @@
         name: sudo
       when: ansible_distribution == 'Debian'
 
-    - name: ensure sudo is installed - CentOS
+    - name: ensure sudo is installed - CentOS & RHEL
       become: true
       yum:
         name: sudo
-      when: ansible_distribution == 'CentOS'
+      when: ansible_distribution == 'CentOS' or ansible_distribution == "RedHat"
 
     - name: ensure user is present - Debian
       become: true
@@ -37,11 +37,11 @@
         password: "{{ USER_PASSWORD | password_hash('sha512') }}"
       when: ansible_distribution == 'Debian'
 
-    - name: ensure user is present - CentOS
+    - name: ensure user is present - CentOS & RHEL
       become: true
       user:
         name: chatbot_user
         append: yes
         groups: wheel, root
         password: "{{ USER_PASSWORD | password_hash('sha512') }}"
-      when: ansible_distribution == 'CentOS'
+      when: ansible_distribution == 'CentOS' or ansible_distribution == "RedHat"

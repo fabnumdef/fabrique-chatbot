@@ -23,8 +23,7 @@
         dest: /etc/ssh/sshd_config
         regexp: ^PermitRootLogin
       notify:
-        - restart ssh - Debian
-        - restart ssh - CentOS
+        - restart ssh
 
     - name: Delete ssh host keys
       become: yes
@@ -38,17 +37,17 @@
         name: ufw
       when: ansible_distribution == 'Debian'
 
-    - name: Make sure epel-release is installed - CentOS
+    - name: Make sure epel-release is installed - CentOS & RHEL
       become: yes
-      yum:
+      dnf:
         name: epel-release
-      when: ansible_distribution == 'CentOS'
+      when: ansible_distribution == 'CentOS' or ansible_distribution == "RedHat"
 
-    - name: Make sure ufw is installed - CentOS
+    - name: Make sure ufw is installed - CentOS & RHEL
       become: yes
-      yum:
+      dnf:
         name: ufw
-      when: ansible_distribution == 'CentOS'
+      when: ansible_distribution == 'CentOS' or ansible_distribution == "RedHat"
 
     - name: Configure firewall
       become: yes
@@ -91,11 +90,3 @@
       service:
         name: ssh
         state: restarted
-      when: ansible_distribution == 'Debian'
-
-    - name: restart ssh
-      become: yes
-      systemd:
-        name: ssh
-        state: restarted
-      when: ansible_distribution == 'CentOS'

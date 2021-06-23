@@ -25,30 +25,30 @@
         update_cache: 'yes'
       when: ansible_distribution == 'Debian'
 
-    - name: Update and upgrade apt packages - CentOS
+    - name: Update and upgrade apt packages - CentOS & RHEL
       become: true
-      yum:
+      dnf:
         name: '*'
         state: latest
         update_cache: 'yes'
-      when: ansible_distribution == 'CentOS'
+      when: ansible_distribution == 'CentOS' or ansible_distribution == "RedHat"
 
     - name: Install dependencies for nodejs - Debian
       become: yes
-      apt:
-        pkg:
+      dnf:
+        name:
           - curl
           - software-properties-common
       when: ansible_distribution == 'Debian'
 
-    - name: Install dependencies for nodejs - CentOS
+    - name: Install dependencies for nodejs - CentOS & RHEL
       become: yes
-      yum:
-        pkg:
+      dnf:
+        name:
           - curl
           - gcc-c++
           - make
-      when: ansible_distribution == 'CentOS'
+      when: ansible_distribution == 'CentOS' or ansible_distribution == "RedHat"
 
     - name: Install the gpg key for nodejs LTS - Debian
       become: yes
@@ -65,21 +65,15 @@
         update_cache: yes
       when: ansible_distribution == 'Debian'
 
-    - name: NodeSource binary distribution - CentOS
+    - name: NodeSource binary distribution - CentOS & RHEL
       command:
         cmd: 'curl -sL https://rpm.nodesource.com/setup_{{ NODEJS_VERSION }}.x'
         warn: false
-      when: ansible_distribution == 'CentOS'
+      when: ansible_distribution == 'CentOS' or ansible_distribution == "RedHat"
 
-    - name: Install last Nginx version
+    - name: Install last Nginx version - Debian
       include_tasks: "../nginx-tasks.yml"
-
-#    - name: NodeSource binary distribution 2 - CentOS
-#      become: yes
-#      command:
-#        cmd: 'bash -'
-#        warn: false
-#      when: ansible_distribution == 'CentOS'
+      when: ansible_distribution == 'Debian'
 
     - name: Install required dependencies (python, ssl, postgresql, node ...) - Debian
       become: true
@@ -107,19 +101,18 @@
           - rsync
           - certbot
           - python-certbot-nginx
-          - ansible
       when: ansible_distribution == 'Debian'
 
-    - name: Install required dependencies (python, ssl, postgresql, node ...) - CentOS
+    - name: Install required dependencies (python, ssl, postgresql, node ...) - CentOS & RHEL
       become: true
-      yum:
-        pkg:
+      dnf:
+        name:
           - python3-pip
           - bash
           - openssl
-          - postgresql
+          - postgresql-server
           - postgresql-contrib
-          - python-psycopg2
+          - python3-psycopg2
           - acl
           - nodejs
           - git
@@ -127,10 +120,12 @@
           - psmisc
           - screen
           - rsync
-          - certbot
-          - python-certbot-nginx
-          - ansible
-      when: ansible_distribution == 'CentOS'
+          - snapd
+      when: ansible_distribution == 'CentOS' or ansible_distribution == "RedHat"
+
+    - name: Install Certbot - CentOS & RHEL
+      include_tasks: "certbot-tasks.yml"
+      when: ansible_distribution == 'CentOS' or ansible_distribution == "RedHat"
 
     - name: Install last version of pip
       become: true
@@ -144,7 +139,7 @@
       pip:
         executable: pip3
         name:
-          - rasa==2.6.3
+          - rasa==2.7.0
           - psycopg2-binary
           - ansible
 
@@ -156,19 +151,19 @@
         production: yes
         state: present
 
-    - name: Ensure the PostgreSQL service is running - Debian
+    - name: Init DB cluster - CentOS & RHEL
+      become: yes
+      ignore_errors: yes
+      command:
+        cmd: 'postgresql-setup --initdb'
+      when: ansible_distribution == 'CentOS' or ansible_distribution == "RedHat"
+
+    - name: Ensure the PostgreSQL service is running
+      become: yes
       service:
         name: 'postgresql'
         state: 'started'
         enabled: 'yes'
-      when: ansible_distribution == 'Debian'
-
-    - name: Ensure the PostgreSQL service is running - CentOS
-      systemd:
-        name: 'postgresql'
-        state: 'started'
-        enabled: 'yes'
-      when: ansible_distribution == 'CentOS'
 
     - name: Ensure database is created
       become: true
