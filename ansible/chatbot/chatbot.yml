@@ -6,7 +6,7 @@
   remote_user: chatbot_user
 
   vars_files:
-#    - ./credentials.yml
+    - ./credentials.yml
 
   vars:
     - ansible_user: "chatbot_user"
