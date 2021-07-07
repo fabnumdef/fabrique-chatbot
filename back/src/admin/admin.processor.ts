@@ -10,6 +10,7 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { FabriqueConfig } from "@entity/config.entity";
 import { UpdateChatbotDto } from "@dto/update-chatbot.dto";
+import { BotLogger } from "../logger/bot.logger";
 
 const FormData = require('form-data');
 
@@ -17,6 +18,7 @@ const FormData = require('form-data');
 export class AdminProcessor {
 
   private _appDir = '/var/www/fabrique-chatbot-back/ansible';
+  private readonly _logger = new BotLogger('AdminProcessor');
 
   constructor(private readonly _chatbotGenerationService: ChatbotGenerationService,
               private readonly _chatbotService: ChatbotService,
@@ -26,7 +28,7 @@ export class AdminProcessor {
 
   @Process('update')
   async updateChatbot(job: Job) {
-    console.log('Update Chatbot...', job.data.chatbot.id);
+    this._logger.log('Update Chatbot...', job.data.chatbot.id);
 
     const chatbot: Chatbot = job.data.chatbot;
     const fabriqueConfig: FabriqueConfig = await this._fabriqueConfigRepository.findOne(1);
@@ -57,33 +59,28 @@ export class AdminProcessor {
         ...updateForm.getHeaders(),
         ...{'x-api-key': chatbot.api_key},
       };
-      // console.log(job.data);
       await this._http.post(
         `${host_url}/api/update`,
         updateForm,
         {headers: headers}
       ).toPromise().then();
-      console.log('Update Chatbot completed', job.data.chatbot.id);
+      this._logger.log('Update Chatbot completed', job.data.chatbot.id);
     } catch (err) {
-      console.error(err);
-      console.error(err?.response?.data.message);
-      console.error('Update Chatbot failed');
+      this._logger.error('Update Chatbot failed', err);
       await job.retry();
     }
   }
 
   @Process('update_status')
   async updateStatusChatbot(job: Job) {
-    console.log('Update Chatbot Status ...', job.data.chatbotId);
-    // console.log(job.data);
+    this._logger.log('Update Chatbot Status ...', job.data.chatbotId);
     await this._chatbotService.update(job.data.chatbotId, job.data.updateChatbot);
-    console.log('Update Chatbot Status completed', job.data.chatbotId);
+    this._logger.log('Update Chatbot Status completed', job.data.chatbotId);
   }
 
   @Process('update_domain_name')
   async updateDomainNameChatbot(job: Job) {
-    console.log('Update Chatbot Domain Name ...', job.data.chatbot?.id);
-    // console.log(job.data);
+    this._logger.log('Update Chatbot Domain Name ...', job.data.chatbot?.id);
 
     const chatbot: Chatbot = job.data.chatbot;
     const updateChatbot: UpdateChatbotDto = job.data.updateChatbot;
@@ -99,11 +96,9 @@ export class AdminProcessor {
         {headers: headers}
       ).toPromise().then();
       await this._chatbotService.findAndUpdate(chatbot.id, {domain_name: updateChatbot.domainName})
-      console.log('Update Chatbot Domain Name completed', job.data.chatbot?.id);
+      this._logger.log('Update Chatbot Domain Name completed', job.data.chatbot?.id);
     } catch (err) {
-      console.error(err);
-      console.error(err?.response?.data.message);
-      console.error('Update Chatbot Domain Name failed');
+      this._logger.error('Update Chatbot Domain Name failed', err);
       await job.retry();
     }
   }

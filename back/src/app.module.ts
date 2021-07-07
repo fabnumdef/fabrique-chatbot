@@ -18,6 +18,7 @@ import { MailerModule } from "@nestjs-modules/mailer";
 import { HealthController } from './health/health.controller';
 import { BullModule } from "@nestjs/bull";
 import { FabriqueConfig } from "@entity/config.entity";
+import { LoggerModule } from './logger/logger.module';
 
 @Module({
   imports: [
@@ -77,6 +78,7 @@ import { FabriqueConfig } from "@entity/config.entity";
     UserModule,
     AuthModule,
     AdminModule,
+    LoggerModule,
   ],
   providers: [
     {

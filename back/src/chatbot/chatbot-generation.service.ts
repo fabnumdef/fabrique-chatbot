@@ -8,6 +8,7 @@ import * as fs from "fs";
 import { MailService } from "../shared/services/mail.service";
 import { dotenvToJson, execShellCommand, jsonToDotenv } from "@core/utils";
 import { UpdateChatbotDto } from "@dto/update-chatbot.dto";
+import { BotLogger } from "../logger/bot.logger";
 
 const crypto = require('crypto');
 const FormData = require('form-data');
@@ -17,6 +18,7 @@ const yaml = require('js-yaml');
 export class ChatbotGenerationService {
 
   private _appDir = '/var/www/fabrique-chatbot-back/ansible';
+  private readonly _logger = new BotLogger('ChatbotGenerationService');
 
   constructor(private readonly _chatbotService: ChatbotService,
               private readonly _ovhStorageService: OvhStorageService,
@@ -40,7 +42,7 @@ export class ChatbotGenerationService {
       fs.writeFileSync(`${this._appDir}/chatbot/credentials.yml`, yaml.dump(credentials), 'utf8');
       fs.writeFileSync(`${this._appDir}/chatbot/.env`, dotenv, 'utf8');
     } catch (err) {
-      console.error(`${new Date().toLocaleString()} - ERROR WRITING FILE - ${chatbot.id} - ${err.message}`);
+      this._logger.error(`ERROR WRITING FILE - ${chatbot.id}`, err);
     }
 
     // update email config & domain name
@@ -59,7 +61,7 @@ export class ChatbotGenerationService {
     try {
       fs.writeFileSync(`${this._appDir}/chatbot/.env`, jsonToDotenv(dotenv), 'utf8');
     } catch (err) {
-      console.error(`${new Date().toLocaleString()} - ERROR WRITING FILE - ${chatbot.id} - ${err.message}`);
+      this._logger.error(`ERROR WRITING FILE - ${chatbot.id}`, err);
     }
 
     await execShellCommand(`ansible-vault encrypt --vault-password-file fabrique/password_file chatbot/credentials.yml`, `${this._appDir}`).then();
@@ -71,11 +73,11 @@ export class ChatbotGenerationService {
 
     await ansiblePlaybook.command(`generate-chatbot.yml --vault-password-file ../fabrique/password_file -i ${chatbot.ip_adress}, -e '${JSON.stringify(extraVars)}'`).then(async (result) => {
       await this._chatbotService.findAndUpdate(chatbot.id, {status: ChatbotStatus.running});
-      console.log(`${new Date().toLocaleString()} - CHATBOT UPDATED - ${chatbot.id} - ${chatbot.name}`);
-      console.log(result);
-    }).catch(() => {
+      this._logger.log(`CHATBOT UPDATED - ${chatbot.id} - ${chatbot.name}`);
+      this._logger.log(result);
+    }).catch(err => {
       this._chatbotService.findAndUpdate(chatbot.id, {status: ChatbotStatus.error_configuration});
-      console.error(`${new Date().toLocaleString()} - ERROR UPDATING CHATBOT - ${chatbot.id} - ${chatbot.name}`);
+      this._logger.error(`ERROR UPDATING CHATBOT - ${chatbot.id} - ${chatbot.name}`, err);
     });
 
     fs.unlinkSync(`${this._appDir}/chatbot/credentials.yml`);
@@ -91,15 +93,15 @@ export class ChatbotGenerationService {
       botBranch: chatbot.bot_branch
     };
     await ansiblePlaybook.command(`update-chatbot-repo.yml --vault-id dev@password_file -e '${JSON.stringify(extraVars)}'`).then((result) => {
-      console.log(`${new Date().toLocaleString()} - UPDATING CHATBOTS REPOSITORIES`);
-      console.log(result);
-    }).catch(error => {
-      console.error(`${new Date().toLocaleString()} - ERRROR UPDATING CHATBOTS REPOSITORIES`);
+      this._logger.log(`UPDATING CHATBOTS REPOSITORIES`);
+      this._logger.log(result);
+    }).catch(err => {
+      this._logger.error(`ERRROR UPDATING CHATBOTS REPOSITORIES`, err);
     });
   }
 
   async initChatbot(chatbot: Chatbot) {
-    console.log('BEGIN INIT CHATBOT');
+    this._logger.log('BEGIN INIT CHATBOT');
     const password = crypto.randomBytes(12).toString('hex');
     const user = chatbot.user;
     const file = await this._ovhStorageService.get(chatbot.file).then();
@@ -163,8 +165,8 @@ export class ChatbotGenerationService {
     headers = {
       Authorization: `Bearer ${token}`
     };
-    console.log('BEGIN INIT CHATBOT - TRAIN');
+    this._logger.log('BEGIN INIT CHATBOT - TRAIN');
     await this._http.post(`${domain}/api/rasa/train`, {}, {headers: headers}).toPromise().then();
-    console.log('END INIT CHATBOT');
+    this._logger.log('END INIT CHATBOT');
   }
 }

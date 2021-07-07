@@ -18,6 +18,7 @@ import snakecaseKeys = require("snakecase-keys");
 import { InjectQueue } from "@nestjs/bull";
 import { Queue } from "bull";
 import { MailService } from "../shared/services/mail.service";
+import { BotLogger } from "../logger/bot.logger";
 
 const yaml = require('js-yaml');
 const crypto = require('crypto');
@@ -26,6 +27,7 @@ const XLSX = require('xlsx');
 @Injectable()
 export class ChatbotService {
   private _xlsx = XLSX;
+  private readonly _logger = new BotLogger('ChatbotService');
 
   constructor(@InjectRepository(Chatbot) private readonly _chatbotsRepository: Repository<Chatbot>,
               private readonly _ovhStorageService: OvhStorageService,
@@ -126,7 +128,7 @@ export class ChatbotService {
 
   async update(id: number, updateChatbot: UpdateChatbotDto): Promise<Chatbot> {
     let chatbot = await this.findOne(id);
-    console.log('CHATBOT', chatbot);
+    this._logger.log('CHATBOT', JSON.stringify(chatbot));
     if (!chatbot) {
       throw new HttpException('Ce chatbot n\'existe pas.', HttpStatus.INTERNAL_SERVER_ERROR);
     }
@@ -351,10 +353,10 @@ export class ChatbotService {
 
     const playbookOptions = new Options(`${appDir}/ansible/chatbot`);
     const ansiblePlaybook = new AnsiblePlaybook(playbookOptions);
-    await ansiblePlaybook.command(`prebook.yml --vault-password-file ../fabrique/password_file -i ${updateChatbot.ipAdress},`).then(result => console.log(result));
-    await ansiblePlaybook.command(`secure_server.yml --vault-password-file ../fabrique/password_file -i ${updateChatbot.ipAdress},`).then(result => console.log(result));
-    // await ansiblePlaybook.command(`prometheus.yml --vault-password-file ../fabrique/password_file -i ${updateChatbot.ipAdress},`).then(result => console.log(result));
-    await ansiblePlaybook.command(`chatbot.yml --vault-password-file ../fabrique/password_file -i ${updateChatbot.ipAdress},`).then(result => console.log(result));
+    await ansiblePlaybook.command(`prebook.yml --vault-password-file ../fabrique/password_file -i ${updateChatbot.ipAdress},`).then(result => this._logger.log(result));
+    await ansiblePlaybook.command(`secure_server.yml --vault-password-file ../fabrique/password_file -i ${updateChatbot.ipAdress},`).then(result => this._logger.log(result));
+    // await ansiblePlaybook.command(`prometheus.yml --vault-password-file ../fabrique/password_file -i ${updateChatbot.ipAdress},`).then(result => this._logger.log(result));
+    await ansiblePlaybook.command(`chatbot.yml --vault-password-file ../fabrique/password_file -i ${updateChatbot.ipAdress},`).then(result => this._logger.log(result));
 
     fs.unlinkSync(`${appDir}/ansible/chatbot/credentials.yml`);
     fs.unlinkSync(`${appDir}/ansible/chatbot/.env`);
