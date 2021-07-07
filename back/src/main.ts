@@ -3,6 +3,7 @@ import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
 import { ValidationPipe } from "@nestjs/common";
 import * as rateLimit from 'express-rate-limit';
+import { BotLogger } from "./logger/bot.logger";
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -12,6 +13,7 @@ async function bootstrap() {
       max: 100, // limit each IP to 100 requests per windowMs
     }),
   );
+  app.useLogger(app.get(BotLogger));
   if(process.env.NODE_ENV === 'prod') {
     app.enableCors({
       origin: process.env.HOST_URL
