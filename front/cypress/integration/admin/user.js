@@ -40,7 +40,7 @@ describe('Testing the user admin page', function () {
     cy.get('td').contains(Cypress.env('USER_EMAIL')).parent('tr').within(() => {
       cy.get('[data-cy=ChangeRoleBtn]').click();
     });
-    cy.server().route('PUT', '**/user/**').as('updateUser');
+    cy.intercept('PUT', '**/user/**').as('updateUser');
     cy.get('[data-cy=ConfirmBtn]').click();
     cy.wait('@updateUser');
 
