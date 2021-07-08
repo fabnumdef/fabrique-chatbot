@@ -94,6 +94,13 @@
       command:
         cmd: 'certbot --nginx -d {{ DOMAIN }} -n --redirect --agree-tos -m vincent.laine@beta.gouv.fr'
 
+    - name: Close port 80 after SSL certificate
+      become: yes
+      ufw:
+        rule: deny
+        port: '80'
+        proto: tcp
+
     - name: Update nginx site conf to use http2
       become: true
       lineinfile:
@@ -107,6 +114,13 @@
         path: '/etc/nginx/conf.d/default.conf'
         regexp: '^    listen 443 ssl;'
         line: '    listen 443 ssl http2;'
+
+    - name: Update certbot conf to use TLS 1.2
+      become: true
+      lineinfile:
+        path: '/etc/letsencrypt/options-ssl-nginx.conf'
+        regexp: '^ssl_protocols TLSv1 TLSv1.1 TLSv1.2;'
+        line: 'ssl_protocols TLSv1.2 TLSv1.3;'
 
     - name: restart nginx
       service:

@@ -9,7 +9,7 @@ jobs:
       - uses: actions/checkout@v1
       - uses: actions/setup-node@v1 #this installs node and npm for us
         with:
-          node-version: '10.x'
+          node-version: '14.x'
 
       - uses: actions/cache@v1 # this allows for re-using node_modules caching, making builds a bit faster.
         with:
