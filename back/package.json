@@ -57,7 +57,7 @@
     "snakecase-keys": "^3.2.0",
     "swagger-ui-express": "^4.1.5",
     "typeorm": "^0.2.29",
-    "xlsx": "^0.16.9"
+    "xlsx": "^0.17.0"
   },
   "devDependencies": {
     "@nestjs/schematics": "^7.2.2",
