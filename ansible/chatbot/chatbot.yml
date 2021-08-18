@@ -35,8 +35,8 @@
 
     - name: Install dependencies for nodejs - Debian
       become: yes
-      dnf:
-        name:
+      apt:
+        pkg:
           - curl
           - software-properties-common
       when: ansible_distribution == 'Debian'
@@ -80,12 +80,9 @@
       apt:
         pkg:
           - python3-pip
-          - build-essential
           - libssl-dev
-          - libffi-dev
           - bash
           - openssl
-          - libssl-doc
           - python3-dev
           - python-setuptools
           - postgresql
@@ -96,7 +93,6 @@
           - nodejs
           - git
           - curl
-          - psmisc
           - screen
           - rsync
           - certbot
@@ -117,7 +113,6 @@
           - nodejs
           - git
           - nginx
-          - psmisc
           - screen
           - rsync
           - snapd

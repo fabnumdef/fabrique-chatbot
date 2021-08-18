@@ -92,6 +92,14 @@
         state: restarted
       become: yes
 
+    - name: Open port 80 before check SSL certificate
+      become: yes
+      ufw:
+        rule: allow
+        port: '80'
+        proto: tcp
+      when: botDomain is defined and botDomain != ""
+
     - name: Install SSL certificate
       become: yes
       command:
