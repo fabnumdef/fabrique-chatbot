@@ -1,6 +1,6 @@
 {
   "name": "fabrique-chatbot-back",
-  "version": "1.2.3",
+  "version": "1.2.4",
   "description": "",
   "author": "",
   "license": "MIT",
@@ -42,10 +42,10 @@
     "class-validator": "^0.12.2",
     "dotenv": "^8.2.0",
     "express-rate-limit": "^5.2.3",
-    "handlebars": "^4.7.6",
+    "handlebars": "^4.7.7",
     "helmet": "^4.2.0",
     "js-yaml": "^4.0.0",
-    "lodash": "^4.17.20",
+    "lodash": "^4.17.21",
     "moment": "^2.29.1",
     "passport": "^0.4.1",
     "passport-jwt": "^4.0.0",
@@ -57,7 +57,7 @@
     "snakecase-keys": "^3.2.0",
     "swagger-ui-express": "^4.1.5",
     "typeorm": "^0.2.29",
-    "xlsx": "^0.16.9"
+    "xlsx": "^0.17.2"
   },
   "devDependencies": {
     "@nestjs/schematics": "^7.2.2",
