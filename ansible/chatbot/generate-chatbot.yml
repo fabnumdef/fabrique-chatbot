@@ -85,6 +85,7 @@
         insertbefore : '^    location / {'
         line: '    server_name  {{ botDomain }};'
       when: botDomain is defined and botDomain != ""
+      become: yes
 
     - name: restart nginx
       service:
