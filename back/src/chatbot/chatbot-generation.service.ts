@@ -161,6 +161,21 @@ export class ChatbotGenerationService {
     };
     await this._http.post(`${domain}/api/config`, configForm, {headers: headers}).toPromise().then();
 
+    // Generate Api Key
+    headers = {
+      Authorization: `Bearer ${token}`
+    };
+    let apiKey;
+    await this._http.post(`${domain}/api/config/api-key`, null, {headers: headers}).toPromise().then(async (response) => {
+      apiKey = response.data.apiKey;
+    });
+    if(apiKey) {
+      this._logger.log('BEGIN INIT CHATBOT - STORING API KEY');
+      await this._chatbotService.findAndUpdate(chatbot.id, {api_key: apiKey});
+    } else {
+      this._logger.error('BEGIN INIT CHATBOT - ERROR RETRIEVING API KEY', null);
+    }
+
     // Train Rasa
     headers = {
       Authorization: `Bearer ${token}`
