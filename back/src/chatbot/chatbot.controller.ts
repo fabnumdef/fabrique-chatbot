@@ -58,8 +58,7 @@ export class ChatbotController {
     if (errors && Object.keys(errors).length > 0) {
       throw new HttpException('Le fichier contient des erreurs bloquantes.', HttpStatus.INTERNAL_SERVER_ERROR);
     }
-    const api_key = crypto.randomBytes(12).toString('hex');
-    const botModel = await this._chatbotService.create(plainToClass(ChatbotModel, snakecaseKeys({...botConfiguration, ...{user: req.user, api_key: api_key}})), file, icon);
+    const botModel = await this._chatbotService.create(plainToClass(ChatbotModel, snakecaseKeys({...botConfiguration, ...{user: req.user}})), file, icon);
     return plainToClass(ChatbotDto, camelcaseKeys(botModel, {deep: true}));
   }
 
