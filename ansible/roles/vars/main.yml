@@ -1,0 +1,13 @@
+---
+userDir: '/home/fab_user'
+appsDir: '/var/www'
+nestDir: 'fabrique-chatbot-back'
+angularDir: 'fabrique-chatbot-front'
+backDir: 'chatbot-back'
+botDir: 'chatbot-template'
+frontDir: 'chatbot-front'
+ansible_user: "chatbot_user"
+ansible_become_pass: "{{ USER_PASSWORD }}"
+ansible_password: "{{ USER_PASSWORD }}"
+ansible_distribution_release: "xenial" #trusty
+NODEJS_VERSION: "12"

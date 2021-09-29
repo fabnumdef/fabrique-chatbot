@@ -1,0 +1,28 @@
+---
+- name: Prebook de l'Usine à Chatbots
+  hosts: all
+  vars_prompt:
+
+    - name: ROOT_PASSWORD
+      prompt: Enter new root password
+      private: yes
+      encrypt: sha512_crypt
+      confirm: yes
+      salt_size: 7
+
+    - name: USER_PASSWORD
+      prompt: Enter new user password
+      private: yes
+      encrypt: sha512_crypt
+      confirm: yes
+      salt_size: 7
+
+    - name: SSH_KEY
+      prompt: Enter filename of public ssh key
+      default: "~/.ssh/id_rsa.pub"
+      private: no
+
+  remote_user: root
+
+  roles:
+    - usinePrebook

@@ -1,0 +1,47 @@
+- name: Update and upgrade apt packages
+  become: true
+  dnf:
+    name: '*'
+    state: latest
+    update_cache: 'yes'
+
+- name: Install dependencies for nodejs
+  become: yes
+  dnf:
+    name:
+      - curl
+      - gcc-c++
+      - make
+
+- name: NodeSource binary distribution
+  command:
+    cmd: 'curl -sL https://rpm.nodesource.com/setup_{{ NODEJS_VERSION }}.x'
+    warn: false
+
+- name: Install required dependencies (python, ssl, postgresql, node ...)
+  become: true
+  dnf:
+    name:
+      - python3-pip
+      - bash
+      - openssl
+      - postgresql-server
+      - postgresql-contrib
+      - python3-psycopg2
+      - acl
+      - nodejs
+      - git
+      - nginx
+      - screen
+      - rsync
+      - snapd
+
+- name: Install Certbot
+  include_role:
+    name: certbot
+
+- name: Init DB cluster
+  become: yes
+  ignore_errors: yes
+  command:
+    cmd: 'postgresql-setup --initdb'

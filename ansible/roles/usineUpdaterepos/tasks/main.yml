@@ -1,0 +1,43 @@
+- name: Git chatbot-back
+  become: yes
+  git:
+    repo: https://github.com/fabnumdef/chatbot-back.git
+    dest: '{{ appsDir }}/{{ nestDir }}/chatbot/{{ backDir }}'
+    force: yes
+    version: '{{ backBranch }}'
+
+- name: Git chatbot-front
+  become: yes
+  git:
+    repo: https://github.com/fabnumdef/chatbot-front.git
+    dest: '{{ appsDir }}/{{ nestDir }}/chatbot/{{ frontDir }}'
+    force: yes
+    version: '{{ frontBranch }}'
+  register: pullFront
+
+- name: Git chatbot-template
+  become: yes
+  git:
+    repo: https://github.com/fabnumdef/chatbot-template.git
+    dest: '{{ appsDir }}/{{ nestDir }}/chatbot/{{ botDir }}'
+    force: yes
+    version: '{{ botBranch }}'
+
+- name: npm install chatbot-front
+  become: yes
+  npm:
+    path: '{{ appsDir }}/{{ nestDir }}/chatbot/{{ frontDir }}'
+  when: (installFront is defined and installFront) or (pullFront.changed)
+
+- name: npm install chatbot-front librairies
+  become: yes
+  npm:
+    path: '{{ appsDir }}/{{ nestDir }}/chatbot/{{ frontDir }}/projects/ngx-rasa-webchat'
+  when: (installFront is defined and installFront) or (pullFront.changed)
+
+- name: npm build chatbot-front
+  become: yes
+  command:
+    cmd: npm run build:prod
+    chdir: '{{ appsDir }}/{{ nestDir }}/chatbot/{{ frontDir }}'
+  when: pullFront.changed

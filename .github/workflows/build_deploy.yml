@@ -52,8 +52,8 @@ jobs:
         id: env_file
         with:
           cond: ${{ env.ENVIRONMENT == 'prod' }}
-          if_true: ~/fabrique-chatbot-back/ansible/fabrique/.env.prod
-          if_false: ~/fabrique-chatbot-back/ansible/fabrique/.env.dev
+          if_true: ~/fabrique-chatbot-back/ansible/roles/usineConfiguration/files/.env.prod
+          if_false: ~/fabrique-chatbot-back/ansible/roles/usineConfiguration/files/.env.dev
 
       - uses: haya14busa/action-cond@v1
         id: domain
@@ -112,7 +112,7 @@ jobs:
           PORT: 22
           KEY: ${{ secrets.SSH_PRIVATE_KEY }}
         with:
-          source: "./ansible/front/"
+          source: "./ansible/"
           target: "~/fabrique-chatbot-front/"
           timeout: 120s
 
@@ -127,7 +127,7 @@ jobs:
         with:
           envs: USER_PASSWORD
           script: |
-            ansible-playbook ~/fabrique-chatbot-front/ansible/front/frontserver.yml -e "user_password=$USER_PASSWORD"
+            ansible-playbook ~/fabrique-chatbot-front/ansible/playUsinefront.yml -e "user_password=$USER_PASSWORD"
             rm -rf ~/fabrique-chatbot-front
 
       - name: copy back app via ssh key
@@ -164,14 +164,14 @@ jobs:
           KEY: ${{ secrets.SSH_PRIVATE_KEY }}
         with:
           script: |
-            rm -rf ~/fabrique-chatbot-back/ansible/fabrique/password_file
-            cat >> ~/fabrique-chatbot-back/ansible/fabrique/password_file << 'END'
+            rm -rf ~/fabrique-chatbot-back/ansible/roles/vars/password_file
+            cat >> ~/fabrique-chatbot-back/ansible/roles/vars/password_file << 'END'
             ${{ steps.vault_password.outputs.value }}
             END
-            ansible-vault decrypt --vault-password-file ~/fabrique-chatbot-back/ansible/fabrique/password_file ${{ steps.env_file.outputs.value }}
-            mv ${{ steps.env_file.outputs.value }} ~/fabrique-chatbot-back/ansible/fabrique/.env
-            ansible-playbook ~/fabrique-chatbot-back/ansible/fabrique/backserver.yml --vault-password-file ~/fabrique-chatbot-back/ansible/fabrique/password_file --extra-vars 'DB_PASSWORD='"${{ steps.db_password.outputs.value }}"' USER_PASSWORD='"${{ steps.user_password.outputs.value }}"' DOMAIN='${{ steps.domain.outputs.value }}''
-#            ansible-playbook ~/fabrique-chatbot-back/ansible/logs/elastic.yml --vault-password-file ~/fabrique-chatbot-back/ansible/fabrique/password_file --extra-vars 'USER_PASSWORD='"${{ steps.user_password.outputs.value }}"' ELASTIC_HOST='${{ secrets.ELASTIC_HOST }}' ELASTIC_USERNAME='${{ secrets.ELASTIC_USERNAME }}' ELASTIC_PASSWORD='"${{ secrets.ELASTIC_PASSWORD }}"' ELASTIC_METRICBEAT_INDEX='${{ secrets.ELASTIC_METRICBEAT_INDEX }}' ELASTIC_PACKETBEAT_INDEX='${{ secrets.ELASTIC_PACKETBEAT_INDEX }}' ELASTIC_FILEBEAT_INDEX='${{ secrets.ELASTIC_FILEBEAT_INDEX }}''
+            ansible-vault decrypt --vault-password-file ~/fabrique-chatbot-back/ansible/roles/vars/password_file ${{ steps.env_file.outputs.value }}
+            mv ${{ steps.env_file.outputs.value }} ~/fabrique-chatbot-back/ansible/roles/usineConfiguration/files/.env
+            ansible-playbook ~/fabrique-chatbot-back/ansible/playUsineconfiguration.yml --vault-password-file ~/fabrique-chatbot-back/ansible/roles/vars/password_file --extra-vars 'DB_PASSWORD='"${{ steps.db_password.outputs.value }}"' USER_PASSWORD='"${{ steps.user_password.outputs.value }}"' DOMAIN='${{ steps.domain.outputs.value }}''
+#            ansible-playbook ~/fabrique-chatbot-back/ansible/logs/elastic.yml --vault-password-file ~/fabrique-chatbot-back/ansible/roles/vars/password_file --extra-vars 'USER_PASSWORD='"${{ steps.user_password.outputs.value }}"' ELASTIC_HOST='${{ secrets.ELASTIC_HOST }}' ELASTIC_USERNAME='${{ secrets.ELASTIC_USERNAME }}' ELASTIC_PASSWORD='"${{ secrets.ELASTIC_PASSWORD }}"' ELASTIC_METRICBEAT_INDEX='${{ secrets.ELASTIC_METRICBEAT_INDEX }}' ELASTIC_PACKETBEAT_INDEX='${{ secrets.ELASTIC_PACKETBEAT_INDEX }}' ELASTIC_FILEBEAT_INDEX='${{ secrets.ELASTIC_FILEBEAT_INDEX }}''
 
       - name: delete tmp dir
         uses: appleboy/ssh-action@master
