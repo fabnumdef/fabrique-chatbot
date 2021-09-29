@@ -1,0 +1,9 @@
+---
+- name: Déploiement du front de l'Usine à Chatbots
+  hosts: localhost
+  remote_user: fab_user
+  vars_files:
+    - roles/vars/main.yml
+    - roles/vars/usine.yml
+  roles:
+    - usineConfiguration

@@ -39,15 +39,15 @@ export class ChatbotGenerationService {
     });
 
     try {
-      fs.writeFileSync(`${this._appDir}/chatbot/credentials.yml`, yaml.dump(credentials), 'utf8');
-      fs.writeFileSync(`${this._appDir}/chatbot/.env`, dotenv, 'utf8');
+      fs.writeFileSync(`${this._appDir}/roles/chatbotGeneration/files/credentials.yml`, yaml.dump(credentials), 'utf8');
+      fs.writeFileSync(`${this._appDir}/roles/chatbotGeneration/files/.env`, dotenv, 'utf8');
     } catch (err) {
       this._logger.error(`ERROR WRITING FILE - ${chatbot.id}`, err);
     }
 
     // update email config & domain name
-    await execShellCommand(`ansible-vault decrypt --vault-password-file fabrique/password_file chatbot/.env`, `${this._appDir}`).then();
-    dotenv = fs.readFileSync(`${this._appDir}/chatbot/.env`, 'utf8');
+    await execShellCommand(`ansible-vault decrypt --vault-password-file roles/vars/password_file roles/chatbotGeneration/files/.env`, `${this._appDir}`).then();
+    dotenv = fs.readFileSync(`${this._appDir}/roles/chatbotGeneration/files/.env`, 'utf8');
     dotenv = {
       ...dotenvToJson(dotenv), ...{
         MAIL_HOST: process.env.MAIL_HOST,
@@ -59,19 +59,19 @@ export class ChatbotGenerationService {
     };
 
     try {
-      fs.writeFileSync(`${this._appDir}/chatbot/.env`, jsonToDotenv(dotenv), 'utf8');
+      fs.writeFileSync(`${this._appDir}/roles/chatbotGeneration/files/.env`, jsonToDotenv(dotenv), 'utf8');
     } catch (err) {
       this._logger.error(`ERROR WRITING FILE - ${chatbot.id}`, err);
     }
 
-    await execShellCommand(`ansible-vault encrypt --vault-password-file fabrique/password_file chatbot/credentials.yml`, `${this._appDir}`).then();
-    await execShellCommand(`ansible-vault encrypt --vault-password-file fabrique/password_file chatbot/.env`, `${this._appDir}`).then();
+    await execShellCommand(`ansible-vault encrypt --vault-password-file roles/vars/password_file roles/usineConfiguration/files/credentials.yml`, `${this._appDir}`).then();
+    await execShellCommand(`ansible-vault encrypt --vault-password-file roles/vars/password_file roles/chatbotGeneration/files/.env`, `${this._appDir}`).then();
 
-    const playbookOptions = new Options(`${this._appDir}/chatbot`);
+    const playbookOptions = new Options(this._appDir);
     const ansiblePlaybook = new AnsiblePlaybook(playbookOptions);
     const extraVars = {botDomain: chatbot.domain_name};
 
-    await ansiblePlaybook.command(`generate-chatbot.yml --vault-password-file ../fabrique/password_file -i ${chatbot.ip_adress}, -e '${JSON.stringify(extraVars)}'`).then(async (result) => {
+    await ansiblePlaybook.command(`playChatbotgeneration.yml --vault-password-file ../roles/vars/password_file -i ${chatbot.ip_adress}, -e '${JSON.stringify(extraVars)}'`).then(async (result) => {
       await this._chatbotService.findAndUpdate(chatbot.id, {status: ChatbotStatus.running});
       this._logger.log(`CHATBOT UPDATED - ${chatbot.id} - ${chatbot.name}`);
       this._logger.log(result);
@@ -80,19 +80,19 @@ export class ChatbotGenerationService {
       this._logger.error(`ERROR UPDATING CHATBOT - ${chatbot.id} - ${chatbot.name}`, err);
     });
 
-    fs.unlinkSync(`${this._appDir}/chatbot/credentials.yml`);
-    fs.unlinkSync(`${this._appDir}/chatbot/.env`);
+    fs.unlinkSync(`${this._appDir}/roles/usineConfiguration/files/credentials.yml`);
+    fs.unlinkSync(`${this._appDir}/roles/usineConfiguration/files/.env`);
   }
 
   async updateChatbotRepos(chatbot: Chatbot) {
-    const playbookOptions = new Options(`${this._appDir}/fabrique`);
+    const playbookOptions = new Options(this._appDir);
     const ansiblePlaybook = new AnsiblePlaybook(playbookOptions);
     const extraVars = {
       frontBranch: chatbot.front_branch,
       backBranch: chatbot.back_branch,
       botBranch: chatbot.bot_branch
     };
-    await ansiblePlaybook.command(`update-chatbot-repo.yml --vault-id dev@password_file -e '${JSON.stringify(extraVars)}'`).then((result) => {
+    await ansiblePlaybook.command(`playUsineupdaterepos.yml --vault-id dev@password_file -e '${JSON.stringify(extraVars)}'`).then((result) => {
       this._logger.log(`UPDATING CHATBOTS REPOSITORIES`);
       this._logger.log(result);
     }).catch(err => {

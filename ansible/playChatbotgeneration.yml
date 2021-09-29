@@ -1,0 +1,8 @@
+---
+- name: Génération d'un Chatbot
+  hosts: all
+  remote_user: chatbot_user
+  vars_files:
+    - roles/chatbotGeneration/files/credentials.yml
+  roles:
+    - chatbotGeneration

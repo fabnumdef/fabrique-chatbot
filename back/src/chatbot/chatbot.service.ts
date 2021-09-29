@@ -343,23 +343,22 @@ export class ChatbotService {
 
     const yamlStr = yaml.dump(credentials);
     const appDir = '/var/www/fabrique-chatbot-back';
-    fs.writeFileSync(`${appDir}/ansible/chatbot/credentials.yml`, yamlStr, 'utf8');
-    fs.writeFileSync(`${appDir}/ansible/chatbot/.env`, jsonToDotenv(env), 'utf8');
+    fs.writeFileSync(`${appDir}/ansible/roles/usineConfiguration/files/credentials.yml`, yamlStr, 'utf8');
+    fs.writeFileSync(`${appDir}/ansible/roles/usineConfiguration/files/.env`, jsonToDotenv(env), 'utf8');
 
-    await execShellCommand(`ansible-vault encrypt --vault-password-file fabrique/password_file chatbot/credentials.yml`, `${appDir}/ansible`).then();
-    await execShellCommand(`ansible-vault encrypt --vault-password-file fabrique/password_file chatbot/.env`, `${appDir}/ansible`).then();
-    const envEncrypted = fs.readFileSync(`${appDir}/ansible/chatbot/.env`, 'utf8');
+    await execShellCommand(`ansible-vault encrypt --vault-password-file roles/vars/password_file roles/usineConfiguration/files/credentials.yml`, `${appDir}/ansible`).then();
+    await execShellCommand(`ansible-vault encrypt --vault-password-file roles/vars/password_file roles/usineConfiguration/files/.env`, `${appDir}/ansible`).then();
+    const envEncrypted = fs.readFileSync(`${appDir}/ansible/roles/usineConfiguration/files/.env`, 'utf8');
     this._ovhStorageService.set(envEncrypted, `${chatbot.id.toString(10)}/.env`);
 
-    const playbookOptions = new Options(`${appDir}/ansible/chatbot`);
+    const playbookOptions = new Options(`${appDir}/ansible`);
     const ansiblePlaybook = new AnsiblePlaybook(playbookOptions);
-    await ansiblePlaybook.command(`prebook.yml --vault-password-file ../fabrique/password_file -i ${updateChatbot.ipAdress},`).then(result => this._logger.log(result));
-    await ansiblePlaybook.command(`secure_server.yml --vault-password-file ../fabrique/password_file -i ${updateChatbot.ipAdress},`).then(result => this._logger.log(result));
-    // await ansiblePlaybook.command(`prometheus.yml --vault-password-file ../fabrique/password_file -i ${updateChatbot.ipAdress},`).then(result => this._logger.log(result));
-    await ansiblePlaybook.command(`chatbot.yml --vault-password-file ../fabrique/password_file -i ${updateChatbot.ipAdress},`).then(result => this._logger.log(result));
+    await ansiblePlaybook.command(`playChatbotprebook.yml --vault-password-file ../roles/vars/password_file -i ${updateChatbot.ipAdress},`).then(result => this._logger.log(result));
+    await ansiblePlaybook.command(`playChatbotsecurity.yml --vault-password-file ../roles/vars/password_file -i ${updateChatbot.ipAdress},`).then(result => this._logger.log(result));
+    await ansiblePlaybook.command(`playChatbotconfiguration.yml --vault-password-file ../roles/vars/password_file -i ${updateChatbot.ipAdress},`).then(result => this._logger.log(result));
 
-    fs.unlinkSync(`${appDir}/ansible/chatbot/credentials.yml`);
-    fs.unlinkSync(`${appDir}/ansible/chatbot/.env`);
+    fs.unlinkSync(`${appDir}/ansible/roles/usineConfiguration/files/credentials.yml`);
+    fs.unlinkSync(`${appDir}/ansible/roles/usineConfiguration/files/.env`);
   }
 
   /************************************************************************************ STATIC ************************************************************************************/

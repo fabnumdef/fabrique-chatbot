@@ -1,0 +1,13 @@
+---
+- name: Génération d'un Chatbot
+  hosts: all
+  remote_user: debian
+  vars_files:
+    - roles/chatbotGeneration/files/credentials.yml
+
+  vars:
+    - ansible_user: "{{ ROOT_USER | default('debian') }}"
+    - ansible_password: "{{ ROOT_PASSWORD }}"
+
+  roles:
+    - chatbotPrebook

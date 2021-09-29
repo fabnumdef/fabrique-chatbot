@@ -1,0 +1,14 @@
+---
+- name: Sécurité de l'Usine à Chatbots
+  hosts: all
+  remote_user: fab_user
+
+  roles:
+    - usineSecurity
+
+  handlers:
+    - name: restart ssh
+      become: yes
+      service:
+        name: ssh
+        state: restarted

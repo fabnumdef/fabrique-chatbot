@@ -1,0 +1,24 @@
+- name: apply root password
+  become: true
+  user:
+    name: root
+    password: "{{ ROOT_PASSWORD }}"
+
+- name: ensure sudo is installed
+  become: true
+  apt:
+    name: sudo
+
+- name: ensure user is present
+  become: true
+  user:
+    name: fab_user
+    append: yes
+    groups: sudo
+    password: "{{ USER_PASSWORD }}"
+
+- name: ensure user is accessable with ssh key
+  become: true
+  authorized_key:
+    user: fab_user
+      key: "{{ lookup('file', '{{ SSH_KEY }}') }}"
