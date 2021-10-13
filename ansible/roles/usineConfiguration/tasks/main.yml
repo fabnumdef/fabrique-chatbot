@@ -1,46 +1,10 @@
-- name: Update and upgrade apt packages
-  become: yes
-  apt:
-    upgrade: 'yes'
-    update_cache: 'yes'
+- name: Configuration pour OS Debian
+  include_tasks: debian.yml
+  when: ansible_distribution == 'Debian'
 
-- name: Install dependencies for nodejs
-  become: yes
-  apt:
-    pkg:
-      - curl
-      - software-properties-common
-
-- name: Node get packages
-  shell: 'curl -sL https://deb.nodesource.com/setup_16.x | sudo bash -'
-  become: yes
-
-- name: Install last Nginx version
-  include_role:
-    name: nginx
-
-- name: Install required dependencies (nginx, node, npm ...)
-  become: yes
-  apt:
-    pkg:
-      - python-setuptools
-      - build-essential
-      - nodejs
-      - postgresql
-      - postgresql-contrib
-      - acl
-      - libpq-dev
-      - python3-psycopg2
-      - python-psycopg2
-      - git
-      - rsync
-      - sshpass
-      - certbot
-      - python-certbot-nginx
-      - redis-server
-      - python-pip
-      - python3-venv
-      - python3-pip
+- name: Configuration pour OS RHEL 8 & CentOS 8
+  include_tasks: rhel.yml
+  when: ansible_distribution == 'CentOS' or ansible_distribution == "RedHat"
 
 - name: Install last version of pip
   become: true

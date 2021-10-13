@@ -6,14 +6,6 @@
     regexp: ^PermitRootLogin
   notify: restart ssh
 
-- name: Do not allow ssh access via password
-  become: yes
-  lineinfile:
-    line: PasswordAuthentication no
-    dest: /etc/ssh/sshd_config
-    regexp: ^PasswordAuthentication
-  notify: restart ssh
-
 - name: Delete ssh host keys
   become: yes
   shell: "rm /etc/ssh/ssh_host_* && dpkg-reconfigure openssh-server"
@@ -25,21 +17,13 @@
   openssh_keypair:
     path: ~/.ssh/id_rsa
 
-- name: Update and upgrade apt packages
-  become: true
-  apt:
-    upgrade: 'yes'
-    update_cache: 'yes'
+- name: UFW & Ansible pour OS Debian
+  include_tasks: debian.yml
+  when: ansible_distribution == 'Debian'
 
-- name: Make sure ansible is installed
-  become: true
-  apt:
-    name: ansible
-
-- name: Make sure uft is installed
-  become: yes
-  apt:
-    name: ufw
+- name: UFW & Ansible pour OS RHEL 8 & CentOS 8
+  include_tasks: rhel.yml
+  when: ansible_distribution == 'CentOS' or ansible_distribution == "RedHat"
 
 - name: Configure firewall
   become: yes
