@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { ChatbotListComponent } from './chatbot-list/chatbot-list.component';
 import { UserListComponent } from './user-list/user-list.component';
+import { IntranetComponent } from './intranet/intranet.component';
 
 const routes: Routes = [
   {
@@ -11,6 +12,10 @@ const routes: Routes = [
   {
     path: 'user',
     component: UserListComponent
+  },
+  {
+    path: 'intranet',
+    component: IntranetComponent
   },
   {
     path: '',

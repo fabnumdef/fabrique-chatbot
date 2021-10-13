@@ -1,0 +1,8 @@
+---
+- name: Génération du package intranet
+  hosts: localhost
+  vars_files:
+    - roles/vars/main.yml
+
+  roles:
+    - usineGenerateintranet

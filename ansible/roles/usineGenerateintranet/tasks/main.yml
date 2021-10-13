@@ -1,0 +1,7 @@
+- name: Générer le package intranet pour Debian
+  include_tasks: debian.yml
+  when: ansible_distribution == 'Debian'
+
+- name: Générer le package intranet pour OS RHEL 8 & CentOS 8
+  include_tasks: rhel.yml
+  when: ansible_distribution == 'CentOS' or ansible_distribution == "RedHat"

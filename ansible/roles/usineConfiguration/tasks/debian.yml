@@ -1,0 +1,53 @@
+- name: Update and upgrade apt packages
+  become: yes
+  apt:
+    upgrade: 'yes'
+    update_cache: 'yes'
+
+- name: Install dependencies for nodejs
+  become: yes
+  apt:
+    pkg:
+      - curl
+      - software-properties-common
+
+- name: Install the gpg key for nodejs LTS
+  become: yes
+  apt_key:
+    url: "https://deb.nodesource.com/gpgkey/nodesource.gpg.key"
+    state: present
+
+- name: Install the nodejs LTS repos
+  become: yes
+  apt_repository:
+    repo: "deb https://deb.nodesource.com/node_{{ NODEJS_VERSION_USINE }}.x {{ ansible_distribution_release }} main"
+    state: present
+    update_cache: yes
+
+- name: Install last Nginx version
+  include_role:
+    name: nginx
+
+
+- name: Install required dependencies (nginx, node, npm ...)
+  become: yes
+  apt:
+    pkg:
+      - python-setuptools
+      - build-essential
+      - nodejs
+      - postgresql
+      - postgresql-contrib
+      - acl
+      - libpq-dev
+      - python3-psycopg2
+      - python-psycopg2
+      - git
+      - rsync
+      - sshpass
+      - certbot
+      - python-certbot-nginx
+      - redis-server
+      - python-pip
+      - python3-venv
+      - python3-pip

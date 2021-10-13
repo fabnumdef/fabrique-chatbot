@@ -1,0 +1,9 @@
+- name: Make sure ansible is installed
+  become: true
+  apt:
+    name: ansible
+
+- name: Make sure ufw is installed
+  become: yes
+  apt:
+    name: ufw

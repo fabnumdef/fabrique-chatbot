@@ -6,6 +6,7 @@ import { BullModule } from "@nestjs/bull";
 import { AdminProcessor } from "./admin.processor";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { FabriqueConfig } from "@entity/config.entity";
+import { AdminService } from './admin.service';
 
 @Module({
   imports: [
@@ -21,7 +22,8 @@ import { FabriqueConfig } from "@entity/config.entity";
     AdminController
   ],
   providers: [
-    AdminProcessor
+    AdminProcessor,
+    AdminService
   ]
 })
 export class AdminModule {

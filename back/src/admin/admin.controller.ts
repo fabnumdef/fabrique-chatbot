@@ -30,6 +30,7 @@ import { UpdateChatbotDto } from "@dto/update-chatbot.dto";
 import { DeleteResult, Not } from "typeorm";
 import { InjectQueue } from "@nestjs/bull";
 import { Job, Queue } from "bull";
+import { AdminService } from "./admin.service";
 
 @ApiTags('admin')
 @Controller('admin')
@@ -39,6 +40,7 @@ import { Job, Queue } from "bull";
 export class AdminController {
   constructor(private readonly _userService: UserService,
               private readonly _chatbotService: ChatbotService,
+              private readonly _adminService: AdminService,
               @InjectQueue('admin_update') private readonly adminUpdateQueue: Queue) {
   }
 
@@ -143,5 +145,13 @@ export class AdminController {
     const job: Job = await this.adminUpdateQueue.getJob(jobId);
     await job.remove();
     return;
+  }
+
+  @Post('intranet')
+  @ApiOperation({summary: 'Generate intradef package'})
+  @UseGuards(RolesGuard)
+  @Roles(UserRole.admin)
+  generateIntranetPackage(): Promise<void> {
+    return this._adminService.generateIntranetPackage();
   }
 }
