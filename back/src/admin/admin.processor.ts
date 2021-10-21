@@ -45,8 +45,8 @@ export class AdminProcessor {
       updateForm.append('backBranch', chatbot.back_branch);
       updateForm.append('botBranch', chatbot.bot_branch);
       updateForm.append('domainName', chatbot.domain_name);
-      updateForm.append('nginx_conf', fs.createReadStream(`${this._appDir}/chatbot/nginx.conf`));
-      updateForm.append('nginx_site', fs.createReadStream(`${this._appDir}/chatbot/nginx_conf.cfg`));
+      updateForm.append('nginx_conf', fs.createReadStream(`${this._appDir}/roles/chatbotGeneration/files/nginx.conf`));
+      updateForm.append('nginx_site', fs.createReadStream(`${this._appDir}/roles/chatbotGeneration/files/nginx_conf.cfg`));
       if(fabriqueConfig) {
         updateForm.append('elastic_host', fabriqueConfig.elastic_host);
         updateForm.append('elastic_username', fabriqueConfig.elastic_username);
