@@ -1,24 +1,19 @@
 - name: apply root password
   become: true
   user:
-    name: root
+    name: centos
     password: "{{ ROOT_PASSWORD }}"
 
-- name: ensure sudo is installed
-  become: true
-  apt:
-    name: sudo
+- name: Prebook pour OS Debian
+  include_tasks: debian.yml
+  when: ansible_distribution == 'Debian'
 
-- name: ensure user is present
-  become: true
-  user:
-    name: fab_user
-    append: yes
-    groups: sudo
-    password: "{{ USER_PASSWORD }}"
+- name: Prebook pour OS RHEL 8 & CentOS 8
+  include_tasks: rhel.yml
+  when: ansible_distribution == 'CentOS' or ansible_distribution == "RedHat"
 
-- name: ensure user is accessable with ssh key
-  become: true
-  authorized_key:
-    user: fab_user
-      key: "{{ lookup('file', '{{ SSH_KEY }}') }}"
+#- name: ensure user is accessable with ssh key
+#  become: true
+#  authorized_key:
+#    user: fab_user
+#      key: "{{ lookup('file', '{{ SSH_KEY }}') }}"

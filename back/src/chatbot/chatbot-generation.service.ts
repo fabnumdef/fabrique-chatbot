@@ -27,16 +27,23 @@ export class ChatbotGenerationService {
   }
 
   async updateChatbot(chatbot: Chatbot, updateChatbot: UpdateChatbotDto) {
-    await this.updateChatbotRepos(chatbot);
+    if(!process.env.INTRANET) {
+      await this.updateChatbotRepos(chatbot);
+    }
 
     const credentials = {
       USER_PASSWORD: updateChatbot.userPassword ? updateChatbot.userPassword : null,
       DB_PASSWORD: updateChatbot.dbPassword ? updateChatbot.dbPassword : null
     };
 
-    let dotenv = await this._ovhStorageService.get(`${chatbot.id.toString(10)}/.env`).then().catch(() => {
-      this._chatbotService.findAndUpdate(chatbot.id, {status: ChatbotStatus.error_configuration});
-    });
+    let dotenv = null;
+    if(!process.env.INTRANET) {
+      dotenv = await this._ovhStorageService.get(`${chatbot.id.toString(10)}/.env`).then().catch(() => {
+        this._chatbotService.findAndUpdate(chatbot.id, {status: ChatbotStatus.error_configuration});
+      });
+    } else {
+      dotenv = await fs.readFileSync(`${this._appDir}/roles/chatbotGeneration/files/.env`, 'utf8');
+    }
 
     try {
       fs.writeFileSync(`${this._appDir}/roles/chatbotGeneration/files/credentials.yml`, yaml.dump(credentials), 'utf8');

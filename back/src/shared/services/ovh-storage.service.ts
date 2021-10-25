@@ -18,6 +18,9 @@ export class OvhStorageService {
   private readonly _logger = new BotLogger('OvhStorageService');
 
   constructor(private readonly _http: HttpService) {
+    if(process.env.INTRANET) {
+      return;
+    }
     this._connection();
   }
 

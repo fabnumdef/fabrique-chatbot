@@ -4,8 +4,6 @@
     line: PermitRootLogin no
     dest: /etc/ssh/sshd_config
     regexp: ^PermitRootLogin
-  notify:
-  - restart ssh
 
 - name: Delete ssh host keys
   become: yes
@@ -17,9 +15,9 @@
   include_tasks: debian.yml
   when: ansible_distribution == 'Debian'
 
-- name: UFW pour OS RHEL 8 & CentOS 8
+- name: UFW pour OS RHEL 8 & CentOS 8 - Internet
   include_tasks: rhel.yml
-  when: ansible_distribution == 'CentOS' or ansible_distribution == "RedHat"
+  when: (ansible_distribution == 'CentOS' or ansible_distribution == "RedHat") and (intranet is not defined or intranet == "false")
 
 - name: Configure firewall
   become: yes

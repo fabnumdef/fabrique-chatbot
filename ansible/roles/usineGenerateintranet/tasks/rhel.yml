@@ -1,0 +1,137 @@
+- name: Prérequis
+  become: yes
+  dnf:
+    name:
+      - yum-utils
+
+- name: Suppresion front Usine
+  file:
+    state: absent
+    path: '/tmp/{{ intranetDir }}/{{ angularDir }}'
+
+- name: Suppresion back Usine
+  file:
+    state: absent
+    path: '/tmp/{{ intranetDir }}/{{ nestDir }}'
+
+- name: Suppresion front Chatbot
+  file:
+    state: absent
+    path: '/tmp/{{ intranetDir }}/chatbot/{{ angularDir }}'
+
+- name: Suppresion back Chatbot
+  file:
+    state: absent
+    path: '/tmp/{{ intranetDir }}/chatbot/{{ nestDir }}'
+
+- name: Suppresion template Chatbot
+  file:
+    state: absent
+    path: '/tmp/{{ intranetDir }}/chatbot/{{ botDir }}'
+
+- name: Suppresion ancien packages Usine
+  file:
+    state: absent
+    path: '/tmp/{{ intranetDir }}/packages'
+
+- name: Suppresion ancien packages Chatbot
+  file:
+    state: absent
+    path: '/tmp/{{ intranetDir }}/chatbot/packages'
+
+- name: Copie front Usine
+  synchronize:
+    src: '{{ appsDir }}/{{ angularDir }}'
+    dest: '/tmp/{{ intranetDir }}'
+
+- name: Copie back Usine
+  synchronize:
+    src: '{{ appsDir }}/{{ nestDir }}'
+    dest: '/tmp/{{ intranetDir }}'
+
+#- name: Copie front Chatbot
+#  synchronize:
+#    src: '{{ appsDir }}/{{ nestDir }}/chatbot/{{ frontDir }}/dist/{{ frontDir }}'
+#    dest: '/tmp/{{ intranetDir }}/chatbot'
+#
+#- name: Copie front webchat Chatbot
+#  synchronize:
+#    src: '{{ appsDir }}/{{ nestDir }}/chatbot/{{ frontDir }}/dist/webchat'
+#    dest: '/tmp/{{ intranetDir }}/chatbot'
+#
+#- name: Copie back Chatbot
+#  synchronize:
+#    src: '{{ appsDir }}/{{ nestDir }}/chatbot/{{ backDir }}'
+#    dest: '/tmp/{{ intranetDir }}/chatbot'
+#
+#- name: Copie template Chatbot
+#  synchronize:
+#    src: '{{ appsDir }}/{{ nestDir }}/chatbot/{{ botDir }}'
+#    dest: '/tmp/{{ intranetDir }}/chatbot'
+
+- name: npm install chatbot-back
+  become: yes
+  command:
+    cmd: npm install
+    chdir: '/tmp/{{ intranetDir }}/chatbot/{{ backDir }}'
+
+- name: npm build chatbot-back
+  command:
+    cmd: npm run build
+    chdir: '/tmp/{{ intranetDir }}/chatbot/{{ backDir }}'
+
+- name: Téléchargement des paquets requis pour l'Usine
+  shell: 'yumdownloader
+  python3-pip
+  bash
+  openssl
+  postgresql-server
+  postgresql-contrib
+  python3-psycopg2
+  acl
+  nodejs
+  git
+  nginx
+  screen
+  rsync
+  snapd
+  epel-release
+  ansible
+  ufw
+  curl
+  gcc-c++
+  make
+   --destdir /tmp/{{ intranetDir }}/packages --resolve'
+  become: yes
+
+
+- name: Téléchargement des paquets requis pour les Chatbots
+  shell: 'dnf download
+  epel-release
+  ufw
+  curl
+  gcc-c++
+  make
+  python3-pip
+  bash
+  openssl
+  postgresql-server
+  postgresql-contrib
+  python3-psycopg2
+  acl
+  nodejs
+  git
+  nginx
+  screen
+  rsync
+  snapd
+   --destdir /tmp/{{ intranetDir }}/chatbot/packages --resolve --alldeps'
+  become: yes
+
+- name: Téléchargement des paquets pythons requis pour les Chatbots
+  shell: 'pip3 download pip rasa==2.8.7 psycopg2-binary ansible -d /tmp/{{ intranetDir }}/chatbot/python-packages'
+
+- name: Compression du dossier
+  archive:
+    path: '/tmp/{{ intranetDir }}'
+    dest: '/tmp/{{ intranetDir }}.tgz'

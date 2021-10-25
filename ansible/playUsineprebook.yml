@@ -1,4 +1,5 @@
 ---
+# ansible-playbook playUsineprebook.yml -i $IP_ADRESS, -u centos --ask-pass;
 - name: Prebook de l'Usine à Chatbots
   hosts: all
   vars_prompt:
@@ -17,12 +18,10 @@
       confirm: yes
       salt_size: 7
 
-    - name: SSH_KEY
-      prompt: Enter filename of public ssh key
-      default: "~/.ssh/id_rsa.pub"
-      private: no
-
-  remote_user: root
+#    - name: SSH_KEY
+#      prompt: Enter filename of public ssh key
+#      default: "~/.ssh/id_rsa.pub"
+#      private: no
 
   roles:
     - usinePrebook

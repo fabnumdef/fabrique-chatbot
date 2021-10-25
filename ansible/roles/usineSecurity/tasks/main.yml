@@ -30,7 +30,7 @@
   ufw:
     policy: deny
     rule: allow
-    name: OpenSSH
+    name: ssh
     state: enabled
 
 - name: Configure firewall
