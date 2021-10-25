@@ -1,0 +1,53 @@
+- name: ensure user is present
+  become: yes
+  user:
+    name: chatbot_user
+    append: yes
+    groups: wheel
+    password: "{{ USER_PASSWORD | password_hash('sha512') }}"
+
+- name: Transfert des paquets au serveur du Chatbot
+  become: true
+  copy:
+    src: '{{ userDir }}/{{ intranetDir }}/packages'
+    dest: '{{ userBotDir }}/chatbot'
+
+- name: Installation des paquets rpm requis
+  become: true
+  shell: 'dnf -y localinstall {{ userBotDir }}/chatbot/packages/*.rpm --allowerasing --skip-broken --disablerepo=*'
+
+- name: Transfert du dossier au serveur du Chatbot
+  become: true
+  synchronize:
+    src: '{{ userDir }}/{{ intranetDir }}/chatbot'
+    dest: '{{ userBotDir }}'
+
+- name: Transfert du cache npm
+  become: true
+  synchronize:
+    src: '{{ userDir }}/{{ intranetDir }}/npm_cache'
+    dest: '{{ userBotDir }}/chatbot'
+
+- name: Installation des paquets npm requis
+  become: true
+  shell: 'npm install -g {{ userBotDir }}/chatbot/node_modules/*.tgz --cache {{ userBotDir }}/chatbot/npm_cache'
+
+- name: Mise à jour de pip
+  become: true
+  shell: 'pip3 install --no-index --find-links {{ userBotDir }}/chatbot/python-packages pip==21.3.1'
+
+- name: Installation des paquets python requis
+  become: true
+  shell: 'pip3 install --no-index --find-links {{ userBotDir }}/chatbot/python-packages rasa psycopg2-binary ansible'
+
+- name: Ajout du chemin pour utiliser les raccourcis python
+  become: true
+  shell: 'export PATH=/usr/local/bin:$PATH'
+
+- name: Init DB cluster
+  become: true
+  shell: 'postgresql-11-setup initdb'
+
+- name: setenforce permissive
+  become: true
+  shell: 'setenforce permissive'

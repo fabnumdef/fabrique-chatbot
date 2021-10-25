@@ -1,4 +1,4 @@
-- name: Update and upgrade apt packages
+- name: Update and upgrade dnf packages
   become: true
   dnf:
     name: '*'
@@ -13,10 +13,15 @@
       - gcc-c++
       - make
 
-- name: NodeSource binary distribution
-  command:
-    cmd: 'curl -sL https://rpm.nodesource.com/setup_{{ NODEJS_VERSION_USINE }}.x'
-    warn: false
+#- name: Enable node 12
+#  become: yes
+#  command:
+#    cmd: 'yes | dnf module enable nodejs:12'
+
+#- name: Enable postgres 11
+#  become: yes
+#  command:
+#    cmd: 'yes | dnf module enable postgresql:11'
 
 - name: Install required dependencies (python, ssl, postgresql, node ...)
   become: true
@@ -45,3 +50,7 @@
   ignore_errors: yes
   command:
     cmd: 'postgresql-setup --initdb'
+
+# WARNING POSTGRES ON CENTOS ident to md5
+# setenforce permissive
+

@@ -1,15 +1,9 @@
-- name: Installation de yum pour télécharger les rpm
-  become: yes
-  apt:
-    pkg:
-      - yum
-      - yum-plugin-downloadonly
-
 - name: Téléchargement des paquets requis
   become: yes
   yum:
     download_only: yes
     download_dir: '{{ userDir }}/{{ intranetDir }}/packages'
+    use_backend: 'dnf'
     name:
       - python3-pip
       - bash

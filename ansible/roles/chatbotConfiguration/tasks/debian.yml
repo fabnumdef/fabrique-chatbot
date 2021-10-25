@@ -50,3 +50,17 @@
       - rsync
       - certbot
       - python-certbot-nginx
+
+- name: copy the nginx config file
+  copy:
+    src: 'roles/chatbotGeneration/files/nginx.conf'
+    dest: '/etc/nginx/nginx.conf'
+  become: yes
+
+- name: Set right rights on www directory - Debian
+  become: true
+  file:
+    path: '{{appsDir}}'
+    group: www-data
+    mode: '774'
+    recurse: yes

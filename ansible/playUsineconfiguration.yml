@@ -1,5 +1,6 @@
 ---
-- name: Déploiement du front de l'Usine à Chatbots
+# ansible-playbook playUsineconfiguration.yml -i $IP_ADRESS, -e "USER_PASSWORD='$USER_PASSWORD' DB_PASSWORD='$DB_PASSWORD'" --ask-vault-pass;
+- name: Configuration du serveur de l'Usine à Chatbots
   hosts: localhost
   remote_user: fab_user
   vars_files:

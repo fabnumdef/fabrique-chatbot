@@ -1,0 +1,12 @@
+- name: ensure sudo is installed
+  become: true
+  yum:
+    name: sudo
+
+- name: ensure user is present
+  become: true
+  user:
+    name: fab_user
+    append: yes
+    groups: wheel
+    password: "{{ USER_PASSWORD | password_hash('sha512') }}"

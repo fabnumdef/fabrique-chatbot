@@ -12,6 +12,7 @@ import { forkJoin } from "rxjs";
 import { ChatbotStatus } from "@enum/chatbot-status.enum";
 import { UpdateChatbotDto } from "@dto/update-chatbot.dto";
 import * as fs from "fs";
+import * as mkdirp from "mkdirp";
 import { AnsiblePlaybook, Options } from "ansible-playbook-cli-js";
 import { execShellCommand, jsonToDotenv } from "@core/utils";
 import snakecaseKeys = require("snakecase-keys");
@@ -19,6 +20,7 @@ import { InjectQueue } from "@nestjs/bull";
 import { Queue } from "bull";
 import { MailService } from "../shared/services/mail.service";
 import { BotLogger } from "../logger/bot.logger";
+import * as path from "path";
 
 const yaml = require('js-yaml');
 const crypto = require('crypto');
@@ -28,11 +30,14 @@ const XLSX = require('xlsx');
 export class ChatbotService {
   private _xlsx = XLSX;
   private readonly _logger = new BotLogger('ChatbotService');
+  private _filesDir = path.resolve(__dirname, '../../files');
 
   constructor(@InjectRepository(Chatbot) private readonly _chatbotsRepository: Repository<Chatbot>,
               private readonly _ovhStorageService: OvhStorageService,
               private readonly _mailService: MailService,
               @InjectQueue('chatbot_update') private readonly _chatbotUpdateQueue: Queue) {
+    // Create folder if it does not exists
+    mkdirp(this._filesDir);
   }
 
   findAll(params?: any): Promise<Chatbot[]> {
@@ -52,12 +57,22 @@ export class ChatbotService {
     if (!file || !icon) {
       return chatbotSaved;
     }
-    chatbotSaved.file = `${chatbotSaved.id.toString(10)}/${file.originalname}`;
-    chatbotSaved.icon = `${chatbotSaved.id.toString(10)}/${icon.originalname}`;
-    await forkJoin({
-      file: this._ovhStorageService.set(file, chatbotSaved.file),
-      icon: this._ovhStorageService.set(icon, chatbotSaved.icon)
-    }).toPromise().then();
+    if(process.env.INTRANET) {
+      chatbotSaved.file = `${chatbotSaved.id.toString(10)}_${file.originalname}`;
+      chatbotSaved.icon = `${chatbotSaved.id.toString(10)}_${icon.originalname}`;
+    } else {
+      chatbotSaved.file = `${chatbotSaved.id.toString(10)}/${file.originalname}`;
+      chatbotSaved.icon = `${chatbotSaved.id.toString(10)}/${icon.originalname}`;
+    }
+    if(process.env.INTRANET) {
+      fs.writeFileSync(path.resolve(this._filesDir, chatbotSaved.file), file.buffer);
+      fs.writeFileSync(path.resolve(this._filesDir, chatbotSaved.icon), icon.buffer);
+    } else {
+      await forkJoin({
+        file: this._ovhStorageService.set(file, chatbotSaved.file),
+        icon: this._ovhStorageService.set(icon, chatbotSaved.icon)
+      }).toPromise().then();
+    }
 
     await this._mailService.sendEmail('vincent.laine@beta.gouv.fr',
       'Usine à Chatbots - Demande de création d\'un chatbot',
@@ -343,22 +358,25 @@ export class ChatbotService {
 
     const yamlStr = yaml.dump(credentials);
     const appDir = '/var/www/fabrique-chatbot-back';
-    fs.writeFileSync(`${appDir}/ansible/roles/usineConfiguration/files/credentials.yml`, yamlStr, 'utf8');
-    fs.writeFileSync(`${appDir}/ansible/roles/usineConfiguration/files/.env`, jsonToDotenv(env), 'utf8');
+    fs.writeFileSync(`${appDir}/ansible/roles/chatbotGeneration/files/credentials.yml`, yamlStr, 'utf8');
+    fs.writeFileSync(`${appDir}/ansible/roles/chatbotGeneration/files/.env`, jsonToDotenv(env), 'utf8');
 
-    await execShellCommand(`ansible-vault encrypt --vault-password-file roles/vars/password_file roles/usineConfiguration/files/credentials.yml`, `${appDir}/ansible`).then();
-    await execShellCommand(`ansible-vault encrypt --vault-password-file roles/vars/password_file roles/usineConfiguration/files/.env`, `${appDir}/ansible`).then();
+    await execShellCommand(`ansible-vault encrypt --vault-password-file roles/vars/password_file roles/chatbotGeneration/files/credentials.yml`, `${appDir}/ansible`).then();
+    await execShellCommand(`ansible-vault encrypt --vault-password-file roles/vars/password_file roles/chatbotGeneration/files/.env`, `${appDir}/ansible`).then();
     const envEncrypted = fs.readFileSync(`${appDir}/ansible/roles/usineConfiguration/files/.env`, 'utf8');
-    this._ovhStorageService.set(envEncrypted, `${chatbot.id.toString(10)}/.env`);
+    if(!process.env.INTRANET) {
+      this._ovhStorageService.set(envEncrypted, `${chatbot.id.toString(10)}/.env`);
+    }
 
     const playbookOptions = new Options(`${appDir}/ansible`);
     const ansiblePlaybook = new AnsiblePlaybook(playbookOptions);
-    await ansiblePlaybook.command(`playChatbotprebook.yml --vault-password-file ../roles/vars/password_file -i ${updateChatbot.ipAdress},`).then(result => this._logger.log(result));
-    await ansiblePlaybook.command(`playChatbotsecurity.yml --vault-password-file ../roles/vars/password_file -i ${updateChatbot.ipAdress},`).then(result => this._logger.log(result));
-    await ansiblePlaybook.command(`playChatbotconfiguration.yml --vault-password-file ../roles/vars/password_file -i ${updateChatbot.ipAdress},`).then(result => this._logger.log(result));
+    const extraVars = {intranet: process.env.INTRANET};
+    await ansiblePlaybook.command(`playChatbotprebook.yml --vault-password-file /var/www/fabrique-chatbot-back/ansible/roles/vars/password_file -i ${updateChatbot.ipAdress}, -e '${JSON.stringify(extraVars)}'`).then(result => this._logger.log(result));
+    await ansiblePlaybook.command(`playChatbotsecurity.yml --vault-password-file /var/www/fabrique-chatbot-back/ansible/roles/vars/password_file -i ${updateChatbot.ipAdress}, -e '${JSON.stringify(extraVars)}'`).then(result => this._logger.log(result));
+    await ansiblePlaybook.command(`playChatbotconfiguration.yml --vault-password-file /var/www/fabrique-chatbot-back/ansible/roles/vars/password_file -i ${updateChatbot.ipAdress}, -e '${JSON.stringify(extraVars)}'`).then(result => this._logger.log(result));
 
-    fs.unlinkSync(`${appDir}/ansible/roles/usineConfiguration/files/credentials.yml`);
-    fs.unlinkSync(`${appDir}/ansible/roles/usineConfiguration/files/.env`);
+    fs.unlinkSync(`${appDir}/ansible/roles/chatbotGeneration/files/credentials.yml`);
+    fs.unlinkSync(`${appDir}/ansible/roles/chatbotGeneration/files/.env`);
   }
 
   /************************************************************************************ STATIC ************************************************************************************/

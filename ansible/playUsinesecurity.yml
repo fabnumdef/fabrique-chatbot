@@ -1,4 +1,5 @@
 ---
+# ansible-playbook playUsinesecurity.yml -i $IP_ADRESS, -e "ansible_password='$USER_PASSWORD' ansible_become_pass='$USER_PASSWORD'";
 - name: Sécurité de l'Usine à Chatbots
   hosts: all
   remote_user: fab_user

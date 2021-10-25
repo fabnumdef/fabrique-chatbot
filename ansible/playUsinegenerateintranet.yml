@@ -3,6 +3,7 @@
   hosts: localhost
   vars_files:
     - roles/vars/main.yml
+    - roles/vars/usine.yml
 
   roles:
     - usineGenerateintranet
