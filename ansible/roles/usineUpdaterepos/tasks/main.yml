@@ -32,7 +32,7 @@
 - name: npm install chatbot-front librairies
   become: yes
   npm:
-    path: '{{ appsDir }}/{{ nestDir }}/chatbot/{{ frontDir }}/projects/ngx-rasa-webchat'
+    path: '{{ appsDir }}/{{ nestDir }}/chatbot/{{ frontDir }}/projects/webchat'
   when: (installFront is defined and installFront) or (pullFront.changed)
 
 - name: npm build chatbot-front

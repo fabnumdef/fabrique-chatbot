@@ -1,0 +1,29 @@
+---
+userDir: '/home/fab_user'
+userBotDir: '/home/chatbot_user'
+appsDir: '/var/www'
+nestDir: 'fabrique-chatbot-back'
+angularDir: 'fabrique-chatbot-front'
+backDir: 'chatbot-back'
+botDir: 'chatbot-template'
+frontDir: 'chatbot-front'
+webchatDir: 'webchat'
+gitDir: 'git'
+intranetDir: 'intranet'
+ansible_distribution_release: "xenial" #trusty
+NODEJS_VERSION: "12"
+NODEJS_VERSION_USINE: "16"
+intranet: true
+ROOT_USER: '$ROOT_USER'
+ROOT_PASSWORD: '$ROOT_PASSWORD'
+USER_PASSWORD: '$USER_PASSWORD'
+DATABASE_HOST: '$DATABASE_HOST'
+DATABASE_PORT: '$DATABASE_PORT'
+DATABASE_USER: '$DATABASE_USER'
+DATABASE_PASSWORD: '$DATABASE_PASSWORD'
+DATABASE_NAME: '$DATABASE_NAME'
+BOT_URL: "$BOT_URL"
+USER_BOT_EMAIL: "$USER_BOT_EMAIL"
+USER_BOT_FIRSTNAME: "$USER_BOT_FIRSTNAME"
+USER_BOT_LASTNAME: "$USER_BOT_LASTNAME"
+USER_BOT_PASSWORD: "$USER_BOT_PASSWORD"

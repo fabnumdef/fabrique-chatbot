@@ -57,14 +57,14 @@ export class ChatbotService {
     if (!file || !icon) {
       return chatbotSaved;
     }
-    if(process.env.INTRANET) {
+    if (process.env.INTRANET) {
       chatbotSaved.file = `${chatbotSaved.id.toString(10)}_${file.originalname}`;
       chatbotSaved.icon = `${chatbotSaved.id.toString(10)}_${icon.originalname}`;
     } else {
       chatbotSaved.file = `${chatbotSaved.id.toString(10)}/${file.originalname}`;
       chatbotSaved.icon = `${chatbotSaved.id.toString(10)}/${icon.originalname}`;
     }
-    if(process.env.INTRANET) {
+    if (process.env.INTRANET) {
       fs.writeFileSync(path.resolve(this._filesDir, chatbotSaved.file), file.buffer);
       fs.writeFileSync(path.resolve(this._filesDir, chatbotSaved.icon), icon.buffer);
     } else {
@@ -343,7 +343,7 @@ export class ChatbotService {
     };
 
     const env = {
-      NODE_ENV: 'prod',
+      NODE_ENV: process.env.NODE_ENV,
       DATABASE_HOST: 'localhost',
       DATABASE_PORT: '5432',
       DATABASE_USER: 'rasa_user',
@@ -364,7 +364,7 @@ export class ChatbotService {
     await execShellCommand(`ansible-vault encrypt --vault-password-file roles/vars/password_file roles/chatbotGeneration/files/credentials.yml`, `${appDir}/ansible`).then();
     await execShellCommand(`ansible-vault encrypt --vault-password-file roles/vars/password_file roles/chatbotGeneration/files/.env`, `${appDir}/ansible`).then();
     const envEncrypted = fs.readFileSync(`${appDir}/ansible/roles/usineConfiguration/files/.env`, 'utf8');
-    if(!process.env.INTRANET) {
+    if (!process.env.INTRANET) {
       this._ovhStorageService.set(envEncrypted, `${chatbot.id.toString(10)}/.env`);
     }
 
@@ -375,8 +375,10 @@ export class ChatbotService {
     await ansiblePlaybook.command(`playChatbotsecurity.yml --vault-password-file /var/www/fabrique-chatbot-back/ansible/roles/vars/password_file -i ${updateChatbot.ipAdress}, -e '${JSON.stringify(extraVars)}'`).then(result => this._logger.log(result));
     await ansiblePlaybook.command(`playChatbotconfiguration.yml --vault-password-file /var/www/fabrique-chatbot-back/ansible/roles/vars/password_file -i ${updateChatbot.ipAdress}, -e '${JSON.stringify(extraVars)}'`).then(result => this._logger.log(result));
 
-    fs.unlinkSync(`${appDir}/ansible/roles/chatbotGeneration/files/credentials.yml`);
-    fs.unlinkSync(`${appDir}/ansible/roles/chatbotGeneration/files/.env`);
+    if (!process.env.INTRANET) {
+      fs.unlinkSync(`${appDir}/ansible/roles/chatbotGeneration/files/credentials.yml`);
+      fs.unlinkSync(`${appDir}/ansible/roles/chatbotGeneration/files/.env`);
+    }
   }
 
   /************************************************************************************ STATIC ************************************************************************************/

@@ -25,12 +25,12 @@
 - name: Transfert du cache npm
   become: true
   synchronize:
-    src: '{{ userDir }}/{{ intranetDir }}/npm_cache'
+    src: '{{ userDir }}/{{ intranetDir }}/.npm'
     dest: '{{ userBotDir }}/chatbot'
 
 - name: Installation des paquets npm requis
   become: true
-  shell: 'npm install -g {{ userBotDir }}/chatbot/node_modules/*.tgz --cache {{ userBotDir }}/chatbot/npm_cache'
+  shell: 'npm install -g {{ userBotDir }}/chatbot/node_modules/*.tgz --prefer-offline --cache {{ userBotDir }}/chatbot/.npm'
 
 - name: Mise à jour de pip
   become: true
@@ -44,10 +44,10 @@
   become: true
   shell: 'export PATH=/usr/local/bin:$PATH'
 
-- name: Init DB cluster
-  become: true
-  shell: 'postgresql-11-setup initdb'
-
-- name: setenforce permissive
-  become: true
-  shell: 'setenforce permissive'
+#- name: Init DB cluster
+#  become: true
+#  shell: 'postgresql-11-setup initdb'
+#
+#- name: setenforce permissive
+#  become: true
+#  shell: 'setenforce permissive'

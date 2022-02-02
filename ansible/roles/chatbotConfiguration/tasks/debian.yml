@@ -41,7 +41,7 @@
       - postgresql
       - postgresql-contrib
       - libpq-dev
-      - python-psycopg2
+      - python3-psycopg2
       - acl
       - nodejs
       - git
@@ -49,7 +49,6 @@
       - screen
       - rsync
       - certbot
-      - python-certbot-nginx
 
 - name: copy the nginx config file
   copy:
