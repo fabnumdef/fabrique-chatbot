@@ -4,12 +4,11 @@
   remote_user: debian
   vars_files:
     - roles/vars/main.yml
-    - roles/chatbotGeneration/files/credentials.yml
 
   vars:
-    - ansible_user: "{{ ROOT_USER | default('debian') }}"
+    - ansible_user: "{{ ROOT_USER }}"
     - ansible_password: "{{ ROOT_PASSWORD }}"
-    - ansible_becmoe_pass: "{{ ROOT_PASSWORD }}"
+    - ansible_become_pass: "{{ ROOT_PASSWORD }}"
 
   roles:
     - chatbotPrebook

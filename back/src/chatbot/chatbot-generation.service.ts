@@ -9,6 +9,7 @@ import { MailService } from "../shared/services/mail.service";
 import { dotenvToJson, execShellCommand, jsonToDotenv } from "@core/utils";
 import { UpdateChatbotDto } from "@dto/update-chatbot.dto";
 import { BotLogger } from "../logger/bot.logger";
+import * as path from "path";
 
 const crypto = require('crypto');
 const FormData = require('form-data');
@@ -19,6 +20,7 @@ export class ChatbotGenerationService {
 
   private _appDir = '/var/www/fabrique-chatbot-back/ansible';
   private readonly _logger = new BotLogger('ChatbotGenerationService');
+  private _filesDir = path.resolve(__dirname, '../../files');
 
   constructor(private readonly _chatbotService: ChatbotService,
               private readonly _ovhStorageService: OvhStorageService,
@@ -26,7 +28,7 @@ export class ChatbotGenerationService {
               private readonly _mailService: MailService) {
   }
 
-  async updateChatbot(chatbot: Chatbot, updateChatbot: UpdateChatbotDto) {
+  async updateChatbot(chatbot: Chatbot, updateChatbot: UpdateChatbotDto): Promise<void> {
     if(!process.env.INTRANET) {
       await this.updateChatbotRepos(chatbot);
     }
@@ -78,7 +80,7 @@ export class ChatbotGenerationService {
     const ansiblePlaybook = new AnsiblePlaybook(playbookOptions);
     const extraVars = {botDomain: chatbot.domain_name};
 
-    await ansiblePlaybook.command(`playChatbotgeneration.yml --vault-password-file ../roles/vars/password_file -i ${chatbot.ip_adress}, -e '${JSON.stringify(extraVars)}'`).then(async (result) => {
+    await ansiblePlaybook.command(`playChatbotgeneration.yml --vault-password-file roles/vars/password_file -i ${chatbot.ip_adress}, -e '${JSON.stringify(extraVars)}'`).then(async (result) => {
       await this._chatbotService.findAndUpdate(chatbot.id, {status: ChatbotStatus.running});
       this._logger.log(`CHATBOT UPDATED - ${chatbot.id} - ${chatbot.name}`);
       this._logger.log(result);
@@ -87,8 +89,12 @@ export class ChatbotGenerationService {
       this._logger.error(`ERROR UPDATING CHATBOT - ${chatbot.id} - ${chatbot.name}`, err);
     });
 
-    fs.unlinkSync(`${this._appDir}/roles/usineConfiguration/files/credentials.yml`);
-    fs.unlinkSync(`${this._appDir}/roles/usineConfiguration/files/.env`);
+    try {
+      fs.unlinkSync(`${this._appDir}/roles/chatbotGeneration/files/credentials.yml`);
+      fs.unlinkSync(`${this._appDir}/roles/chatbotGeneration/files/.env`);
+    } catch (err) {
+      this._logger.error(`ERROR ERASING FILE - ${chatbot.id}`, err);
+    }
   }
 
   async updateChatbotRepos(chatbot: Chatbot) {
@@ -109,10 +115,19 @@ export class ChatbotGenerationService {
 
   async initChatbot(chatbot: Chatbot) {
     this._logger.log('BEGIN INIT CHATBOT');
+    chatbot = await this._chatbotService.findOne(chatbot.id);
     const password = crypto.randomBytes(12).toString('hex');
     const user = chatbot.user;
-    const file = await this._ovhStorageService.get(chatbot.file).then();
-    const icon = await this._ovhStorageService.get(chatbot.icon).then();
+
+    let file = null;
+    let icon = null;
+    if(!process.env.INTRANET) {
+      file = (await this._ovhStorageService.get(chatbot.file).then()).buffer;
+      icon = (await this._ovhStorageService.get(chatbot.icon).then()).buffer;
+    } else {
+      file = fs.readFileSync(path.resolve(this._filesDir, chatbot.file));
+      icon = fs.readFileSync(path.resolve(this._filesDir, chatbot.icon));
+    }
 
     const userToCreate = {
       email: user ? user.email : 'vincent.laine.utc@gmail.com',
@@ -125,6 +140,7 @@ export class ChatbotGenerationService {
 
     // Create first admin user
     await this._http.post(`${domain}/api/user/admin`, userToCreate).toPromise().then();
+    this._logger.log('ADMIN USER CREATED');
 
     // Log user
     let token;
@@ -134,6 +150,7 @@ export class ChatbotGenerationService {
     }).toPromise().then(response => {
       token = response.data.chatbotToken;
     });
+    this._logger.log('LOGGED WITH ADMIN USER');
 
     // Create other users
     if (chatbot.users && chatbot.users.length > 0) {
@@ -141,21 +158,23 @@ export class ChatbotGenerationService {
         const password = crypto.randomBytes(12).toString('hex');
         this._http.post(`${domain}/api/user`, {...chatbotUser, ...{password: password}}).toPromise().then();
       });
+      this._logger.log('CREATED CHATBOT USERS');
     }
 
     // Import file
     const form = new FormData();
-    form.append('file', Buffer.from(file.buffer), chatbot.file);
+    form.append('file', Buffer.from(file), chatbot.file);
     form.append('deleteIntents', true.toString());
     let headers: any = {
       ...form.getHeaders(),
       ...{Authorization: `Bearer ${token}`},
     };
     await this._http.post(`${domain}/api/file/import`, form, {headers: headers}).toPromise().then();
+    this._logger.log('IMPORT FILE');
 
     // Import config
     const configForm = new FormData();
-    configForm.append('icon', Buffer.from(icon.buffer), chatbot.icon);
+    configForm.append('icon', Buffer.from(icon), chatbot.icon);
     configForm.append('name', chatbot.name);
     configForm.append('function', chatbot.function);
     configForm.append('primaryColor', chatbot.primary_color);
@@ -167,6 +186,7 @@ export class ChatbotGenerationService {
       ...{Authorization: `Bearer ${token}`},
     };
     await this._http.post(`${domain}/api/config`, configForm, {headers: headers}).toPromise().then();
+    this._logger.log('IMPORT CONFIG');
 
     // Generate Api Key
     headers = {

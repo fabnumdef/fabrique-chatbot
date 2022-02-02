@@ -4,7 +4,7 @@
   remote_user: fab_user
   vars_files:
     - roles/vars/main.yml
-    - roles/vars/usine.yml
+#    - roles/vars/usine.yml
 
   roles:
     - usineUpdaterepos

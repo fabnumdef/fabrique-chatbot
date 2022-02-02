@@ -58,6 +58,12 @@
     proto: tcp
   when: botDomain is defined and botDomain != ""
 
+- name: Auto renew SSL certificate
+  become: yes
+  command:
+    cmd: 'certbot renew --pre-hook "ufw allow 80/tcp" --post-hook "ufw deny 80/tcp"'
+  when: botDomain is defined and botDomain != ""
+
 - name: Update nginx site conf to use http2
   become: true
   lineinfile:
@@ -129,6 +135,7 @@
   shell: 'env PATH=$PATH:/usr/bin /usr/local/lib/node_modules/pm2/bin/pm2 startup systemd -u chatbot_user --hp /home/chatbot_user'
 
 - name: Vérification du statut de PM2
+  ignore_errors: true
   systemd:
     name: pm2-chatbot_user
     state: started
@@ -179,6 +186,7 @@
     mode: '755'
 
 - name: copy files for bot
+  ignore_errors: true
   copy:
     src: '{{ item.src }}'
     dest: '{{ item.dest }}'

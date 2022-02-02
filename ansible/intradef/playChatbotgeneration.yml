@@ -4,7 +4,10 @@
   remote_user: chatbot_user
   vars_files:
     - roles/vars/main.yml
-    - roles/vars/credentials.yml
-#    - roles/chatbotGeneration/files/credentials.yml
+
   roles:
     - chatbotGeneration
+
+  vars:
+    - ansible_password: "{{ USER_PASSWORD }}"
+    - ansible_become_pass: "{{ USER_PASSWORD }}"

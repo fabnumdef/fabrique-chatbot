@@ -1,0 +1,134 @@
+- name: Copie chatbot-back
+  copy:
+    src: '../{{ backDir }}.tar.gz'
+    dest: '{{ userBotDir }}/chatbot/{{ backDir }}.tar.gz'
+
+- name: Décompression de chatbot-back
+  unarchive:
+    src: '{{ userBotDir }}/chatbot/{{ backDir }}.tar.gz'
+    dest: '{{ appsDir }}'
+    remote_src: yes
+
+- name: Suppression de l'archive
+  file:
+    path: '{{ userBotDir }}/chatbot/{{ backDir }}.tar.gz'
+    state: absent
+
+- name: Copy env-file
+  copy:
+    src: 'roles/vars/.env'
+    dest: '{{ appsDir }}/{{ backDir }}/.env'
+
+- name: Copy chatbot-front
+  synchronize:
+    src: '../{{ frontDir }}/dist/{{ frontDir }}/'
+    dest: '{{ appsDir }}/{{ frontDir }}'
+    delete: yes
+
+- name: Copy webchat
+  synchronize:
+    src: '../{{ frontDir }}/dist/{{ webchatDir }}/'
+    dest: '{{ appsDir }}/{{ webchatDir }}'
+    delete: yes
+
+- name: Copy chatbot-template
+  synchronize:
+    src: '../{{ botDir }}/'
+    dest: '{{ appsDir }}/{{ botDir }}'
+    rsync_opts:
+      - '--exclude=models/'
+
+- name: npm copy env file
+  command:
+    cmd: 'npm run copy'
+    chdir: '{{ appsDir }}/{{ backDir }}'
+
+- name: NODE | Stop APP
+  shell: pm2 stop ChatbotBack
+  args:
+    chdir: '{{ appsDir }}/{{ backDir }}'
+  ignore_errors: yes
+
+- name: NODE | Start APP
+  shell: pm2 start main.js --name ChatbotBack
+  args:
+    chdir: '{{ appsDir }}/{{ backDir }}/dist'
+
+- name: Mise à jour du script de PM2 pour se relancer au reboot du serveur
+  become: true
+  shell: 'env PATH=$PATH:/usr/bin /usr/local/lib/node_modules/pm2/bin/pm2 startup systemd -u chatbot_user --hp /home/chatbot_user'
+
+- name: Vérification du statut de PM2
+  ignore_errors: true
+  systemd:
+    name: pm2-chatbot_user
+    state: started
+
+- name: Copie du fichier endpoints.yml rasa
+  copy:
+    src: '{{ appsDir }}/{{ botDir }}/endpoints.example.yml'
+    dest: '{{ appsDir }}/{{ botDir }}/endpoints.yml'
+    remote_src: yes
+
+- name: Mise à jour du fichier endpoints.yml rasa - host
+  lineinfile:
+    path: '{{ appsDir }}/{{ botDir }}/endpoints.yml'
+    regexp: '^  url:'
+    line: '  url: "{{ DATABASE_HOST }}"'
+
+- name: Mise à jour du fichier endpoints.yml rasa - port
+  lineinfile:
+    path: '{{ appsDir }}/{{ botDir }}/endpoints.yml'
+    regexp: '^  port:'
+    line: '  port: "{{ DATABASE_PORT }}"'
+
+- name: Mise à jour du fichier endpoints.yml rasa - user
+  lineinfile:
+    path: '{{ appsDir }}/{{ botDir }}/endpoints.yml'
+    regexp: '^  username:'
+    line: '  username: "{{ DATABASE_USER }}"'
+
+- name: Mise à jour du fichier endpoints.yml rasa - password
+  lineinfile:
+    path: '{{ appsDir }}/{{ botDir }}/endpoints.yml'
+    regexp: '^  password:'
+    line: '  password: "{{ DATABASE_PASSWORD }}"'
+
+- name: Mise à jour du fichier endpoints.yml rasa - db
+  lineinfile:
+    path: '{{ appsDir }}/{{ botDir }}/endpoints.yml'
+    regexp: '^  db:'
+    line: '  db: "{{ DATABASE_NAME }}"'
+
+- name: Train rasa
+  command:
+    chdir: '{{ appsDir }}/{{ botDir }}/'
+    cmd: 'rasa train --num-threads 8'
+
+- name: Stop rasa chatbot
+  command: 'pkill screen'
+  ignore_errors: true
+
+- name: Start rasa chatbot
+  command:
+    chdir: '{{ appsDir }}/{{ botDir }}/'
+    cmd: 'screen -S rasa -dmS rasa run -m models --log-file out.log --cors "*" --debug'
+
+- name: copy rc.local file to restart bot on boot
+  become: true
+  copy:
+    src: 'roles/chatbotPrebook/files/rc.local'
+    dest: '/etc/rc.local'
+
+- name: Set right rights on rc.local file
+  become: true
+  file:
+    path: '/etc/rc.local'
+    mode: '755'
+
+- name: create git dir
+  become: true
+  file:
+    path: '{{ appsDir }}/{{ gitDir }}'
+    state: directory
+    mode: '755'
