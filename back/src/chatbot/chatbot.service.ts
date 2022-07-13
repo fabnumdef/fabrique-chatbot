@@ -74,7 +74,7 @@ export class ChatbotService {
       }).toPromise().then();
     }
 
-    await this._mailService.sendEmail('vincent.laine@beta.gouv.fr',
+    await this._mailService.sendEmail(['vincent.laine@beta.gouv.fr', 'linna.taing@beta.gouv.fr'],
       'Usine à Chatbots - Demande de création d\'un chatbot',
       'new-chatbot',
       {  // Data to be sent to template engine.
