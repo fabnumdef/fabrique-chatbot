@@ -49,6 +49,7 @@
       - screen
       - rsync
       - certbot
+      - snapd
 
 - name: copy the nginx config file
   copy:

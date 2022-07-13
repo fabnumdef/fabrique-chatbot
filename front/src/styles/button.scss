@@ -1,20 +1,33 @@
 @import 'src/styles/variables';
 
 button {
-  &.mat-flat-button {
-    height: 38px;
+  &.mat-button-base {
+    height: 40px;
+    padding-left: 24px;
+    padding-right: 24px;
+    border-radius: 0;
+
+    &.large {
+      height: 56px;
+      padding-left: 32px;
+      padding-right: 32px;
+      font-size: 20px;
+    }
+
+    &.mat-flat-button.mat-primary:hover {
+      background-color: #1212ff;
+    }
+
+    &:hover, &.mat-stroked-button:hover {
+      background-color: rgba(224, 224, 224, 0.5);
+    }
   }
 
   &.mat-flat-button, &.mat-stroked-button {
-    border-radius: 50px;
     border-width: 2px;
 
     &:not([disabled]) {
       border-color: currentColor!important;
-    }
-
-    &:not(.small) {
-      min-width: 180px;
     }
   }
 

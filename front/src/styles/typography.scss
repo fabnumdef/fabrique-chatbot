@@ -2,8 +2,8 @@
 
 body.mat-typography {
   h1, h2, h3, h4, h5 {
-    color: $primary-color;
     font-family: $title-font;
+    font-weight: 700;
   }
 
   h5 {

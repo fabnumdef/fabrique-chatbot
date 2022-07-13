@@ -1,55 +1,42 @@
 @import '~ngx-toastr/toastr';
 @import 'src/styles/variables';
-/* Roboto regular */
 
+
+/* Marianne regular */
 @font-face {
-  font-family: 'Roboto';
-  src: url('assets/fonts/Roboto/Roboto-Regular.woff2') format('woff2'),
-  url('assets/fonts/Roboto/Roboto-Regular.woff') format('woff');
+  font-family: 'Marianne';
+  src: url('assets/fonts/Marianne-Regular.woff2') format('woff2'),
+  url('assets/fonts/Marianne-Regular.woff') format('woff');
   font-weight: 400;
   font-style: normal;
   font-display: swap;
 }
 
-/* Roboto italic */
-
+/* Marianne bold */
 @font-face {
-  font-family: 'Roboto';
-  src: url('assets/fonts/Roboto/Roboto-Italic.woff2') format('woff2'),
-  url('assets/fonts/Roboto/Roboto-Italic.woff') format('woff');
+  font-family: 'Marianne';
+  src: url('assets/fonts/Marianne-Bold.woff2') format('woff2'),
+  url('assets/fonts/Marianne-Bold.woff') format('woff');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Spectral Regular */
+@font-face {
+  font-family: 'Spectral';
+  src: url('assets/fonts/Spectral-Regular.woff2') format('woff2'),
+  url('assets/fonts/Spectral-Regular.woff') format('woff');
   font-weight: 400;
-  font-style: italic;
-  font-display: swap;
-}
-
-/* Roboto bold */
-
-@font-face {
-  font-family: 'Roboto';
-  src: url('assets/fonts/Roboto/Roboto-Bold.woff2') format('woff2'),
-  url('assets/fonts/Roboto/Roboto-Bold.woff') format('woff');
-  font-weight: 700;
   font-style: normal;
   font-display: swap;
 }
 
-/* Gilroy Bold */
-
+/* Spectral ExtraBold */
 @font-face {
-  font-family: 'Gilroy';
-  src: url('assets/fonts/Gilroy-Bold/Gilroy-Bold.woff') format('woff'),
-  url('assets/fonts/Gilroy-Bold/Gilroy-Bold.ttf') format('ttf');
-  font-weight: 700;
-  font-style: normal;
-  font-display: swap;
-}
-
-/* Gilroy ExtraBold */
-
-@font-face {
-  font-family: 'Gilroy';
-  src: url('assets/fonts/Gilroy-ExtraBold/Gilroy-ExtraBold.woff2') format('woff2'),
-  url('assets/fonts/Gilroy-ExtraBold/Gilroy-ExtraBold.woff') format('woff');
+  font-family: 'Spectral';
+  src: url('assets/fonts/Spectral-ExtraBold.woff2') format('woff2'),
+  url('assets/fonts/Spectral-ExtraBold.woff') format('woff');
   font-weight: 800;
   font-style: normal;
   font-display: swap;
@@ -87,7 +74,7 @@
 html, body { height: 100%; }
 body {
   margin: 0;
-  font-family: Roboto, "Helvetica Neue", sans-serif;
+  font-family: Marianne, "Helvetica Neue", sans-serif;
 
   &::-webkit-scrollbar {
     width: 10px;
