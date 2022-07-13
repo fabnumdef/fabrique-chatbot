@@ -1,17 +1,8 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<svg width="78px" height="78px" viewBox="0 0 78 78" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-    <title>Group</title>
-    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-        <g id="LANDING_DESKTOP" transform="translate(-579.000000, -1549.000000)">
-            <g id="features-copy-3" transform="translate(549.000000, 1521.000000)">
-                <g id="Group" transform="translate(31.000000, 29.000000)">
-                    <rect id="Rectangle" stroke="#6E91F0" fill-rule="nonzero" x="0" y="0" width="76" height="76" rx="38"></rect>
-                    <g id="timelapse-24px" transform="translate(23.000000, 23.000000)">
-                        <polygon id="Path" points="0 0 30 0 30 30 0 30"></polygon>
-                        <path d="M20.3,9.6875 C18.8375,8.225 16.925,7.4875 15,7.4875 L15,14.9875 L9.7,20.2875 C12.625,23.2125 17.375,23.2125 20.3125,20.2875 C23.2375,17.3625 23.2375,12.6125 20.3,9.6875 Z M15,2.4875 C8.1,2.4875 2.5,8.0875 2.5,14.9875 C2.5,21.8875 8.1,27.4875 15,27.4875 C21.9,27.4875 27.5,21.8875 27.5,14.9875 C27.5,8.0875 21.9,2.4875 15,2.4875 Z M15,24.9875 C9.475,24.9875 5,20.5125 5,14.9875 C5,9.4625 9.475,4.9875 15,4.9875 C20.525,4.9875 25,9.4625 25,14.9875 C25,20.5125 20.525,24.9875 15,24.9875 Z" id="Shape" fill="#6D90EF" fill-rule="nonzero"></path>
-                    </g>
-                </g>
-            </g>
-        </g>
-    </g>
+<?xml version="1.0" encoding="utf-8"?>
+<svg width="80px" height="80px" viewBox="0 0 80 80" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg">
+  <g id="timelapse-24px">
+    <path d="M0 0L80 0L80 80L0 80L0 0Z" id="Path" fill="none" fill-rule="evenodd" stroke="none" />
+    <path d="M40 6.63333C21.6 6.63333 6.66667 21.5667 6.66667 39.9667C6.66667 58.3667 21.6 73.3 40 73.3C58.4 73.3 73.3333 58.3667 73.3333 39.9667C73.3333 21.5667 58.4 6.63333 40 6.63333ZM40 66.6333C25.2667 66.6333 13.3333 54.7 13.3333 39.9667C13.3333 25.2333 25.2667 13.3 40 13.3C54.7333 13.3 66.6667 25.2333 66.6667 39.9667C66.6667 54.7 54.7333 66.6333 40 66.6333Z" id="Shape" fill="#000091" stroke="none" />
+    <path d="M54.1333 25.8333C50.2333 21.9333 45.1333 19.9667 40 19.9667L40 39.9667L25.8667 54.1C33.6667 61.9 46.3333 61.9 54.1667 54.1C61.9667 46.3 61.9667 33.6333 54.1333 25.8333Z" id="Path" fill="#E1000F" stroke="none" />
+  </g>
 </svg>
