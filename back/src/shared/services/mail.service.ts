@@ -19,7 +19,7 @@ export class MailService {
    * @param context: context to pass to the template
    * @param attachments
    */
-  sendEmail(email: string, subject: string, template: string, context?: any, attachments?: any[]): Promise<any> {
+  sendEmail(email: string | string[], subject: string, template: string, context?: any, attachments?: any[]): Promise<any> {
     return this._mailerService
       .sendMail({
         to: email,
