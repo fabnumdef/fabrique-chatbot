@@ -34,10 +34,7 @@ import { LoggerModule } from './logger/logger.module';
       password: process.env.DATABASE_PASSWORD,
       database: process.env.DATABASE_NAME,
       "entities": [User, Chatbot, ChatbotUser, FabriqueConfig],
-      "synchronize": true,
-      ssl: {
-        ca: process.env.DATABASE_SSL_CERT,
-      },
+      "synchronize": true
     }),
     MailerModule.forRoot({
       transport: {
