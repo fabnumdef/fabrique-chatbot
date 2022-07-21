@@ -42,18 +42,18 @@
       <mat-divider></mat-divider>
       <div class="label">Quelles sont vos couleurs ?</div>
       <div class="color-wrapper value">
-        <div>Chatbot</div>
         <div [ngStyle]="{'background-color': formArray.at(2).value.primaryColor}"></div>
+        <div>Chatbot</div>
       </div>
 
       <div class="color-wrapper value">
-        <div>Utilisateur</div>
         <div [ngStyle]="{'background-color': formArray.at(2).value.secondaryColor}"></div>
+        <div>Utilisateur</div>
       </div>
     </div>
 
-    <div class="info-block">
-      <mat-checkbox [formControl]="conditionControl" data-cy="ConditionCheckbox">
+    <div style="margin-top: 20px">
+      <mat-checkbox [formControl]="conditionControl" color="primary" data-cy="ConditionCheckbox">
         Je m'engage à mettre à disposition du projet une personne afin de garantir la mise à jour du chatbot.
       </mat-checkbox>
     </div>

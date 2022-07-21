@@ -38,10 +38,8 @@
     .user-header {
       display: flex;
       justify-content: space-between;
-
-      .mat-icon {
-        cursor: pointer;
-      }
+      align-items: center;
+      margin-bottom: 10px;
     }
 
     .half-width-input {

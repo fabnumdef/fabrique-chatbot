@@ -3,8 +3,8 @@
 .resume {
   .info-block {
     margin-top: 20px;
-    background-color: $white;
     padding: 20px;
+    border: 1px solid $border-color;
 
     .mat-divider {
       margin: 10px 0;
@@ -16,15 +16,14 @@
     }
 
     .value {
-      color: $grey;
+      color: dimgrey;
     }
 
     .icon {
       width:60px;
       height: 60px;
       overflow: hidden;
-      border-radius: $border-radius;
-      background-color: $grey-lighter;
+      border: 1px solid $border-color;
 
       img {
         width: 60px;
@@ -38,13 +37,14 @@
       margin-bottom: 5px;
 
       & > *:nth-child(1) {
-        width: 100px;
+        width: 40px;
+        height: 40px;
+        border-radius: $border-radius;
+        margin-right: 10px;
       }
 
       & > *:nth-child(2) {
-        width: 20px;
-        height: 20px;
-        border-radius: 100px;
+        width: 100px;
       }
     }
   }

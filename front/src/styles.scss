@@ -99,10 +99,13 @@ body {
   color: $primary-color;
   display: flex;
   align-items: center;
-  border-radius: $border-radius;
   box-sizing: border-box;
 
   .mat-icon {
     margin-right: 10px;
   }
+}
+
+.full-width {
+  width: 100%;
 }

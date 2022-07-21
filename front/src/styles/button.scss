@@ -14,7 +14,7 @@ button {
       font-size: 20px;
     }
 
-    &.mat-flat-button.mat-primary:hover {
+    &.mat-flat-button.mat-primary:not([disabled]):hover {
       background-color: #1212ff;
     }
 
@@ -37,7 +37,7 @@ button {
     justify-content: center;
 
     .mat-icon {
-      margin-right: 5px;
+      margin-left: 5px;
     }
   }
 
@@ -71,5 +71,13 @@ button {
         color: $white;
       }
     }
+  }
+
+  &.mat-icon-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid $border-color;
+    padding: 0 19px;
   }
 }

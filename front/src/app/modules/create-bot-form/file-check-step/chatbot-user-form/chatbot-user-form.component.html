@@ -1,7 +1,7 @@
 <div class="chatbot-user-form"
      data-cy="UserForm">
   <form [formGroup]="chatbotUserForm" *ngIf="chatbotUserForm">
-    <mat-form-field appearance="outline">
+    <mat-form-field appearance="fill">
       <mat-label>Prénom</mat-label>
       <input matInput
              placeholder="Saisir..."
@@ -17,7 +17,7 @@
       </mat-error>
     </mat-form-field>
 
-    <mat-form-field appearance="outline">
+    <mat-form-field appearance="fill">
       <mat-label>Nom</mat-label>
       <input matInput
              placeholder="Saisir..."
@@ -33,7 +33,7 @@
       </mat-error>
     </mat-form-field>
 
-    <mat-form-field appearance="outline">
+    <mat-form-field appearance="fill">
       <mat-label>Email</mat-label>
       <input matInput
              placeholder="Saisir..."
@@ -49,7 +49,7 @@
       </mat-error>
     </mat-form-field>
 
-    <mat-form-field appearance="outline">
+    <mat-form-field appearance="fill">
       <mat-label>Rôle</mat-label>
       <mat-select formControlName="role"
                   data-cy="RoleSelector"

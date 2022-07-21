@@ -4,13 +4,6 @@
 
     .mat-table {
       width: 100%;
-
-      .mat-column-actions {
-
-        & > * :not(:last-child) {
-          margin-right: 10px;
-        }
-      }
     }
   }
 }

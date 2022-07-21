@@ -43,52 +43,45 @@
         <th mat-header-cell *matHeaderCellDef>
         </th>
         <td mat-cell *matCellDef="let row">
-          <button mat-icon-button color="accent"
-                  aria-label="Modifier le chatbot"
-                  (click)="editChatbot(row)">
-            <mat-icon matTooltip="Modifier le chatbot"
-                      aria-label="Bouton pour modifier le chatbot">
-              refresh
-            </mat-icon>
-          </button>
-          <button mat-icon-button color="accent"
-                  aria-label="Mettre à jour le chatbot"
-                  *ngIf="showUpdateChatbot(row)"
-                  (click)="updateChatbot(row)">
-            <mat-icon matTooltip="Mettre à jour le chatbot"
-                      aria-label="Bouton pour mettre à jour le chatbot">
-              get_app
-            </mat-icon>
-          </button>
-          <button mat-icon-button color="accent"
-                  aria-label="Mettre à jour le nom de domaine"
-                  *ngIf="showUpdateChatbot(row)"
-                  (click)="updateDomainName(row)">
-            <mat-icon matTooltip="Mettre à jour le nom de domaine"
-                      aria-label="Bouton pour mettre à jour le nom de domaine">
-              public
-            </mat-icon>
-          </button>
-          <a target="_blank" [href]="'http://' + row.domainName" rel="noopener">
-            <button mat-icon-button
-                    aria-label="Aller au backoffice"
-                    color="accent">
-              <mat-icon matTooltip="Aller au backoffice"
-                        aria-label="Bouton pour aller sur le backoffice du chatbot">
-                web
+          <div class="action-wrapper">
+            <button mat-icon-button color="primary"
+                    aria-label="Plus d'actions"
+                    [matMenuTriggerFor]="botActions">
+              <mat-icon matTooltip="Plus d'actions"
+                        aria-label="Bouton déroulant plus d'actions">
+                more_horiz
               </mat-icon>
             </button>
-          </a>
-          <button mat-icon-button
-                  aria-label="Supprimer"
-                  color="accent"
-                  (click)="deleteChatbot(row)">
-            <mat-icon fontSet="material-icons-outlined"
-                      matTooltip="Supprimer"
-                      aria-label="Bouton pour supprimer le chatbot">
-              delete
-            </mat-icon>
-          </button>
+            <mat-menu #botActions="matMenu">
+              <button mat-menu-item
+                      (click)="editChatbot(row)">
+                Modifier le chatbot
+              </button>
+              <button mat-menu-item
+                      *ngIf="showUpdateChatbot(row)"
+                      (click)="updateChatbot(row)">
+                Mettre à jour le chatbot
+              </button>
+              <button mat-menu-item
+                      *ngIf="showUpdateChatbot(row)"
+                      (click)="updateDomainName(row)">
+                Mettre à jour le nom de domaine
+              </button>
+              <a target="_blank" [href]="'http://' + row.domainName" rel="noopener" mat-menu-item>
+                Aller au backoffice
+              </a>
+            </mat-menu>
+            <button mat-icon-button
+                    aria-label="Supprimer"
+                    color="primary"
+                    (click)="deleteChatbot(row)">
+              <mat-icon fontSet="material-icons-outlined"
+                        matTooltip="Supprimer"
+                        aria-label="Bouton pour supprimer le chatbot">
+                delete
+              </mat-icon>
+            </button>
+          </div>
         </td>
       </ng-container>
 

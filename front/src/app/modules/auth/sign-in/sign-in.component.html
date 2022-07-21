@@ -5,7 +5,7 @@
   <form [formGroup]="signInForm"
         *ngIf="signInForm"
         (keyup.enter)="login()">
-    <mat-form-field appearance="outline">
+    <mat-form-field appearance="fill">
       <mat-label>Email</mat-label>
       <input matInput
              placeholder="Saisir..."
@@ -21,7 +21,7 @@
       </mat-error>
     </mat-form-field>
 
-    <mat-form-field appearance="outline">
+    <mat-form-field appearance="fill">
       <mat-label>Mot de passe</mat-label>
       <input matInput
              [type]="hidePassword ? 'password' : 'text'"
@@ -43,13 +43,15 @@
       </mat-error>
     </mat-form-field>
     <a [routerLink]="'/auth/forgot_password'"
+       class="etat-link"
        data-cy="ForgotPasswordBtn">
       Mot de passe oublié ?
     </a>
   </form>
 
   <button mat-flat-button
-          color="accent"
+          class="full-width"
+          color="primary"
           data-cy="LoginBtn"
           [disabled]="!signInForm.valid"
           (click)="login()">
@@ -62,8 +64,9 @@
   </h2>
 
   <button mat-stroked-button
+          class="full-width"
           data-cy="CreateAccount"
-          color="accent"
+          color="primary"
           [routerLink]="'/auth/sign_up'">
     Créer son compte
   </button>

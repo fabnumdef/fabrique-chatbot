@@ -2,7 +2,7 @@
   <h1>Créer un chatbot</h1>
   <mat-divider></mat-divider>
 
-  <mat-horizontal-stepper labelPosition="bottom" [linear]="true">
+  <mat-horizontal-stepper labelPosition="bottom" [linear]="false">
     <mat-step [stepControl]="formArray.at(0)" [completed]="chatbotGenerated" [editable]="!chatbotGenerated">
       <ng-template matStepLabel>
         <h2>Paramétrage</h2>
@@ -11,21 +11,18 @@
         </span>
       </ng-template>
       <div class="bot-step">
-        <div class="chatbot-title">
-          <h3 data-cy="ParamTitle">Paramétrage</h3>
-        </div>
         <div>
           <app-file-check-step [formGroup]="formArray.at(0)">></app-file-check-step>
         </div>
         <div class="bot-step-actions">
           <button mat-stroked-button
-                  color="accent"
+                  color="primary"
                   matStepperPrevious
                   disabled>
             Précédent
           </button>
           <button mat-flat-button
-                  color="accent"
+                  color="primary"
                   matStepperNext
                   data-cy="ParamNextBtn">
             Suivant
@@ -41,15 +38,12 @@
         </span>
       </ng-template>
       <div class="bot-step">
-        <div class="chatbot-title">
-          <h3 data-cy="DescriptionTitle">Description</h3>
-        </div>
         <div class="bot-step-content">
           <app-description-step [formGroup]="formArray.at(1)"></app-description-step>
         </div>
         <div class="bot-step-actions">
-          <button mat-stroked-button color="accent" matStepperPrevious>Précédent</button>
-          <button mat-flat-button color="accent" data-cy="DescNextBtn" matStepperNext>Suivant</button>
+          <button mat-stroked-button color="primary" matStepperPrevious>Précédent</button>
+          <button mat-flat-button color="primary" data-cy="DescNextBtn" matStepperNext>Suivant</button>
         </div>
       </div>
     </mat-step>
@@ -61,15 +55,12 @@
         </span>
       </ng-template>
       <div class="bot-step">
-        <div class="chatbot-title">
-          <h3 data-cy="CustomizationTitle">Personnalisation</h3>
-        </div>
         <div class="bot-step-content">
           <app-customization-step [formGroup]="formArray.at(2)"></app-customization-step>
         </div>
         <div class="bot-step-actions">
-          <button mat-stroked-button color="accent" matStepperPrevious>Précédent</button>
-          <button mat-flat-button color="accent" data-cy="CustomNextBtn" matStepperNext>Suivant</button>
+          <button mat-stroked-button color="primary" matStepperPrevious>Précédent</button>
+          <button mat-flat-button color="primary" data-cy="CustomNextBtn" matStepperNext>Suivant</button>
         </div>
       </div>
     </mat-step>
@@ -81,21 +72,18 @@
         </span>
       </ng-template>
       <div class="bot-step">
-        <div class="chatbot-title">
-          <h3>Finalisation</h3>
-        </div>
         <div class="bot-step-content">
           <app-resume-step [formArray]="formArray" [chatbotGenerated]="chatbotGenerated"></app-resume-step>
         </div>
         <div class="bot-step-actions">
           <button mat-stroked-button
-                  color="accent"
+                  color="primary"
                   matStepperPrevious
                   *ngIf="!chatbotGenerated">
             Précédent
           </button>
           <button mat-flat-button
-                  color="accent"
+                  color="primary"
                   (click)="generateChatbot()"
                   *ngIf="!chatbotGenerated"
                   [disabled]="!formArray.valid || (chatbotService.loading$ | async)">

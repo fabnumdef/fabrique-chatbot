@@ -2,28 +2,28 @@
   <h1>Mise à jour du chatbot</h1>
 
   <form [formGroup]="launchChatbotUpdateFormGroup">
-    <mat-checkbox formControlName="updateFront">
+    <mat-checkbox color="primary" formControlName="updateFront">
       Mettre à jour le FRONT
     </mat-checkbox>
-    <mat-checkbox formControlName="updateBack">
+    <mat-checkbox color="primary" formControlName="updateBack">
       Mettre à jour le BACK
     </mat-checkbox>
-    <mat-checkbox formControlName="updateRasa">
+    <mat-checkbox color="primary" formControlName="updateRasa">
       Mettre à jour RASA
     </mat-checkbox>
-    <mat-checkbox formControlName="updateLogs">
+    <mat-checkbox color="primary" formControlName="updateLogs">
       Mettre à jour les LOGS
     </mat-checkbox>
   </form>
 
   <div class="actions">
     <button mat-flat-button
-            color="accent"
+            color="primary"
             [mat-dialog-close]="false">
       Annuler
     </button>
     <button mat-stroked-button
-            color="accent"
+            color="primary"
             data-cy="ConfirmBtn"
             [mat-dialog-close]="launchChatbotUpdateFormGroup.getRawValue()">
       Confirmer

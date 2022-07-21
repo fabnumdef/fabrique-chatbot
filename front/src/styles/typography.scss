@@ -21,6 +21,10 @@ body.mat-typography {
     font-size: 22px;
   }
 
+  h4 {
+    font-size: 16px;
+  }
+
   .chatbot-title {
     background-color: $primary-color;
     padding: 5px 20px;
@@ -34,10 +38,12 @@ body.mat-typography {
   }
 
   .chatbot-subtitle {
-    padding: 5px 20px;
+    padding: 5px 5vw;
     border-radius: $border-radius;
     background-color: $primary-color-50;
-    margin: 20px 0 10px 0;
+    margin: 20px 0 10px -5vw;
+    width: 100vw;
+    box-sizing: border-box;
 
     & > * {
       margin: 0;
@@ -45,23 +51,6 @@ body.mat-typography {
   }
 
   a {
-    text-decoration: none;
     color: $primary-color;
-  }
-
-  a:visited {
-    text-decoration: none;
-  }
-
-  a:hover {
-    text-decoration: none;
-  }
-
-  a:focus {
-    text-decoration: none;
-  }
-
-  a:hover, a:active {
-    text-decoration: none;
   }
 }

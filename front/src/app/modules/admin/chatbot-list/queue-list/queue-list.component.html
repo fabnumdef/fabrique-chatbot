@@ -44,16 +44,18 @@
         <th mat-header-cell *matHeaderCellDef>
         </th>
         <td mat-cell *matCellDef="let row">
-          <button mat-icon-button
-                  aria-label="Supprimer"
-                  color="accent"
-                  (click)="deleteJob(row)">
-            <mat-icon fontSet="material-icons-outlined"
-                      matTooltip="Supprimer"
-                      aria-label="Bouton pour supprimer le job">
-              delete
-            </mat-icon>
-          </button>
+          <div class="action-wrapper">
+            <button mat-icon-button
+                    aria-label="Supprimer"
+                    color="primary"
+                    (click)="deleteJob(row)">
+              <mat-icon fontSet="material-icons-outlined"
+                        matTooltip="Supprimer"
+                        aria-label="Bouton pour supprimer le job">
+                delete
+              </mat-icon>
+            </button>
+          </div>
         </td>
       </ng-container>
 

@@ -19,7 +19,21 @@
   }
 
   .title {
-    text-align: center;
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+
+    h1 {
+      margin: 0;
+      font-size: 36px;
+    }
+
+    .mat-icon {
+      margin-right: 20px;
+      font-size: 36px;
+      height: 36px;
+      width: 36px;
+    }
   }
 
   .details {
@@ -35,7 +49,6 @@
       padding: 10px;
 
       .line-number {
-        color: $accent-color;
         display: flex;
         align-items: center;
         min-width: 100px;
@@ -44,9 +57,14 @@
           margin-right: 5px;
         }
       }
+
+      &-header {
+        background-color: $primary-color-50;
+        font-weight: bold;
+      }
     }
 
-    .mat-divider {
+    & > .mat-divider {
       margin: 0;
     }
   }

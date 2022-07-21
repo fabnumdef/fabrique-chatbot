@@ -3,7 +3,7 @@
     <div class="chatbot-subtitle">
       <h4>Quelle est l'identité de votre chatbot ?</h4>
     </div>
-    <mat-form-field appearance="outline">
+    <mat-form-field appearance="fill">
       <input matInput
              formControlName="name"
              [placeholder]="'Nom'"
@@ -18,7 +18,7 @@
       </mat-error>
     </mat-form-field>
 
-    <mat-form-field appearance="outline">
+    <mat-form-field appearance="fill">
       <input matInput
              formControlName="function"
              [placeholder]="'Fonction ex: RH Marine'"
@@ -47,7 +47,7 @@
     </div>
     <div>
       <button mat-flat-button
-              color="accent"
+              color="primary"
               *ngIf="!controls.icon.value; else iconFileWrapper"
               class="import-btn"
               data-cy="ImportIconBtn"
@@ -130,7 +130,7 @@
     <p>Cliquez ci-dessous jusqu'à trouver votre binôme de couleur idéal.</p>
     <div>
       <button mat-flat-button
-              color="accent"
+              color="primary"
               type="button"
               (click)="shuffleColors()">
         C'est parti
