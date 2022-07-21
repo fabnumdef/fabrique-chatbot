@@ -179,6 +179,13 @@
     cmd: 'npm run copy'
     chdir: '{{ appsDir }}/{{ nestDir }}'
 
+- name: Changement de droits sur le dossier du back
+  become: true
+  file:
+    path: '{{ appsDir }}/{{ nestDir }}'
+    mode: '775'
+    recurse: yes
+
 - name: NODE | Stop APP
   shell: pm2 stop FabriqueBack
   args:
@@ -190,10 +197,10 @@
   args:
     chdir: '{{ appsDir }}/{{ nestDir }}/dist'
 
-- name: Update PM2 script at startup
-  shell: pm2 startup
-
-- name: reload pm2 startup script
-  systemd:
-    name: pm2-root.service
-    state: reloaded
+#- name: Update PM2 script at startup
+#  shell: pm2 startup
+#
+#- name: reload pm2 startup script
+#  systemd:
+#    name: pm2-root.service
+#    state: reloaded
