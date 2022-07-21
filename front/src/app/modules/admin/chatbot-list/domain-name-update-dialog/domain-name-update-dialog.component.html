@@ -3,7 +3,7 @@
 
   <form [formGroup]="updateDomainNameFormGroup">
 
-    <mat-form-field appearance="outline">
+    <mat-form-field appearance="fill">
       <mat-label>Nom de domaine</mat-label>
       <input matInput
              placeholder="Saisir..."
@@ -18,12 +18,12 @@
 
   <div class="actions">
     <button mat-flat-button
-            color="accent"
+            color="primary"
             [mat-dialog-close]="false">
       Annuler
     </button>
     <button mat-stroked-button
-            color="accent"
+            color="primary"
             data-cy="ConfirmBtn"
             [disabled]="!updateDomainNameFormGroup.valid"
             [mat-dialog-close]="updateDomainNameFormGroup.getRawValue()">

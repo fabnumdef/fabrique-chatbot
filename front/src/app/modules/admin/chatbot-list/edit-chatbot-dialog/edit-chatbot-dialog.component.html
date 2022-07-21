@@ -11,7 +11,7 @@
         <p>
           Merci de renseigner les informations suivantes afin de configurer correctement le VPS.
         </p>
-        <mat-form-field appearance="outline">
+        <mat-form-field appearance="fill">
           <mat-label>Adresse IP</mat-label>
           <input matInput
                  placeholder="Saisir..."
@@ -26,7 +26,7 @@
           </mat-error>
         </mat-form-field>
 
-        <mat-form-field appearance="outline">
+        <mat-form-field appearance="fill">
           <mat-label>Nom de domaine</mat-label>
           <input matInput
                  placeholder="Saisir..."
@@ -37,7 +37,7 @@
           </mat-error>
         </mat-form-field>
 
-        <mat-form-field appearance="outline">
+        <mat-form-field appearance="fill">
           <mat-label>Utilisateur root</mat-label>
           <input matInput
                  placeholder="Saisir..."
@@ -49,7 +49,7 @@
           </mat-error>
         </mat-form-field>
 
-        <mat-form-field appearance="outline">
+        <mat-form-field appearance="fill">
           <mat-label>Mot de passe root</mat-label>
           <input matInput
                  placeholder="Saisir..."
@@ -61,7 +61,7 @@
           </mat-error>
         </mat-form-field>
 
-        <mat-form-field appearance="outline">
+        <mat-form-field appearance="fill">
           <mat-label>Mot de passe utilisateur</mat-label>
           <input matInput
                  placeholder="Saisir..."
@@ -73,7 +73,7 @@
           </mat-error>
         </mat-form-field>
 
-        <mat-form-field appearance="outline">
+        <mat-form-field appearance="fill">
           <mat-label>Mot de passe DB (only maj)</mat-label>
           <input matInput
                  placeholder="Saisir..."
@@ -90,7 +90,7 @@
         <p>
           Une erreur est survenue durant la configuration du chatbot. Voulez-vous relancer le processus de configuration ?.
         </p>
-        <mat-form-field appearance="outline">
+        <mat-form-field appearance="fill">
           <mat-label>Adresse IP</mat-label>
           <input matInput
                  placeholder="Saisir..."
@@ -105,7 +105,7 @@
           </mat-error>
         </mat-form-field>
 
-        <mat-form-field appearance="outline">
+        <mat-form-field appearance="fill">
           <mat-label>Nom de domaine</mat-label>
           <input matInput
                  placeholder="Saisir..."
@@ -121,7 +121,7 @@
         <p>
           Le chatbot est en cours d'éxecution. Voulez-vous modifier son nom ?
         </p>
-        <mat-form-field appearance="outline">
+        <mat-form-field appearance="fill">
           <mat-label>Nom</mat-label>
           <input matInput
                  placeholder="Saisir..."
@@ -133,7 +133,7 @@
           </mat-error>
         </mat-form-field>
 
-        <mat-form-field appearance="outline">
+        <mat-form-field appearance="fill">
           <mat-label>Nom de domaine</mat-label>
           <input matInput
                  placeholder="Saisir..."
@@ -144,7 +144,7 @@
           </mat-error>
         </mat-form-field>
 
-        <mat-form-field appearance="outline">
+        <mat-form-field appearance="fill">
           <mat-label>Branche Front</mat-label>
           <input matInput
                  placeholder="Saisir..."
@@ -156,7 +156,7 @@
           </mat-error>
         </mat-form-field>
 
-        <mat-form-field appearance="outline">
+        <mat-form-field appearance="fill">
           <mat-label>Branche Back</mat-label>
           <input matInput
                  placeholder="Saisir..."
@@ -168,7 +168,7 @@
           </mat-error>
         </mat-form-field>
 
-        <mat-form-field appearance="outline">
+        <mat-form-field appearance="fill">
           <mat-label>Branche Bot</mat-label>
           <input matInput
                  placeholder="Saisir..."
@@ -180,7 +180,7 @@
           </mat-error>
         </mat-form-field>
 
-        <mat-form-field appearance="outline">
+        <mat-form-field appearance="fill">
           <mat-label>API KEY</mat-label>
           <input matInput
                  placeholder="Saisir..."
@@ -190,12 +190,12 @@
       </ng-container>
     </ng-container>
 
-    <mat-checkbox #forceUpdateStatus>
+    <mat-checkbox color="primary" #forceUpdateStatus>
       Forcer la mise à jour du statut
     </mat-checkbox>
 
     <ng-container *ngIf="forceUpdateStatus.checked">
-      <mat-form-field appearance="outline">
+      <mat-form-field appearance="fill">
         <mat-label>Status</mat-label>
         <mat-select placeholder="Choisir..."
                     formControlName="status"
@@ -213,12 +213,12 @@
 
   <div class="actions">
     <button mat-flat-button
-            color="accent"
+            color="primary"
             [mat-dialog-close]="false">
       Annuler
     </button>
     <button mat-stroked-button
-            color="accent"
+            color="primary"
             data-cy="ConfirmBtn"
             [disabled]="!updateChatbotFormGroup.valid"
             [mat-dialog-close]="updateChatbotFormGroup.getRawValue()">

@@ -14,7 +14,7 @@
         </a>
       </span>
       <button mat-flat-button
-              color="accent"
+              color="primary"
               data-cy="UploadFileButton"
               [disabled]="(chatbotService.loading$ | async) || !!fileCtrl.value"
               (click)="uploader.click()">
@@ -49,13 +49,13 @@
           </div>
           <div class="file-buttons">
             <button mat-stroked-button
-                    color="accent"
+                    color="primary"
                     data-cy="DeleteFileBtn"
                     (click)="resetFile()">
               Supprimer
             </button>
             <button mat-flat-button
-                    color="accent"
+                    color="primary"
                     data-cy="UpdateFileBtn"
                     [disabled]="chatbotService.loading$ | async"
                     (click)="uploader.click()">
@@ -94,11 +94,11 @@
                *ngIf="hasFileErrors()"
                href="https://fabrique-a-chatbots.gitbook.io/fabrique-a-chatbots/base-documentaire/description"
                class="help-btn">
-              <button mat-flat-button
+              <button mat-button
                       color="accent"
                       class="small">
-                <mat-icon>help_outline</mat-icon>
                 Aide
+                <mat-icon>arrow_forward</mat-icon>
               </button>
             </a>
           </div>
@@ -141,7 +141,7 @@
     </div>
     <p>Vous souhaitez que votre chatbot soit consultable sur :</p>
     <mat-radio-group aria-label="Visibilité du chatbot : internet / intradef"
-                     labelPosition="before"
+                     labelPosition="after"
                      formControlName="intraDef"
                      color="primary">
       <mat-radio-button data-cy="InternetRadioBtn" [value]="false">Internet</mat-radio-button>
@@ -152,7 +152,7 @@
     </div>
     <div class="chatbot-domain">
       <div>https://</div>
-      <mat-form-field appearance="outline">
+      <mat-form-field appearance="fill">
         <mat-label>Nom de domaine</mat-label>
         <input matInput
                placeholder="Saisir..."
@@ -183,22 +183,26 @@
       <div *ngFor="let userForm of usersFormArray.controls; let idx = index">
         <div class="user-header">
           <h4>Utilisateur {{ idx + 1 }}</h4>
-          <mat-icon (click)="usersFormArray.removeAt(idx)"
-                    color="accent"
-                    data-cy="DeleteUserBtn"
-                    aria-label="Supprimer l'utilisateur">
-            delete
-          </mat-icon>
+          <button mat-icon-button
+                  (click)="usersFormArray.removeAt(idx)"
+                  color="primary"
+                  data-cy="DeleteUserBtn"
+                  aria-label="Supprimer l'utilisateur">
+            <mat-icon>
+              delete
+            </mat-icon>
+          </button>
         </div>
         <app-chatbot-user-form [chatbotUserForm]="userForm"></app-chatbot-user-form>
       </div>
     </div>
     <button mat-stroked-button
-            color="accent"
+            color="primary"
             data-cy="AddUserBtn"
             (click)="addUser()"
             [disabled]="!usersFormArray.valid">
-      <mat-icon>add</mat-icon> Ajouter un utilisateur
+      <mat-icon>person_add</mat-icon>
+      Ajouter un utilisateur
     </button>
   </form>
 </div>

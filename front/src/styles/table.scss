@@ -2,8 +2,9 @@
 
 table.mat-table {
   .mat-header-cell {
-    background-color: $primary-color;
-    color: $white;
+    background-color: $primary-color-50;
+    color: $black;
+    font-weight: bold;
     font-size: 14px;
 
     &:first-child {
@@ -12,6 +13,15 @@ table.mat-table {
 
     &:last-child {
       border-top-right-radius: 5px;
+    }
+  }
+
+  .action-wrapper {
+    display: flex;
+    margin-left: 10px;
+
+    & > button:not(:last-child) {
+      margin-right: 10px;
     }
   }
 }

@@ -3,8 +3,9 @@
     <div class="chatbot-subtitle">
       <h4>À quelle problématique répond votre chatbot ?</h4>
     </div>
-    <mat-form-field appearance="outline">
-      <mat-label>200 caractères maximum</mat-label>
+    <mat-form-field appearance="fill">
+      <mat-label>Problématique</mat-label>
+      <mat-hint>200 caractères maximum</mat-hint>
       <textarea matInput
                 formControlName="problematic"
                 [placeholder]="'Saisir ...'"
@@ -19,8 +20,9 @@
     <div class="chatbot-subtitle">
       <h4>À qui s'adresse votre chatbot ?</h4>
     </div>
-    <mat-form-field appearance="outline">
-      <mat-label>200 caractères maximum</mat-label>
+    <mat-form-field appearance="fill">
+      <mat-label>Destinataire</mat-label>
+      <mat-hint>200 caractères maximum</mat-hint>
       <textarea matInput
                 formControlName="audience"
                 [placeholder]="'Saisir ...'"

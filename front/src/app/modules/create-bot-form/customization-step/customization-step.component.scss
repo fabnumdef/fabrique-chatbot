@@ -23,8 +23,7 @@
       flex-wrap: wrap;
 
       .icon {
-        box-shadow: $shadow-uniform;
-        border: 2px solid transparent;
+        border: 1px solid $border-color;
         cursor: pointer;
         transition: border-color 0.2s;
 
@@ -76,7 +75,6 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        border-radius: 5px;
         overflow: hidden;
 
         img {
@@ -93,7 +91,6 @@
     .color-picker-div {
       width: 100%;
       height: $input-height;
-      border-radius: 5px;
       margin-bottom: 1.25em;
       transition: border-color 0.2s;
       border: 2px solid transparent;
@@ -112,7 +109,6 @@
         align-items: center;
         height: $input-height;
         border: 1px solid $input-border-color;
-        border-radius: 5px;
         cursor: pointer;
         box-sizing: border-box;
       }

@@ -1,14 +1,13 @@
 @import 'theme';
 
-/**
-COLORS
- */
 $primary-color: map-get($chatbot-primary, 500);
 $accent-color: map-get($chatbot-accent, 500);
 $white: #ffffff;
 $grey: #8E8E8E;
 $grey-lighter: #f7f7f7;
 $grey-light: #f2f2f9;
+
+$border-color: #e5e5e5;
 
 $primary-color-50: map-get($chatbot-primary, 50);
 $primary-color-100: map-get($chatbot-primary, 100);
