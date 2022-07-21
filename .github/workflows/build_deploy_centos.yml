@@ -1,185 +1,185 @@
-name: Build & Deploy on CentOS
-on:
-  push:
-    tags:
-      - '*'
-
-jobs:
-  build-and-deploy:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Set env to dev
-        if: endsWith(github.ref, '-beta')
-        run: |
-          echo "ENVIRONMENT=dev" >> $GITHUB_ENV
-
-      - name: Set env to prod
-        if: endsWith(github.ref, '-prod')
-        run: |
-          echo "ENVIRONMENT=prod" >> $GITHUB_ENV
-
-      - uses: actions/checkout@v1
-
-      - uses: haya14busa/action-cond@v1
-        id: host
-        with:
-          cond: ${{ env.ENVIRONMENT == 'prod' }}
-          if_true: ${{ secrets.PROD_IP }}
-          if_false: ${{ secrets.DEV_IP }}
-
-      - uses: haya14busa/action-cond@v1
-        id: vault_password
-        with:
-          cond: ${{ env.ENVIRONMENT == 'prod' }}
-          if_true: ${{ secrets.PROD_VAULT_PASSWORD }}
-          if_false: ${{ secrets.DEV_VAULT_PASSWORD }}
-
-      - uses: haya14busa/action-cond@v1
-        id: user_password
-        with:
-          cond: ${{ env.ENVIRONMENT == 'prod' }}
-          if_true: ${{ secrets.PROD_USER_PASSWORD }}
-          if_false: ${{ secrets.DEV_USER_PASSWORD }}
-
-      - uses: haya14busa/action-cond@v1
-        id: db_password
-        with:
-          cond: ${{ env.ENVIRONMENT == 'prod' }}
-          if_true: ${{ secrets.PROD_DB_PASSWORD }}
-          if_false: ${{ secrets.DEV_DB_PASSWORD }}
-
-      - uses: haya14busa/action-cond@v1
-        id: env_file
-        with:
-          cond: ${{ env.ENVIRONMENT == 'prod' }}
-          if_true: ~/fabrique-chatbot-back/ansible/roles/usineConfiguration/files/.env.prod
-          if_false: ~/fabrique-chatbot-back/ansible/roles/usineConfiguration/files/.env.dev
-
-      - uses: haya14busa/action-cond@v1
-        id: domain
-        with:
-          cond: ${{ env.ENVIRONMENT == 'prod' }}
-          if_true: chatbot.fabnum.fr
-          if_false: chatbot.d.fabnum.fr
-
-      - uses: actions/setup-node@v1 #this installs node and npm for us
-        with:
-          node-version: '14.x'
-
-      - uses: actions/cache@v1 # this allows for re-using node_modules caching, making builds a bit faster.
-        with:
-          path: ~/.npm
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-
-
-      - name: install packages
-        run: npm install #TODO: --only-prod, le build crash à voir pq
-        working-directory: ./front
-
-      - name: install angular cli
-        run: npm install -g @angular/cli > /dev/null
-        working-directory: ./front
-
-      - name: build dev
-        run: npm run build:dev
-        working-directory: ./front
-        if: ${{ env.ENVIRONMENT != 'prod' }}
-
-      - name: build prod
-        run: npm run build:prod
-        working-directory: ./front
-        if: ${{ env.ENVIRONMENT == 'prod' }}
-
-      - name: copy front app via ssh key
-        uses: appleboy/scp-action@master
-        env:
-          HOST: '${{ steps.host.outputs.value }}'
-          USERNAME: fab_user
-          PORT: 22
-          KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-        with:
-          source: "./front/dist/fabrique-chatbot-front/"
-          target: "~/fabrique-chatbot-front/"
-          strip_components: 4
-          timeout: 240s
-
-      - name: copy ansible scripts via ssh key
-        uses: appleboy/scp-action@master
-        env:
-          HOST: '${{ steps.host.outputs.value }}'
-          USERNAME: fab_user
-          PORT: 22
-          KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-        with:
-          source: "./ansible/"
-          target: "~/fabrique-chatbot-front/"
-          timeout: 120s
-
-      - name: launch ansible script
-        uses: appleboy/ssh-action@master
-        env:
-          HOST: '${{ steps.host.outputs.value }}'
-          USERNAME: fab_user
-          PORT: 22
-          KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-          USER_PASSWORD: '${{ steps.user_password.outputs.value }}'
-        with:
-          envs: USER_PASSWORD
-          script: |
-            ansible-playbook ~/fabrique-chatbot-front/ansible/playUsinefront.yml --vault-password-file ~/fabrique-chatbot-back/ansible/roles/vars/password_file -e "USER_PASSWORD=$USER_PASSWORD"
-            rm -rf ~/fabrique-chatbot-front
-
-      - name: copy back app via ssh key
-        uses: appleboy/scp-action@master
-        env:
-          HOST: '${{ steps.host.outputs.value }}'
-          USERNAME: fab_user
-          PORT: 22
-          KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-        with:
-          source: "./back/"
-          target: "~/fabrique-chatbot-back/"
-          strip_components: 2
-          timeout: 240s
-
-      - name: copy ansible scripts via ssh key
-        uses: appleboy/scp-action@master
-        env:
-          HOST: '${{ steps.host.outputs.value }}'
-          USERNAME: fab_user
-          PORT: 22
-          KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-        with:
-          source: "./ansible/"
-          target: "~/fabrique-chatbot-back/"
-          timeout: 120s
-
-      - name: launch deploy ansible script
-        uses: appleboy/ssh-action@master
-        env:
-          HOST: '${{ steps.host.outputs.value }}'
-          USERNAME: fab_user
-          PORT: 22
-          KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-        with:
-          script: |
-            rm -rf ~/fabrique-chatbot-back/ansible/roles/vars/password_file
-            cat >> ~/fabrique-chatbot-back/ansible/roles/vars/password_file << 'END'
-            ${{ steps.vault_password.outputs.value }}
-            END
-            ansible-vault decrypt --vault-password-file ~/fabrique-chatbot-back/ansible/roles/vars/password_file ${{ steps.env_file.outputs.value }}
-            mv ${{ steps.env_file.outputs.value }} ~/fabrique-chatbot-back/ansible/roles/usineConfiguration/files/.env
-            ansible-playbook ~/fabrique-chatbot-back/ansible/playUsineconfiguration.yml --vault-password-file ~/fabrique-chatbot-back/ansible/roles/vars/password_file --extra-vars 'DB_PASSWORD='"${{ steps.db_password.outputs.value }}"' USER_PASSWORD='"${{ steps.user_password.outputs.value }}"' DOMAIN='${{ steps.domain.outputs.value }}''
-#            ansible-playbook ~/fabrique-chatbot-back/ansible/logs/elastic.yml --vault-password-file ~/fabrique-chatbot-back/ansible/roles/vars/password_file --extra-vars 'USER_PASSWORD='"${{ steps.user_password.outputs.value }}"' ELASTIC_HOST='${{ secrets.ELASTIC_HOST }}' ELASTIC_USERNAME='${{ secrets.ELASTIC_USERNAME }}' ELASTIC_PASSWORD='"${{ secrets.ELASTIC_PASSWORD }}"' ELASTIC_METRICBEAT_INDEX='${{ secrets.ELASTIC_METRICBEAT_INDEX }}' ELASTIC_PACKETBEAT_INDEX='${{ secrets.ELASTIC_PACKETBEAT_INDEX }}' ELASTIC_FILEBEAT_INDEX='${{ secrets.ELASTIC_FILEBEAT_INDEX }}''
-
-      - name: delete tmp dir
-        uses: appleboy/ssh-action@master
-        env:
-          HOST: '${{ steps.host.outputs.value }}'
-          USERNAME: fab_user
-          PORT: 22
-          KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-        with:
-          script:
-            rm -rf ~/fabrique-chatbot-back
+#name: Build & Deploy on CentOS
+#on:
+#  push:
+#    tags:
+#      - '*'
+#
+#jobs:
+#  build-and-deploy:
+#    runs-on: ubuntu-latest
+#    steps:
+#      - name: Set env to dev
+#        if: endsWith(github.ref, '-beta')
+#        run: |
+#          echo "ENVIRONMENT=dev" >> $GITHUB_ENV
+#
+#      - name: Set env to prod
+#        if: endsWith(github.ref, '-prod')
+#        run: |
+#          echo "ENVIRONMENT=prod" >> $GITHUB_ENV
+#
+#      - uses: actions/checkout@v1
+#
+#      - uses: haya14busa/action-cond@v1
+#        id: host
+#        with:
+#          cond: ${{ env.ENVIRONMENT == 'prod' }}
+#          if_true: ${{ secrets.PROD_IP }}
+#          if_false: ${{ secrets.DEV_IP }}
+#
+#      - uses: haya14busa/action-cond@v1
+#        id: vault_password
+#        with:
+#          cond: ${{ env.ENVIRONMENT == 'prod' }}
+#          if_true: ${{ secrets.PROD_VAULT_PASSWORD }}
+#          if_false: ${{ secrets.DEV_VAULT_PASSWORD }}
+#
+#      - uses: haya14busa/action-cond@v1
+#        id: user_password
+#        with:
+#          cond: ${{ env.ENVIRONMENT == 'prod' }}
+#          if_true: ${{ secrets.PROD_USER_PASSWORD }}
+#          if_false: ${{ secrets.DEV_USER_PASSWORD }}
+#
+#      - uses: haya14busa/action-cond@v1
+#        id: db_password
+#        with:
+#          cond: ${{ env.ENVIRONMENT == 'prod' }}
+#          if_true: ${{ secrets.PROD_DB_PASSWORD }}
+#          if_false: ${{ secrets.DEV_DB_PASSWORD }}
+#
+#      - uses: haya14busa/action-cond@v1
+#        id: env_file
+#        with:
+#          cond: ${{ env.ENVIRONMENT == 'prod' }}
+#          if_true: ~/fabrique-chatbot-back/ansible/roles/usineConfiguration/files/.env.prod
+#          if_false: ~/fabrique-chatbot-back/ansible/roles/usineConfiguration/files/.env.dev
+#
+#      - uses: haya14busa/action-cond@v1
+#        id: domain
+#        with:
+#          cond: ${{ env.ENVIRONMENT == 'prod' }}
+#          if_true: chatbot.fabnum.fr
+#          if_false: chatbot.d.fabnum.fr
+#
+#      - uses: actions/setup-node@v1 #this installs node and npm for us
+#        with:
+#          node-version: '14.x'
+#
+#      - uses: actions/cache@v1 # this allows for re-using node_modules caching, making builds a bit faster.
+#        with:
+#          path: ~/.npm
+#          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+#          restore-keys: |
+#            ${{ runner.os }}-node-
+#
+#      - name: install packages
+#        run: npm install #TODO: --only-prod, le build crash à voir pq
+#        working-directory: ./front
+#
+#      - name: install angular cli
+#        run: npm install -g @angular/cli > /dev/null
+#        working-directory: ./front
+#
+#      - name: build dev
+#        run: npm run build:dev
+#        working-directory: ./front
+#        if: ${{ env.ENVIRONMENT != 'prod' }}
+#
+#      - name: build prod
+#        run: npm run build:prod
+#        working-directory: ./front
+#        if: ${{ env.ENVIRONMENT == 'prod' }}
+#
+#      - name: copy front app via ssh key
+#        uses: appleboy/scp-action@master
+#        env:
+#          HOST: '${{ steps.host.outputs.value }}'
+#          USERNAME: fab_user
+#          PORT: 22
+#          KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+#        with:
+#          source: "./front/dist/fabrique-chatbot-front/"
+#          target: "~/fabrique-chatbot-front/"
+#          strip_components: 4
+#          timeout: 240s
+#
+#      - name: copy ansible scripts via ssh key
+#        uses: appleboy/scp-action@master
+#        env:
+#          HOST: '${{ steps.host.outputs.value }}'
+#          USERNAME: fab_user
+#          PORT: 22
+#          KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+#        with:
+#          source: "./ansible/"
+#          target: "~/fabrique-chatbot-front/"
+#          timeout: 120s
+#
+#      - name: launch ansible script
+#        uses: appleboy/ssh-action@master
+#        env:
+#          HOST: '${{ steps.host.outputs.value }}'
+#          USERNAME: fab_user
+#          PORT: 22
+#          KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+#          USER_PASSWORD: '${{ steps.user_password.outputs.value }}'
+#        with:
+#          envs: USER_PASSWORD
+#          script: |
+#            ansible-playbook ~/fabrique-chatbot-front/ansible/playUsinefront.yml --vault-password-file ~/fabrique-chatbot-back/ansible/roles/vars/password_file -e "USER_PASSWORD=$USER_PASSWORD"
+#            rm -rf ~/fabrique-chatbot-front
+#
+#      - name: copy back app via ssh key
+#        uses: appleboy/scp-action@master
+#        env:
+#          HOST: '${{ steps.host.outputs.value }}'
+#          USERNAME: fab_user
+#          PORT: 22
+#          KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+#        with:
+#          source: "./back/"
+#          target: "~/fabrique-chatbot-back/"
+#          strip_components: 2
+#          timeout: 240s
+#
+#      - name: copy ansible scripts via ssh key
+#        uses: appleboy/scp-action@master
+#        env:
+#          HOST: '${{ steps.host.outputs.value }}'
+#          USERNAME: fab_user
+#          PORT: 22
+#          KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+#        with:
+#          source: "./ansible/"
+#          target: "~/fabrique-chatbot-back/"
+#          timeout: 120s
+#
+#      - name: launch deploy ansible script
+#        uses: appleboy/ssh-action@master
+#        env:
+#          HOST: '${{ steps.host.outputs.value }}'
+#          USERNAME: fab_user
+#          PORT: 22
+#          KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+#        with:
+#          script: |
+#            rm -rf ~/fabrique-chatbot-back/ansible/roles/vars/password_file
+#            cat >> ~/fabrique-chatbot-back/ansible/roles/vars/password_file << 'END'
+#            ${{ steps.vault_password.outputs.value }}
+#            END
+#            ansible-vault decrypt --vault-password-file ~/fabrique-chatbot-back/ansible/roles/vars/password_file ${{ steps.env_file.outputs.value }}
+#            mv ${{ steps.env_file.outputs.value }} ~/fabrique-chatbot-back/ansible/roles/usineConfiguration/files/.env
+#            ansible-playbook ~/fabrique-chatbot-back/ansible/playUsineconfiguration.yml --vault-password-file ~/fabrique-chatbot-back/ansible/roles/vars/password_file --extra-vars 'DB_PASSWORD='"${{ steps.db_password.outputs.value }}"' USER_PASSWORD='"${{ steps.user_password.outputs.value }}"' DOMAIN='${{ steps.domain.outputs.value }}''
+##            ansible-playbook ~/fabrique-chatbot-back/ansible/logs/elastic.yml --vault-password-file ~/fabrique-chatbot-back/ansible/roles/vars/password_file --extra-vars 'USER_PASSWORD='"${{ steps.user_password.outputs.value }}"' ELASTIC_HOST='${{ secrets.ELASTIC_HOST }}' ELASTIC_USERNAME='${{ secrets.ELASTIC_USERNAME }}' ELASTIC_PASSWORD='"${{ secrets.ELASTIC_PASSWORD }}"' ELASTIC_METRICBEAT_INDEX='${{ secrets.ELASTIC_METRICBEAT_INDEX }}' ELASTIC_PACKETBEAT_INDEX='${{ secrets.ELASTIC_PACKETBEAT_INDEX }}' ELASTIC_FILEBEAT_INDEX='${{ secrets.ELASTIC_FILEBEAT_INDEX }}''
+#
+#      - name: delete tmp dir
+#        uses: appleboy/ssh-action@master
+#        env:
+#          HOST: '${{ steps.host.outputs.value }}'
+#          USERNAME: fab_user
+#          PORT: 22
+#          KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+#        with:
+#          script:
+#            rm -rf ~/fabrique-chatbot-back

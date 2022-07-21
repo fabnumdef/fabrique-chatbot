@@ -127,7 +127,7 @@ jobs:
         with:
           envs: USER_PASSWORD
           script: |
-            ansible-playbook ~/fabrique-chatbot-front/ansible/playUsinefront.yml --vault-password-file ~/fabrique-chatbot-back/ansible/roles/vars/password_file -e "USER_PASSWORD=$USER_PASSWORD"
+            ansible-playbook ~/fabrique-chatbot-front/ansible/playUsinefront.yml --vault-password-file ~/fabrique-chatbot-back/ansible/roles/vars/password_file -e 'USER_PASSWORD='"${{ steps.user_password.outputs.value }}"' ansible_become_password='"${{ steps.user_password.outputs.value }}"''
             rm -rf ~/fabrique-chatbot-front
 
       - name: copy back app via ssh key
@@ -170,7 +170,7 @@ jobs:
             END
             ansible-vault decrypt --vault-password-file ~/fabrique-chatbot-back/ansible/roles/vars/password_file ${{ steps.env_file.outputs.value }}
             mv ${{ steps.env_file.outputs.value }} ~/fabrique-chatbot-back/ansible/roles/usineConfiguration/files/.env
-            ansible-playbook ~/fabrique-chatbot-back/ansible/playUsineconfiguration.yml --vault-password-file ~/fabrique-chatbot-back/ansible/roles/vars/password_file --extra-vars 'DB_PASSWORD='"${{ steps.db_password.outputs.value }}"' USER_PASSWORD='"${{ steps.user_password.outputs.value }}"' DOMAIN='${{ steps.domain.outputs.value }}''
+            ansible-playbook ~/fabrique-chatbot-back/ansible/playUsineconfiguration.yml --vault-password-file ~/fabrique-chatbot-back/ansible/roles/vars/password_file --extra-vars 'DB_PASSWORD='"${{ steps.db_password.outputs.value }}"' USER_PASSWORD='"${{ steps.user_password.outputs.value }}"' ansible_become_password='"${{ steps.user_password.outputs.value }}"' DOMAIN='${{ steps.domain.outputs.value }}''
 #            ansible-playbook ~/fabrique-chatbot-back/ansible/logs/elastic.yml --vault-password-file ~/fabrique-chatbot-back/ansible/roles/vars/password_file --extra-vars 'USER_PASSWORD='"${{ steps.user_password.outputs.value }}"' ELASTIC_HOST='${{ secrets.ELASTIC_HOST }}' ELASTIC_USERNAME='${{ secrets.ELASTIC_USERNAME }}' ELASTIC_PASSWORD='"${{ secrets.ELASTIC_PASSWORD }}"' ELASTIC_METRICBEAT_INDEX='${{ secrets.ELASTIC_METRICBEAT_INDEX }}' ELASTIC_PACKETBEAT_INDEX='${{ secrets.ELASTIC_PACKETBEAT_INDEX }}' ELASTIC_FILEBEAT_INDEX='${{ secrets.ELASTIC_FILEBEAT_INDEX }}''
 
       - name: delete tmp dir
