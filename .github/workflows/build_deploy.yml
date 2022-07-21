@@ -127,7 +127,11 @@ jobs:
         with:
           envs: USER_PASSWORD
           script: |
-            ansible-playbook ~/fabrique-chatbot-front/ansible/playUsinefront.yml --vault-password-file ~/fabrique-chatbot-back/ansible/roles/vars/password_file -e 'USER_PASSWORD='"${{ steps.user_password.outputs.value }}"' ansible_become_password='"${{ steps.user_password.outputs.value }}"''
+            rm -rf ~/fabrique-chatbot-front/password_file
+            cat >> ~/fabrique-chatbot-front/password_file << 'END'
+            ${{ steps.vault_password.outputs.value }}
+            END
+            ansible-playbook ~/fabrique-chatbot-front/ansible/playUsinefront.yml --vault-password-file ~/fabrique-chatbot-front/password_file -e 'USER_PASSWORD='"${{ steps.user_password.outputs.value }}"' ansible_become_password='"${{ steps.user_password.outputs.value }}"''
             rm -rf ~/fabrique-chatbot-front
 
       - name: copy back app via ssh key
