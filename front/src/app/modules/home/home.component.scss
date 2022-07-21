@@ -290,14 +290,18 @@
           display: flex;
           align-items: center;
 
-          img {
+          & > * {
+            img {
+              width: 100%;
+            }
+
             &:first-child {
               height: 150px;
             }
 
-            &:last-child {
+            &:nth-child(2), &:nth-child(3) {
               width: 150px;
-              margin-left: 40px;
+              margin-left: 20px;
             }
           }
         }
@@ -524,10 +528,17 @@ $margin-small: 20px;
             justify-content: center;
             text-align: center;
 
-            img {
-              max-width: 300px;
-              width: 100%;
+            &:nth-child(1) > * {
               margin-bottom: $margin-small;
+
+              &:first-child {
+                height: 100px;
+              }
+
+              &:nth-child(2), &:nth-child(3) {
+                width: 100px;
+                margin-left: 10px;
+              }
             }
           }
         }
