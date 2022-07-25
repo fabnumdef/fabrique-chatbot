@@ -140,13 +140,19 @@
       <h4>Cadre d'utilisation de votre chatbot</h4>
     </div>
     <p>Vous souhaitez que votre chatbot soit consultable sur :</p>
+    <div class="chatbot-info">
+      <mat-icon>info</mat-icon>
+      <div>
+        Le circuit Intradef nécessite de faire une demande de chatbot sur le catalogue de services de la DIRISI - Diademe.
+      </div>
+    </div>
     <mat-radio-group aria-label="Visibilité du chatbot : internet / intradef"
                      labelPosition="after"
                      formControlName="intraDef"
                      color="primary">
       <mat-radio-button data-cy="InternetRadioBtn" [value]="false">Internet</mat-radio-button>
-      <mat-radio-button data-cy="IntradefRadioBtn" [value]="true">Intradef</mat-radio-button>
     </mat-radio-group>
+
     <div class="chatbot-subtitle">
       <h4>Accès à votre chatbot</h4>
     </div>
