@@ -166,5 +166,14 @@
         }
       }
     }
+
+    .chatbot-info {
+      margin-bottom: 10px;
+    }
+
+    ::ng-deep.mat-radio-label-content {
+      display: flex;
+      align-items: center;
+    }
   }
 }
