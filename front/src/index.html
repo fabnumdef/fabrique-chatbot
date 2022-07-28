@@ -14,6 +14,22 @@
 <body class="mat-typography">
 <app-root></app-root>
 
+<script src="https://dev.chatbot.fabnum.fr/backoffice/assets/scripts/embbed-chatbot.min.js?1425072122"></script>
+<div id="webchat"></div>
+<script>
+  Webchat.init({
+    // Mandatory
+    botURL: 'https://dev.chatbot.fabnum.fr/chatbot',
+    // Optionnal
+    chatWidth: '400px',
+    chatHeight: '500px',
+    buttonSize: '60px',
+    buttonColor: '#5de087',
+    iconSize: '30px',
+    iconColor: '#ffffff'
+  });
+</script>
+
 <!-- Matomo -->
 <script type="text/javascript">
   var _paq = window._paq || [];
