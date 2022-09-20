@@ -35,6 +35,7 @@
       - screen
       - rsync
       - snapd
+      - clamav-daemon
 
 - name: Install Certbot
   include_role:
