@@ -51,3 +51,27 @@
       - python-pip
       - python3-venv
       - python3-pip
+      - clamav
+      - clamav-daemon
+
+- name: Création d'un dossier pour les fichiers infectés
+  file:
+    path: /root/quarantine
+    state: directory
+  become: yes
+
+- name: Exclusion des répertoires spéciaux de linux pour l'antivirus
+  command:
+    cmd: 'printf "ExcludePath ^/proc\nExcludePath ^/sys\nExcludePath ^/run\nExcludePath ^/dev\nExcludePath ^/snap\nExcludePath ^/var/lib/lxcfs/cgroup\nExcludePath ^/root/quarantine\n" | sudo tee -a /etc/clamav/clamd.conf'
+  become: yes
+
+- name: restart antivirus
+  service:
+    name: clamav-daemon
+    state: restarted
+  become: yes
+
+- name: Lancement d'un scan complet antivirus toutes les semaines
+  command:
+    cmd: 'echo "0 1 * * 0 root /usr/bin/clamdscan -m --fdpass --log=/var/log/clamav/clamdscan.log --move=/root/quarantine /" | tee /etc/cron.d/clamdscan'
+  become: yes
