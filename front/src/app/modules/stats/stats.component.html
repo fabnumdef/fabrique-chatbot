@@ -1,0 +1,80 @@
+<div class="stats">
+  <div class="header">
+    <h1>
+      Statistiques d'usages
+    </h1>
+    <p>
+      Outiller la diffusion d'informations à destination des agents du Ministère
+    </p>
+    <span>
+      Statistiques en date du 21 Septembre 2022
+    </span>
+  </div>
+  <div class="body">
+    <div class="key-numbers">
+      <h2>Quelques chiffres clés</h2>
+      <div>
+        <mat-card>
+          {{internetChatbots}} chatbots internet crées au profit du Ministères des armées
+          <img src="assets/img/icon_stats_1.svg" alt="logo conversation">
+        </mat-card>
+        <mat-card>
+          {{averageQuestions}} questions moyennes posées par visiteur à chaque session
+          <img src="assets/img/icon_stats_2.svg" alt="logo question">
+        </mat-card>
+        <mat-card>
+          {{responseRate}}% - taux de réponse apporté par le chatbot
+          <img src="assets/img/icon_stats_3.svg" alt="logo stats">
+        </mat-card>
+        <mat-card>
+          {{dayWon}} jours gagnés par les agents dans le traitement des questions redondantes
+          <img src="assets/img/icon_stats_4.svg" alt="logo horloge">
+        </mat-card>
+      </div>
+    </div>
+    <div class="graphs">
+      <div class="graph-container">
+        <div class="chart-container">
+          <ngx-charts-bar-vertical [results]="intentsData"
+                                   [scheme]="colorScheme"
+                                   [noBarWhenZero]="false"
+                                   [yAxis]="false"
+                                   [xAxis]="true"
+                                   [legend]="false">
+          </ngx-charts-bar-vertical>
+        </div>
+        <div class="graph-legend">
+          Soit {{ totalIntents }} connaissances crées mise à disposition des usagers
+        </div>
+      </div>
+      <div class="graph-container">
+        <div class="chart-container">
+          <ngx-charts-bar-vertical [results]="questionsData"
+                                   [scheme]="colorScheme"
+                                   [noBarWhenZero]="false"
+                                   [yAxis]="false"
+                                   [xAxis]="true"
+                                   [legend]="false">
+          </ngx-charts-bar-vertical>
+        </div>
+        <div class="graph-legend">
+          {{ totalQuestions }} questions posées depuis la création
+        </div>
+      </div>
+      <div class="graph-container">
+        <div class="chart-container">
+          <ngx-charts-bar-vertical [results]="sessionsData"
+                                   [scheme]="colorScheme"
+                                   [noBarWhenZero]="false"
+                                   [yAxis]="false"
+                                   [xAxis]="true"
+                                   [legend]="false">
+          </ngx-charts-bar-vertical>
+        </div>
+        <div class="graph-legend">
+          {{ totalSessions }} conversations réalisées depuis sa création
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

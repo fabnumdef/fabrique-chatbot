@@ -7,18 +7,31 @@
   justify-content: space-between;
   background-color: $white;
   box-shadow: $shadow-uniform;
+  overflow: hidden;
 
   $space-margin: 15px;
 
-  .image-wrapper {
+  &-public {
+    padding: 10px 10%;
+    margin: 0;
+
+    .action-wrapper {
+      margin: 0;
+    }
+  }
+
+  .logos {
+    height: 100px;
     display: flex;
     align-items: center;
-    height: 100%;
-    cursor: pointer;
 
     img {
-      margin-left: $space-margin;
       max-height: 100%;
+
+      &:last-child {
+        width: 150px;
+        margin-left: 40px;
+      }
     }
   }
 
@@ -30,15 +43,20 @@
     & > *:not(:last-child) {
       margin-right: 15px;
     }
+  }
+}
 
-    .chatbot-button {
-      transition: 0.25s;
-    }
+@media only screen and (max-width: 860px) {
+  .header {
+    .logos {
+      height: 60px;
 
-    .chatbot-button:hover {
-      color: $white;
-      background-color: $primary-color;
-      transition: 0.25s;
+      img {
+        &:last-child {
+          width: 100px;
+          margin-left: 40px;
+        }
+      }
     }
   }
 }

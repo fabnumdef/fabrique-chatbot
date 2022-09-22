@@ -3,12 +3,8 @@
 .footer {
   padding: 0 5vw;
   height: 100px;
-  color: #666666;
-
-  a {
-    color: inherit;
-    text-decoration: none;
-  }
+  color: $grey;
+  font-family: Marianne, "Helvetica Neue", sans-serif;
 
   .copyright {
     a {
@@ -28,9 +24,15 @@
     }
   }
 
+
   .links {
+    a {
+      color: $grey;
+    }
+
     .mat-divider {
-      height: 20px;
+      margin: 0 16px;
+      height: 18px;
     }
   }
 
@@ -41,9 +43,38 @@
   & > * {
     display: flex;
     align-items: center;
+  }
 
-    & > *:not(:last-child) {
-      margin-right: 10px;
+  &-light {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 10%;
+    color: $grey;
+    height: auto;
+  }
+}
+
+@media only screen and (max-width: 1150px) {
+  .footer-light {
+    padding: 20px 5%;
+  }
+}
+
+@media only screen and (max-width: 860px) {
+  .footer-light {
+    justify-content: center;
+
+    .links {
+      flex-direction: column;
+
+      & > *:not(:last-child) {
+        margin-bottom: 20px;
+      }
+    }
+
+    .mat-divider {
+      display: none;
     }
   }
 }

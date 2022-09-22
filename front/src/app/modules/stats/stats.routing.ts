@@ -1,11 +1,11 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { LegalMentionComponent } from './legal-mention.component';
+import { StatsComponent } from './stats.component';
 
-const routes: Routes = [{ path: '', component: LegalMentionComponent }];
+const routes: Routes = [{ path: '', component: StatsComponent }];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule]
 })
-export class LegalMentionRoutingModule { }
+export class StatsRoutingModule { }
