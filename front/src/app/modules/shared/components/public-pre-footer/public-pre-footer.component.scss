@@ -1,0 +1,140 @@
+@import 'src/styles/variables';
+
+.public-pre-footer {
+  font-family: Marianne, "Helvetica Neue", sans-serif;
+
+  .contact, .who {
+    padding: 60px 10%;
+  }
+
+  .contact {
+    background-color: #f2f2f9;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-weight: 700;
+    font-size: 28px;
+
+    & > div > * {
+      margin: 0 10px;
+    }
+  }
+
+  .who {
+    .description {
+      display: flex;
+
+      & > *:nth-child(1) {
+        flex: 1;
+        display: flex;
+        align-items: center;
+
+        & > * {
+          img {
+            width: 100%;
+          }
+
+          &:first-child {
+            height: 150px;
+          }
+
+          &:nth-child(2), &:nth-child(3) {
+            width: 150px;
+            margin-left: 20px;
+          }
+        }
+      }
+
+      & > *:nth-child(2) {
+        flex: 1;
+        display: flex;
+        align-items: center;
+      }
+
+      a {
+        font-weight: 700;
+        text-decoration: underline;
+      }
+    }
+  }
+
+  .mat-divider {
+    &.mat-primary {
+      border-color: $primary-color;
+      border-width: 2px;
+    }
+
+    &:not(.full-width):not(.mat-divider-vertical) {
+      width: 80%;
+      margin: auto;
+    }
+  }
+}
+
+@media only screen and (max-width: 1150px) {
+  .public-pre-footer {
+    .contact, .who {
+      padding: 60px 5%;
+    }
+
+    .mat-divider:not(.full-width) {
+      width: 90%;
+    }
+  }
+}
+
+@media only screen and (max-width: 860px) {
+  .public-pre-footer {
+    .contact {
+      display: flex;
+      flex-direction: column;
+
+      & > *:not(:last-child) {
+        margin-bottom: 20px;
+      }
+
+      .actions {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+
+        & > * {
+          width: 100%;
+
+          & > button {
+            width: 100%;
+          }
+
+          &:not(:last-child) {
+            margin: 0 0 20px 0;
+          }
+        }
+      }
+    }
+
+    .who {
+      .description {
+        display: block;
+
+        & > * {
+          display: flex;
+          justify-content: center;
+          text-align: center;
+
+          &:nth-child(1) > * {
+            margin-bottom: 20px;
+
+            &:first-child {
+              height: 100px;
+            }
+
+            &:nth-child(2), &:nth-child(3) {
+              width: 100px;
+              margin-left: 10px;
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -11,6 +11,7 @@ import { AuthService } from '@service/auth.service';
 export class HeaderComponent implements OnInit {
 
   @Input() showActions = true;
+  @Input() public = false;
 
   user: User;
   isUserAdmin = false;

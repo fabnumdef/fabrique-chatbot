@@ -1,19 +1,28 @@
 import { RouterModule, Routes } from '@angular/router';
 import { NgModule } from '@angular/core';
 import { AuthenticatedLayoutComponent } from '@core/components/authenticated-layout/authenticated-layout.component';
-import { NotAuthenticatedLayoutComponent } from '@core/components/not-authenticated-layout/not-authenticated-layout.component';
+import {
+  NotAuthenticatedLayoutComponent
+} from '@core/components/not-authenticated-layout/not-authenticated-layout.component';
 import { AuthGuard } from '@guard/auth.guard';
 import { RoleGuard } from '@guard/role.guard';
 import { UserRole } from '@enum/user-role.enum';
+import { PublicLayoutComponent } from '@core/components/public-layout/public-layout.component';
 
 const routes: Routes = [
   {
     path: '',
-    loadChildren: () => import('./modules/home/home.module').then(m => m.HomeModule)
-  },
-  {
-    path: 'mentions-legales',
-    loadChildren: () => import('./modules/legal-mention/legal-mention.module').then(m => m.LegalMentionModule)
+    component: PublicLayoutComponent,
+    children: [
+      {
+        path: '',
+        loadChildren: () => import('./modules/home/home.module').then(m => m.HomeModule)
+      },
+      {
+        path: 'stats',
+        loadChildren: () => import('./modules/stats/stats.module').then(m => m.StatsModule)
+      }
+    ],
   },
   {
     path: '',

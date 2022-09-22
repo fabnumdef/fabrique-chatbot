@@ -5,12 +5,14 @@ import { MaterialModule } from '../material/material.module';
 import { HeaderComponent } from './components/header/header.component';
 import { FooterComponent } from './components/footer/footer.component';
 import { RouterModule } from '@angular/router';
+import { PublicPreFooterComponent } from './components/public-pre-footer/public-pre-footer.component';
 
 @NgModule({
   declarations: [
     ConfirmDialogComponent,
     HeaderComponent,
-    FooterComponent
+    FooterComponent,
+    PublicPreFooterComponent
   ],
   imports: [
     CommonModule,
@@ -20,7 +22,8 @@ import { RouterModule } from '@angular/router';
   exports: [
     ConfirmDialogComponent,
     HeaderComponent,
-    FooterComponent
+    FooterComponent,
+    PublicPreFooterComponent
   ],
   providers: [
     {provide: Window, useValue: window},
