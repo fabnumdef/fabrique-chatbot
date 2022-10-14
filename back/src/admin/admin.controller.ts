@@ -67,6 +67,9 @@ export class AdminController {
   @Roles(UserRole.admin)
   async getChatbots(): Promise<ChatbotDto[]> {
     const chatbots: Chatbot[] = await this._chatbotService.findAll({
+      select: ['id', 'name', 'function', 'primary_color', 'secondary_color', 'problematic', 'audience',
+      'ip_adress', 'domain_name', 'intra_def', 'accept_conditions', 'status', 'created_at', 'front_branch',
+      'back_branch', 'bot_branch', 'api_key'],
       relations: ['user'],
       where: [
         {status: Not(ChatbotStatus.deleted)}

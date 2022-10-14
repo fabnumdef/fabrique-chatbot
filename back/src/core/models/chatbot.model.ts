@@ -16,9 +16,15 @@ export class ChatbotModel {
   @IsNotEmpty()
   file: string;
 
+  @IsNotEmpty()
+  file_data: any;
+
   @IsString()
   @IsNotEmpty()
   icon: string;
+
+  @IsNotEmpty()
+  icon_data: any;
 
   @IsString()
   @IsNotEmpty()

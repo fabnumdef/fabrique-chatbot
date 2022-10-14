@@ -17,8 +17,26 @@ export class Chatbot {
   @Column({ nullable: true })
   icon: string;
 
+  @Column({
+    nullable: true,
+    type: 'bytea',
+  })
+  icon_data: Uint8Array;
+
   @Column({ nullable: true })
   file: string;
+
+  @Column({
+    nullable: true,
+    type: 'bytea',
+  })
+  file_data: Uint8Array;
+
+  @Column({
+    nullable: true,
+    type: 'bytea',
+  })
+  dot_env: Uint8Array;
 
   @Column({ nullable: false, length: 20 })
   primary_color: string;
