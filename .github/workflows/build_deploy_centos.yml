@@ -1,10 +1,15 @@
-#name: Build & Deploy on CentOS
-#on:
-#  push:
-#    tags:
-#      - '*'
-#
-#jobs:
+name: Build & Deploy on CentOS
+on:
+  push:
+    tags:
+      - '*'
+
+jobs:
+  Explore-GitHub-Actions:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
+
 #  build-and-deploy:
 #    runs-on: ubuntu-latest
 #    steps:

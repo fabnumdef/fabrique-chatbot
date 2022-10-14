@@ -7,8 +7,6 @@ import { Repository } from "typeorm";
 import { Chatbot } from "@entity/chatbot.entity";
 import { ChatbotModel } from "@model/chatbot.model";
 import { FileModel } from "@model/file.model";
-import { OvhStorageService } from "../shared/services/ovh-storage.service";
-import { forkJoin } from "rxjs";
 import { ChatbotStatus } from "@enum/chatbot-status.enum";
 import { UpdateChatbotDto } from "@dto/update-chatbot.dto";
 import * as fs from "fs";
@@ -33,7 +31,6 @@ export class ChatbotService {
   private _filesDir = path.resolve(__dirname, '../../files');
 
   constructor(@InjectRepository(Chatbot) private readonly _chatbotsRepository: Repository<Chatbot>,
-              private readonly _ovhStorageService: OvhStorageService,
               private readonly _mailService: MailService,
               @InjectQueue('chatbot_update') private readonly _chatbotUpdateQueue: Queue) {
     // Create folder if it does not exists
@@ -53,26 +50,15 @@ export class ChatbotService {
   }
 
   async create(chatbot: ChatbotModel, file?: FileModel, icon?: FileModel): Promise<ChatbotModel> {
+    if (!!file) {
+      chatbot.file = file.originalname;
+      chatbot.file_data = file.buffer
+    }
+    if (!!icon) {
+      chatbot.icon = icon.originalname;
+      chatbot.icon_data = icon.buffer
+    }
     const chatbotSaved: Chatbot = await this._chatbotsRepository.save(chatbot);
-    if (!file || !icon) {
-      return chatbotSaved;
-    }
-    if (process.env.INTRANET) {
-      chatbotSaved.file = `${chatbotSaved.id.toString(10)}_${file.originalname}`;
-      chatbotSaved.icon = `${chatbotSaved.id.toString(10)}_${icon.originalname}`;
-    } else {
-      chatbotSaved.file = `${chatbotSaved.id.toString(10)}/${file.originalname}`;
-      chatbotSaved.icon = `${chatbotSaved.id.toString(10)}/${icon.originalname}`;
-    }
-    if (process.env.INTRANET) {
-      fs.writeFileSync(path.resolve(this._filesDir, chatbotSaved.file), file.buffer);
-      fs.writeFileSync(path.resolve(this._filesDir, chatbotSaved.icon), icon.buffer);
-    } else {
-      await forkJoin({
-        file: this._ovhStorageService.set(file, chatbotSaved.file),
-        icon: this._ovhStorageService.set(icon, chatbotSaved.icon)
-      }).toPromise().then();
-    }
 
     await this._mailService.sendEmail(['vincent.laine@beta.gouv.fr', 'linna.taing@beta.gouv.fr'],
       'Usine à Chatbots - Demande de création d\'un chatbot',
@@ -92,17 +78,17 @@ export class ChatbotService {
         created_at: chatbotSaved.created_at
       }, [
         {
-          filename: file.originalname,
-          content: file.buffer
+          filename: chatbotSaved.file,
+          content: chatbotSaved.file_data
         },
         {
-          filename: icon.originalname,
-          content: icon.buffer
+          filename: chatbotSaved.icon,
+          content: chatbotSaved.icon_data
         }
       ])
       .then();
 
-    return this._chatbotsRepository.save(chatbotSaved);
+    return chatbotSaved;
   }
 
   async findAndUpdate(id: number, data: any): Promise<Chatbot> {
@@ -363,10 +349,11 @@ export class ChatbotService {
 
     await execShellCommand(`ansible-vault encrypt --vault-password-file roles/vars/password_file roles/chatbotGeneration/files/credentials.yml`, `${appDir}/ansible`).then();
     await execShellCommand(`ansible-vault encrypt --vault-password-file roles/vars/password_file roles/chatbotGeneration/files/.env`, `${appDir}/ansible`).then();
-    const envEncrypted = fs.readFileSync(`${appDir}/ansible/roles/usineConfiguration/files/.env`, 'utf8');
-    if (!process.env.INTRANET) {
-      this._ovhStorageService.set(envEncrypted, `${chatbot.id.toString(10)}/.env`);
-    }
+    const envEncrypted = fs.readFileSync(`${appDir}/ansible/roles/usineConfiguration/files/.env`);
+    await this._chatbotsRepository.update({id: chatbot.id}, {
+      dot_env: envEncrypted
+    })
+    fs.unlinkSync(`${appDir}/ansible/roles/chatbotGeneration/files/.env`);
 
     const playbookOptions = new Options(`${appDir}/ansible`);
     const ansiblePlaybook = new AnsiblePlaybook(playbookOptions);
@@ -375,10 +362,7 @@ export class ChatbotService {
     await ansiblePlaybook.command(`playChatbotsecurity.yml --vault-password-file /var/www/fabrique-chatbot-back/ansible/roles/vars/password_file -i ${updateChatbot.ipAdress}, -e '${JSON.stringify(extraVars)}'`).then(result => this._logger.log(result));
     await ansiblePlaybook.command(`playChatbotconfiguration.yml --vault-password-file /var/www/fabrique-chatbot-back/ansible/roles/vars/password_file -i ${updateChatbot.ipAdress}, -e '${JSON.stringify(extraVars)}'`).then(result => this._logger.log(result));
 
-    if (!process.env.INTRANET) {
-      fs.unlinkSync(`${appDir}/ansible/roles/chatbotGeneration/files/credentials.yml`);
-      fs.unlinkSync(`${appDir}/ansible/roles/chatbotGeneration/files/.env`);
-    }
+    fs.unlinkSync(`${appDir}/ansible/roles/chatbotGeneration/files/credentials.yml`);
   }
 
   /************************************************************************************ STATIC ************************************************************************************/

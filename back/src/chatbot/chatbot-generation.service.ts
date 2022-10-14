@@ -3,7 +3,6 @@ import { ChatbotService } from "./chatbot.service";
 import { ChatbotStatus } from "@enum/chatbot-status.enum";
 import { AnsiblePlaybook, Options } from 'ansible-playbook-cli-js';
 import { Chatbot } from "@entity/chatbot.entity";
-import { OvhStorageService } from "../shared/services/ovh-storage.service";
 import * as fs from "fs";
 import { MailService } from "../shared/services/mail.service";
 import { dotenvToJson, execShellCommand, jsonToDotenv } from "@core/utils";
@@ -20,10 +19,8 @@ export class ChatbotGenerationService {
 
   private _appDir = '/var/www/fabrique-chatbot-back/ansible';
   private readonly _logger = new BotLogger('ChatbotGenerationService');
-  private _filesDir = path.resolve(__dirname, '../../files');
 
   constructor(private readonly _chatbotService: ChatbotService,
-              private readonly _ovhStorageService: OvhStorageService,
               private readonly _http: HttpService,
               private readonly _mailService: MailService) {
   }
@@ -38,25 +35,16 @@ export class ChatbotGenerationService {
       DB_PASSWORD: updateChatbot.dbPassword ? updateChatbot.dbPassword : null
     };
 
-    let dotenv = null;
-    if(!process.env.INTRANET) {
-      dotenv = await this._ovhStorageService.get(`${chatbot.id.toString(10)}/.env`).then().catch(() => {
-        this._chatbotService.findAndUpdate(chatbot.id, {status: ChatbotStatus.error_configuration});
-      });
-    } else {
-      dotenv = await fs.readFileSync(`${this._appDir}/roles/chatbotGeneration/files/.env`, 'utf8');
-    }
-
     try {
       fs.writeFileSync(`${this._appDir}/roles/chatbotGeneration/files/credentials.yml`, yaml.dump(credentials), 'utf8');
-      fs.writeFileSync(`${this._appDir}/roles/chatbotGeneration/files/.env`, dotenv, 'utf8');
+      fs.writeFileSync(`${this._appDir}/roles/chatbotGeneration/files/.env`, chatbot.dot_env, 'utf8');
     } catch (err) {
       this._logger.error(`ERROR WRITING FILE - ${chatbot.id}`, err);
     }
 
     // update email config & domain name
     await execShellCommand(`ansible-vault decrypt --vault-password-file roles/vars/password_file roles/chatbotGeneration/files/.env`, `${this._appDir}`).then();
-    dotenv = fs.readFileSync(`${this._appDir}/roles/chatbotGeneration/files/.env`, 'utf8');
+    let dotenv = fs.readFileSync(`${this._appDir}/roles/chatbotGeneration/files/.env`, 'utf8');
     dotenv = {
       ...dotenvToJson(dotenv), ...{
         MAIL_HOST: process.env.MAIL_HOST,
@@ -119,16 +107,6 @@ export class ChatbotGenerationService {
     const password = crypto.randomBytes(12).toString('hex');
     const user = chatbot.user;
 
-    let file = null;
-    let icon = null;
-    if(!process.env.INTRANET) {
-      file = (await this._ovhStorageService.get(chatbot.file).then()).buffer;
-      icon = (await this._ovhStorageService.get(chatbot.icon).then()).buffer;
-    } else {
-      file = fs.readFileSync(path.resolve(this._filesDir, chatbot.file));
-      icon = fs.readFileSync(path.resolve(this._filesDir, chatbot.icon));
-    }
-
     const userToCreate = {
       email: user ? user.email : 'vincent.laine.utc@gmail.com',
       firstName: user ? user.first_name : 'Vincent',
@@ -163,7 +141,7 @@ export class ChatbotGenerationService {
 
     // Import file
     const form = new FormData();
-    form.append('file', Buffer.from(file), chatbot.file);
+    form.append('file', chatbot.file_data, chatbot.file);
     form.append('deleteIntents', true.toString());
     let headers: any = {
       ...form.getHeaders(),
@@ -174,7 +152,7 @@ export class ChatbotGenerationService {
 
     // Import config
     const configForm = new FormData();
-    configForm.append('icon', Buffer.from(icon), chatbot.icon);
+    configForm.append('icon', chatbot.icon_data, chatbot.icon);
     configForm.append('name', chatbot.name);
     configForm.append('function', chatbot.function);
     configForm.append('primaryColor', chatbot.primary_color);
