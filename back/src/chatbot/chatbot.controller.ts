@@ -59,7 +59,7 @@ export class ChatbotController {
       throw new HttpException('Le fichier contient des erreurs bloquantes.', HttpStatus.INTERNAL_SERVER_ERROR);
     }
     const botModel = await this._chatbotService.create(plainToClass(ChatbotModel, snakecaseKeys({...botConfiguration, ...{user: req.user}})), file, icon);
-    return plainToClass(ChatbotDto, camelcaseKeys(botModel, {deep: true}));
+    return plainToClass(ChatbotDto, camelcaseKeys(botModel, {deep: true}), {excludeExtraneousValues: true});
   }
 
   @Post('check-file')
