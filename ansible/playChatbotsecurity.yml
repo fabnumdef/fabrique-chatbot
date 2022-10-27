@@ -5,7 +5,6 @@
   vars_files:
     - roles/vars/main.yml
     - roles/vars/credentials.yml
-    - roles/chatbotGeneration/files/credentials.yml
 
   roles:
     - chatbotSecurity

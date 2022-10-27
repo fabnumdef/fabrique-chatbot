@@ -13,7 +13,7 @@
 
 - name: Copy env-file
   copy:
-    src: '{{ appsDir }}/{{ nestDir }}/ansible/roles/chatbotGeneration/files/.env'
+    src: '/tmp/.env'
     dest: '{{ appsDir }}/{{ backDir }}/.env'
 
 - name: Copy chatbot-front
