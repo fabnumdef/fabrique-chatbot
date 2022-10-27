@@ -13,3 +13,4 @@ intranetDir: 'intranet'
 ansible_distribution_release: "xenial" #trusty
 NODEJS_VERSION: "12"
 NODEJS_VERSION_USINE: "16"
+ansible_python_interpreter: "/usr/bin/python3"

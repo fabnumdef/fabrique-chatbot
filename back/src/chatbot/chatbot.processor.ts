@@ -19,13 +19,17 @@ export class ChatbotProcessor {
   @Process('pending_configuration')
   async updatePendingConfiguration(job: Job) {
     this._logger.log('Update Pending Configuration ...', job.data.chatbot.id);
-    await this._chatbotService.generateChatbot(job.data.chatbot, job.data.updateChatbot);
-    await this._chatbotService.findAndUpdate(job.data.chatbot.id, {
-      status: ChatbotStatus.pending_configuration,
-      ip_adress: job.data.updateChatbot.ipAdress
-    });
-    await this._chatbotUpdateQueue.add('configuration', job.data);
-    this._logger.log('Update Pending Configuration completed', job.data.chatbot.id);
+    try {
+      await this._chatbotService.generateChatbot(job.data.chatbot, job.data.updateChatbot);
+      await this._chatbotService.findAndUpdate(job.data.chatbot.id, {
+        status: ChatbotStatus.pending_configuration,
+        ip_adress: job.data.updateChatbot.ipAdress
+      });
+      await this._chatbotUpdateQueue.add('configuration', job.data);
+      this._logger.log('Update Pending Configuration completed', job.data.chatbot.id);
+    } catch (err) {
+      this._logger.error(`ERROR GENERATING BOT - ${job.data.chatbot.id}`, err);
+    }
   }
 
   @Process('configuration')

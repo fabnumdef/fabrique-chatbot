@@ -78,8 +78,7 @@
           <input matInput
                  placeholder="Saisir..."
                  formControlName="dbPassword"
-                 maxlength="200"
-                 required>
+                 maxlength="200">
           <mat-error *ngIf="controls.dbPassword.hasError('required')">
             Vous n'avez pas saisi de mot de passe base de données.
           </mat-error>
