@@ -38,8 +38,9 @@ export class ChatbotListComponent implements OnInit {
 
     dialogRef.afterClosed()
       .pipe(filter(r => !!r))
-      .subscribe((r) => {
-        this._chatbotService.launchUpdateChatbot(chatbot.id, r).subscribe();
+      .subscribe(async (r) => {
+        await this._chatbotService.launchUpdateChatbot(chatbot.id, r);
+        this._loadChatbots();
       });
   }
 
@@ -51,8 +52,8 @@ export class ChatbotListComponent implements OnInit {
 
     dialogRef.afterClosed()
       .pipe(filter(r => !!r))
-      .subscribe((r) => {
-        this._chatbotService.launchUpdateDomainName(chatbot.id, r).subscribe();
+      .subscribe(async (r) => {
+        await this._chatbotService.launchUpdateDomainName(chatbot.id, r);
       });
   }
 
@@ -68,8 +69,9 @@ export class ChatbotListComponent implements OnInit {
 
     dialogRef.afterClosed()
       .pipe(filter(r => !!r))
-      .subscribe((r) => {
-        this._chatbotService.updateChatbot(chatbot.id, r).subscribe();
+      .subscribe(async (r) => {
+        await this._chatbotService.updateChatbot(chatbot.id, r).subscribe();
+        this._loadChatbots();
       });
   }
 
@@ -91,8 +93,9 @@ export class ChatbotListComponent implements OnInit {
 
     dialogRef.afterClosed()
       .pipe(filter(r => !!r))
-      .subscribe(() => {
-        this._chatbotService.delete(chatbot.id).subscribe();
+      .subscribe(async () => {
+        await this._chatbotService.delete(chatbot.id);
+        this._loadChatbots();
       });
   }
 

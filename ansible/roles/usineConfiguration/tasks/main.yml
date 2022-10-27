@@ -155,12 +155,6 @@
     dest: '{{ appsDir }}/{{ nestDir }}'
   become: yes
 
-- name: copy angular app
-  copy:
-    src: '../front/dist/{{ angularDir }}'
-    dest: '{{ appsDir }}/{{ angularDir }}'
-  become: yes
-
 - name: npm install nestjs app
   become: yes
   npm:

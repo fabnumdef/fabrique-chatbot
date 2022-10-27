@@ -28,21 +28,22 @@ const XLSX = require('xlsx');
 export class ChatbotService {
   private _xlsx = XLSX;
   private readonly _logger = new BotLogger('ChatbotService');
-  private _filesDir = path.resolve(__dirname, '../../files');
 
   constructor(@InjectRepository(Chatbot) private readonly _chatbotsRepository: Repository<Chatbot>,
               private readonly _mailService: MailService,
               @InjectQueue('chatbot_update') private readonly _chatbotUpdateQueue: Queue) {
-    // Create folder if it does not exists
-    mkdirp(this._filesDir);
   }
 
   findAll(params?: any): Promise<Chatbot[]> {
     return this._chatbotsRepository.find(params);
   }
 
-  findOne(id: number): Promise<Chatbot> {
-    return this._chatbotsRepository.findOne(id);
+  findOne(id: number, withoutFiles = false): Promise<Chatbot> {
+    return this._chatbotsRepository.findOne(id, {
+      select: withoutFiles ? ['id', 'name', 'function', 'primary_color', 'secondary_color', 'problematic', 'audience',
+        'ip_adress', 'domain_name', 'intra_def', 'accept_conditions', 'status', 'created_at', 'front_branch',
+        'back_branch', 'bot_branch', 'api_key'] : []
+    });
   }
 
   findOneWithParam(param: any): Promise<Chatbot> {
@@ -92,7 +93,7 @@ export class ChatbotService {
   }
 
   async findAndUpdate(id: number, data: any): Promise<Chatbot> {
-    const chatbotExists = await this.findOne(id);
+    const chatbotExists = await this.findOne(id, true);
     if (!chatbotExists) {
       throw new HttpException('Ce chatbot n\'existe pas.', HttpStatus.INTERNAL_SERVER_ERROR);
     }
@@ -128,7 +129,7 @@ export class ChatbotService {
   }
 
   async update(id: number, updateChatbot: UpdateChatbotDto): Promise<Chatbot> {
-    let chatbot = await this.findOne(id);
+    let chatbot = await this.findOne(id, true);
     this._logger.log('CHATBOT', JSON.stringify(chatbot));
     if (!chatbot) {
       throw new HttpException('Ce chatbot n\'existe pas.', HttpStatus.INTERNAL_SERVER_ERROR);
@@ -319,13 +320,14 @@ export class ChatbotService {
       .replace(/\+/g, '0') // replace '+' with '0'
       .replace(/\//g, '0'); // replace '/' with '0'
 
-    updateChatbot.dbPassword = dbPassword
+    updateChatbot.dbPassword = dbPassword;
 
     const credentials = {
       USER_PASSWORD: updateChatbot.userPassword,
       DB_PASSWORD: updateChatbot.dbPassword,
       ROOT_USER: updateChatbot.rootUser,
-      ROOT_PASSWORD: updateChatbot.rootPassword
+      ROOT_PASSWORD: updateChatbot.rootPassword,
+      intranet: process.env.INTRANET
     };
 
     const env = {
@@ -342,27 +344,21 @@ export class ChatbotService {
       MAIL_PASSWORD: process.env.MAIL_PASSWORD
     };
 
-    const yamlStr = yaml.dump(credentials);
-    const appDir = '/var/www/fabrique-chatbot-back';
-    fs.writeFileSync(`${appDir}/ansible/roles/chatbotGeneration/files/credentials.yml`, yamlStr, 'utf8');
-    fs.writeFileSync(`${appDir}/ansible/roles/chatbotGeneration/files/.env`, jsonToDotenv(env), 'utf8');
+    const appDir = process.env.NODE_ENV === 'local' ? path.resolve(__dirname, '../../..') : '/var/www/fabrique-chatbot-back';
+    fs.writeFileSync(`/tmp/.env`, jsonToDotenv(env), 'utf8');
 
-    await execShellCommand(`ansible-vault encrypt --vault-password-file roles/vars/password_file roles/chatbotGeneration/files/credentials.yml`, `${appDir}/ansible`).then();
-    await execShellCommand(`ansible-vault encrypt --vault-password-file roles/vars/password_file roles/chatbotGeneration/files/.env`, `${appDir}/ansible`).then();
-    const envEncrypted = fs.readFileSync(`${appDir}/ansible/roles/usineConfiguration/files/.env`);
+    await execShellCommand(`ansible-vault encrypt --vault-password-file roles/vars/password_file /tmp/.env`, `${appDir}/ansible`).then();
+    const envEncrypted = fs.readFileSync(`/tmp/.env`);
     await this._chatbotsRepository.update({id: chatbot.id}, {
       dot_env: envEncrypted
-    })
-    fs.unlinkSync(`${appDir}/ansible/roles/chatbotGeneration/files/.env`);
+    });
+    fs.unlinkSync(`/tmp/.env`);
 
     const playbookOptions = new Options(`${appDir}/ansible`);
     const ansiblePlaybook = new AnsiblePlaybook(playbookOptions);
-    const extraVars = {intranet: process.env.INTRANET};
-    await ansiblePlaybook.command(`playChatbotprebook.yml --vault-password-file /var/www/fabrique-chatbot-back/ansible/roles/vars/password_file -i ${updateChatbot.ipAdress}, -e '${JSON.stringify(extraVars)}'`).then(result => this._logger.log(result));
-    await ansiblePlaybook.command(`playChatbotsecurity.yml --vault-password-file /var/www/fabrique-chatbot-back/ansible/roles/vars/password_file -i ${updateChatbot.ipAdress}, -e '${JSON.stringify(extraVars)}'`).then(result => this._logger.log(result));
-    await ansiblePlaybook.command(`playChatbotconfiguration.yml --vault-password-file /var/www/fabrique-chatbot-back/ansible/roles/vars/password_file -i ${updateChatbot.ipAdress}, -e '${JSON.stringify(extraVars)}'`).then(result => this._logger.log(result));
-
-    fs.unlinkSync(`${appDir}/ansible/roles/chatbotGeneration/files/credentials.yml`);
+    await ansiblePlaybook.command(`playChatbotprebook.yml -i ${updateChatbot.ipAdress}, -e '${JSON.stringify(credentials)}'`).then(result => this._logger.log(result));
+    await ansiblePlaybook.command(`playChatbotsecurity.yml -i ${updateChatbot.ipAdress}, -e '${JSON.stringify(credentials)}'`).then(result => this._logger.log(result));
+    await ansiblePlaybook.command(`playChatbotconfiguration.yml -i ${updateChatbot.ipAdress}, -e '${JSON.stringify(credentials)}'`).then(result => this._logger.log(result));
   }
 
   /************************************************************************************ STATIC ************************************************************************************/
