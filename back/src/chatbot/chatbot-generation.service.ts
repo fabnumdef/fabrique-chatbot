@@ -26,9 +26,9 @@ export class ChatbotGenerationService {
   }
 
   async updateChatbot(chatbot: Chatbot, updateChatbot: UpdateChatbotDto): Promise<void> {
-    if(!process.env.INTRANET) {
-      await this.updateChatbotRepos(chatbot);
-    }
+    // if(!process.env.INTRANET || process.env.INTRANET === 'false') {
+    //   await this.updateChatbotRepos(chatbot);
+    // }
 
     const credentials = {
       USER_PASSWORD: updateChatbot.userPassword ? updateChatbot.userPassword : null,
@@ -37,13 +37,13 @@ export class ChatbotGenerationService {
     };
 
     try {
-      fs.writeFileSync(`/tmp/.env`, chatbot.dot_env, 'utf8');
+      fs.writeFileSync(`/tmp/.env`, Buffer.from(chatbot.dot_env));
     } catch (err) {
       this._logger.error(`ERROR WRITING FILE - ${chatbot.id}`, err);
     }
 
     // update email config & domain name
-    await execShellCommand(`ansible-vault decrypt --vault-password-file /tmp/.env`, `${this._appDir}`).then();
+    await execShellCommand(`ansible-vault decrypt --vault-password-file roles/vars/password_file /tmp/.env`, `${this._appDir}`).then();
     let dotenv = fs.readFileSync(`/tmp/.env`, 'utf8');
     dotenv = {
       ...dotenvToJson(dotenv), ...{
@@ -90,8 +90,8 @@ export class ChatbotGenerationService {
       backBranch: chatbot.back_branch,
       botBranch: chatbot.bot_branch
     };
-    await ansiblePlaybook.command(`playUsineupdaterepos.yml --vault-id dev@roles/vars/password_file -e '${JSON.stringify(extraVars)}'`).then((result) => {
-      this._logger.log(`UPDATING CHATBOTS REPOSITORIES`);
+    this._logger.log(`UPDATING CHATBOTS REPOSITORIES`);
+    await ansiblePlaybook.command(`playUsineupdaterepos.yml --vault-password-file roles/vars/password_file -e '${JSON.stringify(extraVars)}'`).then((result) => {
       this._logger.log(result);
     }).catch(err => {
       this._logger.error(`ERRROR UPDATING CHATBOTS REPOSITORIES`, err);

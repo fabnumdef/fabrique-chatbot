@@ -56,6 +56,13 @@ jobs:
           if_false: ~/fabrique-chatbot-back/ansible/roles/usineConfiguration/files/.env.dev
 
       - uses: haya14busa/action-cond@v1
+        id: usine_file
+        with:
+          cond: ${{ env.ENVIRONMENT == 'prod' }}
+          if_true: ~/fabrique-chatbot-back/ansible/roles/vars/usine.dev.yml
+          if_false: ~/fabrique-chatbot-back/ansible/roles/vars/usine.prod.yml
+
+      - uses: haya14busa/action-cond@v1
         id: domain
         with:
           cond: ${{ env.ENVIRONMENT == 'prod' }}
@@ -174,6 +181,7 @@ jobs:
             END
             ansible-vault decrypt --vault-password-file ~/fabrique-chatbot-back/ansible/roles/vars/password_file ${{ steps.env_file.outputs.value }}
             mv ${{ steps.env_file.outputs.value }} ~/fabrique-chatbot-back/ansible/roles/usineConfiguration/files/.env
+            mv ${{ steps.usine_file.outputs.value }} ~/fabrique-chatbot-back/ansible/roles/vars/usine.yml
             ansible-playbook ~/fabrique-chatbot-back/ansible/playUsineconfiguration.yml --vault-password-file ~/fabrique-chatbot-back/ansible/roles/vars/password_file --extra-vars 'DB_PASSWORD='"${{ steps.db_password.outputs.value }}"' USER_PASSWORD='"${{ steps.user_password.outputs.value }}"' ansible_become_password='"${{ steps.user_password.outputs.value }}"' DOMAIN='${{ steps.domain.outputs.value }}''
 #            ansible-playbook ~/fabrique-chatbot-back/ansible/logs/elastic.yml --vault-password-file ~/fabrique-chatbot-back/ansible/roles/vars/password_file --extra-vars 'USER_PASSWORD='"${{ steps.user_password.outputs.value }}"' ELASTIC_HOST='${{ secrets.ELASTIC_HOST }}' ELASTIC_USERNAME='${{ secrets.ELASTIC_USERNAME }}' ELASTIC_PASSWORD='"${{ secrets.ELASTIC_PASSWORD }}"' ELASTIC_METRICBEAT_INDEX='${{ secrets.ELASTIC_METRICBEAT_INDEX }}' ELASTIC_PACKETBEAT_INDEX='${{ secrets.ELASTIC_PACKETBEAT_INDEX }}' ELASTIC_FILEBEAT_INDEX='${{ secrets.ELASTIC_FILEBEAT_INDEX }}''
 
