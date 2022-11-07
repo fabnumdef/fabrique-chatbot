@@ -27,12 +27,14 @@
   become: yes
   npm:
     path: '{{ appsDir }}/{{ nestDir }}/chatbot/{{ frontDir }}'
+    production: yes
   when: (installFront is defined and installFront) or (pullFront.changed)
 
 - name: npm install chatbot-front librairies
   become: yes
   npm:
     path: '{{ appsDir }}/{{ nestDir }}/chatbot/{{ frontDir }}/projects/webchat'
+    production: yes
   when: (installFront is defined and installFront) or (pullFront.changed)
 
 - name: npm build chatbot-front
