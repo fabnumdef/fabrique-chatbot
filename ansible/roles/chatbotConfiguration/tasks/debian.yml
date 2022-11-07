@@ -10,6 +10,7 @@
     pkg:
       - curl
       - software-properties-common
+      - gnupg
 
 - name: Install the gpg key for nodejs LTS
   become: yes

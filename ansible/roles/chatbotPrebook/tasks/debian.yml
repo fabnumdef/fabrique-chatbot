@@ -8,5 +8,5 @@
   user:
     name: chatbot_user
     append: yes
-    groups: sudo
+    groups: sudo,www-data
     password: "{{ USER_PASSWORD | password_hash('sha512') }}"

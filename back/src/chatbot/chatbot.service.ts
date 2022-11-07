@@ -348,10 +348,11 @@ export class ChatbotService {
     fs.writeFileSync(`/tmp/.env`, jsonToDotenv(env), 'utf8');
 
     await execShellCommand(`ansible-vault encrypt --vault-password-file roles/vars/password_file /tmp/.env`, `${appDir}/ansible`).then();
-    const envEncrypted = fs.readFileSync(`/tmp/.env`);
+    const envEncrypted: any = fs.readFileSync(`/tmp/.env`);
     await this._chatbotsRepository.update({id: chatbot.id}, {
       dot_env: envEncrypted
     });
+    chatbot.dot_env = envEncrypted;
     fs.unlinkSync(`/tmp/.env`);
 
     const playbookOptions = new Options(`${appDir}/ansible`);
