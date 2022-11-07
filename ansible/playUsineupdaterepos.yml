@@ -3,8 +3,11 @@
   hosts: localhost
   remote_user: fab_user
   vars_files:
-    - roles/vars/main.yml
     - roles/vars/usine.yml
+    - roles/vars/main.yml
+
+  vars:
+    - ansible_become_pass: "{{ USER_PASSWORD }}"
 
   roles:
     - usineUpdaterepos
