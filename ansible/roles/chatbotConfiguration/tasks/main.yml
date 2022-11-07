@@ -24,9 +24,17 @@
   pip:
     executable: pip3
     name:
-      - rasa==2.8.7
+      - rasa==3.3.0
       - psycopg2
       - ansible
+
+- name: Upgrade pyOpenSSL
+  become: true
+  when: intranet is not defined or intranet == "false"
+  pip:
+    executable: pip3
+    name: pyOpenSSL
+    extra_args: --upgrade
 
 - name: NODE | Install pm2
   become: yes

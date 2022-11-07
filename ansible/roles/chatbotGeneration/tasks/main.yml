@@ -130,9 +130,9 @@
   args:
     chdir: '{{ appsDir }}/{{ backDir }}/dist'
 
-- name: Mise à jour du script de PM2 pour se relancer au reboot du serveur
-  become: true
-  shell: 'env PATH=$PATH:/usr/bin /usr/local/lib/node_modules/pm2/bin/pm2 startup systemd -u chatbot_user --hp /home/chatbot_user'
+#- name: Mise à jour du script de PM2 pour se relancer au reboot du serveur
+#  become: true
+#  shell: 'env PATH=$PATH:/usr/bin /usr/local/lib/node_modules/pm2/bin/pm2 startup systemd -u chatbot_user --hp /home/chatbot_user'
 
 - name: Vérification du statut de PM2
   ignore_errors: true
@@ -152,19 +152,19 @@
     regexp: '^  password:'
     line: '  password: "{{ DB_PASSWORD }}"'
 
-- name: Train rasa
-  command:
-    chdir: '{{ appsDir }}/{{ botDir }}/'
-    cmd: 'rasa train --num-threads 8'
+#- name: Train rasa
+#  command:
+#    chdir: '{{ appsDir }}/{{ botDir }}/'
+#    cmd: 'rasa train --num-threads 8'
 
-- name: Stop rasa chatbot
-  command: 'pkill screen'
-  ignore_errors: true
+#- name: Stop rasa chatbot
+#  command: 'pkill screen'
+#  ignore_errors: true
 
-- name: Start rasa chatbot
-  command:
-    chdir: '{{ appsDir }}/{{ botDir }}/'
-    cmd: 'screen -S rasa -dmS rasa run -m models --log-file out.log --cors "*" --debug'
+#- name: Start rasa chatbot
+#  command:
+#    chdir: '{{ appsDir }}/{{ botDir }}/'
+#    cmd: 'screen -S rasa -dmS rasa run -m models --log-file out.log --cors "*" --debug'
 
 - name: copy rc.local file to restart bot on boot
   become: true
@@ -185,14 +185,14 @@
     state: directory
     mode: '755'
 
-- name: copy files for bot
-  ignore_errors: true
-  copy:
-    src: '{{ item.src }}'
-    dest: '{{ item.dest }}'
-  with_items:
-    - { src: 'roles/chatbotGeneration/files/rc.local', dest: '{{ gitDir }}/rc.local' }
-    - { src: 'roles/chatbotGeneration/files/nginx_rhel.conf', dest: '{{ gitDir }}/nginx.conf' }
-    - { src: 'roles/chatbotGeneration/files/nginx_conf.cfg', dest: '{{ gitDir }}/nginx_conf.cfg' }
-    - { src: 'roles/chatbotGeneration/files/.env', dest: '{{ gitDir }}/.env' }
-  become: yes
+#- name: copy files for bot
+#  ignore_errors: true
+#  copy:
+#    src: '{{ item.src }}'
+#    dest: '{{ item.dest }}'
+#  with_items:
+#    - { src: 'roles/chatbotGeneration/files/rc.local', dest: '{{ gitDir }}/rc.local' }
+#    - { src: 'roles/chatbotGeneration/files/nginx_rhel.conf', dest: '{{ gitDir }}/nginx.conf' }
+#    - { src: 'roles/chatbotGeneration/files/nginx_conf.cfg', dest: '{{ gitDir }}/nginx_conf.cfg' }
+#    - { src: 'roles/chatbotGeneration/files/.env', dest: '{{ gitDir }}/.env' }
+#  become: yes

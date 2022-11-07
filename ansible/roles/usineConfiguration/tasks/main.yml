@@ -179,6 +179,12 @@
     mode: '775'
     recurse: yes
 
+- name: Changement de droits sur le fichier password
+  become: true
+  file:
+    path: '{{ appsDir }}/{{ nestDir }}/ansible/roles/vars/password_file'
+    mode: '664'
+
 - name: NODE | Stop APP
   shell: pm2 stop FabriqueBack
   args:
@@ -186,7 +192,7 @@
   ignore_errors: yes
 
 - name: NODE | Start APP
-  shell: pm2 start main.js --name FabriqueBack
+  shell: pm2 start main.js --name FabriqueBack --update-env
   args:
     chdir: '{{ appsDir }}/{{ nestDir }}/dist'
 
