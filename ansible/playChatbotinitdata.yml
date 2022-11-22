@@ -1,0 +1,8 @@
+---
+# ansible-playbook playChatbotinitdata.yml -i $IP_ADRESS, -e '{BOT_URL: '$BOT_URL'}';
+
+- name: Init des données du Chatbot
+  hosts: localhost
+
+  roles:
+    - chatbotInitdata

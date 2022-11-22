@@ -6,7 +6,7 @@
 - name: Copy chatbot-back
   copy:
     remote_src: yes
-    src: '{{ appsDir }}/{ gitDir }}/{{ backDir }}/'
+    src: '{{ appsDir }}/{{ gitDir }}/{{ backDir }}/'
     dest: '{{ appsDir }}/{{ backDir }}'
 
 - name: Copy env-file bis
@@ -94,7 +94,6 @@
   when: botDomain is defined and botDomain != ""
 
 - name: npm install chatbot-back
-  when: intranet is not defined or intranet == "false"
   command:
     cmd: npm install
     chdir: '{{ appsDir }}/{{ backDir }}'

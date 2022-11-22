@@ -39,6 +39,8 @@
       - openssl
       - python3-dev
       - python-setuptools
+#      - postgresql
+#      - postgresql-contrib
       - libpq-dev
       - python3-psycopg2
       - acl
