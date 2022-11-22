@@ -1,9 +1,18 @@
+- name: change rights www dir
+  become: true
+  file:
+    path: '{{ appsDir }}'
+    state: directory
+    owner: chatbot_user
+    mode: '775'
+
 - name: create git dir
   become: true
   file:
     path: '{{ appsDir }}/{{ gitDir }}'
     state: directory
-    mode: '755'
+    owner: chatbot_user
+    mode: '775'
 
 - name: Git chatbot-back
   git:
@@ -11,7 +20,6 @@
     dest: '{{ appsDir }}/{{ gitDir }}/{{ backDir }}'
     force: yes
     version: '{{ backBranch }}'
-  when: updateBack
 
 - name: Git chatbot-front
   git:
@@ -19,8 +27,6 @@
     dest: '{{ appsDir }}/{{ gitDir }}/{{ frontDir }}'
     force: yes
     version: '{{ frontBranch }}'
-  register: pullFront
-  when: updateFront
 
 - name: Git chatbot-template
   git:
@@ -28,20 +34,16 @@
     dest: '{{ appsDir }}/{{ gitDir }}/{{ botDir }}'
     force: yes
     version: '{{ botBranch }}'
-  when: updateRasa
 
 - name: npm install chatbot-front
   npm:
     path: '{{ appsDir }}/{{ gitDir }}/{{ frontDir }}'
-  when: updateFront and pullFront.changed
 
 - name: npm install chatbot-front librairies
   npm:
     path: '{{ appsDir }}/{{ gitDir }}/{{ frontDir }}/projects/ngx-rasa-webchat'
-  when: updateFront and pullFront.changed
 
 - name: npm build chatbot-front
   command:
     cmd: npm run build:prod
     chdir: '{{ appsDir }}/{{ gitDir }}/{{ frontDir }}'
-  when: updateFront and pullFront.changed

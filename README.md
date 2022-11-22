@@ -53,9 +53,14 @@ Run `npm run cypress:local`
 
 ## Déploiement
 
+Les playbooks sont faits pour être utilisé avec des serveurs tournant sous Debian 10.
+
 ### Usine à Chatbots
 
 ### Chatbot
+
+#### Playbook séparés
+
 `ansible-playbook playChatbotprebook.yml -i $IP_ADRESS, -e '{USER_PASSWORD: '$USER_PASSWORD', ROOT_USER: '$ROOT_USER', ROOT_PASSWORD: '$ROOT_PASSWORD'}';`
 
 `ansible-playbook playChatbotsecurity.yml -i $IP_ADRESS, -e '{USER_PASSWORD: '$USER_PASSWORD'}';`
@@ -64,9 +69,19 @@ Run `npm run cypress:local`
 
 `ansible-playbook playChatbotupdaterepos.yml -i $IP_ADRESS, -e '{USER_PASSWORD: '$USER_PASSWORD', frontBranch: 'master', backBranch: 'master', botBranch: 'master'}';`
 
-Copier le fichier .env du chatbot dans le dossier `ansible/roles/chatbotGeneration/files`. Exemple trouvable dans le repo `chatbot-back`.
+Copier le fichier .env du chatbot dans le dossier `ansible/roles/chatbotGeneration/files`. Exemple trouvable dans ce même dossier `.env.example`.
 
-`ansible-playbook playChatbotgeneration.yml -i $IP_ADRESS, -e '{USER_PASSWORD: '$USER_PASSWORD', DB_PASSWORD: '$DB_PASSWORD', botDomain: '$URL_BOT'}';`
+`ansible-playbook playChatbotgeneration.yml -i $IP_ADRESS, -e '{USER_PASSWORD: '$USER_PASSWORD', DB_PASSWORD: '$DB_PASSWORD', botDomain: '$BOT_DOMAIN'}';`
+
+`ansible-playbook playChatbotinitdata.yml -e '{BOT_URL: "$BOT_URL"}';`
+
+#### Playbook unifié
+
+Copier le fichier .env du chatbot dans le dossier `ansible/roles/chatbotGeneration/files`. Exemple trouvable dans ce même dossier `.env.example`.
+
+`ansible-playbook playChatbot.yml -i $IP_ADRESS, -e '{USER_PASSWORD: '$USER_PASSWORD', ROOT_USER: '$ROOT_USER', ROOT_PASSWORD: '$ROOT_PASSWORD', DB_PASSWORD: '$DB_PASSWORD', frontBranch: 'master', backBranch: 'master', botBranch: 'master', botDomain: '$BOT_DOMAIN'}';`
+
+`ansible-playbook playChatbotinitdata.yml -e '{BOT_URL: "$BOT_URL"}';`
 
 ## Restons en contact
 

@@ -4,15 +4,14 @@
 
 - name: Configuration pour OS RHEL 8 & CentOS 8 - Internet
   include_tasks: rhel.yml
-  when: (ansible_distribution == 'CentOS' or ansible_distribution == "RedHat") and (intranet is not defined or intranet == "false")
+  when: (ansible_distribution == 'CentOS' or ansible_distribution == "RedHat")
 
-- name: Configuration pour OS RHEL 8 & CentOS 8 - Intranet
-  include_tasks: rhel_intranet.yml
-  when: (ansible_distribution == 'CentOS' or ansible_distribution == "RedHat") and (intranet is defined and intranet == "true")
+#- name: Configuration pour OS RHEL 8 & CentOS 8 - Intranet
+#  include_tasks: rhel_intranet.yml
+#  when: (ansible_distribution == 'CentOS' or ansible_distribution == "RedHat")
 
 - name: Install last version of pip
   become: true
-  when: intranet is not defined or intranet == "false"
   pip:
     executable: pip3
     name: pip
@@ -20,9 +19,9 @@
 
 - name: Install RASA & Ansible
   become: true
-  when: intranet is not defined or intranet == "false"
   pip:
     executable: pip3
+    extra_args: --ignore-installed
     name:
       - rasa==3.3.0
       - psycopg2
@@ -30,7 +29,6 @@
 
 - name: Upgrade pyOpenSSL
   become: true
-  when: intranet is not defined or intranet == "false"
   pip:
     executable: pip3
     name: pyOpenSSL
@@ -38,7 +36,6 @@
 
 - name: NODE | Install pm2
   become: yes
-  when: intranet is not defined or intranet == "false"
   npm:
     name: pm2
     global: yes
@@ -46,7 +43,6 @@
     state: present
 
 #- name: Ensure the PostgreSQL service is running - Internet
-#  when: intranet is not defined or intranet == "false"
 #  become: yes
 #  service:
 #    name: 'postgresql'

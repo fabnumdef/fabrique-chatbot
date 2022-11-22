@@ -1,0 +1,48 @@
+#- name: Création du premier user admin
+#  uri:
+#    url: "{{ BOT_URL }}/api/user/admin"
+#    method: POST
+#    body: "{{ lookup('file','../files/admin-user.json') }}"
+#    status_code: 201
+#    body_format: json
+
+- name: Login
+  uri:
+    url: "{{ BOT_URL }}/api/auth/login"
+    method: POST
+    body: "{{ lookup('file','../files/admin-user.json') }}"
+    status_code: 201
+    body_format: json
+  register: login
+
+- debug:
+    msg: "{{ login.json.chatbotToken }}"
+
+#- name: Set de la config du Chatbot
+#  uri:
+#    url: "{{ BOT_URL }}/api/config"
+#    method: POST
+#    headers:
+#      Authorization: "Bearer {{ login.json.chatbotToken }}"
+#    body_format: form-urlencoded
+#    body:
+#      icon:
+#      name: Chatbot dev
+#      function: Chatbot de dev
+#      primaryColor: "#000000"
+#      secondaryColor: "#ffffff"
+#      problematic: Chatbot de dev
+#      audience: Chatbot de dev
+#    status_code: 201
+
+- name: Set API-KEY
+  uri:
+    url: "{{ BOT_URL }}/api/config/api-key"
+    method: POST
+    headers:
+      Authorization: "Bearer {{ login.json.chatbotToken }}"
+    status_code: 201
+  register: apiKey
+
+- debug:
+    msg: "{{ apiKey.json.apiKey }}"
