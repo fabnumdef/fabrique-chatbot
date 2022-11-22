@@ -1,4 +1,6 @@
 ---
+# ansible-playbook playChatbotsecurity.yml -i $IP_ADRESS, -e '{USER_PASSWORD: '$USER_PASSWORD'}';
+
 - name: Sécurisation du serveur du Chatbot
   hosts: all
   remote_user: chatbot_user

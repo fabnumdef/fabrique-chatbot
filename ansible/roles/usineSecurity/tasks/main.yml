@@ -61,6 +61,13 @@
     port: '465'
     proto: tcp
 
+- name: Open port 5432
+  become: yes
+  ufw:
+    rule: allow
+    port: '5432'
+    proto: tcp
+
 - name: Open port 3000
   become: yes
   ufw:
