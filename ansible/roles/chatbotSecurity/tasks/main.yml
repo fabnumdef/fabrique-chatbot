@@ -52,3 +52,10 @@
     rule: allow
     port: '5005'
     proto: tcp
+
+- name: Open port 5432
+  become: yes
+  ufw:
+    rule: allow
+    port: '5432'
+    proto: tcp
