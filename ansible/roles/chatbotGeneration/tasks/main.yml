@@ -1,32 +1,37 @@
-- name: Copy chatbot-back
-  synchronize:
-    src: '{{ appsDir }}/{{ nestDir }}/chatbot/{{ backDir }}/'
-    dest: '{{ appsDir }}/{{ backDir }}'
-    rsync_opts:
-      - '--exclude=mediatheque/'
-      - '--exclude=historic/'
-
-- name: Copy password-file
-  copy:
-    src: '{{ appsDir }}/{{ nestDir }}/ansible/roles/vars/password_file'
-    dest: '{{ appsDir }}/{{ backDir }}/password_file'
-
 - name: Copy env-file
   copy:
-    src: '/tmp/.env'
+    src: '../files/.env'
+    dest: '{{ appsDir }}/{{ gitDir }}/.env'
+
+- name: Copy chatbot-back
+  copy:
+    remote_src: yes
+    src: '{{ appsDir }}/{ gitDir }}/{{ backDir }}/'
+    dest: '{{ appsDir }}/{{ backDir }}'
+
+- name: Copy env-file bis
+  copy:
+    remote_src: yes
+    src: '{{ appsDir }}/{{ gitDir }}/.env'
     dest: '{{ appsDir }}/{{ backDir }}/.env'
 
 - name: Copy chatbot-front
-  synchronize:
-    src: '{{ appsDir }}/{{ nestDir }}/chatbot/{{ frontDir }}/dist/{{ frontDir }}/'
+  copy:
+    remote_src: yes
+    src: '{{ appsDir }}/{{ gitDir }}/{{ frontDir }}/dist/{{ frontDir }}/'
     dest: '{{ appsDir }}/{{ frontDir }}'
-    delete: yes
 
 - name: Copy webchat
-  synchronize:
-    src: '{{ appsDir }}/{{ nestDir }}/chatbot/{{ frontDir }}/dist/{{ webchatDir }}/'
+  copy:
+    remote_src: yes
+    src: '{{ appsDir }}/{{ gitDir }}/{{ frontDir }}/dist/{{ webchatDir }}/'
     dest: '{{ appsDir }}/{{ webchatDir }}'
-    delete: yes
+
+- name: Copy chatbot-template
+  copy:
+    remote_src: yes
+    src: '{{ appsDir }}/{{ gitDir }}/{{ botDir }}/'
+    dest: '{{ appsDir }}/{{ botDir }}'
 
 - name: add server name to the nginx site config file
   lineinfile:
@@ -87,21 +92,6 @@
     regexp: '^ssl_protocols TLSv1 TLSv1.1 TLSv1.2;'
     line: 'ssl_protocols TLSv1.2 TLSv1.3;'
   when: botDomain is defined and botDomain != ""
-
-- name: Copy chatbot-template
-  synchronize:
-    src: '{{ appsDir }}/{{ nestDir }}/chatbot/{{ botDir }}/'
-    dest: '{{ appsDir }}/{{ botDir }}'
-    rsync_opts:
-      - '--exclude=models/'
-
-- name: delete user access with ssh key
-  when: ssh_key is defined
-  become: true
-  authorized_key:
-    user: chatbot_user
-    state: absent
-    key: "{{ lookup('file', '{{ ssh_key }}') }}"
 
 - name: npm install chatbot-back
   when: intranet is not defined or intranet == "false"
@@ -176,13 +166,6 @@
   become: true
   file:
     path: '/etc/rc.local'
-    mode: '755'
-
-- name: create git dir
-  become: true
-  file:
-    path: '{{ appsDir }}/{{ gitDir }}'
-    state: directory
     mode: '755'
 
 #- name: copy files for bot

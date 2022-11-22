@@ -33,8 +33,12 @@ import { LoggerModule } from './logger/logger.module';
       username: process.env.DATABASE_USER,
       password: process.env.DATABASE_PASSWORD,
       database: process.env.DATABASE_NAME,
-      "entities": [User, Chatbot, ChatbotUser, FabriqueConfig],
-      "synchronize": true
+      entities: [User, Chatbot, ChatbotUser, FabriqueConfig],
+      synchronize: true,
+      extra: process.env.DATABASE_SSL && process.env.DATABASE_SSL === 'true' ? {
+        ssl: true,
+        rejectUnauthorized: false
+      } : {}
     }),
     MailerModule.forRoot({
       transport: {

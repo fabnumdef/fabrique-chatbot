@@ -1,4 +1,6 @@
 ---
+# ansible-playbook playChatbotgeneration.yml -i $IP_ADRESS, -e '{USER_PASSWORD: '$USER_PASSWORD', DB_PASSWORD: '$DB_PASSWORD', botDomain: '$URL_BOT', intranet: false}';
+
 - name: Génération d'un Chatbot
   hosts: all
   remote_user: chatbot_user

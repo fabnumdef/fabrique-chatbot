@@ -27,7 +27,6 @@
   include_role:
     name: nginx
 
-
 - name: Install required dependencies (nginx, node, npm ...)
   become: yes
   apt:
@@ -35,8 +34,6 @@
       - python-setuptools
       - build-essential
       - nodejs
-      - postgresql
-      - postgresql-contrib
       - acl
       - libpq-dev
       - python3-psycopg2
