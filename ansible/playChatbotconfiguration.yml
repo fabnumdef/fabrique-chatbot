@@ -1,4 +1,6 @@
 ---
+# ansible-playbook playChatbotconfiguration.yml -i $IP_ADRESS, -e '{USER_PASSWORD: '$USER_PASSWORD', DB_PASSWORD: '$DB_PASSWORD'}';
+
 - name: Configuration d'un serveur d'un Chatbot
   hosts: all
   remote_user: chatbot_user

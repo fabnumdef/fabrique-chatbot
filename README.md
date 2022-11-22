@@ -51,6 +51,23 @@ Le Back est couplé à une base de données (PostgreSQL dans notre cas), les don
 
 Run `npm run cypress:local`
 
+## Déploiement
+
+### Usine à Chatbots
+
+### Chatbot
+`ansible-playbook playChatbotprebook.yml -i $IP_ADRESS, -e '{USER_PASSWORD: '$USER_PASSWORD', ROOT_USER: '$ROOT_USER', ROOT_PASSWORD: '$ROOT_PASSWORD'}';`
+
+`ansible-playbook playChatbotsecurity.yml -i $IP_ADRESS, -e '{USER_PASSWORD: '$USER_PASSWORD'}';`
+
+`ansible-playbook playChatbotconfiguration.yml -i $IP_ADRESS, -e '{USER_PASSWORD: '$USER_PASSWORD', DB_PASSWORD: '$DB_PASSWORD'}';`
+
+`ansible-playbook playChatbotupdaterepos.yml -i $IP_ADRESS, -e '{USER_PASSWORD: '$USER_PASSWORD', frontBranch: 'master', backBranch: 'master', botBranch: 'master'}';`
+
+Copier le fichier .env du chatbot dans le dossier `ansible/roles/chatbotGeneration/files`. Exemple trouvable dans le repo `chatbot-back`.
+
+`ansible-playbook playChatbotgeneration.yml -i $IP_ADRESS, -e '{USER_PASSWORD: '$USER_PASSWORD', DB_PASSWORD: '$DB_PASSWORD', botDomain: '$URL_BOT'}';`
+
 ## Restons en contact
 
 - Site web - [https://chatbot.fabnum.fr](https://chatbot.fabnum.fr/)

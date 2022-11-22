@@ -13,9 +13,6 @@
     name: pip
     extra_args: -U
 
-- name: Ansible galaxy install elastic.beats role
-  shell: 'ansible-galaxy install elastic.beats,v7.10.1'
-
 - name: copy the nginx config file
   become: yes
   copy:
@@ -87,42 +84,6 @@
     global: yes
     production: yes
     state: present
-
-- name: Ensure the PostgreSQL service is running
-  service:
-    name: 'postgresql'
-    state: 'started'
-    enabled: 'yes'
-
-- name: Ensure database is created
-  become: yes
-  become_user: postgres
-  postgresql_db:
-    name: 'fabrique_chatbot'
-    encoding: 'UTF-8'
-    lc_collate: 'fr_FR.UTF-8'
-    lc_ctype: 'fr_FR.UTF-8'
-    #        conn_limit: '100' # Only available in ansible 2.8
-    state: 'present'
-    template: 'template0'
-
-- name: Ensure user has access to the database
-  become: true
-  become_user: postgres
-  postgresql_user:
-    db: 'fabrique_chatbot'
-    name: 'fabrique_chatbot_user'
-    password: '{{ DB_PASSWORD }}'
-    priv: 'ALL'
-    state: 'present'
-
-- name: Ensure user does not have unnecessary privileges
-  become: yes
-  become_user: postgres
-  postgresql_user:
-    name: 'fabrique_chatbot_user'
-    role_attr_flags: 'NOSUPERUSER,NOCREATEDB'
-    state: 'present'
 
 - name: Ensures {{ userDir }}/{{ nestDir }} dir exists
   file:
