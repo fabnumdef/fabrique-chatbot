@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpService, HttpStatus, Injectable } from '@nestjs/common';
 import { Sheet2JSONOpts, WorkBook, WorkSheet } from "xlsx";
 import { TemplateFileDto, TemplateResponseType } from "@dto/template-file.dto";
 import { TemplateFileCheckResumeDto } from "@dto/template-file-check-resume.dto";
@@ -10,19 +10,16 @@ import { FileModel } from "@model/file.model";
 import { ChatbotStatus } from "@enum/chatbot-status.enum";
 import { UpdateChatbotDto } from "@dto/update-chatbot.dto";
 import * as fs from "fs";
-import * as mkdirp from "mkdirp";
 import { AnsiblePlaybook, Options } from "ansible-playbook-cli-js";
 import { execShellCommand, jsonToDotenv } from "@core/utils";
 import snakecaseKeys = require("snakecase-keys");
-import { InjectQueue } from "@nestjs/bull";
-import { Queue } from "bull";
 import { MailService } from "../shared/services/mail.service";
 import { BotLogger } from "../logger/bot.logger";
 import * as path from "path";
 
-const yaml = require('js-yaml');
-const crypto = require('crypto');
-const XLSX = require('xlsx');
+import crypto from 'crypto';
+import XLSX from 'xlsx';
+import FormData from "form-data";
 
 @Injectable()
 export class ChatbotService {
@@ -31,7 +28,7 @@ export class ChatbotService {
 
   constructor(@InjectRepository(Chatbot) private readonly _chatbotsRepository: Repository<Chatbot>,
               private readonly _mailService: MailService,
-              @InjectQueue('chatbot_update') private readonly _chatbotUpdateQueue: Queue) {
+              private readonly _http: HttpService) {
   }
 
   findAll(params?: any): Promise<Chatbot[]> {
@@ -129,6 +126,7 @@ export class ChatbotService {
   }
 
   async update(id: number, updateChatbot: UpdateChatbotDto): Promise<Chatbot> {
+    this._logger.log('Update Chatbot Status ...', id.toString());
     let chatbot = await this.findOne(id, true);
     this._logger.log('CHATBOT', JSON.stringify(chatbot));
     if (!chatbot) {
@@ -136,7 +134,7 @@ export class ChatbotService {
     }
 
     if (updateChatbot.status) {
-      chatbot = await this.findAndUpdate(chatbot.id, {
+      await this.findAndUpdate(chatbot.id, {
         status: updateChatbot.status
       });
     }
@@ -157,33 +155,21 @@ export class ChatbotService {
         if (!chatbot.intra_def && (!updateChatbot.ipAdress || !updateChatbot.rootPassword || !updateChatbot.rootUser || !updateChatbot.userPassword)) {
           throw new HttpException(`L'adresse IP du VPS, l'user root, le password root et le password utilisateur sont obligatoires pour changer de statut.`, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        await this._chatbotUpdateQueue.add('pending_configuration', {chatbot, updateChatbot});
-        return;
-      case ChatbotStatus.error_configuration:
-        if (!chatbot.intra_def && !updateChatbot.ipAdress) {
-          throw new HttpException(`L'adresse IP du VPS est obligatoire pour changer de statut.`, HttpStatus.INTERNAL_SERVER_ERROR);
+        if(updateChatbot.launchGenerationManually) {
+          await this._initDataChatbot(chatbot);
+        } else {
+          await this._generateChatbot(chatbot, updateChatbot);
         }
         return this.findAndUpdate(chatbot.id, {
-          status: ChatbotStatus.pending_configuration,
-          ip_adress: updateChatbot.ipAdress
+          status: ChatbotStatus.running
         });
-      case ChatbotStatus.pending_configuration:
-        if (!chatbot.intra_def) {
-          await this._chatbotUpdateQueue.add('configuration', {chatbot, updateChatbot});
-          throw new HttpException(`Le chatbot va être configuré, merci de patienter.`, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-        // TODO: generate intraDef package
-        return this.findAndUpdate(chatbot.id, {status: ChatbotStatus.configuration});
-      case ChatbotStatus.configuration:
-        if (!chatbot.intra_def) {
-          throw new HttpException(`Le chatbot est en train d'être configuré, merci de patienter.`, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-        return this.findAndUpdate(chatbot.id, {status: ChatbotStatus.running});
       case ChatbotStatus.running:
         return this.findAndUpdate(chatbot.id, snakecaseKeys(updateChatbot));
       case ChatbotStatus.deleted:
         throw new HttpException(`Le chatbot est archivé, impossible de le modifier.`, HttpStatus.INTERNAL_SERVER_ERROR);
     }
+
+    this._logger.log('Update Chatbot Status completed', id.toString());
   }
 
   /************************************************************************************ PRIVATE FUNCTIONS ************************************************************************************/
@@ -213,6 +199,7 @@ export class ChatbotService {
       }
       t.id = t.id?.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/\W/g, '_');
       if (!t.id) {
+        // @ts-ignore
         t.id = excelJson[idx - 1].id;
       }
       t.questions = t.questions ? (<any>t.questions).split(';').map(q => q.trim()) : [];
@@ -303,7 +290,9 @@ export class ChatbotService {
     keyValueObject[index] += message;
   }
 
-  public async generateChatbot(chatbot: Chatbot, updateChatbot: UpdateChatbotDto) {
+  private async _generateChatbot(chatbot: Chatbot, updateChatbot: UpdateChatbotDto) {
+    this._logger.log('Init Chatbot Server ...', chatbot.id.toString());
+
     // generate user password & db password
     const passwordLength = 32;
 
@@ -327,6 +316,10 @@ export class ChatbotService {
       DB_PASSWORD: updateChatbot.dbPassword,
       ROOT_USER: updateChatbot.rootUser,
       ROOT_PASSWORD: updateChatbot.rootPassword,
+      frontBranch: updateChatbot.frontBranch,
+      backBranch: updateChatbot.backBranch,
+      botBranch: updateChatbot.botBranch,
+      botDomain: updateChatbot.domainName ? updateChatbot.domainName : null,
       intranet: process.env.INTRANET
     };
 
@@ -345,7 +338,11 @@ export class ChatbotService {
     };
 
     const appDir = process.env.NODE_ENV === 'local' ? path.resolve(__dirname, '../../..') : '/var/www/fabrique-chatbot-back';
-    fs.writeFileSync(`/tmp/.env`, jsonToDotenv(env), 'utf8');
+    fs.writeFileSync(`${appDir}/ansible/roles/chatbotGeneration/files/.env`, jsonToDotenv(env), 'utf8');
+
+    const playbookOptions = new Options(`${appDir}/ansible`);
+    const ansiblePlaybook = new AnsiblePlaybook(playbookOptions);
+    await ansiblePlaybook.command(`playChatbot.yml -i ${updateChatbot.ipAdress}, -e '${JSON.stringify(credentials)}'`).then(result => this._logger.log(result));
 
     await execShellCommand(`ansible-vault encrypt --vault-password-file roles/vars/password_file /tmp/.env`, `${appDir}/ansible`).then();
     const envEncrypted: any = fs.readFileSync(`/tmp/.env`);
@@ -353,13 +350,100 @@ export class ChatbotService {
       dot_env: envEncrypted
     });
     chatbot.dot_env = envEncrypted;
-    fs.unlinkSync(`/tmp/.env`);
+    fs.unlinkSync(`${appDir}/ansible/roles/chatbotGeneration/files/.env`);
 
-    const playbookOptions = new Options(`${appDir}/ansible`);
-    const ansiblePlaybook = new AnsiblePlaybook(playbookOptions);
-    await ansiblePlaybook.command(`playChatbotprebook.yml -i ${updateChatbot.ipAdress}, -e '${JSON.stringify(credentials)}'`).then(result => this._logger.log(result));
-    await ansiblePlaybook.command(`playChatbotsecurity.yml -i ${updateChatbot.ipAdress}, -e '${JSON.stringify(credentials)}'`).then(result => this._logger.log(result));
-    await ansiblePlaybook.command(`playChatbotconfiguration.yml -i ${updateChatbot.ipAdress}, -e '${JSON.stringify(credentials)}'`).then(result => this._logger.log(result));
+    await this._initDataChatbot(chatbot);
+
+    this._logger.log('Update Pending Configuration completed', chatbot.id.toString());
+  }
+
+  private async _initDataChatbot(chatbot: Chatbot) {
+    this._logger.log('BEGIN INIT DATA CHATBOT');
+    chatbot = await this.findOne(chatbot.id);
+    const password = crypto.randomBytes(12).toString('hex');
+    const user = chatbot.user;
+
+    const userToCreate = {
+      email: user ? user.email : 'vincent.laine.utc@gmail.com',
+      firstName: user ? user.first_name : 'Vincent',
+      lastName: user ? user.last_name : 'Lainé',
+      password: password
+    };
+
+    const domain = chatbot.domain_name ? `https://${chatbot.domain_name}` : `http://${chatbot.ip_adress}`;
+
+    // Create first admin user
+    await this._http.post(`${domain}/api/user/admin`, userToCreate).toPromise().then();
+    this._logger.log('ADMIN USER CREATED');
+
+    // Log user
+    let token;
+    await this._http.post(`${domain}/api/auth/login`, {
+      email: userToCreate.email,
+      password: password
+    }).toPromise().then(response => {
+      token = response.data.chatbotToken;
+    });
+    this._logger.log('LOGGED WITH ADMIN USER');
+
+    // Create other users
+    if (chatbot.users && chatbot.users.length > 0) {
+      chatbot.users.forEach(chatbotUser => {
+        const password = crypto.randomBytes(12).toString('hex');
+        this._http.post(`${domain}/api/user`, {...chatbotUser, ...{password: password}}).toPromise().then();
+      });
+      this._logger.log('CREATED CHATBOT USERS');
+    }
+
+    // Import file
+    const form = new FormData();
+    form.append('file', chatbot.file_data, chatbot.file);
+    form.append('deleteIntents', true.toString());
+    let headers: any = {
+      ...form.getHeaders(),
+      ...{Authorization: `Bearer ${token}`},
+    };
+    await this._http.post(`${domain}/api/file/import`, form, {headers: headers}).toPromise().then();
+    this._logger.log('IMPORT FILE');
+
+    // Import config
+    const configForm = new FormData();
+    configForm.append('icon', chatbot.icon_data, chatbot.icon);
+    configForm.append('name', chatbot.name);
+    configForm.append('function', chatbot.function);
+    configForm.append('primaryColor', chatbot.primary_color);
+    configForm.append('secondaryColor', chatbot.secondary_color);
+    configForm.append('problematic', chatbot.problematic);
+    configForm.append('audience', chatbot.audience);
+    headers = {
+      ...configForm.getHeaders(),
+      ...{Authorization: `Bearer ${token}`},
+    };
+    await this._http.post(`${domain}/api/config`, configForm, {headers: headers}).toPromise().then();
+    this._logger.log('IMPORT CONFIG');
+
+    // Generate Api Key
+    headers = {
+      Authorization: `Bearer ${token}`
+    };
+    let apiKey;
+    await this._http.post(`${domain}/api/config/api-key`, null, {headers: headers}).toPromise().then(async (response) => {
+      apiKey = response.data.apiKey;
+    });
+    if(apiKey) {
+      this._logger.log('BEGIN INIT CHATBOT - STORING API KEY');
+      await this.findAndUpdate(chatbot.id, {api_key: apiKey});
+    } else {
+      this._logger.error('BEGIN INIT CHATBOT - ERROR RETRIEVING API KEY', null);
+    }
+
+    // Train Rasa
+    headers = {
+      Authorization: `Bearer ${token}`
+    };
+    this._logger.log('BEGIN INIT CHATBOT - TRAIN');
+    this._http.post(`${domain}/api/rasa/train`, {}, {headers: headers}).subscribe();
+    this._logger.log('END INIT CHATBOT');
   }
 
   /************************************************************************************ STATIC ************************************************************************************/

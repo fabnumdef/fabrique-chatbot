@@ -75,14 +75,6 @@ export class ChatbotListComponent implements OnInit {
       });
   }
 
-  showEditChatbot(chatbot: Chatbot): boolean {
-    return ![
-      ChatbotStatus.pending_configuration,
-      ChatbotStatus.configuration,
-      ChatbotStatus.deleted
-    ].includes(chatbot.status);
-  }
-
   deleteChatbot(chatbot: Chatbot) {
     const dialogRef = this._dialog.open(ConfirmDialogComponent, {
       data: {

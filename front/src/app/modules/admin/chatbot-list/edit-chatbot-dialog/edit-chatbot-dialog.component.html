@@ -7,7 +7,7 @@
         Le chatbot vient d'être soumis à validation. Voulez-vous l'approuver ?
       </div>
 
-      <ng-container *ngSwitchCase="chatbotStatus.creation">
+      <ng-container *ngSwitchCase="chatbotStatus.creation || chatbotStatus.running">
         <p>
           Merci de renseigner les informations suivantes afin de configurer correctement le VPS.
         </p>
@@ -83,43 +83,7 @@
             Vous n'avez pas saisi de mot de passe base de données.
           </mat-error>
         </mat-form-field>
-      </ng-container>
 
-      <ng-container *ngSwitchCase="chatbotStatus.error_configuration">
-        <p>
-          Une erreur est survenue durant la configuration du chatbot. Voulez-vous relancer le processus de configuration ?.
-        </p>
-        <mat-form-field appearance="fill">
-          <mat-label>Adresse IP</mat-label>
-          <input matInput
-                 placeholder="Saisir..."
-                 formControlName="ipAdress"
-                 maxlength="50"
-                 required>
-          <mat-error *ngIf="controls.ipAdress.hasError('required')">
-            Vous n'avez pas saisi d'adresse IP.
-          </mat-error>
-          <mat-error *ngIf="controls.ipAdress.hasError('pattern')">
-            Le format de l'adresse IP est incorrect.
-          </mat-error>
-        </mat-form-field>
-
-        <mat-form-field appearance="fill">
-          <mat-label>Nom de domaine</mat-label>
-          <input matInput
-                 placeholder="Saisir..."
-                 formControlName="domainName"
-                 maxlength="50">
-          <mat-error *ngIf="controls.domainName.hasError('pattern')">
-            Le format du nom de domaine est incorrect.
-          </mat-error>
-        </mat-form-field>
-      </ng-container>
-
-      <ng-container *ngSwitchCase="chatbotStatus.running">
-        <p>
-          Le chatbot est en cours d'éxecution. Voulez-vous modifier son nom ?
-        </p>
         <mat-form-field appearance="fill">
           <mat-label>Nom</mat-label>
           <input matInput
@@ -129,17 +93,6 @@
                  required>
           <mat-error *ngIf="controls.name.hasError('required')">
             Vous n'avez pas saisi de nom.
-          </mat-error>
-        </mat-form-field>
-
-        <mat-form-field appearance="fill">
-          <mat-label>Nom de domaine</mat-label>
-          <input matInput
-                 placeholder="Saisir..."
-                 formControlName="domainName"
-                 maxlength="50">
-          <mat-error *ngIf="controls.domainName.hasError('pattern')">
-            Le format du nom de domaine est incorrect.
           </mat-error>
         </mat-form-field>
 
@@ -186,6 +139,10 @@
                  formControlName="apiKey"
                  maxlength="200">
         </mat-form-field>
+
+        <mat-checkbox color="primary" formControlName="launchGenerationManually">
+          Génération du Chatbot manuellement
+        </mat-checkbox>
       </ng-container>
     </ng-container>
 

@@ -16,8 +16,6 @@ import { ScheduleModule } from "@nestjs/schedule";
 import { ChatbotUser } from "@entity/chatbot-user.entity";
 import { MailerModule } from "@nestjs-modules/mailer";
 import { HealthController } from './health/health.controller';
-import { BullModule } from "@nestjs/bull";
-import { FabriqueConfig } from "@entity/config.entity";
 import { LoggerModule } from './logger/logger.module';
 
 @Module({
@@ -33,7 +31,7 @@ import { LoggerModule } from './logger/logger.module';
       username: process.env.DATABASE_USER,
       password: process.env.DATABASE_PASSWORD,
       database: process.env.DATABASE_NAME,
-      entities: [User, Chatbot, ChatbotUser, FabriqueConfig],
+      entities: [User, Chatbot, ChatbotUser],
       synchronize: true,
       extra: process.env.DATABASE_SSL && process.env.DATABASE_SSL === 'true' ? {
         ssl: true,
@@ -63,21 +61,6 @@ import { LoggerModule } from './logger/logger.module';
       },
     }),
     ScheduleModule.forRoot(),
-    // @ts-ignore
-    BullModule.forRoot({
-      redis: {
-        host: process.env.REDIS_HOST,
-        port: Number(process.env.REDIS_PORT),
-      },
-      defaultJobOptions: {
-        removeOnComplete: true,
-        removeOnFail: true
-      },
-      limiter: {
-        max: 1,
-        duration: 60*1000
-      }
-    }),
     ChatbotModule,
     UserModule,
     AuthModule,
