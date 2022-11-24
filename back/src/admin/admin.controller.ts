@@ -3,8 +3,6 @@ import {
   Controller,
   Delete,
   Get,
-  HttpException,
-  HttpStatus,
   Param,
   Post,
   Put,
@@ -28,8 +26,6 @@ import { LaunchUpdateChatbotDto } from "@dto/launch-update-chatbot.dto";
 import { ChatbotStatus } from "@enum/chatbot-status.enum";
 import { UpdateChatbotDto } from "@dto/update-chatbot.dto";
 import { DeleteResult, Not } from "typeorm";
-import { InjectQueue } from "@nestjs/bull";
-import { Job, Queue } from "bull";
 import { AdminService } from "./admin.service";
 
 @ApiTags('admin')
@@ -40,8 +36,7 @@ import { AdminService } from "./admin.service";
 export class AdminController {
   constructor(private readonly _userService: UserService,
               private readonly _chatbotService: ChatbotService,
-              private readonly _adminService: AdminService,
-              @InjectQueue('admin_update') private readonly adminUpdateQueue: Queue) {
+              private readonly _adminService: AdminService) {
   }
 
   @Get('user')
@@ -93,7 +88,7 @@ export class AdminController {
   @Roles(UserRole.admin)
   async update(@Param('id') chatbotId: number,
                @Body() updateChatbot: UpdateChatbotDto): Promise<Chatbot> {
-    await this.adminUpdateQueue.add('update_status', {chatbotId, updateChatbot});
+    await this._chatbotService.update(chatbotId, updateChatbot);
     return;
   }
 
@@ -103,14 +98,7 @@ export class AdminController {
   @Roles(UserRole.admin)
   async updateChatbot(@Param('id') chatbotId: number,
                       @Body() updateChatbot: LaunchUpdateChatbotDto): Promise<any> {
-    const chatbot: Chatbot = await this._chatbotService.findOneWithParam({
-      id: chatbotId,
-      status: ChatbotStatus.running
-    });
-    if (!chatbot) {
-      throw new HttpException(`Ce chatbot n'existe pas ou n'est pas en fonctionnement.`, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
-    await this.adminUpdateQueue.add('update', {chatbot, updateChatbot});
+    await this._adminService.updateChatbot(chatbotId, updateChatbot);
     return;
   }
 
@@ -120,33 +108,7 @@ export class AdminController {
   @Roles(UserRole.admin)
   async updateChatbotDomainName(@Param('id') chatbotId: number,
                       @Body() updateChatbot: UpdateChatbotDto): Promise<any> {
-    const chatbot: Chatbot = await this._chatbotService.findOneWithParam({
-      id: chatbotId,
-      status: ChatbotStatus.running
-    });
-    if (!chatbot) {
-      throw new HttpException(`Ce chatbot n'existe pas ou n'est pas en fonctionnement.`, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
-    await this.adminUpdateQueue.add('update_domain_name', {chatbot, updateChatbot});
-    return;
-  }
-
-  @Get('chatbot/queue')
-  @ApiOperation({summary: 'Return the current queue'})
-  @UseGuards(RolesGuard)
-  @Roles(UserRole.admin)
-  async getChatbotsQueue(): Promise<Job[]> {
-    const queue: Job[] = await this.adminUpdateQueue.getJobs(['completed', 'waiting', 'active', 'delayed', 'failed', 'paused']);
-    return queue;
-  }
-
-  @Delete('chatbot/queue/:id')
-  @ApiOperation({summary: 'Delete job in the queue'})
-  @UseGuards(RolesGuard)
-  @Roles(UserRole.admin)
-  async deleteJobInQueue(@Param('id') jobId: number): Promise<void> {
-    const job: Job = await this.adminUpdateQueue.getJob(jobId);
-    await job.remove();
+    await this._adminService.updateDomainNameChatbot(chatbotId, updateChatbot);
     return;
   }
 

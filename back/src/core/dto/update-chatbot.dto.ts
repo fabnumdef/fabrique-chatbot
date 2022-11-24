@@ -1,4 +1,4 @@
-import { IsOptional, IsString, MaxLength, Validate } from "class-validator";
+import { IsBoolean, IsOptional, IsString, MaxLength, Validate } from "class-validator";
 import { IpAdressValidator } from "@core/validators/ip-adress.validator";
 import { ChatbotStatus } from "@enum/chatbot-status.enum";
 import { DomainNameValidator } from "@core/validators/domain-name.validator";
@@ -60,4 +60,8 @@ export class UpdateChatbotDto {
   @IsString()
   @IsOptional()
   apiKey: string;
+
+  @IsBoolean()
+  @IsOptional()
+  launchGenerationManually: boolean;
 }

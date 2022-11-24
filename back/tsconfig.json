@@ -41,7 +41,8 @@
       "@decorator/*": [
         "src/core/decorators/*"
       ]
-    }
+    },
+    "allowSyntheticDefaultImports": true
   },
   "exclude": ["node_modules", "dist", "chatbot"]
 }
