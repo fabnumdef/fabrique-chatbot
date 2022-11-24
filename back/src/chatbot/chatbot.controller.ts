@@ -21,7 +21,6 @@ import snakecaseKeys = require("snakecase-keys");
 import { ChatbotModel } from "@model/chatbot.model";
 import { JwtAuthGuard } from "@guard/jwt.guard";
 import { FileModel } from "@model/file.model";
-const crypto = require('crypto');
 
 @ApiTags('chatbot')
 @Controller('chatbot')

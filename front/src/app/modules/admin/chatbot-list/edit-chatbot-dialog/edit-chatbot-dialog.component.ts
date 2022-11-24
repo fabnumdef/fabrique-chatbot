@@ -43,6 +43,7 @@ export class EditChatbotDialogComponent implements OnInit {
       rootPassword: [null, [Validators.maxLength(200)]],
       userPassword: [null, [Validators.maxLength(200)]],
       dbPassword: [null, [Validators.maxLength(200)]],
+      launchGenerationManually: [false],
       ipAdress: [this.chatbot.ipAdress ? this.chatbot.ipAdress : null,
         [Validators.pattern(this.ipAdressPattern), Validators.maxLength(50)]],
       domainName: [this.chatbot.domainName, [Validators.maxLength(50), Validators.pattern('^[a-z-.]+$')]]
@@ -54,9 +55,9 @@ export class EditChatbotDialogComponent implements OnInit {
         this.controls.rootPassword.setValidators(Validators.required);
         this.controls.userPassword.setValidators(Validators.required);
         this.controls.ipAdress.setValidators(Validators.required);
-        break;
-      case ChatbotStatus.error_configuration:
-        this.controls.ipAdress.setValidators(Validators.required);
+        this.controls.frontBranch.setValidators(Validators.required);
+        this.controls.backBranch.setValidators(Validators.required);
+        this.controls.botBranch.setValidators(Validators.required);
         break;
       case ChatbotStatus.running:
         this.controls.name.setValidators(Validators.required);
