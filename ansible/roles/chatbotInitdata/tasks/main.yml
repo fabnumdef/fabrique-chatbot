@@ -1,10 +1,10 @@
-#- name: Création du premier user admin
-#  uri:
-#    url: "{{ BOT_URL }}/api/user/admin"
-#    method: POST
-#    body: "{{ lookup('file','../files/admin-user.json') }}"
-#    status_code: 201
-#    body_format: json
+- name: Création du premier user admin
+  uri:
+    url: "{{ BOT_URL }}/api/user/admin"
+    method: POST
+    body: "{{ lookup('file','../files/admin-user.json') }}"
+    status_code: 201
+    body_format: json
 
 - name: Login
   uri:

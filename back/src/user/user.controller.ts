@@ -50,5 +50,4 @@ export class UserController {
     const userModel = await this._userService.findAndUpdate(userEmail, plainToClass(UserModel, snakecaseKeys(user)));
     return plainToClass(UserDto, camelcaseKeys(userModel, {deep: true}));
   }
-
 }
