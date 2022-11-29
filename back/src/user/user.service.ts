@@ -5,6 +5,7 @@ import { User } from "@entity/user.entity";
 import { UserModel } from "@model/user.model";
 import { MailService } from "../shared/services/mail.service";
 import { UserRole } from "@enum/user-role.enum";
+
 const crypto = require('crypto');
 
 @Injectable()
@@ -34,6 +35,12 @@ export class UserService {
   async create(user: UserModel): Promise<UserModel> {
     const userExists = await this.findOne(user.email);
     if (!userExists) {
+      const adminExists = await this.findOneWithParam({
+        role: UserRole.admin
+      });
+      if(!adminExists) {
+        user.role = UserRole.admin
+      }
       const userCreated = await this._usersRepository.save(user);
       await this.sendEmailPasswordToken(userCreated);
       return userCreated;
