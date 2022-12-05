@@ -71,6 +71,8 @@ Les playbooks sont faits pour être utilisé avec des serveurs tournant sous Deb
 
 Copier le fichier .env du chatbot dans le dossier `ansible/roles/chatbotGeneration/files`. Exemple trouvable dans ce même dossier `.env.example`.
 
+Si la BDD requiert un certificat, le copier dans `ansible/roles/chatbotGeneration/files/postgres.cert`.
+
 `ansible-playbook playChatbotgeneration.yml -i $IP_ADRESS, -e '{USER_PASSWORD: '$USER_PASSWORD', DB_PASSWORD: '$DB_PASSWORD', botDomain: '$BOT_DOMAIN'}';`
 
 `ansible-playbook playChatbotinitdata.yml -e '{BOT_URL: "$BOT_URL"}';`
@@ -78,6 +80,8 @@ Copier le fichier .env du chatbot dans le dossier `ansible/roles/chatbotGenerati
 #### Playbook unifié
 
 Copier le fichier .env du chatbot dans le dossier `ansible/roles/chatbotGeneration/files`. Exemple trouvable dans ce même dossier `.env.example`.
+
+Si la BDD requiert un certificat, le copier dans `ansible/roles/chatbotGeneration/files/postgres.cert`.
 
 `ansible-playbook playChatbot.yml -i $IP_ADRESS, -e '{USER_PASSWORD: '$USER_PASSWORD', ROOT_USER: '$ROOT_USER', ROOT_PASSWORD: '$ROOT_PASSWORD', DB_PASSWORD: '$DB_PASSWORD', frontBranch: 'master', backBranch: 'master', botBranch: 'master', botDomain: '$BOT_DOMAIN'}';`
 

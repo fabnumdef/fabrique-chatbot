@@ -19,43 +19,43 @@
   include_tasks: rhel.yml
   when: (ansible_distribution == 'CentOS' or ansible_distribution == "RedHat") and (intranet is not defined or intranet == "false")
 
-- name: Configure firewall
+- name: Configuration pare-feu
   become: yes
   ufw:
     policy: deny
     state: enabled
 
-- name: Open port ssh
+- name: Ouverture port ssh
   become: yes
   ufw:
     rule: limit
     port: ssh
     proto: tcp
 
-- name: Open port 443
+- name: Ouverture port 443
   become: yes
   ufw:
     rule: allow
     port: '443'
     proto: tcp
 
-- name: Open port 80
+- name: Ouverture port 80
   become: yes
   ufw:
     rule: allow
     port: '80'
     proto: tcp
 
-- name: Open port 5005
+- name: Ouverture port 5005
   become: yes
   ufw:
     rule: allow
     port: '5005'
     proto: tcp
 
-- name: Open port 5432
+- name: Ouverture port DB
   become: yes
   ufw:
     rule: allow
-    port: '5432'
+    port: '{{ DB_PORT }}'
     proto: tcp

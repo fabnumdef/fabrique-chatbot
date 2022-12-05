@@ -17,8 +17,8 @@ import { MailService } from "../shared/services/mail.service";
 import { BotLogger } from "../logger/bot.logger";
 import * as path from "path";
 
-import crypto from 'crypto';
-import XLSX from 'xlsx';
+const crypto = require('crypto');
+const XLSX = require('xlsx');
 import FormData from "form-data";
 
 @Injectable()
@@ -109,6 +109,7 @@ export class ChatbotService {
       worksheet = workbook.Sheets[workbook.SheetNames[0]];
       templateFile = this._convertExcelToJson(worksheet);
     } catch (error) {
+      this._logger.error('CHECK TEMPLATE FILE', error);
       throw new HttpException('Le fichier fournit ne peut pas être lu.', HttpStatus.INTERNAL_SERVER_ERROR);
     }
     const templateFileCheckResume = new TemplateFileCheckResumeDto();
