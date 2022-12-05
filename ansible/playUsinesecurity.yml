@@ -4,6 +4,9 @@
   hosts: all
   remote_user: fab_user
 
+  vars:
+    - DB_PORT: "20184"
+
   roles:
     - usineSecurity
 

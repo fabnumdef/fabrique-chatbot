@@ -1,37 +1,49 @@
-- name: Copy env-file
+- name: Copie env-file
   copy:
     src: '../files/.env'
     dest: '{{ appsDir }}/{{ gitDir }}/.env'
 
-- name: Copy chatbot-back
+- name: Copie chatbot-back
   copy:
     remote_src: yes
     src: '{{ appsDir }}/{{ gitDir }}/{{ backDir }}/'
     dest: '{{ appsDir }}/{{ backDir }}'
 
-- name: Copy env-file bis
+- name: Copie env-file bis
   copy:
     remote_src: yes
     src: '{{ appsDir }}/{{ gitDir }}/.env'
     dest: '{{ appsDir }}/{{ backDir }}/.env'
 
-- name: Copy chatbot-front
+- name: Copie chatbot-front
   copy:
     remote_src: yes
     src: '{{ appsDir }}/{{ gitDir }}/{{ frontDir }}/dist/{{ frontDir }}/'
     dest: '{{ appsDir }}/{{ frontDir }}'
 
-- name: Copy webchat
+- name: Copie webchat
   copy:
     remote_src: yes
     src: '{{ appsDir }}/{{ gitDir }}/{{ frontDir }}/dist/{{ webchatDir }}/'
     dest: '{{ appsDir }}/{{ webchatDir }}'
 
-- name: Copy chatbot-template
+- name: Copie chatbot-template
   copy:
     remote_src: yes
     src: '{{ appsDir }}/{{ gitDir }}/{{ botDir }}/'
     dest: '{{ appsDir }}/{{ botDir }}'
+
+- name: Vérification si le certif BDD existe
+  stat:
+    path: '../files/postgres.crt'
+  register: db_cert
+
+- name: Ajout du certificat BDD
+  become: yes
+  copy:
+    src: '../files/postgres.crt'
+    dest: '/usr/local/share/ca-certificates/postgres.crt'
+  when: db_cert.stat.exists
 
 - name: add server name to the nginx site config file
   lineinfile:

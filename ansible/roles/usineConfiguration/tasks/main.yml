@@ -6,32 +6,89 @@
   include_tasks: rhel.yml
   when: ansible_distribution == 'CentOS' or ansible_distribution == "RedHat"
 
-- name: Install last version of pip
+- name: Installation de la dernière version de pip
   become: true
   pip:
     executable: pip3
     name: pip
     extra_args: -U
 
-- name: copy the nginx config file
+- name: NODE | Installation pm2
+  ignore_errors: yes
+  become: yes
+  npm:
+    name: pm2
+    global: yes
+    production: yes
+    state: present
+
+- name: Copie du fichier de conf nginx
   become: yes
   copy:
-    src: 'roles/usineConfiguration/files/nginx_rhel.conf'
+    src: 'roles/usineConfiguration/files/nginx.conf'
     dest: '/etc/nginx/nginx.conf'
 #    remote_src: yes
 
-- name: copy the nginx site config file
+- name: Copie du fichier de conf site statique nginx
   copy:
     src: 'roles/usineConfiguration/files/static_site.cfg'
     dest: '/etc/nginx/conf.d/default.conf'
 #    remote_src: yes
   become: yes
 
-- name: restart nginx
+- name: Redémarrage nginx
   service:
     name: nginx
     state: restarted
   become: yes
+
+- name: Liste des fichiers à supprimer
+  become: yes
+  find:
+    path: '{{ appsDir }}/{{ nestDir }}/'
+    file_type: any
+    excludes: 'node_modules,chatbot'
+  register: files_to_delete
+
+- name: Suppression de l'ancienne application NestJS
+  become: yes
+  file:
+    path: '{{ item.path }}'
+    state: absent
+  with_items: "{{ files_to_delete.files }}"
+
+- name: Copie de l'application NestJS
+  copy:
+    src: '{{ appsDir }}/{{ gitDir }}/{{ usineDir }}/back/'
+    dest: '{{ appsDir }}/{{ nestDir }}'
+
+- name: Copie du fichier .env
+  copy:
+    src: '~/ansible/roles/usineConfiguration/files/.env'
+    dest: '{{ appsDir }}/{{ nestDir }}/.env'
+
+- name: Suppression de l'ancienne application Angular
+  file:
+    path: '{{ appsDir }}/{{ angularDir }}/'
+    state: absent
+  become: yes
+
+- name: Copie de l'application Angular
+  copy:
+    src: '{{ appsDir }}/{{ gitDir }}/{{ usineDir }}/front/dist/{{ angularDir }}'
+    dest: '{{ appsDir }}/{{ angularDir }}'
+
+- name: Vérification si le certif BDD existe
+  stat:
+    path: '../files/postgres.crt'
+  register: db_cert
+
+- name: Ajout du certificat BDD
+  become: yes
+  copy:
+    src: '../files/postgres.crt'
+    dest: '/usr/local/share/ca-certificates/postgres.crt'
+  when: db_cert.stat.exists
 
 - name: Open port 80 before check SSL certificate
   become: yes
@@ -76,75 +133,22 @@
     state: restarted
   become: yes
 
-- name: NODE | Install pm2
-  ignore_errors: yes
-  become: yes
-  npm:
-    name: pm2
-    global: yes
-    production: yes
-    state: present
-
-- name: Ensures {{ userDir }}/{{ nestDir }} dir exists
-  file:
-    path: '{{ userDir }}/{{ nestDir }}'
-    state: directory
-
-- name: Copy env file
-  copy:
-    src: 'roles/usineConfiguration/files/.env'
-    dest: '{{ userDir }}/{{ nestDir }}/.env'
-
-- name: Get list of files to delete
-  become: yes
-  find:
-    path: '{{ appsDir }}/{{ nestDir }}/'
-    file_type: any
-    excludes: 'node_modules,chatbot'
-  register: files_to_delete
-
-- name: remove old nestjs app
-  become: yes
-  file:
-    path: '{{ item.path }}'
-    state: absent
-  with_items: "{{ files_to_delete.files }}"
-
-- name: copy nestjs app
-  copy:
-    src: '{{ userDir }}/{{ nestDir }}/'
-    dest: '{{ appsDir }}/{{ nestDir }}'
-  become: yes
-
-- name: npm install nestjs app
+- name: Installation des paquets de l'application NestJS
   become: yes
   npm:
     path: '{{ appsDir }}/{{ nestDir }}'
 
-- name: npm build nestjs app
+- name: Build de l'application NestJS
   become: yes
   command:
     cmd: 'npm run build'
     chdir: '{{ appsDir }}/{{ nestDir }}'
 
-- name: npm copy env file
+- name: Copie du fichier d'environnement vers le projet buildé
   become: yes
   command:
     cmd: 'npm run copy'
     chdir: '{{ appsDir }}/{{ nestDir }}'
-
-- name: Changement de droits sur le dossier du back
-  become: true
-  file:
-    path: '{{ appsDir }}/{{ nestDir }}'
-    mode: '775'
-    recurse: yes
-
-- name: Changement de droits sur le fichier password
-  become: true
-  file:
-    path: '{{ appsDir }}/{{ nestDir }}/ansible/roles/vars/password_file'
-    mode: '664'
 
 - name: NODE | Stop APP
   shell: pm2 stop FabriqueBack

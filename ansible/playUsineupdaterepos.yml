@@ -1,13 +1,10 @@
 ---
 - name: Mise à jour des repos des Chatbots dans l'Usine
   hosts: localhost
-  remote_user: fab_user
+  remote_user: ansible
   vars_files:
-    - roles/vars/usine.yml
     - roles/vars/main.yml
-
-  vars:
-    - ansible_become_pass: "{{ USER_PASSWORD }}"
+    - roles/vars/credentials.yml
 
   roles:
     - usineUpdaterepos

@@ -3,7 +3,7 @@
 
 - name: Génération d'un Chatbot
   hosts: all
-  remote_user: debian
+  remote_user: ansible
   vars_files:
     - roles/vars/main.yml
 
