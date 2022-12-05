@@ -8,5 +8,8 @@
     - roles/vars/main.yml
     - roles/vars/credentials.yml
 
+  vars:
+    - DB_PORT: "20184"
+
   roles:
     - chatbotSecurity

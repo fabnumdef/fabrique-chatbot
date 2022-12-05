@@ -1,9 +1,3 @@
-- name: apply root password
-  become: true
-  user:
-    name: centos
-    password: "{{ ROOT_PASSWORD }}"
-
 - name: Prebook pour OS Debian
   include_tasks: debian.yml
   when: ansible_distribution == 'Debian'
@@ -11,9 +5,3 @@
 - name: Prebook pour OS RHEL 8 & CentOS 8
   include_tasks: rhel.yml
   when: ansible_distribution == 'CentOS' or ansible_distribution == "RedHat"
-
-#- name: ensure user is accessable with ssh key
-#  become: true
-#  authorized_key:
-#    user: fab_user
-#      key: "{{ lookup('file', '{{ SSH_KEY }}') }}"

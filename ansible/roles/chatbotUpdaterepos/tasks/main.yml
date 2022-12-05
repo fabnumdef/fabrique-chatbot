@@ -1,22 +1,22 @@
-- name: change rights www dir
+- name: Changement de droits et de propriétaire pour le dossier www
   become: true
   file:
     path: '{{ appsDir }}'
     state: directory
-    owner: chatbot_user
+    owner: '{{ ansible_user }}'
     mode: '775'
 
-- name: create git dir
+- name: Création du répertoire git
   become: true
   file:
     path: '{{ appsDir }}/{{ gitDir }}'
     state: directory
-    owner: chatbot_user
+    owner: '{{ ansible_user }}'
     mode: '775'
 
 - name: Git chatbot-back
   git:
-    repo: https://github.com/fabnumdef/chatbot-back.git
+    repo: https://github.com/fabnumdef/fabrique-chatbot.git
     dest: '{{ appsDir }}/{{ gitDir }}/{{ backDir }}'
     force: yes
     version: '{{ backBranch }}'

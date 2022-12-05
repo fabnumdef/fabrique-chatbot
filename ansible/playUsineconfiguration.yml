@@ -2,8 +2,10 @@
 # ansible-playbook playUsineconfiguration.yml -i $IP_ADRESS, -e "ansible_password='$USER_PASSWORD' ansible_become_pass='$USER_PASSWORD' DB_PASSWORD='$DB_PASSWORD' DOMAIN='$DOMAIN'";
 - name: Configuration du serveur de l'Usine à Chatbots
   hosts: localhost
-  remote_user: fab_user
+  remote_user: ansible
   vars_files:
     - roles/vars/main.yml
+    - roles/vars/credentials.yml
+
   roles:
     - usineConfiguration
