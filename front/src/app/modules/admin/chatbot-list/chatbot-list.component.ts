@@ -39,7 +39,7 @@ export class ChatbotListComponent implements OnInit {
     dialogRef.afterClosed()
       .pipe(filter(r => !!r))
       .subscribe(async (r) => {
-        await this._chatbotService.launchUpdateChatbot(chatbot.id, r);
+        await this._chatbotService.launchUpdateChatbot(chatbot.id, r).subscribe();
         this._loadChatbots();
       });
   }
@@ -53,7 +53,7 @@ export class ChatbotListComponent implements OnInit {
     dialogRef.afterClosed()
       .pipe(filter(r => !!r))
       .subscribe(async (r) => {
-        await this._chatbotService.launchUpdateDomainName(chatbot.id, r);
+        await this._chatbotService.launchUpdateDomainName(chatbot.id, r).subscribe();
       });
   }
 

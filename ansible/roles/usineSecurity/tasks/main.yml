@@ -25,50 +25,41 @@
   include_tasks: rhel.yml
   when: ansible_distribution == 'CentOS' or ansible_distribution == "RedHat"
 
-- name: Configure firewall
+- name: Configuration pare-feu
   become: yes
   ufw:
     policy: deny
-    rule: allow
-    name: ssh
     state: enabled
 
-- name: Configure firewall
+- name: Ouverture port ssh
   become: yes
   ufw:
-    rule: allow
-    name: smtp
-    state: enabled
+    rule: limit
+    port: ssh
+    proto: tcp
 
-- name: Open port 80
+- name: Ouverture port 80
   become: yes
   ufw:
     rule: allow
     port: '80'
     proto: tcp
 
-- name: Open port 443
+- name: Ouverture port 443
   become: yes
   ufw:
     rule: allow
     port: '443'
     proto: tcp
 
-- name: Open port 465
+- name: Ouverture port DB
   become: yes
   ufw:
     rule: allow
-    port: '465'
+    port: '{{ DB_PORT }}'
     proto: tcp
 
-- name: Open port 5432
-  become: yes
-  ufw:
-    rule: allow
-    port: '5432'
-    proto: tcp
-
-- name: Open port 3000
+- name: Ouverture port 3000
   become: yes
   ufw:
     rule: allow
@@ -76,7 +67,7 @@
     proto: tcp
     src: 127.0.0.1
 
-- name: Open port 3001
+- name: Ouverture port 3001
   become: yes
   ufw:
     rule: allow
@@ -84,7 +75,7 @@
     proto: tcp
     src: 127.0.0.1
 
-- name: Open port 9090
+- name: Ouverture port 9090
   become: yes
   ufw:
     rule: allow
