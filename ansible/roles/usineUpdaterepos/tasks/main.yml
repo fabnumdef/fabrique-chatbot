@@ -15,7 +15,6 @@
     mode: '775'
 
 - name: Clone du repo de l'Usine
-  become: yes
   git:
     repo: https://github.com/fabnumdef/fabrique-chatbot.git
     dest: '{{ appsDir }}/{{ gitDir }}/{{ usineDir }}'
@@ -23,13 +22,10 @@
     version: '{{ usineBranch }}'
 
 - name: Installation des paquets du front
-  become: yes
   npm:
     path: '{{ appsDir }}/{{ gitDir }}/{{ usineDir }}/front'
-    production: yes
 
 - name: Build du front | PROD
-  become: yes
   command:
     cmd: npm run build:prod
     chdir: '{{ appsDir }}/{{ gitDir }}/{{ usineDir }}/front'

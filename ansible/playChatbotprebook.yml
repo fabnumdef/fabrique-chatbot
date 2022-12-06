@@ -8,9 +8,9 @@
     - roles/vars/main.yml
 
   vars:
-    - ansible_user: "{{ ROOT_USER | default('debian') }}"
-    - ansible_password: "{{ ROOT_PASSWORD }}"
-    - ansible_become_pass: "{{ ROOT_PASSWORD }}"
+    - ansible_user: "{{ ROOT_USER | default('ansible') }}"
+#    - ansible_password: "{{ ROOT_PASSWORD | USER_PASSWORD }}"
+    - ansible_become_pass: "{{ USER_PASSWORD }}"
 
   roles:
     - chatbotPrebook

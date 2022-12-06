@@ -13,15 +13,10 @@ export class LaunchUpdateChatbotDto {
   @IsNotEmpty()
   updateRasa: boolean;
 
-  @IsBoolean()
-  @IsNotEmpty()
-  updateLogs: boolean;
-
-  constructor(updateFront = false, updateBack = false, updateRasa = false, updateLogs = false) {
+  constructor(updateFront = false, updateBack = false, updateRasa = false) {
     this.updateFront = updateFront;
     this.updateBack = updateBack;
     this.updateRasa = updateRasa
-    this.updateLogs = updateLogs;
   }
 
 }
