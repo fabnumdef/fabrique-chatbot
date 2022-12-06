@@ -19,7 +19,7 @@ import * as path from "path";
 
 const crypto = require('crypto');
 const XLSX = require('xlsx');
-import FormData from "form-data";
+import * as FormData from 'form-data';
 
 @Injectable()
 export class ChatbotService {
@@ -153,10 +153,10 @@ export class ChatbotService {
           status: ChatbotStatus.creation
         });
       case ChatbotStatus.creation:
-        if (!chatbot.intra_def && (!updateChatbot.ipAdress || !updateChatbot.rootPassword || !updateChatbot.rootUser || !updateChatbot.userPassword)) {
+        if (!chatbot.intra_def && (!updateChatbot.ipAdress || !updateChatbot.userPassword)) {
           throw new HttpException(`L'adresse IP du VPS, l'user root, le password root et le password utilisateur sont obligatoires pour changer de statut.`, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        if(updateChatbot.launchGenerationManually) {
+        if (updateChatbot.launchGenerationManually) {
           await this._initDataChatbot(chatbot);
         } else {
           await this._generateChatbot(chatbot, updateChatbot);
@@ -294,15 +294,8 @@ export class ChatbotService {
   private async _generateChatbot(chatbot: Chatbot, updateChatbot: UpdateChatbotDto) {
     this._logger.log('Init Chatbot Server ...', chatbot.id.toString());
 
-    // generate user password & db password
+    // generate jwt secret
     const passwordLength = 32;
-
-    const dbPassword = crypto
-      .randomBytes(Math.ceil((passwordLength * 3) / 4))
-      .toString('base64') // convert to base64 format
-      .slice(0, passwordLength) // return required number of characters
-      .replace(/\+/g, '0') // replace '+' with '0'
-      .replace(/\//g, '0'); // replace '/' with '0'
     const jwtSecret = crypto
       .randomBytes(Math.ceil((passwordLength * 3) / 4))
       .toString('base64') // convert to base64 format
@@ -310,13 +303,11 @@ export class ChatbotService {
       .replace(/\+/g, '0') // replace '+' with '0'
       .replace(/\//g, '0'); // replace '/' with '0'
 
-    updateChatbot.dbPassword = dbPassword;
-
-    const credentials = {
+    const credentials: any = {
       USER_PASSWORD: updateChatbot.userPassword,
       DB_PASSWORD: updateChatbot.dbPassword,
-      ROOT_USER: updateChatbot.rootUser,
-      ROOT_PASSWORD: updateChatbot.rootPassword,
+      // ROOT_USER: updateChatbot.rootUser,
+      // ROOT_PASSWORD: updateChatbot.rootPassword,
       frontBranch: updateChatbot.frontBranch,
       backBranch: updateChatbot.backBranch,
       botBranch: updateChatbot.botBranch,
@@ -326,11 +317,12 @@ export class ChatbotService {
 
     const env = {
       NODE_ENV: process.env.NODE_ENV,
-      DATABASE_HOST: 'localhost',
-      DATABASE_PORT: '5432',
-      DATABASE_USER: 'rasa_user',
+      DATABASE_HOST: process.env.DATABASE_HOST,
+      DATABASE_PORT: process.env.DATABASE_PORT,
+      DATABASE_USER: process.env.DATABASE_USER,
       DATABASE_PASSWORD: updateChatbot.dbPassword,
-      DATABASE_NAME: 'rasa',
+      DATABASE_NAME: updateChatbot.dbName,
+      NODE_TLS_REJECT_UNAUTHORIZED: '0',
       JWT_SECRET: jwtSecret,
       MAIL_HOST: process.env.MAIL_HOST,
       MAIL_PORT: process.env.MAIL_PORT,
@@ -338,7 +330,11 @@ export class ChatbotService {
       MAIL_PASSWORD: process.env.MAIL_PASSWORD
     };
 
-    const appDir = process.env.NODE_ENV === 'local' ? path.resolve(__dirname, '../../..') : '/var/www/fabrique-chatbot-back';
+    const appDir = process.env.NODE_ENV === 'local' ? path.resolve(__dirname, '../../..') : '/var/www/git/fabrique-chatbot';
+    if (updateChatbot.sshCert) {
+      credentials.ansible_ssh_private_key_file = `${appDir}/ansible/roles/chatbotGeneration/files/id_ansible`;
+      fs.writeFileSync(`${appDir}/ansible/roles/chatbotGeneration/files/id_ansible`, updateChatbot.sshCert, {encoding: 'utf8', mode: '600'});
+    }
     fs.writeFileSync(`${appDir}/ansible/roles/chatbotGeneration/files/.env`, jsonToDotenv(env), 'utf8');
 
     const playbookOptions = new Options(`${appDir}/ansible`);
@@ -431,7 +427,7 @@ export class ChatbotService {
     await this._http.post(`${domain}/api/config/api-key`, null, {headers: headers}).toPromise().then(async (response) => {
       apiKey = response.data.apiKey;
     });
-    if(apiKey) {
+    if (apiKey) {
       this._logger.log('BEGIN INIT CHATBOT - STORING API KEY');
       await this.findAndUpdate(chatbot.id, {api_key: apiKey});
     } else {

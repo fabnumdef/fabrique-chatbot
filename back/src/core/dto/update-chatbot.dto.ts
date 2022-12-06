@@ -26,6 +26,16 @@ export class UpdateChatbotDto {
 
   @IsString()
   @IsOptional()
+  @MaxLength(10000)
+  sshCert: string;
+
+  @IsString()
+  @IsOptional()
+  @MaxLength(200)
+  dbName: string;
+
+  @IsString()
+  @IsOptional()
   @MaxLength(200)
   dbPassword: string;
 

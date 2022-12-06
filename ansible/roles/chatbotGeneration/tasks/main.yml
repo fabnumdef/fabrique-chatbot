@@ -4,10 +4,10 @@
     dest: '{{ appsDir }}/{{ gitDir }}/.env'
 
 - name: Copie chatbot-back
-  copy:
-    remote_src: yes
-    src: '{{ appsDir }}/{{ gitDir }}/{{ backDir }}/'
-    dest: '{{ appsDir }}/{{ backDir }}'
+  synchronize:
+    src: '{{ appsDir }}/{{ gitDir }}/{{ backDir }}'
+    dest: '{{ appsDir }}'
+  delegate_to: '{{ inventory_hostname }}'
 
 - name: Copie env-file bis
   copy:
@@ -16,32 +16,33 @@
     dest: '{{ appsDir }}/{{ backDir }}/.env'
 
 - name: Copie chatbot-front
-  copy:
-    remote_src: yes
-    src: '{{ appsDir }}/{{ gitDir }}/{{ frontDir }}/dist/{{ frontDir }}/'
-    dest: '{{ appsDir }}/{{ frontDir }}'
+  synchronize:
+    src: '{{ appsDir }}/{{ gitDir }}/{{ frontDir }}/dist/{{ frontDir }}'
+    dest: '{{ appsDir }}'
+  delegate_to: '{{ inventory_hostname }}'
 
 - name: Copie webchat
-  copy:
-    remote_src: yes
-    src: '{{ appsDir }}/{{ gitDir }}/{{ frontDir }}/dist/{{ webchatDir }}/'
-    dest: '{{ appsDir }}/{{ webchatDir }}'
+  synchronize:
+    src: '{{ appsDir }}/{{ gitDir }}/{{ frontDir }}/dist/{{ webchatDir }}'
+    dest: '{{ appsDir }}'
+  delegate_to: '{{ inventory_hostname }}'
 
 - name: Copie chatbot-template
-  copy:
-    remote_src: yes
-    src: '{{ appsDir }}/{{ gitDir }}/{{ botDir }}/'
-    dest: '{{ appsDir }}/{{ botDir }}'
+  synchronize:
+    src: '{{ appsDir }}/{{ gitDir }}/{{ botDir }}'
+    dest: '{{ appsDir }}'
+  delegate_to: '{{ inventory_hostname }}'
 
 - name: Vérification si le certif BDD existe
+  delegate_to: 'localhost'
   stat:
-    path: '../files/postgres.crt'
+    path: '/usr/local/share/ca-certificates/postgres.crt'
   register: db_cert
 
 - name: Ajout du certificat BDD
   become: yes
   copy:
-    src: '../files/postgres.crt'
+    src: '/usr/local/share/ca-certificates/postgres.crt'
     dest: '/usr/local/share/ca-certificates/postgres.crt'
   when: db_cert.stat.exists
 
@@ -81,13 +82,13 @@
     cmd: 'certbot renew --pre-hook "ufw allow 80/tcp" --post-hook "ufw deny 80/tcp"'
   when: botDomain is defined and botDomain != ""
 
-- name: Update nginx site conf to use http2
-  become: true
-  lineinfile:
-    path: '/etc/nginx/conf.d/default.conf'
-    regexp: '^    listen \[::]:443 ssl ipv6only=on;'
-    line: '    listen [::]:443 ssl http2 ipv6only=on;'
-  when: botDomain is defined and botDomain != ""
+#- name: Update nginx site conf to use http2
+#  become: true
+#  lineinfile:
+#    path: '/etc/nginx/conf.d/default.conf'
+#    regexp: '^    listen \[::]:443 ssl ipv6only=on;'
+#    line: '    listen [::]:443 ssl http2 ipv6only=on;'
+#  when: botDomain is defined and botDomain != ""
 
 - name: Update nginx site conf to use http2
   become: true

@@ -119,4 +119,4 @@ jobs:
           KEY: ${{ secrets.SSH_PRIVATE_KEY }}
         with:
           script:
-            rm -rf ~/
+            rm -rf ~/ansible/

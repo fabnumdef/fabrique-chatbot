@@ -16,7 +16,7 @@
 
 - name: Git chatbot-back
   git:
-    repo: https://github.com/fabnumdef/fabrique-chatbot.git
+    repo: https://github.com/fabnumdef/chatbot-back.git
     dest: '{{ appsDir }}/{{ gitDir }}/{{ backDir }}'
     force: yes
     version: '{{ backBranch }}'
