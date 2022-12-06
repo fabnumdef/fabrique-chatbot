@@ -37,29 +37,29 @@
           </mat-error>
         </mat-form-field>
 
-        <mat-form-field appearance="fill">
-          <mat-label>Utilisateur root</mat-label>
-          <input matInput
-                 placeholder="Saisir..."
-                 formControlName="rootUser"
-                 maxlength="200"
-                 required>
-          <mat-error *ngIf="controls.rootUser.hasError('required')">
-            Vous n'avez pas saisi d'utilisateur root.
-          </mat-error>
-        </mat-form-field>
+<!--        <mat-form-field appearance="fill">-->
+<!--          <mat-label>Utilisateur root</mat-label>-->
+<!--          <input matInput-->
+<!--                 placeholder="Saisir..."-->
+<!--                 formControlName="rootUser"-->
+<!--                 maxlength="200"-->
+<!--                 required>-->
+<!--          <mat-error *ngIf="controls.rootUser.hasError('required')">-->
+<!--            Vous n'avez pas saisi d'utilisateur root.-->
+<!--          </mat-error>-->
+<!--        </mat-form-field>-->
 
-        <mat-form-field appearance="fill">
-          <mat-label>Mot de passe root</mat-label>
-          <input matInput
-                 placeholder="Saisir..."
-                 formControlName="rootPassword"
-                 maxlength="200"
-                 required>
-          <mat-error *ngIf="controls.rootPassword.hasError('required')">
-            Vous n'avez pas saisi de mot de passe root.
-          </mat-error>
-        </mat-form-field>
+<!--        <mat-form-field appearance="fill">-->
+<!--          <mat-label>Mot de passe root</mat-label>-->
+<!--          <input matInput-->
+<!--                 placeholder="Saisir..."-->
+<!--                 formControlName="rootPassword"-->
+<!--                 maxlength="200"-->
+<!--                 required>-->
+<!--          <mat-error *ngIf="controls.rootPassword.hasError('required')">-->
+<!--            Vous n'avez pas saisi de mot de passe root.-->
+<!--          </mat-error>-->
+<!--        </mat-form-field>-->
 
         <mat-form-field appearance="fill">
           <mat-label>Mot de passe utilisateur</mat-label>
@@ -74,11 +74,33 @@
         </mat-form-field>
 
         <mat-form-field appearance="fill">
-          <mat-label>Mot de passe DB (only maj)</mat-label>
+          <mat-label>Certificat SSH (si requis)</mat-label>
+          <textarea matInput
+                    placeholder="Saisir..."
+                    formControlName="sshCert"
+                    maxlength="10000">
+          </textarea>
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+          <mat-label>Nom DB</mat-label>
+          <input matInput
+                 placeholder="Saisir..."
+                 formControlName="dbName"
+                 maxlength="200"
+                 required>
+          <mat-error *ngIf="controls.dbName.hasError('required')">
+            Vous n'avez pas saisi de nom de base de données.
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+          <mat-label>Mot de passe DB</mat-label>
           <input matInput
                  placeholder="Saisir..."
                  formControlName="dbPassword"
-                 maxlength="200">
+                 maxlength="200"
+                 required>
           <mat-error *ngIf="controls.dbPassword.hasError('required')">
             Vous n'avez pas saisi de mot de passe base de données.
           </mat-error>

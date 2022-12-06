@@ -6,13 +6,13 @@ import { UpdateChatbotDto } from "@dto/update-chatbot.dto";
 import { ChatbotStatus } from "@enum/chatbot-status.enum";
 import { ChatbotService } from "../chatbot/chatbot.service";
 import { LaunchUpdateChatbotDto } from "@dto/launch-update-chatbot.dto";
-import FormData from "form-data";
-import fs from "fs";
+import * as FormData from 'form-data';
+import * as fs from "fs";
 
 @Injectable()
 export class AdminService {
 
-  private _appDir = '/var/www/fabrique-chatbot-back/ansible';
+  private _gitDir = '/var/www/git/fabrique-chatbot/ansible';
   private readonly _logger = new BotLogger('AdminService');
 
   constructor(private readonly _chatbotService: ChatbotService,
@@ -88,13 +88,12 @@ export class AdminService {
       updateForm.append('updateFront', updateChatbot.updateFront.toString());
       updateForm.append('updateBack', updateChatbot.updateBack.toString());
       updateForm.append('updateRasa', updateChatbot.updateRasa.toString());
-      updateForm.append('updateLogs', updateChatbot.updateLogs.toString());
       updateForm.append('frontBranch', chatbot.front_branch);
       updateForm.append('backBranch', chatbot.back_branch);
       updateForm.append('botBranch', chatbot.bot_branch);
       updateForm.append('domainName', chatbot.domain_name);
-      updateForm.append('nginx_conf', fs.createReadStream(`${this._appDir}/roles/chatbotGeneration/files/nginx.conf`));
-      updateForm.append('nginx_site', fs.createReadStream(`${this._appDir}/roles/chatbotGeneration/files/nginx_conf.cfg`));
+      updateForm.append('nginx_conf', fs.createReadStream(`${this._gitDir}/roles/chatbotGeneration/files/nginx.conf`));
+      updateForm.append('nginx_site', fs.createReadStream(`${this._gitDir}/roles/chatbotGeneration/files/nginx_conf.cfg`));
       const headers = {
         ...updateForm.getHeaders(),
         ...{'x-api-key': chatbot.api_key},

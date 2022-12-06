@@ -76,7 +76,7 @@
 - name: Copie de l'application Angular
   copy:
     src: '{{ appsDir }}/{{ gitDir }}/{{ usineDir }}/front/dist/{{ angularDir }}'
-    dest: '{{ appsDir }}/{{ angularDir }}'
+    dest: '{{ appsDir }}'
 
 - name: Vérification si le certif BDD existe
   stat:

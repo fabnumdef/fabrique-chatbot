@@ -39,9 +39,11 @@ export class EditChatbotDialogComponent implements OnInit {
       backBranch: [this.chatbot.backBranch, [Validators.maxLength(50)]],
       botBranch: [this.chatbot.botBranch, [Validators.maxLength(50)]],
       apiKey: [this.chatbot.apiKey, [Validators.maxLength(200)]],
-      rootUser: [null, [Validators.maxLength(200)]],
-      rootPassword: [null, [Validators.maxLength(200)]],
+      // rootUser: [null, [Validators.maxLength(200)]],
+      // rootPassword: [null, [Validators.maxLength(200)]],
       userPassword: [null, [Validators.maxLength(200)]],
+      sshCert: [null, [Validators.maxLength(10000)]],
+      dbName: [null, [Validators.maxLength(200)]],
       dbPassword: [null, [Validators.maxLength(200)]],
       launchGenerationManually: [false],
       ipAdress: [this.chatbot.ipAdress ? this.chatbot.ipAdress : null,
@@ -51,13 +53,15 @@ export class EditChatbotDialogComponent implements OnInit {
 
     switch (this.chatbot.status) {
       case ChatbotStatus.creation:
-        this.controls.rootUser.setValidators(Validators.required);
-        this.controls.rootPassword.setValidators(Validators.required);
+        // this.controls.rootUser.setValidators(Validators.required);
+        // this.controls.rootPassword.setValidators(Validators.required);
         this.controls.userPassword.setValidators(Validators.required);
         this.controls.ipAdress.setValidators(Validators.required);
         this.controls.frontBranch.setValidators(Validators.required);
         this.controls.backBranch.setValidators(Validators.required);
         this.controls.botBranch.setValidators(Validators.required);
+        this.controls.dbName.setValidators(Validators.required);
+        this.controls.dbPassword.setValidators(Validators.required);
         break;
       case ChatbotStatus.running:
         this.controls.name.setValidators(Validators.required);
