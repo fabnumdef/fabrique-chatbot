@@ -2,21 +2,26 @@
 # ansible-playbook playUsineprebook.yml -i $IP_ADRESS, -u centos --ask-pass;
 - name: Prebook de l'Usine à Chatbots
   hosts: all
+  remote_user: ansible
+  vars_files:
+    - roles/vars/main.yml
+  vars:
+    - ansible_become_pass: "{{ USER_PASSWORD }}"
   vars_prompt:
 
-    - name: ROOT_PASSWORD
-      prompt: Enter new root password
-      private: yes
-      encrypt: sha512_crypt
-      confirm: yes
-      salt_size: 7
-
-    - name: USER_PASSWORD
-      prompt: Enter new user password
-      private: yes
-      encrypt: sha512_crypt
-      confirm: yes
-      salt_size: 7
+#    - name: ROOT_PASSWORD
+#      prompt: Enter new root password
+#      private: yes
+#      encrypt: sha512_crypt
+#      confirm: yes
+#      salt_size: 7
+#
+#    - name: USER_PASSWORD
+#      prompt: Enter new user password
+#      private: yes
+#      encrypt: sha512_crypt
+#      confirm: yes
+#      salt_size: 7
 
 #    - name: SSH_KEY
 #      prompt: Enter filename of public ssh key

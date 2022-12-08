@@ -1,5 +1,10 @@
+# A décommenter lorsqu'on installe pour la première fois l'Usine
+#- name: Configuration pour OS Debian
+#  include_tasks: ../../usineConfiguration/tasks/debian.yml
+#  when: ansible_distribution == 'Debian'
+
 - name: Changement de droits et de propriétaire pour le dossier www
-  become: true
+  become: yes
   file:
     path: '{{ appsDir }}'
     state: directory
@@ -7,7 +12,7 @@
     mode: '775'
 
 - name: Création du répertoire git
-  become: true
+  become: yes
   file:
     path: '{{ appsDir }}/{{ gitDir }}'
     state: directory

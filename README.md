@@ -57,6 +57,14 @@ Les playbooks sont faits pour être utilisé avec des serveurs tournant sous Deb
 
 ### Usine à Chatbots
 
+#### Playbook unifié
+
+Copier le fichier .env de l'usine dans le dossier `ansible/roles/usineConfiguration/files`. Exemple trouvable dans le dossier `back/.env.example`.
+
+Si la BDD requiert un certificat, le copier dans `ansible/roles/usineConfiguration/files/postgres.cert`.
+
+`ansible-playbook playUsine.yml -i $IP_ADRESS, -e '{USER_PASSWORD: '$USER_PASSWORD', usineBranch: 'master', DOMAIN: '$URL_USINE'}';`
+
 ### Chatbot
 
 #### Playbook séparés
