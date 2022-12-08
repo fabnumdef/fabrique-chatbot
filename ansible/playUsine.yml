@@ -1,7 +1,7 @@
 ---
-# ansible-playbook playUsine.yml -i $IP_ADRESS, -e '{USER_PASSWORD: '$USER_PASSWORD', ROOT_USER: '$ROOT_USER', ROOT_PASSWORD: '$ROOT_PASSWORD', DB_PASSWORD: '$DB_PASSWORD', frontBranch: 'master', backBranch: 'master', botBranch: 'master', botDomain: '$URL_BOT', ENV: 'dev', intranet: false}';
+# ansible-playbook playUsine.yml -i $IP_ADRESS, -e '{USER_PASSWORD: '$USER_PASSWORD', usineBranch: 'master', DOMAIN: '$URL_USINE'}';
 
-- import_playbook: playUsineprebook.yml
-- import_playbook: playUsinesecurity.yml
-- import_playbook: playUsineupdaterepos.yml
+#- import_playbook: playUsineprebook.yml
+#- import_playbook: playUsinesecurity.yml
+#- import_playbook: playUsineupdaterepos.yml
 - import_playbook: playUsineconfiguration.yml

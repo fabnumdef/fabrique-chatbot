@@ -1,8 +1,12 @@
 ---
-# ansible-playbook playUsinesecurity.yml -i $IP_ADRESS, -e "ansible_password='$USER_PASSWORD' ansible_become_pass='$USER_PASSWORD'";
+# ansible-playbook playUsinesecurity.yml -i $IP_ADRESS, -e "USER_PASSWORD='$USER_PASSWORD'";
 - name: Sécurité de l'Usine à Chatbots
   hosts: all
-  remote_user: fab_user
+  remote_user: ansible
+
+  vars_files:
+    - roles/vars/main.yml
+    - roles/vars/credentials.yml
 
   vars:
     - DB_PORT: "20184"
