@@ -23,7 +23,7 @@
                  placeholder="Saisir..."
                  formControlName="ipAdress"
                  maxlength="50"
-                 required>
+                 [required]="isControlRequired(controls.ipAdress)">
           <mat-error *ngIf="controls.ipAdress.hasError('required')">
             Vous n'avez pas saisi d'adresse IP.
           </mat-error>
@@ -73,7 +73,7 @@
                  placeholder="Saisir..."
                  formControlName="userPassword"
                  maxlength="200"
-                 required>
+                 [required]="isControlRequired(controls.userPassword)">
           <mat-error *ngIf="controls.userPassword.hasError('required')">
             Vous n'avez pas saisi de mot de passe utilisateur.
           </mat-error>
@@ -94,7 +94,7 @@
                  placeholder="Saisir..."
                  formControlName="dbName"
                  maxlength="200"
-                 required>
+                 [required]="isControlRequired(controls.dbName)">
           <mat-error *ngIf="controls.dbName.hasError('required')">
             Vous n'avez pas saisi de nom de base de données.
           </mat-error>
@@ -106,7 +106,7 @@
                  placeholder="Saisir..."
                  formControlName="dbPassword"
                  maxlength="200"
-                 required>
+                 [required]="isControlRequired(controls.dbPassword)">
           <mat-error *ngIf="controls.dbPassword.hasError('required')">
             Vous n'avez pas saisi de mot de passe base de données.
           </mat-error>
@@ -118,7 +118,7 @@
                  placeholder="Saisir..."
                  formControlName="name"
                  maxlength="50"
-                 required>
+                 [required]="isControlRequired(controls.name)">
           <mat-error *ngIf="controls.name.hasError('required')">
             Vous n'avez pas saisi de nom.
           </mat-error>
@@ -130,7 +130,7 @@
                  placeholder="Saisir..."
                  formControlName="frontBranch"
                  maxlength="50"
-                 required>
+                 [required]="isControlRequired(controls.frontBranch)">
           <mat-error *ngIf="controls.frontBranch.hasError('required')">
             Vous n'avez pas saisi de branche front.
           </mat-error>
@@ -142,7 +142,7 @@
                  placeholder="Saisir..."
                  formControlName="backBranch"
                  maxlength="50"
-                 required>
+                 [required]="isControlRequired(controls.backBranch)">
           <mat-error *ngIf="controls.backBranch.hasError('required')">
             Vous n'avez pas saisi de branche back.
           </mat-error>
@@ -154,7 +154,7 @@
                  placeholder="Saisir..."
                  formControlName="botBranch"
                  maxlength="50"
-                 required>
+                 [required]="isControlRequired(controls.botBranch)">
           <mat-error *ngIf="controls.botBranch.hasError('required')">
             Vous n'avez pas saisi de branche bot.
           </mat-error>

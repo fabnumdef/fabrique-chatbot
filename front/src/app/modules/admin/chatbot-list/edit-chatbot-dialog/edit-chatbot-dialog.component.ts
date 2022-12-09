@@ -1,5 +1,5 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Chatbot } from '@model/chatbot.model';
 import { ChatbotStatus, ChatbotStatus_Fr } from '@enum/chatbot-status.enum';
@@ -29,6 +29,25 @@ export class EditChatbotDialogComponent implements OnInit {
 
   get controls() {
     return this.updateChatbotFormGroup.controls;
+  }
+
+  isControlRequired(abstractControl: AbstractControl) {
+    if (abstractControl.validator) {
+      const validator = abstractControl.validator({}as AbstractControl);
+      if (validator && validator.required) {
+        return true;
+      }
+    }
+    if (abstractControl['controls']) {
+      for (const controlName in abstractControl['controls']) {
+        if (abstractControl['controls'][controlName]) {
+          if (this.isControlRequired(abstractControl['controls'][controlName])) {
+            return true;
+          }
+        }
+      }
+    }
+    return false;
   }
 
   private _initForm() {
