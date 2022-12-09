@@ -311,9 +311,11 @@ export class ChatbotService {
       frontBranch: updateChatbot.frontBranch,
       backBranch: updateChatbot.backBranch,
       botBranch: updateChatbot.botBranch,
-      botDomain: updateChatbot.domainName ? updateChatbot.domainName : null,
       intranet: process.env.INTRANET
     };
+    if (updateChatbot.domainName) {
+      credentials.botDomain = updateChatbot.domainName
+    }
 
     const env = {
       NODE_ENV: process.env.NODE_ENV,
@@ -333,7 +335,10 @@ export class ChatbotService {
     const appDir = process.env.NODE_ENV === 'local' ? path.resolve(__dirname, '../../..') : '/var/www/git/fabrique-chatbot';
     if (updateChatbot.sshCert) {
       credentials.ansible_ssh_private_key_file = `${appDir}/ansible/roles/chatbotGeneration/files/id_ansible`;
-      fs.writeFileSync(`${appDir}/ansible/roles/chatbotGeneration/files/id_ansible`, updateChatbot.sshCert, {encoding: 'utf8', mode: '600'});
+      fs.writeFileSync(`${appDir}/ansible/roles/chatbotGeneration/files/id_ansible`, updateChatbot.sshCert, {
+        encoding: 'utf8',
+        mode: '600'
+      });
     }
     fs.writeFileSync(`${appDir}/ansible/roles/chatbotGeneration/files/.env`, jsonToDotenv(env), 'utf8');
 
