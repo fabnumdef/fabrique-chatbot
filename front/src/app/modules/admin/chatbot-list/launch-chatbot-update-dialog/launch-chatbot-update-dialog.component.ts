@@ -22,7 +22,6 @@ export class LaunchChatbotUpdateDialogComponent implements OnInit {
       updateFront: [true],
       updateBack: [true],
       updateRasa: [false],
-      updateLogs: [false],
     });
   }
 
