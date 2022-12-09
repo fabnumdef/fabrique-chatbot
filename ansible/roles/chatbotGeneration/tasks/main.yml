@@ -33,6 +33,12 @@
     dest: '{{ appsDir }}'
   delegate_to: '{{ inventory_hostname }}'
 
+- name: Copie env-file ter
+  copy:
+    remote_src: yes
+    src: '{{ appsDir }}/{{ gitDir }}/.env'
+    dest: '{{ appsDir }}/{{ botDir }}/.env'
+
 - name: Vérification si le certif BDD existe
   delegate_to: 'localhost'
   stat:
@@ -147,12 +153,6 @@
     src: '{{ appsDir }}/{{ botDir }}/endpoints.example.yml'
     dest: '{{ appsDir }}/{{ botDir }}/endpoints.yml'
     remote_src: yes
-
-- name: Update endpoints.yml rasa file
-  lineinfile:
-    path: '{{ appsDir }}/{{ botDir }}/endpoints.yml'
-    regexp: '^  password:'
-    line: '  password: "{{ DB_PASSWORD }}"'
 
 #- name: Train rasa
 #  command:

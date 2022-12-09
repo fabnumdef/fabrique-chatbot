@@ -91,7 +91,7 @@ export class AdminService {
       updateForm.append('frontBranch', chatbot.front_branch);
       updateForm.append('backBranch', chatbot.back_branch);
       updateForm.append('botBranch', chatbot.bot_branch);
-      updateForm.append('domainName', chatbot.domain_name);
+      chatbot.domain_name ? updateForm.append('domainName', chatbot.domain_name) : null;
       updateForm.append('nginx_conf', fs.createReadStream(`${this._gitDir}/roles/chatbotGeneration/files/nginx.conf`));
       updateForm.append('nginx_site', fs.createReadStream(`${this._gitDir}/roles/chatbotGeneration/files/nginx_conf.cfg`));
       const headers = {
@@ -102,7 +102,7 @@ export class AdminService {
         `${host_url}/api/update`,
         updateForm,
         {headers: headers}
-      ).toPromise().then();
+      ).subscribe();
       this._logger.log('Update Chatbot completed', chatbotId.toString());
     } catch (err) {
       this._logger.error('Update Chatbot failed', err);

@@ -7,7 +7,13 @@
         Le chatbot vient d'être soumis à validation. Voulez-vous l'approuver ?
       </div>
 
-      <ng-container *ngSwitchCase="chatbotStatus.creation || chatbotStatus.running">
+      <ng-container *ngSwitchCase="chatbotStatus.creation">
+        <ng-container *ngTemplateOutlet="editForm"></ng-container>
+      </ng-container>
+      <ng-container *ngSwitchCase="chatbotStatus.running">
+        <ng-container *ngTemplateOutlet="editForm"></ng-container>
+      </ng-container>
+      <ng-template #editForm>
         <p>
           Merci de renseigner les informations suivantes afin de configurer correctement le VPS.
         </p>
@@ -37,29 +43,29 @@
           </mat-error>
         </mat-form-field>
 
-<!--        <mat-form-field appearance="fill">-->
-<!--          <mat-label>Utilisateur root</mat-label>-->
-<!--          <input matInput-->
-<!--                 placeholder="Saisir..."-->
-<!--                 formControlName="rootUser"-->
-<!--                 maxlength="200"-->
-<!--                 required>-->
-<!--          <mat-error *ngIf="controls.rootUser.hasError('required')">-->
-<!--            Vous n'avez pas saisi d'utilisateur root.-->
-<!--          </mat-error>-->
-<!--        </mat-form-field>-->
+        <!--        <mat-form-field appearance="fill">-->
+        <!--          <mat-label>Utilisateur root</mat-label>-->
+        <!--          <input matInput-->
+        <!--                 placeholder="Saisir..."-->
+        <!--                 formControlName="rootUser"-->
+        <!--                 maxlength="200"-->
+        <!--                 required>-->
+        <!--          <mat-error *ngIf="controls.rootUser.hasError('required')">-->
+        <!--            Vous n'avez pas saisi d'utilisateur root.-->
+        <!--          </mat-error>-->
+        <!--        </mat-form-field>-->
 
-<!--        <mat-form-field appearance="fill">-->
-<!--          <mat-label>Mot de passe root</mat-label>-->
-<!--          <input matInput-->
-<!--                 placeholder="Saisir..."-->
-<!--                 formControlName="rootPassword"-->
-<!--                 maxlength="200"-->
-<!--                 required>-->
-<!--          <mat-error *ngIf="controls.rootPassword.hasError('required')">-->
-<!--            Vous n'avez pas saisi de mot de passe root.-->
-<!--          </mat-error>-->
-<!--        </mat-form-field>-->
+        <!--        <mat-form-field appearance="fill">-->
+        <!--          <mat-label>Mot de passe root</mat-label>-->
+        <!--          <input matInput-->
+        <!--                 placeholder="Saisir..."-->
+        <!--                 formControlName="rootPassword"-->
+        <!--                 maxlength="200"-->
+        <!--                 required>-->
+        <!--          <mat-error *ngIf="controls.rootPassword.hasError('required')">-->
+        <!--            Vous n'avez pas saisi de mot de passe root.-->
+        <!--          </mat-error>-->
+        <!--        </mat-form-field>-->
 
         <mat-form-field appearance="fill">
           <mat-label>Mot de passe utilisateur</mat-label>
@@ -165,7 +171,7 @@
         <mat-checkbox color="primary" formControlName="launchGenerationManually">
           Génération du Chatbot manuellement
         </mat-checkbox>
-      </ng-container>
+      </ng-template>
     </ng-container>
 
     <mat-checkbox color="primary" #forceUpdateStatus>
