@@ -29,7 +29,8 @@ export class DomainNameUpdateDialogComponent implements OnInit {
 
   private _initForm() {
     this.updateDomainNameFormGroup = this._fb.group({
-      domainName: [this.chatbot.domainName, [Validators.maxLength(50), Validators.pattern('^[a-z-.]+$'), Validators.required]]
+      domainName: [this.chatbot.domainName, [Validators.maxLength(50), Validators.pattern('^[a-z-.]+$'), Validators.required]],
+      userPassword: [null, [Validators.maxLength(200), Validators.required]],
     });
   }
 
