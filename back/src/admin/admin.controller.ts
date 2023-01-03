@@ -79,7 +79,8 @@ export class AdminController {
   @UseGuards(RolesGuard)
   @Roles(UserRole.admin)
   async deleteChatbot(@Param('id') chatbotId: number): Promise<Chatbot> {
-    return this._chatbotService.delete(chatbotId);
+    await this._chatbotService.delete(chatbotId);
+    return;
   }
 
   @Put('chatbot/:id')

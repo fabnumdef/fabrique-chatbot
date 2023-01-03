@@ -14,6 +14,18 @@
         Le format du nom de domaine est incorrect.
       </mat-error>
     </mat-form-field>
+
+    <mat-form-field appearance="fill">
+      <mat-label>Mot de passe utilisateur</mat-label>
+      <input matInput
+             placeholder="Saisir..."
+             formControlName="userPassword"
+             maxlength="200"
+             required>
+      <mat-error *ngIf="controls.userPassword.hasError('required')">
+        Vous n'avez pas saisi de mot de passe utilisateur.
+      </mat-error>
+    </mat-form-field>
   </form>
 
   <div class="actions">
