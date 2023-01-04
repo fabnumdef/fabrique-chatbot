@@ -19,6 +19,12 @@
     owner: '{{ ansible_user }}'
     mode: '775'
 
+- name: Suppression de l'ancien répertoire
+  become: yes
+  file:
+    path: '{{ appsDir }}/{{ gitDir }}/{{ usineDir }}'
+    state: absent
+
 - name: Clone du repo de l'Usine
   git:
     repo: https://github.com/fabnumdef/fabrique-chatbot.git
