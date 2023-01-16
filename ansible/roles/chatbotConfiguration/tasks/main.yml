@@ -23,7 +23,7 @@
     executable: pip3
     extra_args: --ignore-installed
     name:
-      - rasa==3.3.0
+      - rasa==3.4.0
       - psycopg2
       - ansible
 
