@@ -1,4 +1,4 @@
-import { HttpException, HttpService, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { AnsiblePlaybook, Options } from "ansible-playbook-cli-js";
 import { BotLogger } from "../logger/bot.logger";
 import { Chatbot } from "@entity/chatbot.entity";
@@ -8,6 +8,7 @@ import { ChatbotService } from "../chatbot/chatbot.service";
 import { LaunchUpdateChatbotDto } from "@dto/launch-update-chatbot.dto";
 import * as FormData from 'form-data';
 import * as fs from "fs";
+import { HttpService } from "@nestjs/axios";
 
 @Injectable()
 export class AdminService {

@@ -11,8 +11,8 @@ webchatDir: 'webchat'
 gitDir: 'git'
 intranetDir: 'intranet'
 ansible_distribution_release: "xenial" #trusty
-NODEJS_VERSION: "12"
-NODEJS_VERSION_USINE: "16"
+NODEJS_VERSION: "18"
+NODEJS_VERSION_USINE: "18"
 intranet: true
 ROOT_USER: '$ROOT_USER'
 ROOT_PASSWORD: '$ROOT_PASSWORD'
