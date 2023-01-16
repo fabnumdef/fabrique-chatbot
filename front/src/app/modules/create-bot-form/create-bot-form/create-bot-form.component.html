@@ -2,7 +2,7 @@
   <h1>Créer un chatbot</h1>
   <mat-divider></mat-divider>
 
-  <mat-horizontal-stepper labelPosition="bottom" [linear]="true">
+  <mat-stepper labelPosition="bottom" [linear]="true">
     <mat-step [stepControl]="formArray.at(0)" [completed]="chatbotGenerated" [editable]="!chatbotGenerated">
       <ng-template matStepLabel>
         <h2>Paramétrage</h2>
@@ -95,5 +95,5 @@
         </div>
       </div>
     </mat-step>
-  </mat-horizontal-stepper>
+  </mat-stepper>
 </div>

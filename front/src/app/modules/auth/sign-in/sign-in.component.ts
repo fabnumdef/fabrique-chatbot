@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '@service/auth.service';
 
@@ -10,10 +10,10 @@ import { AuthService } from '@service/auth.service';
 })
 export class SignInComponent implements OnInit {
 
-  signInForm: FormGroup;
+  signInForm: UntypedFormGroup;
   hidePassword = true;
 
-  constructor(private _fb: FormBuilder,
+  constructor(private _fb: UntypedFormBuilder,
               private _auth: AuthService,
               private _router: Router) {
   }

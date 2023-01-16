@@ -3,7 +3,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { UserService } from '@service/user.service';
 import { User } from '@model/user.model';
 import { AuthService } from '@service/auth.service';
-import { MatDialog } from '@angular/material/dialog';
+import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/confirm-dialog.component';
 import { filter } from 'rxjs/operators';
 import { UserRole } from '@enum/user-role.enum';

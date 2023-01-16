@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Chatbot } from '@model/chatbot.model';
 import { Observable } from 'rxjs';
 import { ChatbotService } from '@service/chatbot.service';
-import { MatDialog } from '@angular/material/dialog';
+import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/confirm-dialog.component';
 import { filter } from 'rxjs/operators';
 import { LaunchChatbotUpdateDialogComponent } from './launch-chatbot-update-dialog/launch-chatbot-update-dialog.component';

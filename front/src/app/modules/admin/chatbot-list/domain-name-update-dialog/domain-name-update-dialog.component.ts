@@ -1,7 +1,7 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { Chatbot } from '@model/chatbot.model';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
+import { MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA } from '@angular/material/legacy-dialog';
 import { ChatbotStatus } from "@enum/chatbot-status.enum";
 
 @Component({
@@ -12,9 +12,9 @@ import { ChatbotStatus } from "@enum/chatbot-status.enum";
 export class DomainNameUpdateDialogComponent implements OnInit {
 
   chatbot: Chatbot;
-  updateDomainNameFormGroup: FormGroup;
+  updateDomainNameFormGroup: UntypedFormGroup;
 
-  constructor(private _fb: FormBuilder,
+  constructor(private _fb: UntypedFormBuilder,
               @Inject(MAT_DIALOG_DATA) public data: any) {
     this.chatbot = data;
   }
