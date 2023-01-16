@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
 
 @Component({
   selector: 'app-launch-chatbot-update-dialog',
@@ -8,9 +8,9 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 })
 export class LaunchChatbotUpdateDialogComponent implements OnInit {
 
-  launchChatbotUpdateFormGroup: FormGroup;
+  launchChatbotUpdateFormGroup: UntypedFormGroup;
 
-  constructor(private _fb: FormBuilder) {
+  constructor(private _fb: UntypedFormBuilder) {
   }
 
   ngOnInit(): void {

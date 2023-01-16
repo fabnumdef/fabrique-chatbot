@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { UserService } from '@service/user.service';
 import { User } from '@model/user.model';
@@ -12,9 +12,9 @@ import { environment } from '../../../../environments/environment';
 })
 export class SignUpComponent implements OnInit {
 
-  signUpForm: FormGroup;
+  signUpForm: UntypedFormGroup;
 
-  constructor(private _fb: FormBuilder,
+  constructor(private _fb: UntypedFormBuilder,
               private _router: Router,
               private _route: ActivatedRoute,
               private _userService: UserService) {

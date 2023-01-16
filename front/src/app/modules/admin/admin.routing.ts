@@ -19,7 +19,8 @@ const routes: Routes = [
   },
   {
     path: '',
-    redirectTo: 'chatbot'
+    redirectTo: 'chatbot',
+    pathMatch: 'full'
   },
 ];
 

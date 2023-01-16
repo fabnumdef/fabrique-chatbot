@@ -39,7 +39,7 @@
   <div class="section section-how">
     <h2>Générez votre bot en 4 étapes</h2>
     <div>
-      <mat-horizontal-stepper (selectionChange)="idxImage = $event.selectedIndex">
+      <mat-stepper (selectionChange)="idxImage = $event.selectedIndex">
         <mat-step>
           <div>
             <img [src]="'assets/img/ETAPE_1.png'" alt="Aperçu Backoffice Chatbot"/>
@@ -131,7 +131,7 @@
             </a>
           </div>
         </mat-step>
-      </mat-horizontal-stepper>
+      </mat-stepper>
     </div>
   </div>
   <mat-divider></mat-divider>

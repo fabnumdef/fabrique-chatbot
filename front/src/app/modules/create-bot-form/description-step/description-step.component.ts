@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { UntypedFormGroup } from '@angular/forms';
 
 @Component({
   selector: 'app-description-step',
@@ -8,7 +8,7 @@ import { FormGroup } from '@angular/forms';
 })
 export class DescriptionStepComponent implements OnInit {
 
-  @Input() formGroup: FormGroup;
+  @Input() formGroup: UntypedFormGroup;
 
   constructor() {
   }

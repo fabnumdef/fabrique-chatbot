@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormArray, UntypedFormBuilder, UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { finalize } from 'rxjs/operators';
-import { MatDialog } from '@angular/material/dialog';
+import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { WarningsDialogComponent } from '../warnings-dialog/warnings-dialog.component';
 import { DestroyObservable } from '@utils/destroy-observable';
 import { FileTemplateCheckResume } from '@model/file-template-check-resume.model';
@@ -16,13 +16,13 @@ import { ChatbotUserRole } from '@enum/chatbot-user-role.enum';
 })
 export class FileCheckStepComponent extends DestroyObservable implements OnInit {
 
-  @Input() formGroup: FormGroup;
+  @Input() formGroup: UntypedFormGroup;
   fileTemplateCheckResume: FileTemplateCheckResume;
   objectKeys = Object.keys;
 
   constructor(public chatbotService: ChatbotService,
               private dialog: MatDialog,
-              private _fb: FormBuilder,
+              private _fb: UntypedFormBuilder,
               private _toast: ToastrService) {
     super();
   }
@@ -30,12 +30,12 @@ export class FileCheckStepComponent extends DestroyObservable implements OnInit 
   ngOnInit(): void {
   }
 
-  get fileCtrl(): FormControl {
-    return <FormControl> this.formGroup.get('file');
+  get fileCtrl(): UntypedFormControl {
+    return <UntypedFormControl> this.formGroup.get('file');
   }
 
-  get usersFormArray(): FormArray {
-    return <FormArray> this.formGroup.get('users');
+  get usersFormArray(): UntypedFormArray {
+    return <UntypedFormArray> this.formGroup.get('users');
   }
 
   uploadFile($event) {

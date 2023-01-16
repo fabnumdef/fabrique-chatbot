@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from '@service/auth.service';
 
@@ -10,9 +10,9 @@ import { AuthService } from '@service/auth.service';
 })
 export class ForgotPasswordComponent implements OnInit {
 
-  forgotPasswordForm: FormGroup;
+  forgotPasswordForm: UntypedFormGroup;
 
-  constructor(private _fb: FormBuilder,
+  constructor(private _fb: UntypedFormBuilder,
               private _auth: AuthService,
               private _route: ActivatedRoute,
               private _router: Router) {

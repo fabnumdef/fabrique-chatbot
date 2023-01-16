@@ -1,6 +1,6 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { AbstractControl, UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
+import { MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA } from '@angular/material/legacy-dialog';
 import { Chatbot } from '@model/chatbot.model';
 import { ChatbotStatus, ChatbotStatus_Fr } from '@enum/chatbot-status.enum';
 
@@ -15,10 +15,10 @@ export class EditChatbotDialogComponent implements OnInit {
   chatbotStatus = ChatbotStatus;
   chatbotStatusKeys = Object.keys(ChatbotStatus);
   chatbotStatus_Fr = ChatbotStatus_Fr;
-  updateChatbotFormGroup: FormGroup;
+  updateChatbotFormGroup: UntypedFormGroup;
   ipAdressPattern = /^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/;
 
-  constructor(private _fb: FormBuilder,
+  constructor(private _fb: UntypedFormBuilder,
               @Inject(MAT_DIALOG_DATA) public data: any) {
     this.chatbot = data;
   }
