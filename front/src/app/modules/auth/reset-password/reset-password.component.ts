@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, ValidationErrors, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, ValidationErrors, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ResetPassword } from '@model/reset-password.model';
 import { AuthService } from '@service/auth.service';
@@ -11,12 +11,12 @@ import { AuthService } from '@service/auth.service';
 })
 export class ResetPasswordComponent implements OnInit {
 
-  resetPasswordForm: FormGroup;
+  resetPasswordForm: UntypedFormGroup;
   hidePassword = true;
   hideCheckPassword = true;
   token;
 
-  constructor(private _fb: FormBuilder,
+  constructor(private _fb: UntypedFormBuilder,
               private _auth: AuthService,
               private _route: ActivatedRoute,
               private _router: Router) {
@@ -57,7 +57,7 @@ export class ResetPasswordComponent implements OnInit {
     }, {validators: this.checkPasswords});
   }
 
-  private checkPasswords(group: FormGroup): ValidationErrors | null  {
+  private checkPasswords(group: UntypedFormGroup): ValidationErrors | null  {
     const pass = group.get('password').value;
     const confirmPass = group.get('checkPassword').value;
     if (!confirmPass) {

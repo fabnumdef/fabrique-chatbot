@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import { BreakpointObserver } from '@angular/cdk/layout';
 import { fadeIn, fadeInOut } from './animation';
-import { MatHorizontalStepper } from '@angular/material/stepper';
+import { MatStepper } from '@angular/material/stepper';
 
 @Component({
   selector: 'app-home',
@@ -13,7 +13,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
 
   isSmallScreen = false;
   idxImage = 0;
-  @ViewChild(MatHorizontalStepper) stepper: MatHorizontalStepper;
+  @ViewChild(MatStepper) stepper: MatStepper;
 
   constructor(private _breakpointObserver: BreakpointObserver) {
   }

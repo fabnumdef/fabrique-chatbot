@@ -58,7 +58,6 @@
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
-              "extractCss": true,
               "namedChunks": false,
               "aot": true,
               "extractLicenses": true,
@@ -161,7 +160,6 @@
       }
     }
   },
-  "defaultProject": "fabrique-chatbot-front",
   "cli": {
     "analytics": false
   }

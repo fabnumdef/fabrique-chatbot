@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { FormArray, FormControl, FormGroup } from '@angular/forms';
+import { UntypedFormArray, UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 import { DomSanitizer } from '@angular/platform-browser';
 import { ChatbotUserRole_Fr } from '@enum/chatbot-user-role.enum';
 
@@ -10,7 +10,7 @@ import { ChatbotUserRole_Fr } from '@enum/chatbot-user-role.enum';
 })
 export class ResumeStepComponent implements OnInit {
 
-  @Input() formArray: FormArray;
+  @Input() formArray: UntypedFormArray;
   @Input() chatbotGenerated: boolean;
   iconPreview;
   chatbotUserRole_Fr = ChatbotUserRole_Fr;
@@ -18,12 +18,12 @@ export class ResumeStepComponent implements OnInit {
   constructor(private _sanitizer: DomSanitizer) {
   }
 
-  get iconControl(): FormControl {
-    return <FormControl> (<FormGroup> this.formArray.at(2)).controls.icon;
+  get iconControl(): UntypedFormControl {
+    return <UntypedFormControl> (<UntypedFormGroup> this.formArray.at(2)).controls.icon;
   }
 
-  get conditionControl(): FormControl {
-    return <FormControl> (<FormGroup> this.formArray.at(3)).controls.acceptConditions;
+  get conditionControl(): UntypedFormControl {
+    return <UntypedFormControl> (<UntypedFormGroup> this.formArray.at(3)).controls.acceptConditions;
   }
 
   ngOnInit(): void {

@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
 import { ChatbotUserRole, ChatbotUserRole_Fr } from '@enum/chatbot-user-role.enum';
 
 @Component({
@@ -9,11 +9,11 @@ import { ChatbotUserRole, ChatbotUserRole_Fr } from '@enum/chatbot-user-role.enu
 })
 export class ChatbotUserFormComponent implements OnInit {
 
-  @Input() chatbotUserForm: FormGroup;
+  @Input() chatbotUserForm: UntypedFormGroup;
   chatbotUserRole = Object.keys(ChatbotUserRole);
   chatbotUserRole_Fr = ChatbotUserRole_Fr;
 
-  constructor(private _fb: FormBuilder) { }
+  constructor(private _fb: UntypedFormBuilder) { }
 
   ngOnInit(): void {
   }

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormArray, UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { ChatbotConfiguration } from '@model/chatbot-configuration.model';
 import { ChatbotService } from '@service/chatbot.service';
 import { ToastrService } from 'ngx-toastr';
@@ -12,12 +12,12 @@ import { environment } from '../../../../environments/environment';
 })
 export class CreateBotFormComponent implements OnInit {
 
-  createBotForm: FormGroup;
+  createBotForm: UntypedFormGroup;
   chatbotGenerated = false;
   env = environment;
 
   constructor(public chatbotService: ChatbotService,
-              private _fb: FormBuilder,
+              private _fb: UntypedFormBuilder,
               private _toast: ToastrService) {
   }
 
@@ -25,8 +25,8 @@ export class CreateBotFormComponent implements OnInit {
     this.initForm();
   }
 
-  get formArray(): FormArray | null {
-    return <FormArray> this.createBotForm.get('formArray');
+  get formArray(): UntypedFormArray | null {
+    return <UntypedFormArray> this.createBotForm.get('formArray');
   }
 
   generateChatbot() {
