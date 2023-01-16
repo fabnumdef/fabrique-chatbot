@@ -1,4 +1,4 @@
-import { HttpException, HttpService, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { Sheet2JSONOpts, WorkBook, WorkSheet } from "xlsx";
 import { TemplateFileDto, TemplateResponseType } from "@dto/template-file.dto";
 import { TemplateFileCheckResumeDto } from "@dto/template-file-check-resume.dto";
@@ -11,11 +11,12 @@ import { ChatbotStatus } from "@enum/chatbot-status.enum";
 import { UpdateChatbotDto } from "@dto/update-chatbot.dto";
 import * as fs from "fs";
 import { AnsiblePlaybook, Options } from "ansible-playbook-cli-js";
-import { execShellCommand, jsonToDotenv } from "@core/utils";
+import { jsonToDotenv } from "@core/utils";
 import snakecaseKeys = require("snakecase-keys");
 import { MailService } from "../shared/services/mail.service";
 import { BotLogger } from "../logger/bot.logger";
 import * as path from "path";
+import { HttpService } from "@nestjs/axios";
 
 const crypto = require('crypto');
 const XLSX = require('xlsx');
@@ -36,7 +37,8 @@ export class ChatbotService {
   }
 
   findOne(id: number, withoutFiles = false): Promise<Chatbot> {
-    return this._chatbotsRepository.findOne(id, {
+    return this._chatbotsRepository.findOne({
+      where: {id},
       select: withoutFiles ? ['id', 'name', 'function', 'primary_color', 'secondary_color', 'problematic', 'audience',
         'ip_adress', 'domain_name', 'intra_def', 'accept_conditions', 'status', 'created_at', 'front_branch',
         'back_branch', 'bot_branch', 'api_key'] : []
