@@ -1,6 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from "@nestjs/typeorm";
-import { DeleteResult, Repository } from "typeorm";
+import { DeleteResult, FindOneOptions, Repository } from "typeorm";
 import { User } from "@entity/user.entity";
 import { UserModel } from "@model/user.model";
 import { MailService } from "../shared/services/mail.service";
@@ -28,7 +28,7 @@ export class UserService {
     });
   }
 
-  findOneWithParam(param: any): Promise<User> {
+  findOneWithParam(param: FindOneOptions): Promise<User> {
     return this._usersRepository.findOne(param);
   }
 
@@ -36,7 +36,9 @@ export class UserService {
     const userExists = await this.findOne(user.email);
     if (!userExists) {
       const adminExists = await this.findOneWithParam({
-        role: UserRole.admin
+        where: {
+          role: UserRole.admin
+        }
       });
       if(!adminExists) {
         user.role = UserRole.admin

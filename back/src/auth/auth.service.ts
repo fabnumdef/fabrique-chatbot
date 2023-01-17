@@ -48,8 +48,10 @@ export class AuthService {
 
   async resetPassword(resetPassword: ResetPasswordDto) {
     const userWithoutPassword = await this._userService.findOneWithParam({
-      reset_password_token: resetPassword.token,
-      reset_password_expires: MoreThan(new Date())
+      where: {
+        reset_password_token: resetPassword.token,
+        reset_password_expires: MoreThan(new Date())
+      }
     });
     if (!userWithoutPassword) {
       throw new HttpException('Cet utilisateur n\'existe pas.', HttpStatus.INTERNAL_SERVER_ERROR);

@@ -47,8 +47,10 @@ export class AdminService {
     this._logger.log('Update Chatbot Domain Name ...', chatbotId.toString());
 
     const chatbot: Chatbot = await this._chatbotService.findOneWithParam({
-      id: chatbotId,
-      status: ChatbotStatus.running
+      where :{
+        id: chatbotId,
+        status: ChatbotStatus.running
+      }
     });
     if (!chatbot) {
       throw new HttpException(`Ce chatbot n'existe pas ou n'est pas en fonctionnement.`, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -75,8 +77,10 @@ export class AdminService {
     this._logger.log('Update Chatbot...', chatbotId.toString());
 
     const chatbot: Chatbot = await this._chatbotService.findOneWithParam({
-      id: chatbotId,
-      status: ChatbotStatus.running
+      where: {
+        id: chatbotId,
+        status: ChatbotStatus.running
+      }
     });
     if (!chatbot) {
       throw new HttpException(`Ce chatbot n'existe pas ou n'est pas en fonctionnement.`, HttpStatus.INTERNAL_SERVER_ERROR);
