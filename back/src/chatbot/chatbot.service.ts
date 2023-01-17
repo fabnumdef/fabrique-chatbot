@@ -3,7 +3,7 @@ import { Sheet2JSONOpts, WorkBook, WorkSheet } from "xlsx";
 import { TemplateFileDto, TemplateResponseType } from "@dto/template-file.dto";
 import { TemplateFileCheckResumeDto } from "@dto/template-file-check-resume.dto";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Repository } from "typeorm";
+import { FindOneOptions, Repository } from "typeorm";
 import { Chatbot } from "@entity/chatbot.entity";
 import { ChatbotModel } from "@model/chatbot.model";
 import { FileModel } from "@model/file.model";
@@ -45,7 +45,7 @@ export class ChatbotService {
     });
   }
 
-  findOneWithParam(param: any): Promise<Chatbot> {
+  findOneWithParam(param: FindOneOptions): Promise<Chatbot> {
     return this._chatbotsRepository.findOne(param);
   }
 
