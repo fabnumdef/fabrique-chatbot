@@ -103,6 +103,16 @@
     cmd: 'certbot --nginx -d {{ DOMAIN }} -n --redirect --agree-tos -m vincent.laine@beta.gouv.fr'
   when: DOMAIN is defined and DOMAIN != ""
 
+- name: Auto renew SSL certificate
+  become: yes
+  cron:
+    name: "certbot renew"
+    minute: "0"
+    hour: "0"
+    month: "1"
+    job: 'certbot renew --pre-hook "ufw allow 80/tcp" --post-hook "ufw deny 80/tcp"'
+  when: DOMAIN is defined and DOMAIN != ""
+
 - name: Close port 80 after SSL certificate
   become: yes
   when: DOMAIN is defined and DOMAIN != ""

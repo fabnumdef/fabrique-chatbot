@@ -84,8 +84,12 @@
 
 - name: Auto renew SSL certificate
   become: yes
-  command:
-    cmd: 'certbot renew --pre-hook "ufw allow 80/tcp" --post-hook "ufw deny 80/tcp"'
+  cron:
+    name: "certbot renew"
+    minute: "0"
+    hour: "0"
+    month: "1"
+    job: 'certbot renew --pre-hook "ufw allow 80/tcp" --post-hook "ufw deny 80/tcp"'
   when: botDomain is defined and botDomain is not none and botDomain != ""
 
 #- name: Update nginx site conf to use http2
