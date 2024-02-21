@@ -2,6 +2,7 @@
   become: yes
   apt:
     upgrade: 'yes'
+  ignore_errors: yes
 
 - name: Install dependencies for nodejs
   become: yes
