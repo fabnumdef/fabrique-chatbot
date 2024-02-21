@@ -25,6 +25,7 @@
   apt:
     upgrade: 'yes'
     update_cache: 'yes'
+  ignore_errors: yes
 
 - name: Install Nginx
   become: true
