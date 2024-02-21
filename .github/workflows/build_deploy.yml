@@ -78,24 +78,22 @@ jobs:
 
       - name: copy ansible scripts via ssh key
         uses: appleboy/scp-action@master
-        env:
+        with:
           HOST: '${{ steps.host.outputs.value }}'
           USERNAME: ansible
           PORT: 22
           KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-        with:
           source: "./ansible/"
           target: "~/"
           timeout: 120s
 
       - name: launch deploy ansible script
         uses: appleboy/ssh-action@master
-        env:
+        with:
           HOST: '${{ steps.host.outputs.value }}'
           USERNAME: ansible
           PORT: 22
           KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-        with:
           script: |
             rm -rf ~/ansible/roles/vars/password_file
             rm -rf ~/ansible/roles/usineConfiguration/files/postgres.crt
@@ -112,11 +110,10 @@ jobs:
 
       - name: delete tmp dir
         uses: appleboy/ssh-action@master
-        env:
+        with:
           HOST: '${{ steps.host.outputs.value }}'
           USERNAME: ansible
           PORT: 22
           KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-        with:
           script:
             rm -rf ~/ansible/
