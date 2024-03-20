@@ -24,15 +24,15 @@
     extra_args: --ignore-installed
     name:
       - rasa==3.4.0
-      - psycopg2
+      - psycopg2==2.9.6
+      - websockets==10.0
       - ansible
 
 - name: Upgrade pyOpenSSL
   become: true
   pip:
     executable: pip3
-    name: pyOpenSSL
-    extra_args: --upgrade
+    name: pyOpenSSL==22.1.0
 
 - name: NODE | Install pm2
   become: yes

@@ -1,3 +1,9 @@
+- name: Remove apt lock file
+  become: yes
+  file:
+    state: absent
+    path: "/var/lib/dpkg/lock"
+
 - name: Make sure ufw is installed
   become: yes
   apt:

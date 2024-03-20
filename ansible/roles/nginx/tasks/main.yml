@@ -32,6 +32,8 @@
   apt:
     pkg:
       - nginx
+      - python3-acme
+      - python3-certbot
       - python3-certbot-nginx
 
 - name: Start Nginx

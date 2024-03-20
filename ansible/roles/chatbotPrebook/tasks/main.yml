@@ -4,7 +4,7 @@
 
 - name: Prebook pour OS RHEL 8 & CentOS 8 - Internet
   include_tasks: rhel.yml
-  when: (ansible_distribution == 'CentOS' or ansible_distribution == "RedHat") and (intranet is not defined or intranet == "false")
+  when: (ansible_distribution == 'CentOS' or ansible_distribution == "RedHat" or ansible_distribution == "AlmaLinux") and (intranet is not defined or intranet == "false")
 
 - name: Prebook pour OS RHEL 8 & CentOS 8 - Intranet
   include_tasks: rhel_intranet.yml

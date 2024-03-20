@@ -1,5 +1,5 @@
 ---
-# ansible-playbook playChatbotprebook.yml -i $IP_ADRESS, -e '{USER_PASSWORD: '$USER_PASSWORD', ROOT_USER: '$ROOT_USER', ROOT_PASSWORD: '$ROOT_PASSWORD'}';
+# ansible-playbook playChatbotprebook.yml -i $IP_ADRESS, -e '{USER_PASSWORD: '$USER_PASSWORD'}';
 
 - name: Génération d'un Chatbot
   hosts: all

@@ -20,10 +20,7 @@
 
 - name: Install the nodejs LTS repos
   become: yes
-  apt_repository:
-    repo: "deb https://deb.nodesource.com/node_{{ NODEJS_VERSION }}.x {{ ansible_distribution_release }} main"
-    state: present
-    update_cache: yes
+  shell: "curl -sL https://deb.nodesource.com/setup_{{ NODEJS_VERSION }}.x | sudo -E bash -"
 
 - name: Install last Nginx version
   include_role:
@@ -53,6 +50,7 @@
       - snapd
       - clamav
       - clamav-daemon
+      - sshpass
 
 - name: copy the nginx config file
   copy:
