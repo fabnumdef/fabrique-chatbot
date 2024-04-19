@@ -15,12 +15,15 @@
 - name: Install the gpg key for nodejs LTS
   become: yes
   apt_key:
-    url: "https://deb.nodesource.com/gpgkey/nodesource.gpg.key"
+    url: "https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key"
     state: present
 
 - name: Install the nodejs LTS repos
   become: yes
-  shell: "curl -sL https://deb.nodesource.com/setup_{{ NODEJS_VERSION }}.x | sudo -E bash -"
+  apt_repository:
+    repo: "deb https://deb.nodesource.com/node_{{ NODEJS_VERSION }}.x nodistro main"
+    state: present
+    update_cache: yes
 
 - name: Install last Nginx version
   include_role:

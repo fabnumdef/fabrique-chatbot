@@ -5,4 +5,6 @@
 - import_playbook: playChatbotsecurity.yml
 - import_playbook: playChatbotconfiguration.yml
 - import_playbook: playChatbotupdaterepos.yml
+- import_playbook: playChatbotInstallFront.yml
 - import_playbook: playChatbotgeneration.yml
+- import_playbook: playChatbotInstallRasa.yml

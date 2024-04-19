@@ -1,0 +1,12 @@
+---
+# ansible-playbook playChatbotInstallFront.yml -i $IP_ADRESS, -e '{USER_PASSWORD: '$USER_PASSWORD', frontBranch: 'master', backBranch: 'master', botBranch: 'master'}';
+
+- name: Install + build des fronts
+  hosts: all
+  remote_user: chatbot_user
+  vars_files:
+    - roles/vars/main.yml
+    - roles/vars/credentials.yml
+
+  roles:
+    - chatbotInstallFront

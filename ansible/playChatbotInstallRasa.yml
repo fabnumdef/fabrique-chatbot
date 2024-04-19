@@ -1,0 +1,13 @@
+---
+# ansible-playbook playClatbotRasa.yml -vvv -i 162.19.152.191, -e '{"USER_PASSWORD":"KyD8f6cFgXYyMtL6"}' --key-file "~/.ssh/chatbot-dev-ansible";
+
+- name: Ajsutement de RASA
+  hosts: all
+  remote_user: chatbot_user
+  vars_files:
+    - roles/vars/main.yml
+    - roles/vars/credentials.yml
+    - roles/chatbotInstallRasa/files/credentials.yml
+
+  roles:
+    - chatbotInstallRasa

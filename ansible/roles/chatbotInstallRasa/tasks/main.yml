@@ -1,0 +1,50 @@
+- name: Mettre à jour pip
+  pip:
+    name: pip
+    state: latest
+    executable: pip3
+
+- name: Installer rasa
+  pip:
+    name: rasa==3.3.0
+    executable: pip3
+
+- name: Installer rasa-sdk
+  pip:
+    name: rasa-sdk==3.3.0
+    executable: pip3
+
+- name: Installer websockets
+  pip:
+    name: websockets==10.4
+    executable: pip3
+
+- name: Installer python-socketio
+  pip:
+    name: python-socketio==5.7.2
+    executable: pip3
+
+- name: Modifier le fichier endpoints.yml de Rasa
+  template:
+    src: files/endpoints.template.yml
+    dest: /var/www/chatbot-template/endpoints.yml
+
+- name: Mettre à jour Screen
+  apt:
+    name: screen
+    state: latest
+
+- name: Exécuter 'rasa train --augmentation 0'
+  shell: rasa train --augmentation 0
+  args:
+    chdir: /var/www/chatbot-template/
+
+- name: Lancer la commande avec Screen
+  shell: "screen -S rasa -dm bash -c 'rasa run -m models --log-file out.log --cors \"*\" --debug'"
+  args:
+    chdir: /var/www/chatbot-template/
+
+- name: Lancer rasa run actions avec Screen
+  shell: "screen -S rasa-action -dm bash -c 'rasa run actions'"
+  args:
+    chdir: /var/www/chatbot-template/

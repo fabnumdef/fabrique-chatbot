@@ -34,16 +34,3 @@
     dest: '{{ appsDir }}/{{ gitDir }}/{{ botDir }}'
     force: yes
     version: '{{ botBranch }}'
-
-- name: npm install chatbot-front
-  npm:
-    path: '{{ appsDir }}/{{ gitDir }}/{{ frontDir }}'
-
-- name: npm install chatbot-front librairies
-  npm:
-    path: '{{ appsDir }}/{{ gitDir }}/{{ frontDir }}/projects/ngx-rasa-webchat'
-
-- name: npm build chatbot-front
-  command:
-    cmd: npm run build:prod
-    chdir: '{{ appsDir }}/{{ gitDir }}/{{ frontDir }}'
