@@ -68,53 +68,53 @@
     proto: tcp
   when: botDomain is defined and botDomain is not none and botDomain != ""
 
-# - name: Install SSL certificate
-#   become: yes
-#   command:
-#     cmd: 'certbot --nginx -d {{ botDomain }} -n --redirect --agree-tos -m vincent.laine@beta.gouv.fr'
-#   when: botDomain is defined and botDomain is not none and botDomain != ""
+- name: Install SSL certificate
+  become: yes
+  command:
+    cmd: 'certbot --nginx -d {{ botDomain }} -n --redirect --agree-tos -m vincent.laine@beta.gouv.fr'
+  when: botDomain is defined and botDomain is not none and botDomain != ""
 
-# - name: Close port 80 after SSL certificate
-#   become: yes
-#   ufw:
-#     rule: deny
-#     port: '80'
-#     proto: tcp
-#   when: botDomain is defined and botDomain is not none and botDomain != ""
+- name: Close port 80 after SSL certificate
+  become: yes
+  ufw:
+    rule: deny
+    port: '80'
+    proto: tcp
+  when: botDomain is defined and botDomain is not none and botDomain != ""
 
-# - name: Auto renew SSL certificate
-#   become: yes
-#   cron:
-#     name: "certbot renew"
-#     minute: "0"
-#     hour: "0"
-#     month: "1"
-#     job: 'certbot renew --pre-hook "ufw allow 80/tcp" --post-hook "ufw deny 80/tcp"'
-#   when: botDomain is defined and botDomain is not none and botDomain != ""
+- name: Auto renew SSL certificate
+  become: yes
+  cron:
+    name: "certbot renew"
+    minute: "0"
+    hour: "0"
+    month: "1"
+    job: 'certbot renew --pre-hook "ufw allow 80/tcp" --post-hook "ufw deny 80/tcp"'
+  when: botDomain is defined and botDomain is not none and botDomain != ""
 
-# #- name: Update nginx site conf to use http2
-# #  become: true
-# #  lineinfile:
-# #    path: '/etc/nginx/conf.d/default.conf'
-# #    regexp: '^    listen \[::]:443 ssl ipv6only=on;'
-# #    line: '    listen [::]:443 ssl http2 ipv6only=on;'
-# #  when: botDomain is defined and botDomain != ""
+#- name: Update nginx site conf to use http2
+#  become: true
+#  lineinfile:
+#    path: '/etc/nginx/conf.d/default.conf'
+#    regexp: '^    listen \[::]:443 ssl ipv6only=on;'
+#    line: '    listen [::]:443 ssl http2 ipv6only=on;'
+#  when: botDomain is defined and botDomain != ""
 
-# - name: Update nginx site conf to use http2
-#   become: true
-#   lineinfile:
-#     path: '/etc/nginx/conf.d/default.conf'
-#     regexp: '^    listen 443 ssl;'
-#     line: '    listen 443 ssl http2;'
-#   when: botDomain is defined and botDomain is not none and botDomain != ""
+- name: Update nginx site conf to use http2
+  become: true
+  lineinfile:
+    path: '/etc/nginx/conf.d/default.conf'
+    regexp: '^    listen 443 ssl;'
+    line: '    listen 443 ssl http2;'
+  when: botDomain is defined and botDomain is not none and botDomain != ""
 
-# - name: Update certbot conf to use TLS 1.2
-#   become: true
-#   lineinfile:
-#     path: '/etc/letsencrypt/options-ssl-nginx.conf'
-#     regexp: '^ssl_protocols TLSv1 TLSv1.1 TLSv1.2;'
-#     line: 'ssl_protocols TLSv1.2 TLSv1.3;'
-#   when: botDomain is defined and botDomain is not none and botDomain != ""
+- name: Update certbot conf to use TLS 1.2
+  become: true
+  lineinfile:
+    path: '/etc/letsencrypt/options-ssl-nginx.conf'
+    regexp: '^ssl_protocols TLSv1 TLSv1.1 TLSv1.2;'
+    line: 'ssl_protocols TLSv1.2 TLSv1.3;'
+  when: botDomain is defined and botDomain is not none and botDomain != ""
 
 - name: npm install chatbot-back
   command:
