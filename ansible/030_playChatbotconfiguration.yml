@@ -1,0 +1,8 @@
+---
+# ansible-playbook -i env/dev/inventory.yml 020_playChatbotsecurity.yml --private-key=~/.ssh/chatbot-dev-ansible
+- name: Configuration d'un serveur d'un Chatbot
+  hosts: webserver
+  remote_user: "{{ script_user }}"
+
+  roles:
+    - chatbotConfiguration

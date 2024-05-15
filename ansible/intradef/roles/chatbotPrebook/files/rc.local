@@ -1,6 +1,0 @@
-#!/bin/sh -e
-# This script is executed at the end of each multiuser runlevel
-
-cd /var/www/chatbot-template/ && screen -S rasa -dmS rasa run -m models --log-file out.log --cors "*" --debug
-
-exit 0

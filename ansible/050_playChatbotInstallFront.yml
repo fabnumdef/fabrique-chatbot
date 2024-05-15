@@ -1,0 +1,8 @@
+---
+# ansible-playbook -i env/dev/inventory.yml 050_playChatbotInstallFront.yml --private-key=~/.ssh/chatbot-dev-ansible
+- name: "Install + build des fronts"
+  hosts: webserver
+  remote_user: "{{ script_user }}"
+
+  roles:
+    - chatbotInstallFront

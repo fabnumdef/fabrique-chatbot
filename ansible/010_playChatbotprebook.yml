@@ -1,0 +1,9 @@
+---
+# ansible-playbook -i env/dev/inventory.yml playChatbotprebook.yml --private-key=~/.ssh/chatbot-dev-ansible
+- name: "Ajout de l'utilisateur Ansible via {{ ssh_user }}."
+  hosts: webserver
+  become_user: "{{ ssh_user }}"
+  remote_user: "{{ ssh_user }}"
+
+  roles:
+    - chatbotPrebook

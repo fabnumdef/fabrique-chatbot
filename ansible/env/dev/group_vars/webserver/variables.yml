@@ -1,0 +1,43 @@
+ansible_host: 255.255.255.255
+script_user: "ansible"
+script_password: "{{ vault_script_password}}"
+ssh_user: "default_user"
+ssh_pub_key: "ssh_pub_key"
+db_port: 20184
+appsDir: '/var/www'
+gitDir: 'git'
+backDir: 'chatbot-back'
+botDir: 'chatbot-template'
+frontDir: 'chatbot-front'
+webchatDir: 'webchat'
+backBranch: 'master' #valeur par défaut
+frontBranch: 'master' #valeur par défaut
+botBranch: 'master' #valeur par défaut
+nodejs_version: 18
+
+envFile_node_env: dev
+envFile_dataBase_host: default
+envFile_database_port: 00000
+envFile_database_user: default
+envFile_database_password: default
+envFile_database_name: default
+
+envFile_mail_user: default
+envFile_mailPassword: default
+envFile_mailHost: default
+envFile_mailPort: default
+
+envFile_jwt_secret: abcdefghijklmnopqrstuvwxyz
+envFile_host_url: default
+
+endPointsFile_postgresql_url: default
+endPointsFile_postgresql_port: 00000
+endPointsFile_postgresql_username: default
+endPointsFile_postgresql_password: default
+endPointsFile_postgresql_db: default
+
+botDomain: "xxxxx.fr"
+ssl_notification_email: "pierre.benest@beta.gouv.fr"
+
+
+

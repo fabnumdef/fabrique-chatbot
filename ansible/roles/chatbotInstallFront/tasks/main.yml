@@ -1,14 +1,26 @@
-- name: npm install chatbot-front
+- name: "Arrêter le service clamav-daemon => problème de mémoire"
+  become: true
+  service:
+    name: clamav-daemon
+    state: stopped
+
+- name: "Installation du backoffice chatbot-front (npm)"
   npm:
     path: '{{ appsDir }}/{{ gitDir }}/{{ frontDir }}'
   environment: 
     NODE_OPTIONS: '--max-old-space-size=3072'  
 
-- name: npm install chatbot-front librairies
+- name: "Installation du bot chatbot-front (npm projects webchat)"
   npm:
     path: '{{ appsDir }}/{{ gitDir }}/{{ frontDir }}/projects/ngx-rasa-webchat'
 
-- name: npm build chatbot-front
+- name: "Build du projet chatbot-front"
   command:
     cmd: npm run build:prod
     chdir: '{{ appsDir }}/{{ gitDir }}/{{ frontDir }}'
+
+- name: "Démarrer le service clamav-daemon"
+  become: true
+  service:
+    name: clamav-daemon
+    state: started

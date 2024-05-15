@@ -1,11 +1,82 @@
-- name: Prebook pour OS Debian
-  include_tasks: debian.yml
-  when: ansible_distribution == 'Debian'
+- name: Vérifier que Sudo est installé via l'utilisateur {{ ssh_user }}
+  become: true
+  apt:
+    name: sudo
+    state: present
 
-- name: Prebook pour OS RHEL 8 & CentOS 8 - Internet
-  include_tasks: rhel.yml
-  when: (ansible_distribution == 'CentOS' or ansible_distribution == "RedHat" or ansible_distribution == "AlmaLinux") and (intranet is not defined or intranet == "false")
+# - name: "Installer pip sur Debian"
+#   become: yes
+#   apt:
+#     name: python3-pip
+#     state: present
 
-- name: Prebook pour OS RHEL 8 & CentOS 8 - Intranet
-  include_tasks: rhel_intranet.yml
-  when: (ansible_distribution == 'CentOS' or ansible_distribution == "RedHat") and (intranet is defined and intranet == "true")
+
+# - name: "Installer passlib"
+#   pip:
+#     name: passlib
+#     state: present
+
+# - name: "Afficher la valeur d'une variable"
+#   debug:
+#     msg: "  script_password:{{ script_password }} 
+#           ansible_host:{{ ansible_host }}
+#           ssh_user:{{ ssh_user }}
+#           script_user:{{ script_user }}"
+
+- name: Vérifier si l'utilisateur {{ script_user }} existe
+  command: "id {{ script_user }}"
+  register: user_check
+  ignore_errors: true
+  no_log: true
+
+- name: "Afficher un message personnalisé si l'utilisateur n'existe pas"
+  debug:
+    msg: "L'utilisateur {{ script_user }} n'existe pas."
+  when: user_check.rc != 0
+
+- name: "Création de l'utilisateur {{ script_user }}."
+  become_user: root
+  become: true
+  user:
+    name: "{{ script_user }}"
+    state: present
+    groups: sudo
+    password: "{{ script_password | password_hash('sha512') }}"
+    createhome: yes
+      
+ # when: user_check.rc != 0
+
+- name: "Ajout de la clé SSH publique pour l'utilisateur {{ script_user }}"
+  become_user: root
+  become: true
+  authorized_key:
+    user: "{{ script_user }}"
+    key: "{{ ssh_pub_key }}"
+
+# - name: "Création de l'utilisateur {{ script_user }}."
+#   command: sudo /usr/sbin/useradd "{{ script_user }}" --password "{{ script_password | password_hash('sha512') }}"
+#   when: user_check.rc != 0
+
+# - name: Ajouter l'utilisateur {{ script_user }} au groupe sudo.
+#   command: sudo usermod -aG sudo {{ script_user }}
+
+# - name: "Créer le répertoire personnel pour l'utilisateur {{ script_user }}."
+#   become: true
+#   become_user: root
+#   file:
+#     path: /home/{{ script_user }}
+#     state: directory
+
+# - name: "Changer le propriétaire du répertoire personnel de {{ script_user }}"
+#   become: yes
+#   become_user: root
+#   file:
+#     path: /home/{{ script_user }}
+#     state: directory
+#     owner: "{{ script_user }}"
+#     group: "{{ script_user }}"
+
+
+
+
+

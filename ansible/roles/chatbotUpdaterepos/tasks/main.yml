@@ -1,34 +1,34 @@
-- name: Changement de droits et de propriétaire pour le dossier www
+- name: "Changement de droits et de propriétaire pour le répertoire: {{ appsDir }}"
   become: true
   file:
     path: '{{ appsDir }}'
     state: directory
-    owner: '{{ ansible_user }}'
+    owner: '{{ script_user }}'
     mode: '775'
 
-- name: Création du répertoire git
+- name: "Création du répertoire git: {{ appsDir }}/{{ gitDir }}"
   become: true
   file:
     path: '{{ appsDir }}/{{ gitDir }}'
     state: directory
-    owner: '{{ ansible_user }}'
+    owner: '{{ script_user }}'
     mode: '775'
 
-- name: Git chatbot-back
+- name: "Récupération du dépot git chatbot-back de la branche '{{ backBranch }}' dans le répertoire: '{{ appsDir }}/{{ gitDir }}/{{ backDir }}'"
   git:
     repo: https://github.com/fabnumdef/chatbot-back.git
     dest: '{{ appsDir }}/{{ gitDir }}/{{ backDir }}'
     force: yes
     version: '{{ backBranch }}'
 
-- name: Git chatbot-front
+- name: "Récupération du dépot Git chatbot-front de la branche '{{ frontBranch }}' dans le répertoire: '{{ appsDir }}/{{ gitDir }}/{{ frontDir }}'"
   git:
     repo: https://github.com/fabnumdef/chatbot-front.git
     dest: '{{ appsDir }}/{{ gitDir }}/{{ frontDir }}'
     force: yes
     version: '{{ frontBranch }}'
 
-- name: Git chatbot-template
+- name: "Récupération du dépot Git chatbot-template de la branche '{{ botBranch }}' dans le répertoire: '{{ appsDir }}/{{ gitDir }}/{{ botDir }}'"
   git:
     repo: https://github.com/fabnumdef/chatbot-template.git
     dest: '{{ appsDir }}/{{ gitDir }}/{{ botDir }}'

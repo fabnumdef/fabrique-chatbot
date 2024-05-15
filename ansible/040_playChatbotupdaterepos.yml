@@ -1,0 +1,8 @@
+---
+# ansible-playbook -i env/dev/inventory.yml 040_playChatbotupdaterepos.yml , -e '{frontBranch: 'master', backBranch: 'master'}' --private-key=~/.ssh/chatbot-dev-ansible
+- name: "Mise à jour des différents repos git + build des fronts si besoin"
+  hosts: webserver
+  remote_user: "{{ script_user }}"
+
+  roles:
+    - chatbotUpdaterepos

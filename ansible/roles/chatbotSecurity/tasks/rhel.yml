@@ -1,9 +1,0 @@
-- name: Make sure epel-release is installed
-  become: yes
-  dnf:
-    name: epel-release
-
-- name: Make sure ufw is installed
-  become: yes
-  dnf:
-    name: ufw

@@ -1,61 +1,63 @@
-- name: Do not allow root access via ssh
-  become: yes
+- name: "Ne pas autoriser l'accès root via ssh"
+  become: yes  
   lineinfile:
     line: PermitRootLogin no
     dest: /etc/ssh/sshd_config
     regexp: ^PermitRootLogin
 
-- name: Delete ssh host keys
-  become: yes
-  shell: "rm /etc/ssh/ssh_host_* && dpkg-reconfigure openssh-server"
-  notify: restart ssh
-  when: renew_ssh is defined and renew_ssh == "yes"
+# - name: "Supprimer les clés d'hôte ssh"
+#   become: yes
+#   shell: "rm /etc/ssh/ssh_host_* && dpkg-reconfigure openssh-server"
+#   notify: restart ssh
+#   when: renew_ssh is defined and renew_ssh == "yes"
 
-- name: UFW pour OS Debian
-  include_tasks: debian.yml
-  when: ansible_distribution == 'Debian'
+# - name: "Supprimer le fichier de verrouillage apt"
+#   file:
+#     state: absent
+#     path: "/var/lib/dpkg/lock"
 
-- name: UFW pour OS RHEL 8 & CentOS 8 - Internet
-  include_tasks: rhel.yml
-  when: (ansible_distribution == 'CentOS' or ansible_distribution == "RedHat") and (intranet is not defined or intranet == "false")
+- name: "Vérifier que ufw est installé" 
+  become: yes 
+  apt:
+    name: ufw
 
-- name: Configuration pare-feu
-  become: yes
+- name: "Configuration du pare-feu" 
+  become: yes 
   ufw:
     policy: deny
     state: enabled
 
-- name: Ouverture port ssh
-  become: yes
+- name: "Ouverture port ssh"
+  become: yes 
   ufw:
     rule: limit
     port: ssh
     proto: tcp
 
-- name: Ouverture port 443
-  become: yes
+- name: "Ouverture port 443"
+  become: yes 
   ufw:
     rule: allow
     port: '443'
     proto: tcp
 
-- name: Ouverture port 80
-  become: yes
+- name: "Ouverture port 80"
+  become: yes 
   ufw:
     rule: allow
     port: '80'
     proto: tcp
 
-- name: Ouverture port 5005
-  become: yes
+- name: "Ouverture port 5005"
+  become: yes 
   ufw:
     rule: allow
     port: '5005'
     proto: tcp
 
-- name: Ouverture port DB
-  become: yes
+- name: "Ouverture port DB"
+  become: yes 
   ufw:
     rule: allow
-    port: '{{ DB_PORT }}'
+    port: '{{ db_port }}'
     proto: tcp

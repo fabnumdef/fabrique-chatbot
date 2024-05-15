@@ -1,0 +1,8 @@
+---
+# ansible-playbook -i env/dev/inventory.yml 060_playChatbotgeneration.yml --private-key=~/.ssh/chatbot-dev-ansible
+- name: Génération d'un Chatbot
+  hosts: webserver
+  remote_user: "{{ script_user }}"
+
+  roles:
+    - chatbotGeneration

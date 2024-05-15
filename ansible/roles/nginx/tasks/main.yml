@@ -32,8 +32,23 @@
   apt:
     pkg:
       - nginx
+
+- name: Install python3-acme
+  become: true
+  apt:
+    pkg:
       - python3-acme
+
+- name: Install python3-certbot
+  become: true
+  apt:
+    pkg:
       - python3-certbot
+
+- name: Install python3-certbot-nginx
+  become: true
+  apt:
+    pkg:
       - python3-certbot-nginx
 
 - name: Start Nginx

@@ -1,0 +1,9 @@
+---
+# ansible-playbook -i env/dev/inventory.yml 000_playChatbot.yml --ask-vault-pass
+
+- import_playbook: 010_playChatbotprebook.yml
+- import_playbook: 020_playChatbotsecurity.yml
+- import_playbook: 030_playChatbotconfiguration.yml
+- import_playbook: 040_playChatbotupdaterepos.yml
+- import_playbook: 050_playChatbotInstallFront.yml
+- import_playbook: 060_playChatbotgeneration.yml

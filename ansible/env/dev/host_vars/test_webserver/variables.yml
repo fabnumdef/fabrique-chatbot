@@ -1,0 +1,26 @@
+ansible_host: "{{ vault_ansible_host }}"
+ssh_user: "p.benest"
+ssh_pub_key: "{{ vault_ssh_pub_key }}"
+
+envFile_node_env: "dev"
+envFile_dataBase_host: "{{ vault_envFile_dataBase_host }}"
+envFile_database_port: "{{ vault_envFile_database_port }}"
+envFile_database_user: "{{ vault_envFile_database_user }}"
+envFile_database_password: "{{ vault_envFile_database_password }}"
+envFile_database_name: "{{ vault_envFile_database_name }}"
+
+envFile_mail_user: "{{ vault_envFile_mail_user }}"
+envFile_mailPassword: "{{ vault_envFile_mailPassword }}"
+envFile_mailHost: "{{ vault_envFile_mailHost }}"
+envFile_mailPort: "{{ vault_envFile_mailPort }}"
+
+envFile_jwt_secret: "{{ vault_envFile_jwt_secret }}"
+envFile_host_url: "https://test.chatbot.fabnum.fr"
+
+endPointsFile_postgresql_url: "{{ vault_endPointsFile_postgresql_url }}"
+endPointsFile_postgresql_port: "{{ vault_endPointsFile_postgresql_port }}"
+endPointsFile_postgresql_username: "{{ vault_endPointsFile_postgresql_username }}"
+endPointsFile_postgresql_password: "{{ vault_endPointsFile_postgresql_password }}"
+endPointsFile_postgresql_db: "{{ vault_endPointsFile_postgresql_db }}"
+
+botDomain: "test.chatbot.fabnum.fr"
