@@ -1,0 +1,116 @@
+- name: Creation d'un certificat auto signé pour le chiffrement de PostgreSQL
+  ansible.builtin.include_role:
+    name: selfCertificate
+
+- name: Vérification que python3-psycopg2 soit installé
+  become: true
+  ansible.builtin.dnf:
+    name:
+      - python3-psycopg2
+
+- name: Installation de PostgreSQL
+  ansible.builtin.package:
+    name: postgresql-server
+    state: present
+    update_cache: true
+  become: true
+
+- name: Initialisation de PostgreSQL
+  ansible.builtin.command: /usr/bin/postgresql-setup --initdb
+  become: true
+  args:
+    creates: /var/lib/pgsql/data/PG_VERSION
+
+# Copie des certificats
+- name: Copie de la clé
+  ansible.builtin.copy:
+    src: /tmp/ssl/keys/example.com.key
+    dest: /var/lib/pgsql/data/server.key
+    owner: postgres
+    group: postgres
+    mode: '0600'
+  become: true
+
+- name: Copie du certificat
+  ansible.builtin.copy:
+    src: /tmp/ssl/certs/example.com.crt
+    dest: /var/lib/pgsql/data/server.crt
+    owner: postgres
+    group: postgres
+    mode: '0644'
+  become: true
+
+- name: Activation et vérification de PostgreSQL
+  ansible.builtin.systemd:
+    name: postgresql
+    enabled: true
+    state: started
+  become: true
+
+- name: On s'assure que la database "{{ db_name }}" soit créée
+  become: true
+  become_user: postgres
+  community.postgresql.postgresql_db:
+    name: "{{ db_name }}"
+    encoding: 'UTF-8'
+    state: 'present'
+    template: 'template0'
+
+- name: Ajout de l' extension "unaccent" à la DB "{{ db_name }}"
+  become: true
+  become_user: postgres
+  community.postgresql.postgresql_ext:
+    name: unaccent
+    db: "{{ db_name }}"
+
+- name: Création des droits user "{{ db_user }}" pour la DB "{{ db_name }}"
+  become: true
+  become_user: postgres
+  community.postgresql.postgresql_user:
+    db: "{{ db_name }}"
+    name: "{{ db_user }}"
+    password: "{{ db_password }}"
+    priv: 'ALL'
+    state: 'present'
+
+- name: Vérification des droits "{{ db_user }}"
+  become: true
+  become_user: postgres
+  postgresql_user:
+    name: "{{ db_user }}"
+    role_attr_flags: "{{ role_attr_flags }}"
+    state: 'present'
+
+# Autorisation de la connexion en local avec login/password
+- name: Autorisation de la connexion en local avec login/password en ipv4
+  become: true
+  ansible.builtin.replace:
+    path: /var/lib/pgsql/data/pg_hba.conf
+    regexp: '^host\s+all\s+all\s+127\.0\.0\.1/32\s+ident'
+    replace: 'host    all             all             127.0.0.1/32            md5'
+  notify: Restart PostgreSQL
+
+- name: Autorisation de la connexion en local avec login/password en ipv6
+  become: true
+  ansible.builtin.replace:
+    path: /var/lib/pgsql/data/pg_hba.conf
+    regexp: '^host\s+all\s+all\s+::1/128\s+ident'
+    replace: 'host    all             all             ::1/128                 md5'
+  notify: Restart PostgreSQL
+
+# S'assurer que le fichier postgresql.conf soit présent
+- name: Vérifier que postgresql.conf soit present
+  become: true
+  ansible.builtin.stat:
+    path: /var/lib/pgsql/data/postgresql.conf
+  register: postgresql_conf_file
+
+# Mettre à jour ssl = off vers ssl = on
+- name: Activation du SSL dans postgresql.conf
+  become: true
+  ansible.builtin.replace:
+    path: /var/lib/pgsql/data/postgresql.conf
+    regexp: '^#?ssl\s*=\s*off'
+    replace: 'ssl = on'
+  when: postgresql_conf_file.stat.exists
+  notify: Restart PostgreSQL

@@ -1,0 +1,6 @@
+# Variables pour PostgreSQL
+install_postgresql: true
+postgresql_version: "10"
+db_name: "rasa"
+db_password: "{{ DB_PASSWORD }}" 
+role_attr_flags: "NOSUPERUSER,NOCREATEDB"
