@@ -1,0 +1,11 @@
+[Unit]
+Description=ClamAV virus database updater
+After=network.target
+
+[Service]
+ExecStart=/usr/bin/freshclam -d --foreground=true
+Restart=on-failure
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target

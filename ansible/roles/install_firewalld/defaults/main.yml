@@ -1,0 +1,18 @@
+---
+firewalld_services:
+  - name: "http"
+    zone: "public"
+  - name: "https"
+    zone: "public"
+  - name: "ssh"
+    zone: "public"
+
+firewalld_ports:
+  - port: "3000/tcp"
+    zone: "trusted"
+  - port: "5432/tcp"
+    zone: "trusted"
+  - port: "5055/tcp"
+    zone: "trusted"
+  - port: "5005/tcp"
+    zone: "trusted"

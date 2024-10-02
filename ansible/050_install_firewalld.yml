@@ -1,0 +1,7 @@
+---
+- name: Installation et configuration du Firewalld
+  hosts: all
+  remote_user: "{{ script_user }}"
+
+  roles:
+    - install_firewalld

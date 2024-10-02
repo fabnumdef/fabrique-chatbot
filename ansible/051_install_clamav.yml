@@ -1,0 +1,7 @@
+---
+- name: Installation de ClamAV
+  hosts: all
+  remote_user: "{{ script_user }}"
+
+  roles:
+    - install_clamav

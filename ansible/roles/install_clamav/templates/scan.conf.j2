@@ -1,0 +1,23 @@
+# Example configuration for ClamAV daemon
+LogFile /var/log/clamd.scan
+LogFileMaxSize 2M
+PidFile /var/run/clamd.scan/clamd.pid
+DatabaseDirectory /var/lib/clamav
+LocalSocket /var/run/clamd.scan/clamd.sock
+FixStaleSocket true
+User clamscan
+ScanMail true
+ScanArchive true
+ArchiveBlockEncrypted false
+MaxDirectoryRecursion 15
+FollowDirectorySymlinks false
+FollowFileSymlinks false
+ReadTimeout 180
+MaxThreads 12
+MaxConnectionQueueLength 15
+LogVerbose true
+LogRotate true
+ExtendedDetectionInfo true
+Bytecode true
+LocalSocket /var/run/clamd.scan/clamd.sock 
+VirusEvent /usr/local/bin/quarantine.sh

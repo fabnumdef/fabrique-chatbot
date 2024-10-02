@@ -1,0 +1,7 @@
+- name: Configuration pour OS Debian
+  ansible.builtin.include_tasks: debian.yml
+  when: ansible_distribution == 'Debian'
+
+- name: Configuration pour OS RHEL 8 & Almalinux 8
+  ansible.builtin.include_tasks: rhel.yml
+  when: (ansible_distribution == 'RedHat' or ansible_distribution == 'AlmaLinux')

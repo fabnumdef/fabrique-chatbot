@@ -1,0 +1,33 @@
+---
+- name: Installer firewalld
+  ansible.builtin.package:
+    name: firewalld
+    state: present
+  become: true
+
+- name: Activer et démarrer firewalld
+  ansible.builtin.systemd:
+    name: firewalld
+    enabled: true
+    state: started
+  become: true
+
+- name: Configurer les services Firewalld
+  ansible.builtin.firewalld:
+    service: "{{ item.name }}"
+    permanent: true
+    immediate: true
+    state: enabled
+    zone: "{{ item.zone }}"
+  loop: "{{ firewalld_services }}"
+  become: true
+
+- name: Configurer les ports Firewalld
+  ansible.builtin.firewalld:
+    port: "{{ item.port }}"
+    permanent: true
+    immediate: true
+    state: enabled
+    zone: "{{ item.zone }}"
+  loop: "{{ firewalld_ports }}"
+  become: true

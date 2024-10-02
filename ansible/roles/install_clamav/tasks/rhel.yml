@@ -1,0 +1,121 @@
+---
+- name: Activation du repo EPEL
+  become: true
+  ansible.builtin.package:
+    name: epel-release
+    state: present
+
+- name: Install ClamAV and ClamAV Daemon
+  become: true
+  ansible.builtin.package:
+    name:
+      - clamav
+      - clamav-freshclam
+      - clamd
+    state: present
+    update_cache: true
+
+- name: Copie du service freshclam
+  become: true
+  ansible.builtin.template:
+    src: freshclam.service.j2
+    dest: /etc/systemd/system/freshclam.service
+  notify:
+    - Reload systemd
+    - Start freshclam
+
+- name: Copie du service clamd
+  become: true
+  ansible.builtin.template:
+    src: clamd@scan.service.j2
+    dest: /etc/systemd/system/clamd@scan.service
+  notify:
+    - Reload systemd
+    - Start clamd
+
+- name: Copie du fichier de configuration clamd
+  become: true
+  ansible.builtin.template:
+    src: scan.conf.j2
+    dest: /etc/clamd.d/scan.conf
+  notify:
+    - Restart clamd
+
+- name: Créer l'utilisateur clamav si non existant
+  become: true
+  ansible.builtin.user:
+    name: clamav
+    shell: /sbin/nologin
+    system: true
+
+- name: Créer le répertoire de quarantaine ClamAV
+  become: true
+  ansible.builtin.file:
+    path: /var/quarantine
+    state: directory
+    owner: clamscan
+    group: clamscan
+    mode: '0700'
+
+- name: Créer le dossier /var/log/clamav
+  become: true
+  ansible.builtin.file:
+    path: /var/log/clamav
+    state: directory
+    owner: clamscan
+    group: clamscan
+    mode: '0755'
+
+- name: Vérifier si le fichier de log pour la quarantaine ClamAV existe
+  become: true
+  ansible.builtin.stat:
+    path: /var/log/clamav/quarantine.log
+  register: quarantine_log_stat
+
+- name: Créer le fichier de log pour la quarantaine ClamAV
+  become: true
+  ansible.builtin.file:
+    path: /var/log/clamav/quarantine.log
+    state: touch
+    owner: clamscan
+    group: clamscan
+    mode: '0644'
+  when: not quarantine_log_stat.stat.exists
+
+- name: Changer les permissions de /var/lib/clamav pour clamscan
+  become: true
+  ansible.builtin.file:
+    path: /var/lib/clamav
+    owner: clamscan
+    group: clamscan
+    recurse: true
+
+- name: Vérifier et corriger les permissions de /var/run/clamd.scan pour clamscan
+  become: true
+  ansible.builtin.file:
+    path: /var/run/clamd.scan
+    owner: clamscan
+    group: clamscan
+
+- name: Copier le script quarantine.sh dans /usr/local/bin
+  become: true
+  ansible.builtin.copy:
+    src: files/quarantine.sh
+    dest: /usr/local/bin/quarantine.sh
+    owner: root
+    group: root
+    mode: '0755'
+
+- name: Start et activation du service  freshclam
+  become: true
+  ansible.builtin.systemd:
+    name: freshclam
+    enabled: yes
+    state: started
+
+- name: Start et activation du service clamd
+  become: true
+  ansible.builtin.systemd:
+    name: clamd@scan
+    enabled: yes
+    state: started

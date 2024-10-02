@@ -1,0 +1,19 @@
+---
+- name: Reload systemd
+  ansible.builtin.systemd:
+    daemon_reload: true
+
+- name: Start freshclam
+  ansible.builtin.systemd:
+    name: freshclam
+    state: started
+
+- name: Start clamd
+  ansible.builtin.systemd:
+    name: clamd@scan
+    state: started
+
+- name: Restart clamd
+  ansible.builtin.systemd:
+    name: clamd@scan
+    state: restarted
