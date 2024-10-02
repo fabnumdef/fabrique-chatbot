@@ -1,0 +1,35 @@
+---
+- name: Générer la clé privée du domaine interne
+  openssl_privatekey:
+    path: "{{ ssl_keys_dir }}/{{ cert_common_name }}.key"
+  delegate_to: localhost
+  run_once: true
+
+- name: Générer la CSR du domaine interne
+  openssl_csr:
+    path: "{{ ssl_csrs_dir }}/{{ cert_common_name }}.csr"
+    privatekey_path: "{{ ssl_keys_dir }}/{{ cert_common_name }}.key"
+    common_name: "{{ cert_common_name }}"
+    organization_name: "{{ openssl_csr_organization_name }}"
+    subject_alt_name: "{{ cert_subject_alt_name }}"
+  delegate_to: localhost
+  run_once: true
+
+- name: Générer le certificat du domaine interne (avec CA auto-signé)
+  openssl_certificate:
+    path: "{{ ssl_certs_dir }}/{{ cert_common_name }}.hostonly.crt"
+    csr_path: "{{ ssl_csrs_dir }}/{{ cert_common_name }}.csr"
+    ownca_path: "{{ ssl_certs_dir }}/ca.crt"
+    ownca_privatekey_path: "{{ ssl_keys_dir }}/ca.key"
+    ownca_not_after: "{{ ownca_not_after }}"
+    provider: ownca
+  delegate_to: localhost
+  run_once: true
+
+- name: Générer le certificat complet avec chaîne de confiance (avec CA auto-signé)
+  copy:
+    content: "{{ lookup('file', ssl_certs_dir + '/' + cert_common_name + '.hostonly.crt') + '\n' + lookup('file', ssl_certs_dir + '/ca.crt') + '\n' }}"
+    dest: "{{ ssl_certs_dir }}/{{ cert_common_name }}.crt"
+  delegate_to: localhost
+  run_once: true
+

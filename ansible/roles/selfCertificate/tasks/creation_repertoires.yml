@@ -1,0 +1,11 @@
+---
+- name: Créer les répertoires pour stocker les fichiers SSL
+  ansible.builtin.file:
+    state: directory
+    path: "{{ item }}"
+  loop:
+    - "{{ ssl_keys_dir }}"
+    - "{{ ssl_csrs_dir }}"
+    - "{{ ssl_certs_dir }}"
+  delegate_to: localhost
+  run_once: true

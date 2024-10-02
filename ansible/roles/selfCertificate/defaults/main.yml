@@ -1,0 +1,11 @@
+---
+cert_common_name: example.com
+cert_subject_alt_name:
+  - "DNS:*.example.com"
+ownca_not_after: "+1825d"
+openssl_csr_common_name: "Self-Signed CA"
+openssl_csr_organization_name: "Self-Signed Organisation"
+ssl_dir: /tmp/ssl
+ssl_keys_dir: "{{ ssl_dir }}/keys"
+ssl_csrs_dir: "{{ ssl_dir }}/csrs"
+ssl_certs_dir: "{{ ssl_dir }}/certs"

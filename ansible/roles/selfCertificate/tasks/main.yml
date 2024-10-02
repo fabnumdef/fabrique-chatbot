@@ -1,0 +1,9 @@
+---
+- name: Include creation_repertoires
+  ansible.builtin.include_tasks: creation_repertoires.yml
+
+- name: Include ca
+  ansible.builtin.include_tasks: ca.yml
+
+- name: Include cert
+  ansible.builtin.include_tasks: cert.yml

@@ -1,0 +1,33 @@
+---
+- name: Générer la clé privée du CA racine
+  openssl_privatekey:
+    path: "{{ ssl_keys_dir }}/ca.key"
+  delegate_to: localhost
+  run_once: true
+
+- name: Générer la CSR du CA racine
+  openssl_csr:
+    path: "{{ ssl_csrs_dir }}/ca.csr"
+    privatekey_path: "{{ ssl_keys_dir }}/ca.key"
+    common_name: "{{ openssl_csr_common_name }}"
+    organization_name: "{{ openssl_csr_organization_name }}"
+    basic_constraints:
+      - CA:TRUE
+    basic_constraints_critical: yes
+    key_usage:
+      - keyCertSign
+      - digitalSignature
+      - cRLSign
+    key_usage_critical: yes
+  delegate_to: localhost
+  run_once: true
+
+- name: Générer le certificat du CA racine
+  openssl_certificate:
+    path: "{{ ssl_certs_dir }}/ca.crt"
+    privatekey_path: "{{ ssl_keys_dir }}/ca.key"
+    csr_path: "{{ ssl_csrs_dir }}/ca.csr"
+    provider: selfsigned
+  delegate_to: localhost
+  run_once: true
+
