@@ -1,215 +1,166 @@
-- name: Copie env-file
-  copy:
-    src: '../files/.env'
-    dest: '{{ appsDir }}/{{ gitDir }}/.env'
-
+---
 - name: Copie chatbot-back
-  synchronize:
+  become: true
+  ansible.builtin.synchronize:
     src: '{{ appsDir }}/{{ gitDir }}/{{ backDir }}'
     dest: '{{ appsDir }}'
   delegate_to: '{{ inventory_hostname }}'
 
-- name: Copie env-file bis
-  copy:
-    remote_src: yes
-    src: '{{ appsDir }}/{{ gitDir }}/.env'
+- name: Déployer le fichier .env un template Jinja
+  become: true
+  ansible.builtin.template:
+    src: env-template.j2
     dest: '{{ appsDir }}/{{ backDir }}/.env'
+    owner: automate
+    group: automate
+    mode: '0664'
 
 - name: Copie chatbot-front
-  synchronize:
+  become: true
+  ansible.builtin.synchronize:
     src: '{{ appsDir }}/{{ gitDir }}/{{ frontDir }}/dist/{{ frontDir }}'
     dest: '{{ appsDir }}'
   delegate_to: '{{ inventory_hostname }}'
 
 - name: Copie webchat
-  synchronize:
+  become: true
+  ansible.builtin.synchronize:
     src: '{{ appsDir }}/{{ gitDir }}/{{ frontDir }}/dist/{{ webchatDir }}'
     dest: '{{ appsDir }}'
   delegate_to: '{{ inventory_hostname }}'
 
 - name: Copie chatbot-template
-  synchronize:
+  become: true
+  ansible.builtin.synchronize:
     src: '{{ appsDir }}/{{ gitDir }}/{{ botDir }}'
     dest: '{{ appsDir }}'
   delegate_to: '{{ inventory_hostname }}'
 
-- name: Copie env-file ter
-  copy:
-    remote_src: yes
-    src: '{{ appsDir }}/{{ gitDir }}/.env'
+- name: Déployer le fichier .env un template Jinja
+  become: true
+  ansible.builtin.template:
+    src: env-template.j2
     dest: '{{ appsDir }}/{{ botDir }}/.env'
+    owner: automate
+    group: automate
+    mode: '0664'
 
 - name: Vérification si le certif BDD existe
   delegate_to: 'localhost'
-  stat:
+  ansible.builtin.stat:
     path: '/usr/local/share/ca-certificates/postgres.crt'
   register: db_cert
 
 - name: Ajout du certificat BDD
-  become: yes
-  copy:
+  become: true
+  ansible.builtin.copy:
     src: '/usr/local/share/ca-certificates/postgres.crt'
     dest: '/usr/local/share/ca-certificates/postgres.crt'
   when: db_cert.stat.exists
 
-- name: add server name to the nginx site config file
-  lineinfile:
+- name: Ajout du nom DNS à la configuration nginx 
+  become: true
+  ansible.builtin.lineinfile:
     path: '/etc/nginx/conf.d/default.conf'
     insertbefore : '^    location / {'
     line: '    server_name  {{ botDomain }};'
   when: botDomain is defined and botDomain is not none and botDomain != ""
-  become: yes
 
-- name: Open port 80 before check SSL certificate
-  become: yes
-  ufw:
-    rule: allow
-    port: '80'
-    proto: tcp
-  when: botDomain is defined and botDomain is not none and botDomain != ""
-
-- name: Install SSL certificate
-  become: yes
-  command:
-    cmd: 'certbot --nginx -d {{ botDomain }} -n --redirect --agree-tos -m vincent.laine@beta.gouv.fr'
-  when: botDomain is defined and botDomain is not none and botDomain != ""
-
-- name: Close port 80 after SSL certificate
-  become: yes
-  ufw:
-    rule: deny
-    port: '80'
-    proto: tcp
-  when: botDomain is defined and botDomain is not none and botDomain != ""
-
-- name: Auto renew SSL certificate
-  become: yes
-  cron:
-    name: "certbot renew"
-    minute: "0"
-    hour: "0"
-    month: "1"
-    job: 'certbot renew --pre-hook "ufw allow 80/tcp" --post-hook "ufw deny 80/tcp"'
-  when: botDomain is defined and botDomain is not none and botDomain != ""
-
-#- name: Update nginx site conf to use http2
-#  become: true
-#  lineinfile:
-#    path: '/etc/nginx/conf.d/default.conf'
-#    regexp: '^    listen \[::]:443 ssl ipv6only=on;'
-#    line: '    listen [::]:443 ssl http2 ipv6only=on;'
-#  when: botDomain is defined and botDomain != ""
-
-- name: Update nginx site conf to use http2
+- name: Install du certificat TLS via Certbot
   become: true
-  lineinfile:
+  ansible.builtin.command:
+    cmd: 'certbot --nginx -d {{ botDomain }} -n --redirect --agree-tos -m {{ certbot_mail }}'
+  when: botDomain is defined and botDomain is not none and botDomain != ""
+
+- name: Update de la conf nginx pour utiliser http2
+  become: true
+  ansible.builtin.lineinfile:
     path: '/etc/nginx/conf.d/default.conf'
     regexp: '^    listen 443 ssl;'
     line: '    listen 443 ssl http2;'
   when: botDomain is defined and botDomain is not none and botDomain != ""
 
-- name: Update certbot conf to use TLS 1.2
+- name: Update certbot en TLS 1.2
   become: true
-  lineinfile:
+  ansible.builtin.lineinfile:
     path: '/etc/letsencrypt/options-ssl-nginx.conf'
     regexp: '^ssl_protocols TLSv1 TLSv1.1 TLSv1.2;'
     line: 'ssl_protocols TLSv1.2 TLSv1.3;'
   when: botDomain is defined and botDomain is not none and botDomain != ""
 
-- name: npm install chatbot-back
-  command:
+- name:  Install npm chatbot-back
+  become: true
+  become_user: "{{ chatbot_user }}"
+  ansible.builtin.command:
     cmd: npm install
     chdir: '{{ appsDir }}/{{ backDir }}'
 
-- name: npm build chatbot-back
-  command:
+- name: Build npm chatbot-back
+  become: true
+  become_user: "{{ chatbot_user }}"
+  ansible.builtin.command:
     cmd: 'npm run build'
     chdir: '{{ appsDir }}/{{ backDir }}'
 
-- name: npm copy env file
-  command:
+- name: Npm copy env file
+  become: true
+  become_user: "{{ chatbot_user }}"
+  ansible.builtin.command:
     cmd: 'npm run copy'
     chdir: '{{ appsDir }}/{{ backDir }}'
 
 - name: Création du répertoire mediatheque
-  become: yes
-  file:
+  become: true
+  ansible.builtin.file:
     path: '{{ appsDir }}/{{ backDir }}/mediatheque'
     state: directory
-    owner: '{{ ansible_user }}'
-    group: www-data
+    owner: '{{ chatbot_user }}'
+    group: '{{ nginx_user }}'
     mode: '751'
 
 - name: Création du répertoire historic
-  become: yes
-  file:
+  become: true
+  ansible.builtin.file:
     path: '{{ appsDir }}/{{ backDir }}/historic'
     state: directory
-    owner: '{{ ansible_user }}'
-    group: www-data
+    owner: '{{ chatbot_user }}'
+    group: '{{ nginx_user }}'
     mode: '751'
 
-- name: NODE | Stop APP
-  shell: pm2 stop ChatbotBack
+- name: "Vérifier le statut de l'application ChatbotBack"
+  become: true
+  become_user: "{{ chatbot_user }}"
+  ansible.builtin.shell: "pm2 jlist | jq '.[] | select(.name==\"ChatbotBack\") | .pm2_env.status'"
+  register: pm2_status
+  ignore_errors: true
+  changed_when: false
+
+- name: NODE | Stop ChatbotBack APP
+  become: true
+  become_user: "{{ chatbot_user }}"
+  ansible.builtin.shell: pm2 stop ChatbotBack
   args:
     chdir: '{{ appsDir }}/{{ backDir }}'
-  ignore_errors: yes
+  when: pm2_status.stdout == '"online"'
 
-- name: NODE | Start APP
-  shell: pm2 start main.js --name ChatbotBack
+- name: NODE | Start ChatbotBack APP
+  become: true
+  become_user: "{{ chatbot_user }}"
+  ansible.builtin.shell: pm2 start main.js --name ChatbotBack
   args:
     chdir: '{{ appsDir }}/{{ backDir }}/dist'
 
-#- name: Mise à jour du script de PM2 pour se relancer au reboot du serveur
-#  become: true
-#  shell: 'env PATH=$PATH:/usr/bin /usr/local/lib/node_modules/pm2/bin/pm2 startup systemd -u chatbot_user --hp /home/chatbot_user'
-
-- name: Vérification du statut de PM2
-  ignore_errors: true
-  systemd:
-    name: pm2-chatbot_user
-    state: started
-
-- name: Copy endpoints.yml rasa file
-  copy:
-    src: '{{ appsDir }}/{{ botDir }}/endpoints.example.yml'
+- name: Déployer le fichier endpoints.yml
+  become: true
+  ansible.builtin.template:
+    src: endpoints.example.yml.j2
     dest: '{{ appsDir }}/{{ botDir }}/endpoints.yml'
-    remote_src: yes
+    owner: automate
+    group: automate
+    mode: '0664'
 
-#- name: Train rasa
-#  command:
-#    chdir: '{{ appsDir }}/{{ botDir }}/'
-#    cmd: 'rasa train --num-threads 8'
+- name: Création des services pour le redémarrage
+  ansible.builtin.include_tasks: creation_service.yml
 
-#- name: Stop rasa chatbot
-#  command: 'pkill screen'
-#  ignore_errors: true
-
-#- name: Start rasa chatbot
-#  command:
-#    chdir: '{{ appsDir }}/{{ botDir }}/'
-#    cmd: 'screen -S rasa -dmS rasa run -m models --log-file out.log --cors "*" --debug'
-
-- name: copy rc.local file to restart bot on boot
-  become: true
-  copy:
-    src: '../files/rc.local'
-    dest: '/etc/rc.local'
-
-- name: Set right rights on rc.local file
-  become: true
-  file:
-    path: '/etc/rc.local'
-    mode: '755'
-
-#- name: copy files for bot
-#  ignore_errors: true
-#  copy:
-#    src: '{{ item.src }}'
-#    dest: '{{ item.dest }}'
-#  with_items:
-#    - { src: 'roles/chatbotGeneration/files/rc.local', dest: '{{ gitDir }}/rc.local' }
-#    - { src: 'roles/chatbotGeneration/files/nginx_rhel.conf', dest: '{{ gitDir }}/nginx.conf' }
-#    - { src: 'roles/chatbotGeneration/files/nginx_conf.cfg', dest: '{{ gitDir }}/nginx_conf.cfg' }
-#    - { src: 'roles/chatbotGeneration/files/.env', dest: '{{ gitDir }}/.env' }
-#  become: yes
+- name: Entrainement modèle
+  ansible.builtin.include_tasks: entrainement.yml

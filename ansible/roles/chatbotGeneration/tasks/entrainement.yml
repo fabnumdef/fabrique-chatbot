@@ -1,0 +1,60 @@
+---
+- name: Savoir si le répertoire models est vide.
+  ansible.builtin.find:
+    paths: "{{ appsDir }}/{{ botDir }}/models"
+    file_type: file
+  register: models_files
+
+#- name: Lancement d'un entraînement RASA sans modèle existant.
+#  ansible.builtin.command:
+#    chdir: '{{ appsDir }}/{{ botDir }}/'
+#    cmd: '{{ app_venv_folder }}/bin/rasa train --augmentation 0'
+#  when: models_files.matched == 0
+#  become: true
+#  become_user: "{{ script_user }}"
+
+#- name: Lancement d'un entraînement RASA avec modèle existant.
+#  ansible.builtin.command:
+#    chdir: '{{ appsDir }}/{{ botDir }}/'
+#    cmd: '{{ app_venv_folder }}/bin/rasa train --finetune --epoch-fraction 0.2 --num-threads {{ ansible_processor_vcpus }}'
+#  when: models_files.matched != 0
+#  become: true
+#  become_user: "{{ script_user }}"
+
+- name: Désactivation de la telemetrie.
+  ansible.builtin.command:
+    chdir: '{{ appsDir }}/{{ botDir }}/'
+    cmd: '{{ app_venv_folder }}/bin/rasa telemetry disable'
+  become: true
+  become_user: "{{ chatbot_user }}"
+
+- name: Vérifie s'il existe des processus screen
+  ansible.builtin.command: pgrep screen
+  register: screen_processes
+  ignore_errors: true
+
+- name: Tue les screen existants
+  become: true
+  ansible.builtin.command: pkill screen
+  args:
+    chdir: '{{ appsDir }}/{{ botDir }}/'
+  when: screen_processes.rc == 0
+  ignore_errors: true
+
+# Démarrer les modèles du chatbot RASA
+- name: Start rasa chatbot models
+  become: true
+  become_user: "{{ chatbot_user }}"
+  args:
+    chdir: '{{ appsDir }}/{{ botDir }}/'
+  ansible.builtin.shell: |
+    screen -S rasa -dmS {{ app_venv_folder }}/bin/rasa run -m models --log-file out.log --cors "*" --debug
+
+# Démarrer les actions du chatbot RASA
+- name: Start rasa chatbot actions
+  become: true
+  become_user: "{{ chatbot_user }}"
+  args:
+    chdir: '{{ appsDir }}/{{ botDir }}/'
+  ansible.builtin.shell: |
+    screen -S rasa-action -dmS {{ app_venv_folder }}/bin/rasa run actions

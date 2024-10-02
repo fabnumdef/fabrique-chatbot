@@ -1,0 +1,19 @@
+[Unit]
+Description=ChatbotBack Node.js App managed by PM2
+After=network.target
+
+[Service]
+Type=simple
+User={{ chatbot_user }}
+WorkingDirectory={{ appsDir }}/{{ backDir }}/dist
+ExecStart=/usr/bin/pm2 start main.js --name ChatbotBack
+ExecStop=/usr/bin/pm2 stop ChatbotBack
+ExecReload=/usr/bin/pm2 reload ChatbotBack
+Restart=always
+
+Environment=PATH=/usr/bin:/bin:/usr/local/bin:/usr/local/sbin
+Environment=PM2_HOME=/home/{{ chatbot_user }}/.pm2
+
+[Install]
+WantedBy=multi-user.target
+

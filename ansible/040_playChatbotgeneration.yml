@@ -1,0 +1,7 @@
+---
+- name: Génération d'un Chatbot
+  hosts: all
+  remote_user: "{{ script_user }}"
+
+  roles:
+    - chatbotGeneration

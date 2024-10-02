@@ -1,0 +1,58 @@
+---
+- name: Vérifier si le service PM2 existe déjà pour {{ chatbot_user }}
+  ansible.builtin.stat:
+    path: "/etc/systemd/system/pm2-{{ chatbot_user }}.service"
+  register: pm2_service
+
+- name: Mise à jour du script de PM2 pour se relancer au reboot du serveur
+  become: true
+  ansible.builtin.shell: 'env PATH=$PATH:/usr/bin /usr/bin/pm2 startup systemd -u {{ chatbot_user }} --hp /home/{{ chatbot_user }}'
+  when: not pm2_service.stat.exists
+  notify: "Reload systemd services"
+
+- name: Déployer le service Rasa Core avec un template Jinja
+  become: true
+  ansible.builtin.template:
+    src: rasa-core.service.j2
+    dest: /etc/systemd/system/rasa-core.service
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: Déployer le service Rasa Actions avec un template Jinja
+  become: true
+  ansible.builtin.template:
+    src: rasa-actions.service.j2
+    dest: /etc/systemd/system/rasa-actions.service
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: Recharger le démon systemd
+  become: true
+  ansible.builtin.command: systemctl daemon-reload
+  changed_when: false
+
+- name: Vérification du statut de PM2
+  command: systemctl is-active "pm2-{{ chatbot_user }}"
+  register: pm2_is_active
+  ignore_errors: true
+  changed_when: false
+
+- name: Démarrer PM2 si le statut n'est pas active
+  become: true
+  ansible.builtin.systemd:
+    name: "pm2-{{ chatbot_user }}"
+    state: started
+  when: pm2_is_active.stdout != "active"
+  ignore_errors: true
+
+- name: Activer les services Rasa Core et Actions
+  become: true
+  ansible.builtin.systemd:
+    name: "{{ item }}"
+    enabled: yes
+    state: stopped
+  loop:
+    - rasa-core.service
+    - rasa-actions.service

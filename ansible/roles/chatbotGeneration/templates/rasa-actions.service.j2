@@ -1,0 +1,16 @@
+[Unit]
+Description=Rasa Actions Service
+After=multi-user.target
+
+[Service]
+Type=simple
+WorkingDirectory={{ appsDir }}/{{ botDir }}
+ExecStart=/usr/bin/screen -S rasa-action -dmS {{ app_venv_folder }}/bin/rasa run actions
+User={{ chatbot_user }}
+Group={{ chatbot_user }}
+# le service est considéré comme actif même après la fin du processus
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target
+
