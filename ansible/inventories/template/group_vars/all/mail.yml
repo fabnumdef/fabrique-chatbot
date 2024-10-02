@@ -1,0 +1,4 @@
+mail_user: 'user'
+mail_from: 'example@foo.com'
+mail_host: 'localhost'
+mail_port: '0000'

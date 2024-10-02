@@ -1,0 +1,3 @@
+action_endpoint_url: 'http://localhost:5055/webhook'
+tracker_store_type: 'sql'
+tracker_store_dialect: 'postgresql'

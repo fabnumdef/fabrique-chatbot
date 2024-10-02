@@ -1,0 +1,12 @@
+userDir: '/home/fab_user'
+appsDir: '/var/www'
+userBotDir: '/home/chatbot_user'
+nestDir: 'fabrique-chatbot-back'
+angularDir: 'fabrique-chatbot-front'
+usineDir: 'fabrique-chatbot'
+backDir: 'chatbot-back'
+botDir: 'chatbot-template'
+frontDir: 'chatbot-front'
+webchatDir: 'webchat'
+gitDir: 'git'
+app_venv_folder: /app/rasa

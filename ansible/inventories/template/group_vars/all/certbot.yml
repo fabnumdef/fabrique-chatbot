@@ -1,0 +1,3 @@
+certbot_mail: 'example@beta.gouv.fr'
+botDomain: 'bot.hayo.fr'
+BOT_URL: 'https://{{ botDomain }}'

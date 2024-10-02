@@ -1,0 +1,8 @@
+intranet: false
+ansible_distribution_release: 'xenial'
+backBranch: 'master'
+frontBranch: 'master'
+botBranch: 'master'
+nginx_group: 'nginx'
+intradef: 'false'
+node_env: 'dev'
