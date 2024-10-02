@@ -1,61 +1,16 @@
 - name: Do not allow root access via ssh
-  become: yes
-  lineinfile:
+  become: true
+  ansible.builtin.lineinfile:
     line: PermitRootLogin no
     dest: /etc/ssh/sshd_config
     regexp: ^PermitRootLogin
 
 - name: Delete ssh host keys
-  become: yes
-  shell: "rm /etc/ssh/ssh_host_* && dpkg-reconfigure openssh-server"
+  become: true
+  ansible.builtin.shell: "rm /etc/ssh/ssh_host_* && dpkg-reconfigure openssh-server"
   notify: restart ssh
   when: renew_ssh is defined and renew_ssh == "yes"
 
 - name: UFW pour OS Debian
   include_tasks: debian.yml
   when: ansible_distribution == 'Debian'
-
-- name: UFW pour OS RHEL 8 & CentOS 8 - Internet
-  include_tasks: rhel.yml
-  when: (ansible_distribution == 'CentOS' or ansible_distribution == "RedHat") and (intranet is not defined or intranet == "false")
-
-- name: Configuration pare-feu
-  become: yes
-  ufw:
-    policy: deny
-    state: enabled
-
-- name: Ouverture port ssh
-  become: yes
-  ufw:
-    rule: limit
-    port: ssh
-    proto: tcp
-
-- name: Ouverture port 443
-  become: yes
-  ufw:
-    rule: allow
-    port: '443'
-    proto: tcp
-
-- name: Ouverture port 80
-  become: yes
-  ufw:
-    rule: allow
-    port: '80'
-    proto: tcp
-
-- name: Ouverture port 5005
-  become: yes
-  ufw:
-    rule: allow
-    port: '5005'
-    proto: tcp
-
-- name: Ouverture port DB
-  become: yes
-  ufw:
-    rule: allow
-    port: '{{ DB_PORT }}'
-    proto: tcp

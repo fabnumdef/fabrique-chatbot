@@ -1,4 +1,45 @@
 - name: Make sure ufw is installed
-  become: yes
+  become: true
   apt:
     name: ufw
+
+- name: Configuration pare-feu
+  become: true
+  ufw:
+    policy: deny
+    state: enabled
+
+- name: Ouverture port ssh
+  become: true
+  ufw:
+    rule: limit
+    port: ssh
+    proto: tcp
+
+- name: Ouverture port 443
+  become: true
+  ufw:
+    rule: allow
+    port: '443'
+    proto: tcp
+
+- name: Ouverture port 80
+  become: true
+  ufw:
+    rule: allow
+    port: '80'
+    proto: tcp
+
+- name: Ouverture port 5005
+  become: true
+  ufw:
+    rule: allow
+    port: '5005'
+    proto: tcp
+
+- name: Ouverture port DB
+  become: true
+  ufw:
+    rule: allow
+    port: '{{ DB_PORT }}'
+    proto: tcp
