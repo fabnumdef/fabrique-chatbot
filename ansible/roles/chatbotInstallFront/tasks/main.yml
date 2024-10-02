@@ -1,0 +1,18 @@
+- name: Npm install chatbot-front
+  become: true
+  become_user: "{{ chatbot_user }}"
+  npm:
+    path: '{{ appsDir }}/{{ gitDir }}/{{ frontDir }}'
+
+- name: Npm install chatbot-front librairies
+  become: true
+  become_user: "{{ chatbot_user }}"
+  npm:
+    path: '{{ appsDir }}/{{ gitDir }}/{{ frontDir }}/projects/ngx-rasa-webchat'
+
+- name: Npm build chatbot-front
+  become: true
+  become_user: "{{ chatbot_user }}"
+  ansible.builtin.command:
+    cmd: npm run build:prod
+    chdir: '{{ appsDir }}/{{ gitDir }}/{{ frontDir }}'

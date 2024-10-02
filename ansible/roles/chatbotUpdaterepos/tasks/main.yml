@@ -1,49 +1,29 @@
-- name: Changement de droits et de propriétaire pour le dossier www
-  become: true
-  file:
-    path: '{{ appsDir }}'
-    state: directory
-    owner: '{{ ansible_user }}'
-    mode: '775'
-
+---
 - name: Création du répertoire git
   become: true
-  file:
+  ansible.builtin.file:
     path: '{{ appsDir }}/{{ gitDir }}'
     state: directory
-    owner: '{{ ansible_user }}'
+    owner: '{{ script_user }}'
     mode: '775'
 
 - name: Git chatbot-back
-  git:
+  ansible.builtin.git:
     repo: https://github.com/fabnumdef/chatbot-back.git
     dest: '{{ appsDir }}/{{ gitDir }}/{{ backDir }}'
-    force: yes
+    force: true
     version: '{{ backBranch }}'
 
 - name: Git chatbot-front
-  git:
+  ansible.builtin.git:
     repo: https://github.com/fabnumdef/chatbot-front.git
     dest: '{{ appsDir }}/{{ gitDir }}/{{ frontDir }}'
-    force: yes
+    force: true
     version: '{{ frontBranch }}'
 
 - name: Git chatbot-template
-  git:
+  ansible.builtin.git:
     repo: https://github.com/fabnumdef/chatbot-template.git
     dest: '{{ appsDir }}/{{ gitDir }}/{{ botDir }}'
-    force: yes
+    force: true
     version: '{{ botBranch }}'
-
-- name: npm install chatbot-front
-  npm:
-    path: '{{ appsDir }}/{{ gitDir }}/{{ frontDir }}'
-
-- name: npm install chatbot-front librairies
-  npm:
-    path: '{{ appsDir }}/{{ gitDir }}/{{ frontDir }}/projects/ngx-rasa-webchat'
-
-- name: npm build chatbot-front
-  command:
-    cmd: npm run build:prod
-    chdir: '{{ appsDir }}/{{ gitDir }}/{{ frontDir }}'

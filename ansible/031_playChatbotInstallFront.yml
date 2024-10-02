@@ -1,0 +1,7 @@
+---
+- name: Installation du front
+  hosts: all
+  remote_user: "{{ script_user }}"
+
+  roles:
+    - chatbotInstallFront

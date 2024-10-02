@@ -1,0 +1,7 @@
+---
+- name: Mise à jour des différents repos git + build des fronts si besoin
+  hosts: all
+  remote_user: "{{ script_user }}"
+
+  roles:
+    - chatbotUpdaterepos
