@@ -1,0 +1,12 @@
+---
+- name: Creation des users pour le playbook 
+  ansible.builtin.include_tasks: debian.yml
+  when: ansible_distribution == 'Debian'
+
+- name: Creation des users pour le playbook RHEL 8 & AlmaLinux 8 - Internet
+  ansible.builtin.include_tasks: rhel.yml
+  when: ansible_distribution in ['RedHat', 'AlmaLinux'] and (intranet | default(false) == false)
+
+- name: Creation des users pour le playbook RHEL 8 & AlmaLinux 8 - Intranet
+  ansible.builtin.include_tasks: rhel_intranet.yml
+  when: ansible_distribution in ['RedHat', 'AlmaLinux'] and (intranet | default(false) == true)

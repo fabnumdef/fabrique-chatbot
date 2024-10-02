@@ -1,0 +1,42 @@
+---
+- name: Installation de Sudo
+  become: true
+  ansible.builtin.package:
+    name: sudo
+    state: present
+
+- name: S'assurer que l'utilisateur "{{ script_user }}" est présent
+  become: true
+  ansible.builtin.user:
+    name: "{{ script_user }}"
+    state: present
+    groups: wheel
+    append: true
+    password: "{{ script_user_password | password_hash('sha512') }}"
+    update_password: on_create
+
+- name: "Ajout de la clé SSH publique pour l'utilisateur {{ script_user }}"
+  become_user: root
+  become: true
+  ansible.builtin.authorized_key:
+    user: "{{ script_user }}"
+    key: "{{ script_user_ssh_pub_key }}"
+  when: script_user_ssh_pub_key is defined and script_user_ssh_pub_key != ''
+
+- name: Créer l'utilisateur "{{ chatbot_user }}" pour exécuter le bot Python
+  become: true
+  ansible.builtin.user:
+    name: "{{ chatbot_user }}"
+    state: present
+    shell: /bin/bash
+    createhome: yes
+    home: "/home/{{ chatbot_user }}"
+    update_password: on_create
+
+- name: "Ajouter /app/rasa/bin au PATH de l'utilisateur {{ script_user }}"
+  lineinfile:
+    path: "/home/{{ script_user }}/.bashrc"
+    line: 'export PATH="/app/rasa/bin:$PATH"'
+    create: yes
+  become: true
+  become_user: "{{ script_user }}"

@@ -1,0 +1,35 @@
+---
+- name: Installation de Sudo
+  become: true
+  package:
+    name: sudo
+    state: present
+
+- name: S'assurer que l'utilisateur "{{ script_user }}" est présent
+  become: true
+  user:
+    name: "{{ script_user }}"
+    state: present
+    groups: sudo
+    append: yes
+    password: "{{ script_user_password | password_hash('sha512') }}"
+    update_password: on_create
+
+- name: "Ajout de la clé SSH publique pour l'utilisateur {{ script_user }}"
+  become_user: root
+  become: true
+  authorized_key:
+    user: "{{ script_user }}"
+    key: "{{ script_user_ssh_pub_key }}"
+  when: script_user_ssh_pub_key is defined and script_user_ssh_pub_key != ''
+
+- name: Créer l'utilisateur "{{ chatbot_user }}" pour exécuter le bot Python
+  become: true
+  user:
+    name: "{{ chatbot_user }}"
+    state: present
+    shell: /bin/bash
+    createhome: yes
+    home: "/home/{{ chatbot_user }}"
+    update_password: on_create
+

@@ -1,0 +1,6 @@
+---
+- name: Création des utilisateurs
+  hosts: all
+
+  roles:
+    - chatbot_user_creation
