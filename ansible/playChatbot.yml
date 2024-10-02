@@ -1,8 +1,30 @@
 ---
-# ansible-playbook playChatbot.yml -i $IP_ADRESS, -e '{USER_PASSWORD: '$USER_PASSWORD', ROOT_USER: '$ROOT_USER', ROOT_PASSWORD: '$ROOT_PASSWORD', DB_PASSWORD: '$DB_PASSWORD', frontBranch: 'master', backBranch: 'master', botBranch: 'master', botDomain: '$URL_BOT', intranet: false}';
+- name: Création des utilisateurs
+  import_playbook: 010_user_creation.yml
 
-- import_playbook: playChatbotprebook.yml
-- import_playbook: playChatbotsecurity.yml
-- import_playbook: playChatbotconfiguration.yml
-- import_playbook: playChatbotupdaterepos.yml
-- import_playbook: playChatbotgeneration.yml
+- name: Configuration du serveur Chatbot
+  import_playbook: 020_playChatbotconfiguration.yml
+
+- name: Installation de Certbot
+  import_playbook: 021_install_certbot.yml
+
+- name: Installation de PostgreSQL
+  import_playbook: 025_install_postgresql.yml
+
+- name: Mise à jour des différents repos git + build des fronts si besoin
+  import_playbook: 030_playChatbotupdaterepos.yml
+
+- name: Installation du front
+  import_playbook: 031_playChatbotInstallFront.yml
+
+- name: Génération d'un Chatbot
+  import_playbook: 040_playChatbotgeneration.yml
+
+- name: Installation et configuration du Firewalld
+  import_playbook: 050_install_firewalld.yml
+
+- name: Installation de ClamAV
+  import_playbook: 051_install_clamav.yml
+
+- name: Initialisation de l'utilisateur admin
+  import_playbook: 060_playChatbotInitData.yml
