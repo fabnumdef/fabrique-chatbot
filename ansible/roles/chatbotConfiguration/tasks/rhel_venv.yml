@@ -1,0 +1,63 @@
+---
+- name: Install python {{ python_version }}
+  become: true
+  ansible.builtin.package:
+    name: "python{{ python_version }}"
+    state: present
+    update_cache: true
+
+# Création du dossier pour l'environnement virtuel avec les permissions appropriées
+- name: Create directory for the virtual environment
+  become: true
+  ansible.builtin.file:
+    path: "{{ app_venv_folder }}"
+    state: directory
+    owner: "{{ chatbot_user }}"
+    group: "{{ chatbot_group }}"
+    mode: '0755'
+
+# Création d'un environnement virtuel dédié à l'application
+- name: Create a Python virtual environment in {{ app_venv_folder }}
+  become: true
+  become_user: "{{ chatbot_user }}"
+  ansible.builtin.command:
+    cmd: "{{ python_bin }} -m venv {{ app_venv_folder }}"
+  args:
+    creates: "{{ app_venv_folder }}/bin/activate"
+
+# Vérification de l'existence de pip dans l'environnement virtuel
+- name: Check if pip is installed in the virtual environment
+  ansible.builtin.stat:
+    path: "{{ app_venv_folder }}/bin/pip3"
+  register: pip_exists
+
+# Installer pip manuellement si non présent dans l'environnement virtuel
+- name: Install pip manually in the virtual environment if missing
+  become: true
+  become_user: "{{ chatbot_user }}"
+  ansible.builtin.command:
+    cmd: "{{ app_venv_folder }}/bin/python3 -m ensurepip --upgrade || {{ app_venv_folder }}/bin/python3 -m pip install --upgrade pip"
+  when: not pip_exists.stat.exists
+
+# Mise à jour de pip dans l'environnement virtuel
+- name: Upgrade pip in the virtual environment
+  become: true
+  become_user: "{{ chatbot_user }}"
+  ansible.builtin.command:
+    cmd: "{{ app_venv_folder }}/bin/pip3 install --upgrade pip"
+  when: pip_exists.stat.exists
+
+# Installation des dépendances applicatives dans le venv
+- name: Install RASA 3.4.0 & Ansible in the virtual environment
+  become: true
+  become_user: "{{ chatbot_user }}"
+  ansible.builtin.pip:
+    virtualenv: "{{ app_venv_folder }}"
+    name:
+      - rasa==3.4.0
+      - rasa-sdk==3.4.0
+      - psycopg2-binary
+      - websockets==10.4
+      - python-socketio==5.7.2
+      - ansible
+    state: present

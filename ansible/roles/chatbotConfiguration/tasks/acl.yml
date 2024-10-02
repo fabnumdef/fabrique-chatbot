@@ -1,0 +1,44 @@
+---
+- name: Changement de droits et de propriétaire pour le dossier www
+  become: true
+  ansible.builtin.file:
+    path: '{{ appsDir }}'
+    state: directory
+    owner: '{{ script_user }}'
+    group: '{{ nginx_group }}'
+    mode: '744'
+
+## Vérifier si les ACL pour l'utilisateur chatbot sont déjà définies sur /var/www
+#- name: Vérifier si les ACL pour l'utilisateur chatbot sont déjà définies sur /var/www
+#  command: "getfacl -p /var/www"
+#  register: acl_check_user
+#  changed_when: false
+#  failed_when: false
+
+# Appliquer les ACL si nécessaire
+- name: Appliquer les ACL pour l'utilisateur chatbot sur /var/www
+  ansible.builtin.command: setfacl -R -m u:chatbot:rwx /var/www
+#  when: "'chatbot:rwx' not in acl_check_user.stdout"
+  become: true
+
+- name: Définir les ACL par défaut pour l'utilisateur chatbot sur /var/www
+  ansible.builtin.command: setfacl -R -m d:u:chatbot:rwx /var/www
+#  when: "'default:user:chatbot:rwx' not in acl_check_user.stdout"
+  become: true
+
+# Vérifier si les ACL pour le groupe nginx sont déjà définies sur /var/www
+- name: Vérifier si les ACL pour le groupe nginx sont déjà définies sur /var/www
+  command: "getfacl -p /var/www"
+  register: acl_check_group
+  changed_when: false
+  failed_when: false
+
+- name: Appliquer les ACL pour le groupe nginx sur /var/www
+  ansible.builtin.command: setfacl -R -m g:nginx:rwx /var/www
+  when: "'nginx:rwx' not in acl_check_group.stdout"
+  become: true
+
+- name: Définir les ACL par défaut pour le groupe nginx sur /var/www
+  ansible.builtin.command: setfacl -R -m d:g:nginx:rwx /var/www
+  when: "'default:group:nginx:rwx' not in acl_check_group.stdout"
+  become: true

@@ -1,97 +1,24 @@
+---
 - name: Configuration pour OS Debian
-  include_tasks: debian.yml
+  ansible.builtin.include_tasks: debian.yml
   when: ansible_distribution == 'Debian'
 
-- name: Configuration pour OS RHEL 8 & CentOS 8 - Internet
-  include_tasks: rhel.yml
-  when: (ansible_distribution == 'CentOS' or ansible_distribution == "RedHat")
+- name: Configuration pour OS RHEL 8 & Almalinux 8
+  ansible.builtin.include_tasks: rhel.yml
+  when: (ansible_distribution == 'RedHat' or ansible_distribution == 'AlmaLinux')
 
-#- name: Configuration pour OS RHEL 8 & CentOS 8 - Intranet
-#  include_tasks: rhel_intranet.yml
-#  when: (ansible_distribution == 'CentOS' or ansible_distribution == "RedHat")
-
-- name: Install last version of pip
+- name: "Ajouter /app/rasa/bin au PATH de l'utilisateur {{ chatbot_user }}"
+  ansible.builtin.lineinfile:
+    path: "/home/{{ chatbot_user }}/.bashrc"
+    line: 'export PATH="{{ app_venv_folder }}/bin:$PATH"'
+    create: true
   become: true
-  pip:
-    executable: pip3
-    name: pip
-    extra_args: -U
-
-- name: Install RASA & Ansible
-  become: true
-  pip:
-    executable: pip3
-    extra_args: --ignore-installed
-    name:
-      - rasa==3.4.0
-      - psycopg2
-      - ansible
-
-- name: Upgrade pyOpenSSL
-  become: true
-  pip:
-    executable: pip3
-    name: pyOpenSSL
-    extra_args: --upgrade
-
-- name: NODE | Install pm2
-  become: yes
-  npm:
-    name: pm2
-    global: yes
-    production: yes
-    state: present
-
-#- name: Ensure the PostgreSQL service is running - Internet
-#  become: yes
-#  service:
-#    name: 'postgresql'
-#    state: 'started'
-#    enabled: 'yes'
-#
-#- name: Ensure database is created
-#  become: true
-#  become_user: postgres
-#  postgresql_db:
-#    name: 'rasa'
-#    encoding: 'UTF-8'
-#    #        conn_limit: '100'
-#    state: 'present'
-#    template: 'template0'
-#
-#- name: Adds unaccent extension
-#  become: true
-#  become_user: postgres
-#  postgresql_ext:
-#    name: unaccent
-#    db: rasa
-#
-#- name: Ensure user has access to the database
-#  become: true
-#  become_user: postgres
-#  postgresql_user:
-#    db: 'rasa'
-#    name: 'rasa_user'
-#    password: '{{ DB_PASSWORD }}'
-#    priv: 'ALL'
-#    state: 'present'
-#
-#- name: Ensure user does not have unnecessary privileges
-#  become: true
-#  become_user: postgres
-#  postgresql_user:
-#    name: 'rasa_user'
-#    role_attr_flags: 'NOSUPERUSER,NOCREATEDB'
-#    state: 'present'
+  become_user: "{{ chatbot_user }}"
 
 - name: Copie de la configuration du site statique nginx
-  copy:
+  ansible.builtin.copy:
     src: 'roles/chatbotGeneration/files/nginx_conf.cfg'
     dest: '/etc/nginx/conf.d/default.conf'
-  become: yes
-
-- name: restart nginx
-  service:
-    name: nginx
-    state: restarted
-  become: yes
+  become: true
+  notify:
+    - Restart nginx

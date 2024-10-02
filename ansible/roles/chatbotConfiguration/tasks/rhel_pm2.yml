@@ -1,0 +1,8 @@
+---
+- name: "NODE | Install pm2"
+  become: true
+  npm:
+    name: pm2
+    global: true
+    production: true
+    state: present

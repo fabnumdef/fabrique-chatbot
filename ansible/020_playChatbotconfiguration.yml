@@ -1,0 +1,7 @@
+---
+- name: Configuration du serveur Chatbot
+  hosts: all
+  remote_user: "{{ script_user }}"
+
+  roles:
+    - chatbotConfiguration

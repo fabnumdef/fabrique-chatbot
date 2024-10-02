@@ -1,26 +1,57 @@
-- name: Update and upgrade apt packages
+---
+- name: Update de Yum
   become: true
-  dnf:
+  ansible.builtin.dnf:
     name: '*'
     state: latest
-    update_cache: 'yes'
+    update_cache: true
 
-- name: Install dependencies for nodejs
-  become: yes
-  dnf:
+- name: Install des dépendances pour nodejs
+  become: true
+  ansible.builtin.dnf:
     name:
       - curl
       - gcc-c++
       - make
 
-- name: NodeSource binary distribution
-  command:
-    cmd: 'curl -sL https://rpm.nodesource.com/setup_{{ NODEJS_VERSION }}.x'
-    warn: false
+- name: Download NodeSource setup script for Node.js {{ nodejs_version }}
+  ansible.builtin.get_url:
+    url: "https://rpm.nodesource.com/setup_{{ nodejs_version }}.x"
+    dest: "/tmp/setup_{{ nodejs_version }}.sh"
+    mode: '0755'
 
-- name: Install required dependencies (python, ssl, postgresql, node ...)
+- name: Execution du script NodeSource pour Node.js {{ nodejs_version }}
   become: true
-  dnf:
+  ansible.builtin.command: "/bin/bash /tmp/setup_{{ nodejs_version }}.sh"
+  args:
+    creates: /etc/yum.repos.d/nodesource-el8.repo
+
+- name: Install Node.js "{{ nodejs_version }}"
+  become: true
+  ansible.builtin.package:
+    name: "nodejs"
+    state: present
+    update_cache: true
+
+- name: Vérification de la version de Node.js
+  ansible.builtin.command:
+    cmd: "node -v"
+  register: node_version
+  changed_when: false
+
+- name: Affichage de la version de Node.js
+  ansible.builtin.debug:
+    msg: "Node.js version is {{ node_version.stdout }}"
+
+- name: Activation du repo EPEL
+  become: true
+  ansible.builtin.package:
+    name: epel-release
+    state: present
+
+- name: Installation des dépendances (python, ssl, postgresql, node ...)
+  become: true
+  ansible.builtin.dnf:
     name:
       - python3-pip
       - bash
@@ -28,35 +59,33 @@
       - postgresql-server
       - postgresql-contrib
       - python3-psycopg2
+      - python3-certbot-nginx
       - acl
       - nodejs
       - git
       - nginx
       - screen
       - rsync
-      - snapd
-      - clamav-daemon
+      - jq
+      - acl
 
-- name: Install Certbot
-  include_role:
-    name: certbot
+- name: Activer le service nginx au démarrage
+  ansible.builtin.systemd:
+    name: nginx
+    enabled: true
+  become: true
 
-- name: Init DB cluster
-  become: yes
-  ignore_errors: yes
-  command:
-    cmd: 'postgresql-setup --initdb'
-
-- name: copy the nginx config file
-  copy:
+- name: Copie des fichiers nginx
+  become: true
+  ansible.builtin.copy:
     src: 'roles/chatbotGeneration/files/nginx_rhel.conf'
     dest: '/etc/nginx/nginx.conf'
-  become: yes
 
-- name: Set right rights on www directory - RHEL 8 & CentOS 8
-  become: true
-  file:
-    path: '{{appsDir}}'
-    group: wheel
-    mode: '774'
-    recurse: yes
+- name: Ajout des ACLs pour pouvoir lancer en tant que "{{ chatbot_user }}"
+  ansible.builtin.include_tasks: acl.yml
+
+- name: Installation de python
+  ansible.builtin.include_tasks: rhel_venv.yml
+
+- name: Installation de pm2
+  ansible.builtin.include_tasks: rhel_pm2.yml
