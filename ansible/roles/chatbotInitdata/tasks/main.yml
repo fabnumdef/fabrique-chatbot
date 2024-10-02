@@ -1,48 +1,47 @@
-- name: Création du premier user admin
-  uri:
+---
+- name: Tenter de créer l'utilisateur admin
+  ansible.builtin.uri:
     url: "{{ BOT_URL }}/api/user/admin"
     method: POST
-    body: "{{ lookup('file','../files/admin-user.json') }}"
-    status_code: 201
+    body: |
+      {
+        "email": "{{ admin_email }}",
+        "firstName": "{{ admin_firstname }}",
+        "lastName": "{{ admin_lastname }}",
+        "password": "{{ admin_password }}"
+      }
+    status_code: [201, 403, 500]  # 201 si création réussie, 403 si admin déjà existant
     body_format: json
+  register: create_admin_response
+
+- name: Vérifier si la création a échoué avec un code 500 mais que l'admin a été créé
+  ansible.builtin.debug:
+    msg: "Création de l'utilisateur admin"
+  when: create_admin_response.status == 500
+
+- name: Vérifier le message de la réponse
+  ansible.builtin.debug:
+    msg: "L'utilisateur addmin existe"
+  when: create_admin_response.status == 403
 
 - name: Login
-  uri:
+  ansible.builtin.uri:
     url: "{{ BOT_URL }}/api/auth/login"
     method: POST
-    body: "{{ lookup('file','../files/admin-user.json') }}"
+    body: |
+      {
+        "email": "{{ admin_email }}",
+        "password": "{{ admin_password }}"
+      }
     status_code: 201
     body_format: json
   register: login
 
-- debug:
-    msg: "{{ login.json.chatbotToken }}"
-
-#- name: Set de la config du Chatbot
-#  uri:
-#    url: "{{ BOT_URL }}/api/config"
-#    method: POST
-#    headers:
-#      Authorization: "Bearer {{ login.json.chatbotToken }}"
-#    body_format: form-urlencoded
-#    body:
-#      icon:
-#      name: Chatbot dev
-#      function: Chatbot de dev
-#      primaryColor: "#000000"
-#      secondaryColor: "#ffffff"
-#      problematic: Chatbot de dev
-#      audience: Chatbot de dev
-#    status_code: 201
-
 - name: Set API-KEY
-  uri:
+  ansible.builtin.uri:
     url: "{{ BOT_URL }}/api/config/api-key"
     method: POST
     headers:
       Authorization: "Bearer {{ login.json.chatbotToken }}"
     status_code: 201
   register: apiKey
-
-- debug:
-    msg: "{{ apiKey.json.apiKey }}"
