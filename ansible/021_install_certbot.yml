@@ -1,0 +1,8 @@
+---
+- name: Installation de Certbot
+  hosts: all
+  remote_user: "{{ script_user }}"
+  become: true
+
+  roles:
+    - install_certbot
