@@ -33,10 +33,10 @@
     home: "/home/{{ chatbot_user }}"
     update_password: on_create
 
-- name: "Ajouter /app/rasa/bin au PATH de l'utilisateur {{ script_user }}"
+- name: "Ajouter /app/rasa/bin au PATH de l'utilisateur {{ chatbot_user }}"
   lineinfile:
-    path: "/home/{{ script_user }}/.bashrc"
+    path: "/home/{{ chatbot_user }}/.bashrc"
     line: 'export PATH="/app/rasa/bin:$PATH"'
     create: yes
   become: true
-  become_user: "{{ script_user }}"
+  become_user: "{{ chatbot_user }}"
