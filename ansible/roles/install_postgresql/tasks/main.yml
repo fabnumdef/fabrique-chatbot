@@ -70,8 +70,17 @@
     db: "{{ db_name }}"
     name: "{{ db_user }}"
     password: "{{ db_password }}"
-    priv: 'ALL'
     state: 'present'
+
+- name: Attribuer les privilèges nécessaires sur la DB "{{ db_name }}" à l'utilisateur "{{ db_user }}"
+  become: true
+  become_user: postgres
+  community.postgresql.postgresql_privs:
+    database: "{{ db_name }}"
+    roles: "{{ db_user }}"
+    type: "database"
+    privs: "ALL"
+    state: "present"
 
 - name: Vérification des droits "{{ db_user }}"
   become: true
