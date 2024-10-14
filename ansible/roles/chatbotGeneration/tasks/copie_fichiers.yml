@@ -1,0 +1,37 @@
+---
+- name: Déployer le fichier endpoints.yml
+  become: true
+  ansible.builtin.template:
+    src: endpoints.example.yml.j2
+    dest: '{{ appsDir }}/{{ botDir }}/endpoints.yml'
+    owner: "{{ chatbot_user }}"
+    group: "{{ chatbot_group }}"
+    mode: '0664'
+
+- name: Déployer le fichier domain.yml
+  become: true
+  ansible.builtin.copy:
+    src: chatbot-template/domain.yml
+    dest: '{{ appsDir }}/{{ botDir }}/domain.yml'
+    owner: "{{ chatbot_user }}"
+    group: "{{ chatbot_group }}"
+    mode: '0664'
+
+- name: Déployer le fichier nlu.yml
+  become: true
+  ansible.builtin.copy:
+    src: chatbot-template/nlu.yml
+    dest: '{{ appsDir }}/{{ botDir }}/data/nlu.yml'
+    owner: "{{ chatbot_user }}"
+    group: "{{ chatbot_group }}"
+    mode: '0664'
+
+- name: Déployer le fichier rules.yml
+  become: true
+  ansible.builtin.copy:
+    src: chatbot-template/rules.yml
+    dest: '{{ appsDir }}/{{ botDir }}/data/rules.yml'
+    owner: "{{ chatbot_user }}"
+    group: "{{ chatbot_group }}"
+    mode: '0664'
+

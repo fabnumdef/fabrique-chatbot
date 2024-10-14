@@ -1,0 +1,15 @@
+version: '3.1'
+nlu:
+  - intent: phrase_feedback
+    examples: |
+      - Phrase feedback.
+      - Jai laissé mon avis !
+  - intent: nlu_fallback
+    examples: |
+      - Phrase hors-sujet.
+      - Quelle est ta phrase hors-sujet ?
+  - intent: phrase_presentation
+    examples: |
+      - Tu peux te présenter ?
+      - Qui es tu?
+

@@ -6,11 +6,11 @@ After=network.target
 Type=simple
 User={{ chatbot_user }}
 WorkingDirectory={{ appsDir }}/{{ backDir }}/dist
-ExecStart=/usr/bin/pm2 start main.js --name ChatbotBack
+ExecStart=/usr/bin/pm2 start main.js --name ChatbotBack --no-daemon
 ExecStop=/usr/bin/pm2 stop ChatbotBack
 ExecReload=/usr/bin/pm2 reload ChatbotBack
 Restart=always
-
+RestartSec=5
 Environment=PATH=/usr/bin:/bin:/usr/local/bin:/usr/local/sbin
 Environment=PM2_HOME=/home/{{ chatbot_user }}/.pm2
 

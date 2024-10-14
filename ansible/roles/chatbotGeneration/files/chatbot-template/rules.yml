@@ -1,0 +1,16 @@
+version: '3.1'
+rules:
+  - rule: phrase_feedback
+    steps:
+      - intent: phrase_feedback
+      - action: utter_phrase_feedback_0
+  - rule: nlu_fallback
+    steps:
+      - intent: nlu_fallback
+      - action: utter_nlu_fallback_0
+      - action: action_fallback
+  - rule: phrase_presentation
+    steps:
+      - intent: phrase_presentation
+      - action: utter_phrase_presentation_0
+

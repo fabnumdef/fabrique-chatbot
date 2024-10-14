@@ -1,0 +1,30 @@
+version: '3.1'
+intents:
+  - phrase_feedback
+  - nlu_fallback
+  - phrase_presentation
+responses:
+  utter_phrase_presentation_0:
+    - text: >-
+        Bonjour, cet ID correspond au premier message que je vais envoyer quand
+        l'utilisateur va ouvrir le chat.
+  utter_nlu_fallback_0:
+    - text: >-
+        Bonjour, cet ID correspond au message envoyé quand je n'arrive pas à
+        reconnaître une question.
+  utter_phrase_feedback_0:
+    - text: >-
+        Bonjour, cet ID correspond au message envoyé quand un utilisateur donne
+        son avis sur une réponse.
+actions:
+  - action_fallback
+slots:
+  return_suggestions:
+    type: bool
+    mappings:
+      - type: custom
+    initial_value: true
+session_config:
+  session_expiration_time: 60
+  carry_over_slots_to_new_session: true
+

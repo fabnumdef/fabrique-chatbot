@@ -5,13 +5,16 @@
     file_type: file
   register: models_files
 
-#- name: Lancement d'un entraînement RASA sans modèle existant.
-#  ansible.builtin.command:
-#    chdir: '{{ appsDir }}/{{ botDir }}/'
-#    cmd: '{{ app_venv_folder }}/bin/rasa train --augmentation 0'
-#  when: models_files.matched == 0
-#  become: true
-#  become_user: "{{ script_user }}"
+- name: Lancement d'un entraînement RASA sans modèle existant.
+  become: true
+  ansible.builtin.command:
+    chdir: '{{ appsDir }}/{{ botDir }}/'
+    cmd: '{{ app_venv_folder }}/bin/rasa train --domain domain.yml --data data/nlu.yml data/rules.yml  --augmentation 0'
+  environment:
+    SQLALCHEMY_WARN_20: "1"
+    SQLALCHEMY_SILENCE_UBER_WARNING: "1"
+  when: models_files.matched == 0
+  become_user: "{{ chatbot_user }}"
 
 #- name: Lancement d'un entraînement RASA avec modèle existant.
 #  ansible.builtin.command:
@@ -28,33 +31,26 @@
   become: true
   become_user: "{{ chatbot_user }}"
 
-- name: Vérifie s'il existe des processus screen
-  ansible.builtin.command: pgrep screen
-  register: screen_processes
-  ignore_errors: true
-
-- name: Tue les screen existants
+- name: Stop de rasa core
   become: true
-  ansible.builtin.command: pkill screen
-  args:
-    chdir: '{{ appsDir }}/{{ botDir }}/'
-  when: screen_processes.rc == 0
-  ignore_errors: true
+  ansible.builtin.systemd:
+    name: rasa-core
+    state: stopped
 
-# Démarrer les modèles du chatbot RASA
-- name: Start rasa chatbot models
+- name: Démarrage les modèles rasa ( rasa-core )
   become: true
-  become_user: "{{ chatbot_user }}"
-  args:
-    chdir: '{{ appsDir }}/{{ botDir }}/'
-  ansible.builtin.shell: |
-    screen -S rasa -dmS {{ app_venv_folder }}/bin/rasa run -m models --log-file out.log --cors "*" --debug
+  ansible.builtin.systemd:
+    name: rasa-core
+    state: started
 
-# Démarrer les actions du chatbot RASA
-- name: Start rasa chatbot actions
+- name: Stop de rasa actions
   become: true
-  become_user: "{{ chatbot_user }}"
-  args:
-    chdir: '{{ appsDir }}/{{ botDir }}/'
-  ansible.builtin.shell: |
-    screen -S rasa-action -dmS {{ app_venv_folder }}/bin/rasa run actions
+  ansible.builtin.systemd:
+    name: rasa-actions
+    state: stopped
+
+- name: Démarrage de rasa actions
+  become: true
+  ansible.builtin.systemd:
+    name: rasa-actions
+    state: started
