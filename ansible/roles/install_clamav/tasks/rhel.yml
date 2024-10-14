@@ -20,26 +20,18 @@
   ansible.builtin.template:
     src: freshclam.service.j2
     dest: /etc/systemd/system/freshclam.service
-  notify:
-    - Reload systemd
-    - Start freshclam
 
 - name: Copie du service clamd
   become: true
   ansible.builtin.template:
     src: clamd@scan.service.j2
     dest: /etc/systemd/system/clamd@scan.service
-  notify:
-    - Reload systemd
-    - Start clamd
 
 - name: Copie du fichier de configuration clamd
   become: true
   ansible.builtin.template:
     src: scan.conf.j2
     dest: /etc/clamd.d/scan.conf
-  notify:
-    - Restart clamd
 
 - name: Créer l'utilisateur clamav si non existant
   become: true
@@ -47,6 +39,25 @@
     name: clamav
     shell: /sbin/nologin
     system: true
+
+- name: Vérifier les ACL actuelles de clamupdate sur /var/lib/clamav
+  become: true
+  ansible.builtin.command:
+    cmd: getfacl /var/lib/clamav
+  register: acl_output
+  changed_when: false
+
+- name: Appliquer les ACL pour clamupdate si elles ne sont pas présentes
+  become: true
+  ansible.builtin.command:
+    cmd: setfacl -R -m u:clamupdate:rwx /var/lib/clamav
+  when: "'user:clamupdate:rwx' not in acl_output.stdout"
+
+- name: Appliquer les ACL par défaut pour clamupdate si elles ne sont pas présentes
+  become: true
+  ansible.builtin.command:
+    cmd: setfacl -R -m d:u:clamupdate:rwx /var/lib/clamav
+  when: "'default:user:clamupdate:rwx' not in acl_output.stdout"
 
 - name: Créer le répertoire de quarantaine ClamAV
   become: true
@@ -82,13 +93,24 @@
     mode: '0644'
   when: not quarantine_log_stat.stat.exists
 
-- name: Changer les permissions de /var/lib/clamav pour clamscan
+- name: Vérifier les ACL actuelles de clamscan sur /var/lib/clamav
   become: true
-  ansible.builtin.file:
-    path: /var/lib/clamav
-    owner: clamscan
-    group: clamscan
-    recurse: true
+  ansible.builtin.command:
+    cmd: getfacl /var/lib/clamav
+  register: acl_clamscan_output
+  changed_when: false
+
+- name: Appliquer les ACL pour clamscan si elles ne sont pas présentes
+  become: true
+  ansible.builtin.command:
+    cmd: setfacl -R -m u:clamscan:rwx /var/lib/clamav
+  when: "'user:clamscan:rwx' not in acl_clamscan_output.stdout"
+
+- name: Appliquer les ACL par défaut pour clamscan si elles ne sont pas présentes
+  become: true
+  ansible.builtin.command:
+    cmd: setfacl -R -m d:u:clamscan:rwx /var/lib/clamav
+  when: "'default:user:clamscan:rwx' not in acl_clamscan_output.stdout"
 
 - name: Vérifier et corriger les permissions de /var/run/clamd.scan pour clamscan
   become: true
@@ -106,16 +128,26 @@
     group: root
     mode: '0755'
 
-- name: Start et activation du service  freshclam
+- name: Recharger le démon systemd
+  become: true
+  ansible.builtin.command: systemctl daemon-reload
+  changed_when: false
+
+- name: Start et activation du service freshclam
   become: true
   ansible.builtin.systemd:
     name: freshclam
-    enabled: yes
+    enabled: true
     state: started
+
+- name: Attendre 10 secondes pour l'update des signatures de ClamAV
+  ansible.builtin.pause:
+    seconds: 10
 
 - name: Start et activation du service clamd
   become: true
   ansible.builtin.systemd:
     name: clamd@scan
-    enabled: yes
+    enabled: true
     state: started
+

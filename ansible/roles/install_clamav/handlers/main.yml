@@ -2,6 +2,7 @@
 - name: Reload systemd
   ansible.builtin.systemd:
     daemon_reload: true
+  ignore_errors: true
 
 - name: Start freshclam
   ansible.builtin.systemd:
