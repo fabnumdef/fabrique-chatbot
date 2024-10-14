@@ -48,16 +48,24 @@
   when: pip_exists.stat.exists
 
 # Installation des dépendances applicatives dans le venv
-- name: Install RASA 3.4.0 & Ansible in the virtual environment
+- name: Install RASA {{ rasa_version }} & Ansible in the virtual environment
   become: true
   become_user: "{{ chatbot_user }}"
   ansible.builtin.pip:
     virtualenv: "{{ app_venv_folder }}"
     name:
-      - rasa==3.4.0
-      - rasa-sdk==3.4.0
+      - rasa=={{ rasa_version }}
+      - rasa-sdk=={{ rasa_version }}
       - psycopg2-binary
       - websockets==10.4
       - python-socketio==5.7.2
       - ansible
     state: present
+
+- name: Créer un lien symbolique de /app/rasa/bin/rasa vers /usr/bin/rasa
+  become: true
+  ansible.builtin.file:
+    src: "{{ app_venv_folder }}/bin/rasa"
+    dest: /usr/bin/rasa
+    state: link
+

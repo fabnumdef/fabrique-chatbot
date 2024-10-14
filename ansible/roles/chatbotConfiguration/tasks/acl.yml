@@ -8,25 +8,16 @@
     group: '{{ nginx_group }}'
     mode: '744'
 
-## Vérifier si les ACL pour l'utilisateur chatbot sont déjà définies sur /var/www
-#- name: Vérifier si les ACL pour l'utilisateur chatbot sont déjà définies sur /var/www
-#  command: "getfacl -p /var/www"
-#  register: acl_check_user
-#  changed_when: false
-#  failed_when: false
-
-# Appliquer les ACL si nécessaire
-- name: Appliquer les ACL pour l'utilisateur chatbot sur /var/www
-  ansible.builtin.command: setfacl -R -m u:chatbot:rwx /var/www
-#  when: "'chatbot:rwx' not in acl_check_user.stdout"
+- name: Appliquer les ACL pour les utilisateurs {{ chatbot_user }} et {{ script_user }} sur /var/www
+  ansible.builtin.command: >
+    setfacl -R -m u:{{ chatbot_user }}:rwx,u:{{ script_user }}:rwx /var/www
   become: true
 
-- name: Définir les ACL par défaut pour l'utilisateur chatbot sur /var/www
-  ansible.builtin.command: setfacl -R -m d:u:chatbot:rwx /var/www
-#  when: "'default:user:chatbot:rwx' not in acl_check_user.stdout"
+- name: Définir les ACL par défaut pour les utilisateurs {{ chatbot_user }} et {{ script_user }} sur /var/www
+  ansible.builtin.command: >
+    setfacl -R -m d:u:{{ chatbot_user }}:rwx,d:u:{{ script_user }}:rwx /var/www
   become: true
 
-# Vérifier si les ACL pour le groupe nginx sont déjà définies sur /var/www
 - name: Vérifier si les ACL pour le groupe nginx sont déjà définies sur /var/www
   command: "getfacl -p /var/www"
   register: acl_check_group
